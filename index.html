@@ -28,9 +28,7 @@
 <main class="container">
 
 
-  <!-- =========================
-       HEADER
-  ========================== -->
+  <!-- HEADER -->
 
   <header class="hero">
 
@@ -42,9 +40,7 @@
 
       <div>
 
-        <h1>
-          APOMONET
-        </h1>
+        <h1>APOMONET</h1>
 
         <div class="lab">
           AUCTION LAB
@@ -64,9 +60,7 @@
 
 
 
-  <!-- =========================
-       DODAWANIE ZDJĘĆ
-  ========================== -->
+  <!-- ZDJĘCIA -->
 
   <section>
 
@@ -74,82 +68,79 @@
       01
     </div>
 
-
     <h2>
       Dodaj zdjęcia monety
     </h2>
 
-
     <p class="upload-subtitle">
-      Dodaj awers i rewers monety.
-      Możesz rozpocząć analizę również
-      z jednym zdjęciem.
+      Wybierz awers i rewers za jednym razem.
+      Pierwsze zdjęcie zostanie przypisane jako awers,
+      drugie jako rewers.
     </p>
 
 
-
-    <!-- AWERS -->
+    <!-- JEDEN WYBÓR DWÓCH ZDJĘĆ -->
 
     <div class="photo-card">
 
       <strong>
-        AWERS
+        AWERS + REWERS
       </strong>
 
-
       <div
-        id="obversePlaceholder"
         class="photo-status"
+        style="margin-bottom:12px;"
       >
-        Dotknij poniżej, aby dodać zdjęcie awersu
+        Wybierz jedno lub dwa zdjęcia monety
       </div>
 
-
-      <img
-        id="obversePreview"
-        alt="Podgląd awersu"
-        style="display:none;"
-      >
-
-
       <input
-        id="obverseImage"
+        id="coinImages"
         type="file"
         accept="image/*"
+        multiple
       >
 
     </div>
 
 
 
-    <!-- REWERS -->
+    <!-- PODGLĄD AWERSU -->
 
-    <div class="photo-card">
+    <div
+      id="obverseCard"
+      class="photo-card"
+      style="display:none;"
+    >
 
       <strong>
-        REWERS
+        ✓ AWERS
       </strong>
 
-
-      <div
-        id="reversePlaceholder"
-        class="photo-status"
+      <img
+        id="obversePreview"
+        alt="Podgląd awersu"
       >
-        Dotknij poniżej, aby dodać zdjęcie rewersu
-      </div>
 
+    </div>
+
+
+
+    <!-- PODGLĄD REWERSU -->
+
+    <div
+      id="reverseCard"
+      class="photo-card"
+      style="display:none;"
+    >
+
+      <strong>
+        ✓ REWERS
+      </strong>
 
       <img
         id="reversePreview"
         alt="Podgląd rewersu"
-        style="display:none;"
-      >
-
-
-      <input
-        id="reverseImage"
-        type="file"
-        accept="image/*"
       >
 
     </div>
@@ -159,21 +150,22 @@
     <!-- LICZNIK -->
 
     <div
-      class="photo-status"
       id="photoStatus"
+      class="photo-status"
     >
       Dodaj przynajmniej jedno zdjęcie
     </div>
 
 
     <div
+      id="photoCount"
       class="photo-status"
       style="
         text-align:right;
         font-weight:700;
         color:#f1cf7a;
+        font-size:15px;
       "
-      id="photoCount"
     >
       0 / 2
     </div>
@@ -187,9 +179,7 @@
       class="analyze-btn"
       type="button"
     >
-      <span>
-        ✦
-      </span>
+      <span>✦</span>
 
       <span id="buttonText">
         Analizuj monetę
@@ -206,15 +196,12 @@
 
 
 
-  <!-- =========================
-       WYNIK ANALIZY
-  ========================== -->
+  <!-- WYNIK -->
 
   <section
     id="resultPanel"
     class="result-panel hidden"
   >
-
 
     <div class="step-number">
       WYNIK ANALIZY
@@ -227,68 +214,45 @@
 
 
 
-    <!-- IDENTYFIKACJA -->
-
     <h3>
       Identyfikacja
     </h3>
 
-
     <p>
       Nominał:
-      <strong id="nominal">
-        —
-      </strong>
+      <strong id="nominal">—</strong>
     </p>
-
 
     <p>
       Władca / emitent:
-      <strong id="ruler">
-        —
-      </strong>
+      <strong id="ruler">—</strong>
     </p>
-
 
     <p>
       Rok:
-      <strong id="year">
-        —
-      </strong>
+      <strong id="year">—</strong>
     </p>
-
 
     <p>
       Mennica:
-      <strong id="mint">
-        —
-      </strong>
+      <strong id="mint">—</strong>
     </p>
-
 
     <p>
       Odmiana / typ:
-      <strong id="variant">
-        —
-      </strong>
+      <strong id="variant">—</strong>
     </p>
 
 
-
-    <!-- STAN -->
 
     <h3>
       Stan zachowania
     </h3>
 
-
     <p>
       Ocena:
-      <strong id="grade">
-        —
-      </strong>
+      <strong id="grade">—</strong>
     </p>
-
 
     <p>
       Ocena stanu pojawi się po podłączeniu
@@ -297,85 +261,58 @@
 
 
 
-    <!-- RZADKOŚĆ -->
-
     <h3>
       Rzadkość
     </h3>
 
-
     <p>
       Klasa rzadkości:
-      <strong id="rarity">
-        —
-      </strong>
+      <strong id="rarity">—</strong>
     </p>
 
 
-
-    <!-- WYCENA -->
 
     <h3>
       Szacunkowa wartość
     </h3>
 
-
     <p>
       Estymacja:
-      <strong id="estimatedPrice">
-        —
-      </strong>
+      <strong id="estimatedPrice">—</strong>
     </p>
-
 
     <p>
       Zakres aukcyjny:
-      <strong id="priceRange">
-        —
-      </strong>
+      <strong id="priceRange">—</strong>
     </p>
 
 
-
-    <!-- PARAMETRY -->
 
     <h3>
       Parametry
     </h3>
 
-
     <p>
       Waga:
-      <strong id="weight">
-        —
-      </strong>
+      <strong id="weight">—</strong>
     </p>
-
 
     <p>
       Średnica:
-      <strong id="diameter">
-        —
-      </strong>
+      <strong id="diameter">—</strong>
     </p>
 
 
-
-    <!-- ŹRÓDŁA -->
 
     <h3>
       Katalogi i źródła
     </h3>
 
-
     <p>
-
       <strong id="source">
         Oczekiwanie na analizę
       </strong>
-
     </p>
-
 
     <p>
       Dopasowania katalogowe i archiwalne
@@ -384,17 +321,12 @@
 
 
 
-    <!-- PEWNOŚĆ -->
-
     <h3>
       Pewność identyfikacji
     </h3>
 
-
     <p>
-      <strong id="confidence">
-        —
-      </strong>
+      <strong id="confidence">—</strong>
     </p>
 
 
@@ -421,20 +353,21 @@ document.addEventListener(
   function () {
 
 
-    /* =========================
-       ELEMENTY
-    ========================== */
-
-
-    const obverseInput =
+    const coinImages =
       document.getElementById(
-        "obverseImage"
+        "coinImages"
       );
 
 
-    const reverseInput =
+    const obverseCard =
       document.getElementById(
-        "reverseImage"
+        "obverseCard"
+      );
+
+
+    const reverseCard =
+      document.getElementById(
+        "reverseCard"
       );
 
 
@@ -447,18 +380,6 @@ document.addEventListener(
     const reversePreview =
       document.getElementById(
         "reversePreview"
-      );
-
-
-    const obversePlaceholder =
-      document.getElementById(
-        "obversePlaceholder"
-      );
-
-
-    const reversePlaceholder =
-      document.getElementById(
-        "reversePlaceholder"
       );
 
 
@@ -499,28 +420,17 @@ document.addEventListener(
 
 
 
-    /* =========================
-       PLIKI
-    ========================== */
-
-
     let obverseFile = null;
 
     let reverseFile = null;
 
 
 
-    /* =========================
-       PODGLĄD ZDJĘCIA
-    ========================== */
-
-
-    function showPhoto(
+    function readImage(
       file,
       preview,
-      placeholder
+      card
     ) {
-
 
       if (!file) {
         return;
@@ -534,36 +444,25 @@ document.addEventListener(
       reader.onload =
         function (event) {
 
-
           preview.src =
             event.target.result;
 
-
-          preview.style.display =
+          card.style.display =
             "block";
 
-
-          placeholder.style.display =
-            "none";
-
-
-          updatePhotoStatus();
-
-        };
+      };
 
 
       reader.onerror =
         function () {
 
-
           status.textContent =
             "Nie udało się odczytać zdjęcia.";
-
 
           status.className =
             "status error";
 
-        };
+      };
 
 
       reader.readAsDataURL(
@@ -574,255 +473,24 @@ document.addEventListener(
 
 
 
-    /* =========================
-       LICZNIK ZDJĘĆ
-    ========================== */
+    function clearPhotos() {
 
+      obverseFile = null;
 
-    function updatePhotoStatus() {
+      reverseFile = null;
 
 
-      let count = 0;
+      obversePreview.removeAttribute(
+        "src"
+      );
 
+      reversePreview.removeAttribute(
+        "src"
+      );
 
-      if (obverseFile) {
-        count++;
-      }
 
+      obverseCard.style.display =
+        "none";
 
-      if (reverseFile) {
-        count++;
-      }
-
-
-      photoCount.textContent =
-        count + " / 2";
-
-
-      if (count === 0) {
-
-
-        photoStatus.textContent =
-          "Dodaj przynajmniej jedno zdjęcie";
-
-
-      } else if (count === 1) {
-
-
-        photoStatus.textContent =
-          "Dodano jedno zdjęcie ✓";
-
-
-      } else {
-
-
-        photoStatus.textContent =
-          "Awers i rewers gotowe ✓";
-
-      }
-
-
-      if (count > 0) {
-
-        status.textContent = "";
-
-        status.className =
-          "status";
-
-      }
-
-    }
-
-
-
-    /* =========================
-       AWERS
-    ========================== */
-
-
-    obverseInput.addEventListener(
-      "change",
-      function (event) {
-
-
-        const files =
-          event.target.files;
-
-
-        if (
-          !files ||
-          files.length === 0
-        ) {
-
-          return;
-
-        }
-
-
-        obverseFile =
-          files[0];
-
-
-        showPhoto(
-          obverseFile,
-          obversePreview,
-          obversePlaceholder
-        );
-
-      }
-    );
-
-
-
-    /* =========================
-       REWERS
-    ========================== */
-
-
-    reverseInput.addEventListener(
-      "change",
-      function (event) {
-
-
-        const files =
-          event.target.files;
-
-
-        if (
-          !files ||
-          files.length === 0
-        ) {
-
-          return;
-
-        }
-
-
-        reverseFile =
-          files[0];
-
-
-        showPhoto(
-          reverseFile,
-          reversePreview,
-          reversePlaceholder
-        );
-
-      }
-    );
-
-
-
-    /* =========================
-       PRZYCISK ANALIZY
-    ========================== */
-
-
-    analyzeBtn.addEventListener(
-      "click",
-      function () {
-
-
-        if (
-          !obverseFile &&
-          !reverseFile
-        ) {
-
-
-          status.textContent =
-            "Najpierw dodaj zdjęcie monety.";
-
-
-          status.className =
-            "status error";
-
-
-          return;
-
-        }
-
-
-
-        analyzeBtn.disabled =
-          true;
-
-
-        buttonText.textContent =
-          "Analizuję...";
-
-
-        status.textContent =
-          "Przygotowywanie zdjęć monety...";
-
-
-        status.className =
-          "status";
-
-
-
-        setTimeout(
-          function () {
-
-
-            status.textContent =
-              "Zdjęcia zostały poprawnie przygotowane ✓";
-
-
-            status.className =
-              "status success";
-
-
-            resultPanel.classList.remove(
-              "hidden"
-            );
-
-
-            analyzeBtn.disabled =
-              false;
-
-
-            buttonText.textContent =
-              "Analizuj ponownie";
-
-
-            setTimeout(
-              function () {
-
-
-                resultPanel.scrollIntoView({
-                  behavior: "smooth",
-                  block: "start"
-                });
-
-
-              },
-              150
-            );
-
-
-          },
-          800
-        );
-
-      }
-    );
-
-
-
-    /* =========================
-       START
-    ========================== */
-
-
-    updatePhotoStatus();
-
-
-  }
-);
-
-</script>
-
-
-</body>
-
-</html>
+      reverseCard.style.display =
+        "
