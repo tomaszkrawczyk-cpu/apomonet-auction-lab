@@ -1,17 +1,9 @@
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({
-      error: "Dozwolona jest tylko metoda POST."
-    });
+    return res.status(405).json({ error: "Dozwolona jest tylko metoda POST." });
   }
 
   try {
-    /*
-      ========================================
-      KLUCZ OPENAI
-      ========================================
-    */
-
     const apiKey = process.env.OPENAI_API_KEY?.trim();
 
     if (!apiKey) {
@@ -23,19 +15,6 @@ export default async function handler(req, res) {
         }
       });
     }
-
-
-    /*
-      ========================================
-      ODCZYT ZDJĘĆ
-      ========================================
-
-      Obsługujemy zarówno starszy format:
-      obverseImage / reverseImage
-
-      jak i obecny index.html:
-      obverse / reverse / images
-    */
 
     const body = req.body || {};
 
@@ -49,324 +28,246 @@ export default async function handler(req, res) {
       body.reverse ||
       (Array.isArray(body.images) ? body.images[1] : null);
 
-
     if (!obverseImage && !reverseImage) {
-      return res.status(400).json({
-        error: "Nie przesłano zdjęcia monety."
-      });
+      return res.status(400).json({ error: "Nie przesłano zdjęcia monety." });
     }
 
-
-    /*
-      ========================================
-      PROMPT DLA MODELU
-      ========================================
-    */
-
-    const content = [
-      {
-        type: "input_text",
-        text: `
-Jesteś ekspertem numizmatycznym pracującym dla domu aukcyjnego.
-
-Przeanalizuj dostarczone zdjęcia monety.
-
-Jeżeli otrzymałeś awers i rewers, analizuj je łącznie jako dwie strony tej samej monety.
-
-Twoim zadaniem jest możliwie precyzyjnie ustalić:
-
-- tytuł monety,
-- nominał,
-- władcę lub emitenta,
-- rok,
-- mennicę,
-- odmianę lub typ,
-- przybliżony stan zachowania,
-- klasę rzadkości,
-- przybliżoną wartość rynkową,
-- orientacyjny zakres aukcyjny,
-- wagę,
-- średnicę,
-- możliwe katalogi lub źródła,
-- procentową pewność identyfikacji.
-
-Bardzo ważne:
-
-1. Nie wymyślaj danych.
-2. Jeżeli czegoś nie można wiarygodnie ustalić ze zdjęcia, wpisz "Nie ustalono".
-3. Odróżniaj fakty widoczne na zdjęciu od przypuszczeń.
-4. Nie przedstawiaj niepewnej identyfikacji jako pewnej.
-5. Wycena ma być ostrożna i orientacyjna.
-6. Jeżeli identyfikacja jest niepewna, zaznacz to i odpowiednio obniż confidence.
-7. Odpowiedź musi być po polsku.
-`
-      }
-    ];
-
-
-    /*
-      ========================================
-      AWERS
-      ========================================
-    */
+    const imageContent = [];
 
     if (obverseImage) {
-      content.push({
+      imageContent.push({
         type: "input_image",
         image_url: obverseImage,
         detail: "high"
       });
     }
 
-
-    /*
-      ========================================
-      REWERS
-      ========================================
-    */
-
     if (reverseImage) {
-      content.push({
+      imageContent.push({
         type: "input_image",
         image_url: reverseImage,
         detail: "high"
       });
     }
 
-
-    /*
-      ========================================
-      WYWOŁANIE OPENAI
-      ========================================
-    */
-
-    const response = await fetch(
-      "https://api.openai.com/v1/responses",
-      {
+    async function callOpenAI(payload) {
+      const response = await fetch("https://api.openai.com/v1/responses", {
         method: "POST",
-
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`
+          Authorization: `Bearer ${apiKey}`
         },
-
-        body: JSON.stringify({
-          model: "gpt-5.6",
-
-          input: [
-            {
-              role: "user",
-              content
-            }
-          ],
-
-          text: {
-            format: {
-              type: "json_schema",
-              name: "coin_analysis",
-              strict: true,
-
-              schema: {
-                type: "object",
-                additionalProperties: false,
-
-                properties: {
-                  title: {
-                    type: "string"
-                  },
-
-                  nominal: {
-                    type: "string"
-                  },
-
-                  ruler: {
-                    type: "string"
-                  },
-
-                  year: {
-                    type: "string"
-                  },
-
-                  mint: {
-                    type: "string"
-                  },
-
-                  variant: {
-                    type: "string"
-                  },
-
-                  grade: {
-                    type: "string"
-                  },
-
-                  rarity: {
-                    type: "string"
-                  },
-
-                  estimatedPrice: {
-                    type: "string"
-                  },
-
-                  priceRange: {
-                    type: "string"
-                  },
-
-                  weight: {
-                    type: "string"
-                  },
-
-                  diameter: {
-                    type: "string"
-                  },
-
-                  source: {
-                    type: "string"
-                  },
-
-                  confidence: {
-                    type: "integer",
-                    minimum: 0,
-                    maximum: 100
-                  }
-                },
-
-                required: [
-                  "title",
-                  "nominal",
-                  "ruler",
-                  "year",
-                  "mint",
-                  "variant",
-                  "grade",
-                  "rarity",
-                  "estimatedPrice",
-                  "priceRange",
-                  "weight",
-                  "diameter",
-                  "source",
-                  "confidence"
-                ]
-              }
-            }
-          }
-        })
-      }
-    );
-
-
-    /*
-      ========================================
-      ODPOWIEDŹ OPENAI
-      ========================================
-    */
-
-    const data = await response.json();
-
-
-    if (!response.ok) {
-      console.error("OpenAI error:", data);
-
-      return res.status(response.status).json({
-        error:
-          data?.error?.message ||
-          "Błąd podczas analizy OpenAI."
+        body: JSON.stringify(payload)
       });
-    }
 
+      const data = await response.json();
 
-    /*
-      ========================================
-      WYCIĄGNIĘCIE TEKSTU
-      ========================================
-    */
+      if (!response.ok) {
+        console.error("OpenAI error:", data);
+        const error = new Error(
+          data?.error?.message || "Błąd podczas analizy OpenAI."
+        );
+        error.status = response.status;
+        throw error;
+      }
 
-    let outputText = "";
+      let outputText = "";
 
-    if (
-      typeof data.output_text === "string" &&
-      data.output_text.trim()
-    ) {
-      outputText = data.output_text.trim();
-    }
+      if (typeof data.output_text === "string" && data.output_text.trim()) {
+        outputText = data.output_text.trim();
+      }
 
-
-    if (
-      !outputText &&
-      Array.isArray(data.output)
-    ) {
-      for (const item of data.output) {
-        if (
-          item.type === "message" &&
-          Array.isArray(item.content)
-        ) {
-          for (const part of item.content) {
-            if (
-              part.type === "output_text" &&
-              typeof part.text === "string"
-            ) {
-              outputText += part.text;
+      if (!outputText && Array.isArray(data.output)) {
+        for (const item of data.output) {
+          if (item.type === "message" && Array.isArray(item.content)) {
+            for (const part of item.content) {
+              if (part.type === "output_text" && typeof part.text === "string") {
+                outputText += part.text;
+              }
             }
           }
         }
       }
+
+      if (!outputText) {
+        throw new Error("Model nie zwrócił wyniku analizy.");
+      }
+
+      try {
+        return JSON.parse(outputText);
+      } catch {
+        console.error("Błąd parsowania JSON:", outputText);
+        throw new Error("Nie udało się odczytać wyniku analizy.");
+      }
     }
 
+    // ETAP 1: najpierw tylko obserwacje. Model nie ma tu prawa identyfikować monety.
+    const evidence = await callOpenAI({
+      model: "gpt-5.6",
+      input: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "input_text",
+              text: `
+Jesteś analitykiem obrazu specjalizującym się w numizmatyce.
 
-    if (!outputText) {
-      console.error(
-        "Model nie zwrócił output_text:",
-        data
-      );
+ETAP 1: NIE IDENTYFIKUJ MONETY. NIE PODAWAJ KRÓLA, NOMINAŁU ANI ROCZNIKA NA PODSTAWIE PAMIĘCI.
+Masz wyłącznie opisać to, co rzeczywiście widać na zdjęciach.
 
-      return res.status(500).json({
-        error: "Model nie zwrócił wyniku analizy."
-      });
-    }
+Wykonaj bardzo ostrożny odczyt:
+- legendy awersu i rewersu, znak po znaku; nieczytelne fragmenty oznacz [?],
+- wszystkich widocznych cyfr i możliwych dat,
+- portretu/postaci, kierunku głowy i nakrycia głowy,
+- herbów, koron, tarcz, orłów, monogramów i innych symboli,
+- znaków menniczych i inicjałów,
+- kompozycji obu stron,
+- metalu/koloru tylko jako obserwacji wizualnej,
+- stopnia czytelności każdego kluczowego elementu.
 
+Jeśli cyfra lub litera jest niepewna, podaj alternatywy zamiast zgadywać.
+Nie wolno uzupełniać legendy z pamięci katalogowej.
+`
+            },
+            ...imageContent
+          ]
+        }
+      ],
+      text: {
+        format: {
+          type: "json_schema",
+          name: "coin_visual_evidence",
+          strict: true,
+          schema: {
+            type: "object",
+            additionalProperties: false,
+            properties: {
+              obverseLegend: { type: "string" },
+              reverseLegend: { type: "string" },
+              visibleDigits: { type: "array", items: { type: "string" } },
+              possibleDates: { type: "array", items: { type: "string" } },
+              portraitDescription: { type: "string" },
+              reverseDesign: { type: "string" },
+              symbols: { type: "array", items: { type: "string" } },
+              mintMarks: { type: "array", items: { type: "string" } },
+              uncertainReadings: { type: "array", items: { type: "string" } },
+              visualCondition: { type: "string" },
+              evidenceQuality: { type: "integer", minimum: 0, maximum: 100 }
+            },
+            required: [
+              "obverseLegend",
+              "reverseLegend",
+              "visibleDigits",
+              "possibleDates",
+              "portraitDescription",
+              "reverseDesign",
+              "symbols",
+              "mintMarks",
+              "uncertainReadings",
+              "visualCondition",
+              "evidenceQuality"
+            ]
+          }
+        }
+      }
+    });
 
-    /*
-      ========================================
-      PARSOWANIE JSON
-      ========================================
-    */
+    // ETAP 2: identyfikacja musi być uzasadniona obserwacjami z etapu 1.
+    const analysis = await callOpenAI({
+      model: "gpt-5.6",
+      input: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "input_text",
+              text: `
+Jesteś konserwatywnym ekspertem numizmatycznym pracującym dla domu aukcyjnego.
 
-    let analysis;
+Poniżej znajduje się niezależny odczyt cech monety wykonany w ETAPIE 1:
+${JSON.stringify(evidence, null, 2)}
 
-    try {
-      analysis = JSON.parse(outputText);
-    } catch (parseError) {
-      console.error(
-        "Błąd parsowania JSON:",
-        outputText
-      );
+ETAP 2: na tej podstawie oraz na podstawie zdjęć spróbuj zidentyfikować monetę.
 
-      return res.status(500).json({
-        error: "Nie udało się odczytać wyniku analizy."
-      });
-    }
-
-
-    /*
-      ========================================
-      GOTOWA ODPOWIEDŹ
-      ========================================
-    */
+Zasady krytyczne:
+1. Najpierw porównaj co najmniej 2 możliwe identyfikacje, jeśli materiał dowodowy nie jest jednoznaczny.
+2. Król/emitent, rok i nominał muszą wynikać z widocznej legendy, daty, portretu, herbu lub typu. Nie zgaduj ich z samego stylu.
+3. Jeśli widoczny rok jest niepewny, nie wybieraj jednej daty na siłę. Użyj "Nie ustalono" albo zakresu/alternatyw.
+4. Jeśli legenda przeczy proponowanemu władcy lub typowi, odrzuć tę identyfikację.
+5. Nie podawaj wagi ani średnicy ze zdjęcia bez skali. W takim przypadku wpisz "Nie ustalono".
+6. Nie przypisuj numeru katalogowego bez wysokiej pewności. Gdy brak pewności, wpisz "Nie zweryfikowano katalogowo".
+7. Wycena jest dozwolona dopiero po identyfikacji. Przy confidence poniżej 70 wpisz "Nie wyceniono – identyfikacja zbyt niepewna".
+8. Confidence ma odzwierciedlać jakość dowodów, a nie pewność języka odpowiedzi.
+9. Jeśli dowody nie wystarczają, lepsza jest odpowiedź "Nie ustalono" niż błędna identyfikacja.
+10. Odpowiedź musi być po polsku.
+`
+            },
+            ...imageContent
+          ]
+        }
+      ],
+      text: {
+        format: {
+          type: "json_schema",
+          name: "coin_analysis",
+          strict: true,
+          schema: {
+            type: "object",
+            additionalProperties: false,
+            properties: {
+              title: { type: "string" },
+              nominal: { type: "string" },
+              ruler: { type: "string" },
+              year: { type: "string" },
+              mint: { type: "string" },
+              variant: { type: "string" },
+              grade: { type: "string" },
+              rarity: { type: "string" },
+              estimatedPrice: { type: "string" },
+              priceRange: { type: "string" },
+              weight: { type: "string" },
+              diameter: { type: "string" },
+              source: { type: "string" },
+              confidence: { type: "integer", minimum: 0, maximum: 100 },
+              evidenceSummary: { type: "array", items: { type: "string" } },
+              alternatives: { type: "array", items: { type: "string" } },
+              warnings: { type: "array", items: { type: "string" } }
+            },
+            required: [
+              "title",
+              "nominal",
+              "ruler",
+              "year",
+              "mint",
+              "variant",
+              "grade",
+              "rarity",
+              "estimatedPrice",
+              "priceRange",
+              "weight",
+              "diameter",
+              "source",
+              "confidence",
+              "evidenceSummary",
+              "alternatives",
+              "warnings"
+            ]
+          }
+        }
+      }
+    });
 
     return res.status(200).json({
       success: true,
-      analysis
+      analysis,
+      evidence
     });
-
   } catch (error) {
-    console.error(
-      "APOMONET backend error:",
-      error
-    );
+    console.error("APOMONET backend error:", error);
 
-    return res.status(500).json({
-      error:
-        error?.message ||
-        "Wewnętrzny błąd serwera APOMONET."
+    return res.status(error?.status || 500).json({
+      error: error?.message || "Wewnętrzny błąd serwera APOMONET."
     });
   }
 }
