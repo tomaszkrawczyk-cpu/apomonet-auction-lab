@@ -22,11 +22,9 @@
   >
 </head>
 
-
 <body>
 
 <main class="container">
-
 
   <!-- HEADER -->
 
@@ -40,7 +38,9 @@
 
       <div>
 
-        <h1>APOMONET</h1>
+        <h1>
+          APOMONET
+        </h1>
 
         <div class="lab">
           AUCTION LAB
@@ -50,14 +50,12 @@
 
     </div>
 
-
     <p>
       Profesjonalna analiza monet<br>
       dla domów aukcyjnych
     </p>
 
   </header>
-
 
 
   <!-- ZDJĘCIA -->
@@ -73,13 +71,13 @@
     </h2>
 
     <p class="upload-subtitle">
-      Wybierz awers i rewers za jednym razem.
+      Wybierz awers i rewers jednocześnie.
       Pierwsze zdjęcie zostanie przypisane jako awers,
       drugie jako rewers.
     </p>
 
 
-    <!-- JEDEN WYBÓR DWÓCH ZDJĘĆ -->
+    <!-- WYBÓR PLIKÓW -->
 
     <div class="photo-card">
 
@@ -88,409 +86,4 @@
       </strong>
 
       <div
-        class="photo-status"
-        style="margin-bottom:12px;"
-      >
-        Wybierz jedno lub dwa zdjęcia monety
-      </div>
-
-      <input
-        id="coinImages"
-        type="file"
-        accept="image/*"
-        multiple
-      >
-
-    </div>
-
-
-
-    <!-- PODGLĄD AWERSU -->
-
-    <div
-      id="obverseCard"
-      class="photo-card"
-      style="display:none;"
-    >
-
-      <strong>
-        ✓ AWERS
-      </strong>
-
-      <img
-        id="obversePreview"
-        alt="Podgląd awersu"
-      >
-
-    </div>
-
-
-
-    <!-- PODGLĄD REWERSU -->
-
-    <div
-      id="reverseCard"
-      class="photo-card"
-      style="display:none;"
-    >
-
-      <strong>
-        ✓ REWERS
-      </strong>
-
-      <img
-        id="reversePreview"
-        alt="Podgląd rewersu"
-      >
-
-    </div>
-
-
-
-    <!-- LICZNIK -->
-
-    <div
-      id="photoStatus"
-      class="photo-status"
-    >
-      Dodaj przynajmniej jedno zdjęcie
-    </div>
-
-
-    <div
-      id="photoCount"
-      class="photo-status"
-      style="
-        text-align:right;
-        font-weight:700;
-        color:#f1cf7a;
-        font-size:15px;
-      "
-    >
-      0 / 2
-    </div>
-
-
-
-    <!-- ANALIZA -->
-
-    <button
-      id="analyzeBtn"
-      class="analyze-btn"
-      type="button"
-    >
-      <span>✦</span>
-
-      <span id="buttonText">
-        Analizuj monetę
-      </span>
-    </button>
-
-
-    <div
-      id="status"
-      class="status"
-    ></div>
-
-  </section>
-
-
-
-  <!-- WYNIK -->
-
-  <section
-    id="resultPanel"
-    class="result-panel hidden"
-  >
-
-    <div class="step-number">
-      WYNIK ANALIZY
-    </div>
-
-
-    <h2 id="coinTitle">
-      Analiza demonstracyjna
-    </h2>
-
-
-
-    <h3>
-      Identyfikacja
-    </h3>
-
-    <p>
-      Nominał:
-      <strong id="nominal">—</strong>
-    </p>
-
-    <p>
-      Władca / emitent:
-      <strong id="ruler">—</strong>
-    </p>
-
-    <p>
-      Rok:
-      <strong id="year">—</strong>
-    </p>
-
-    <p>
-      Mennica:
-      <strong id="mint">—</strong>
-    </p>
-
-    <p>
-      Odmiana / typ:
-      <strong id="variant">—</strong>
-    </p>
-
-
-
-    <h3>
-      Stan zachowania
-    </h3>
-
-    <p>
-      Ocena:
-      <strong id="grade">—</strong>
-    </p>
-
-    <p>
-      Ocena stanu pojawi się po podłączeniu
-      właściwego modułu analizy obrazu.
-    </p>
-
-
-
-    <h3>
-      Rzadkość
-    </h3>
-
-    <p>
-      Klasa rzadkości:
-      <strong id="rarity">—</strong>
-    </p>
-
-
-
-    <h3>
-      Szacunkowa wartość
-    </h3>
-
-    <p>
-      Estymacja:
-      <strong id="estimatedPrice">—</strong>
-    </p>
-
-    <p>
-      Zakres aukcyjny:
-      <strong id="priceRange">—</strong>
-    </p>
-
-
-
-    <h3>
-      Parametry
-    </h3>
-
-    <p>
-      Waga:
-      <strong id="weight">—</strong>
-    </p>
-
-    <p>
-      Średnica:
-      <strong id="diameter">—</strong>
-    </p>
-
-
-
-    <h3>
-      Katalogi i źródła
-    </h3>
-
-    <p>
-      <strong id="source">
-        Oczekiwanie na analizę
-      </strong>
-    </p>
-
-    <p>
-      Dopasowania katalogowe i archiwalne
-      pojawią się tutaj.
-    </p>
-
-
-
-    <h3>
-      Pewność identyfikacji
-    </h3>
-
-    <p>
-      <strong id="confidence">—</strong>
-    </p>
-
-
-    <div
-      class="status"
-      style="margin-top:24px;"
-    >
-      Wersja demonstracyjna interfejsu APOMONET.
-      Identyfikacja, grading i wycena zostaną
-      podłączone do modułu AI.
-    </div>
-
-  </section>
-
-
-</main>
-
-
-
-<script>
-
-document.addEventListener(
-  "DOMContentLoaded",
-  function () {
-
-
-    const coinImages =
-      document.getElementById(
-        "coinImages"
-      );
-
-
-    const obverseCard =
-      document.getElementById(
-        "obverseCard"
-      );
-
-
-    const reverseCard =
-      document.getElementById(
-        "reverseCard"
-      );
-
-
-    const obversePreview =
-      document.getElementById(
-        "obversePreview"
-      );
-
-
-    const reversePreview =
-      document.getElementById(
-        "reversePreview"
-      );
-
-
-    const photoStatus =
-      document.getElementById(
-        "photoStatus"
-      );
-
-
-    const photoCount =
-      document.getElementById(
-        "photoCount"
-      );
-
-
-    const analyzeBtn =
-      document.getElementById(
-        "analyzeBtn"
-      );
-
-
-    const buttonText =
-      document.getElementById(
-        "buttonText"
-      );
-
-
-    const status =
-      document.getElementById(
-        "status"
-      );
-
-
-    const resultPanel =
-      document.getElementById(
-        "resultPanel"
-      );
-
-
-
-    let obverseFile = null;
-
-    let reverseFile = null;
-
-
-
-    function readImage(
-      file,
-      preview,
-      card
-    ) {
-
-      if (!file) {
-        return;
-      }
-
-
-      const reader =
-        new FileReader();
-
-
-      reader.onload =
-        function (event) {
-
-          preview.src =
-            event.target.result;
-
-          card.style.display =
-            "block";
-
-      };
-
-
-      reader.onerror =
-        function () {
-
-          status.textContent =
-            "Nie udało się odczytać zdjęcia.";
-
-          status.className =
-            "status error";
-
-      };
-
-
-      reader.readAsDataURL(
-        file
-      );
-
-    }
-
-
-
-    function clearPhotos() {
-
-      obverseFile = null;
-
-      reverseFile = null;
-
-
-      obversePreview.removeAttribute(
-        "src"
-      );
-
-      reversePreview.removeAttribute(
-        "src"
-      );
-
-
-      obverseCard.style.display =
-        "none";
-
-      reverseCard.style.display =
-        "
+        class="photo
