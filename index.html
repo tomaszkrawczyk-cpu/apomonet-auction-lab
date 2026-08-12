@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+sf<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>APOMONET AUCTION LAB</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<main class="container">
+
+  <!-- HEADER -->
+
+  <header class="hero">
+
+    <div class="logo">
+      <span class="coin-logo">1</span>
+
+      <div>
+        <h1>APOMONET</h1>
+        <div class="lab">AUCTION LAB</div>
+      </div>
+    </div>
+
+    <p>
+      Profesjonalna analiza monet<br>
+      dla domów aukcyjnych
+    </p>
+
+  </header>
+
+
+  <!-- ZDJĘCIA -->
+
+  <section class="panel">
+
+    <div class="section-title">
+
+      <span class="number">01</span>
+
+      <div>
+        <h2>Dodaj zdjęcia monety</h2>
+        <p>Awers i rewers</p>
+      </div>
+
+    </div>
+
+
+    <div class="coin-sides">
+
+      <!-- AWERS -->
+
+      <label class="coin-side" for="obverseImage">
+
+        <input
+          id="obverseImage"
+          type="file"
+          accept="image/*"
+        >
+
+        <div id="obverseEmpty" class="empty-upload">
+
+          <div class="upload-icon">＋</div>
+
+          <strong>AWERS</strong>
+
+          <span>Dotknij, aby dodać zdjęcie</span>
+
+        </div>
+
+        <img
+          id="obversePreview"
+          class="coin-preview"
+          alt="Awers monety"
+        >
+
+        <div id="obverseBadge" class="photo-badge">
+          ✓ Awers
+        </div>
+
+      </label>
+
+
+      <!-- REWERS -->
+
+      <label class="coin-side" for="reverseImage">
+
+        <input
+          id="reverseImage"
+          type="file"
+          accept="image/*"
+        >
+
+        <div id="reverseEmpty" class="empty-upload">
+
+          <div class="upload-icon">＋</div>
+
+          <strong>REWERS</strong>
+
+          <span>Dotknij, aby dodać zdjęcie</span>
+
+        </div>
+
+        <img
+          id="reversePreview"
+          class="coin-preview"
+          alt="Rewers monety"
+        >
+
+        <div id="reverseBadge" class="photo-badge">
+          ✓ Rewers
+        </div>
+
+      </label>
+
+    </div>
+
+
+    <div class="photo-counter">
+
+      <span id="photoStatus">
+        Dodaj przynajmniej jedno zdjęcie
+      </span>
+
+      <strong id="photoCount">0 / 2</strong>
+
+    </div>
+
+
+    <button
+      id="analyzeBtn"
+      class="analyze-button"
+      type="button"
+    >
+      <span>✦</span>
+      <span id="buttonText">Analizuj monetę</span>
+    </button>
+
+
+    <div id="status" class="status"></div>
+
+  </section>
+
+
+  <!-- WYNIK -->
+
+  <section id="resultPanel" class="result-panel hidden">
+
+    <div class="result-header">
+
+      <div>
+        <div class="result-small">
+          WYNIK ANALIZY
+        </div>
+
+        <h2 id="coinTitle">
+          Analiza demonstracyjna
+        </h2>
+      </div>
+
+      <div class="confidence">
+        <strong>—</strong>
+        <span>Pewność</span>
+      </div>
+
+    </div>
+
+
+    <!-- IDENTYFIKACJA -->
+
+    <div class="result-section">
+
+      <h3>Identyfikacja</h3>
+
+      <div class="data-grid">
+
+        <div class="data-item">
+          <span>Nominał</span>
+          <strong id="nominal">—</strong>
+        </div>
+
+        <div class="data-item">
+          <span>Władca / emitent</span>
+          <strong id="ruler">—</strong>
+        </div>
+
+        <div class="data-item">
+          <span>Rok</span>
+          <strong id="year">—</strong>
+        </div>
+
+        <div class="data-item">
+          <span>Mennica</span>
+          <strong id="mint">—</strong>
+        </div>
+
+        <div class="data-item full">
+          <span>Odmiana / typ</span>
+          <strong id="variant">—</strong>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- STAN -->
+
+    <div class="result-section">
+
+      <h3>Stan zachowania</h3>
+
+      <div class="grade-box">
+
+        <div class="grade-main">
+          <strong id="grade">—</strong>
+          <span>Ocena</span>
+        </div>
+
+        <div class="grade-description">
+          Ocena stanu pojawi się po podłączeniu
+          właściwego modułu analizy obrazu.
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- RZADKOŚĆ -->
+
+    <div class="result-section">
+
+      <h3>Rzadkość</h3>
+
+      <div class="rarity-row">
+
+        <div>
+          <span class="label">Klasa rzadkości</span>
+          <strong id="rarity">—</strong>
+        </div>
+
+        <div class="rarity-scale">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- WYCENA -->
+
+    <div class="result-section">
+
+      <h3>Szacunkowa wartość</h3>
+
+      <div class="valuation">
+
+        <div class="price-main">
+          <span>Estymacja</span>
+          <strong id="estimatedPrice">—</strong>
+        </div>
+
+        <div class="price-range">
+          Zakres aukcyjny:
+          <strong id="priceRange">—</strong>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- PARAMETRY -->
+
+    <div class="result-section">
+
+      <h3>Parametry</h3>
+
+      <div class="data-grid">
+
+        <div class="data-item">
+          <span>Waga</span>
+          <strong id="weight">—</strong>
+        </div>
+
+        <div class="data-item">
+          <span>Średnica</span>
+          <strong id="diameter">—</strong>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ŹRÓDŁA -->
+
+    <div class="result-section">
+
+      <h3>Katalogi i źródła</h3>
+
+      <div class="source-box">
+
+        <div class="source-icon">⌕</div>
+
+        <div>
+          <strong id="source">
+            Oczekiwanie na analizę
+          </strong>
+
+          <span>
+            Dopasowania katalogowe i archiwalne
+            pojawią się tutaj.
+          </span>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="demo-warning">
+
+      <strong>Wersja demonstracyjna</strong>
+
+      <span>
+        Ten ekran prezentuje strukturę wyniku.
+        Identyfikacja, grading i wycena nie są
+        jeszcze generowane przez AI.
+      </span>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const obverseInput =
+    document.getElementById("obverseImage");
+
+  const reverseInput =
+    document.getElementById("reverseImage");
+
+  const obversePreview =
+    document.getElementById("obversePreview");
+
+  const reversePreview =
+    document.getElementById("reversePreview");
+
+  const obverseEmpty =
+    document.getElementById("obverseEmpty");
+
+  const reverseEmpty =
+    document.getElementById("reverseEmpty");
+
+  const obverseBadge =
+    document.getElementById("obverseBadge");
+
+  const reverseBadge =
+    document.getElementById("reverseBadge");
+
+  const photoStatus =
+    document.getElementById("photoStatus");
+
+  const photoCount =
+    document.getElementById("photoCount");
+
+  const analyzeBtn =
+    document.getElementById("analyzeBtn");
+
+  const buttonText =
+    document.getElementById("buttonText");
+
+  const status =
+    document.getElementById("status");
+
+  const resultPanel =
+    document.getElementById("resultPanel");
+
+
+  let obverseFile = null;
+  let reverseFile = null;
+
+
+  function showPhoto(file, preview, empty, badge) {
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function (event) {
+
+      preview.src = event.target.result;
+
+      preview.style.display = "block";
+      preview.classList.add("visible");
+
+      empty.style.display = "none";
+      empty.classList.add("hidden");
+
+      badge.style.display = "block";
+      badge.classList.add("visible");
+
+      updatePhotoStatus();
+    };
+
+    reader.onerror = function () {
+
+      status.textContent =
+        "Nie udało się odczytać zdjęcia.";
+
+      status.className =
+        "status error";
+    };
+
+    reader.readAsDataURL(file);
+  }
+
+
+  function updatePhotoStatus() {
+
+    let count = 0;
+
+    if (obverseFile) {
+      count++;
+    }
+
+    if (reverseFile) {
+      count++;
+    }
+
+    photoCount.textContent =
+      count + " / 2";
+
+
+    if (count === 0) {
+
+      photoStatus.textContent =
+        "Dodaj przynajmniej jedno zdjęcie";
+
+    } else if (count === 1) {
+
+      photoStatus.textContent =
+        "Dodano jedno zdjęcie";
+
+    } else {
+
+      photoStatus.textContent =
+        "Awers i rewers gotowe ✓";
+    }
+  }
+
+
+  obverseInput.addEventListener(
+    "change",
+    function (event) {
+
+      const files =
+        event.target.files;
+
+      if (!files || files.length === 0) {
+        return;
+      }
+
+      obverseFile =
+        files[0];
+
+      showPhoto(
+        obverseFile,
+        obversePreview,
+        obverseEmpty,
+        obverseBadge
+      );
+    }
+  );
+
+
+  reverseInput.addEventListener(
+    "change",
+    function (event) {
+
+      const files =
+        event.target.files;
+
+      if (!files || files.length === 0) {
+        return;
+      }
+
+      reverseFile =
+        files[0];
+
+      showPhoto(
+        reverseFile,
+        reversePreview,
+        reverseEmpty,
+        reverseBadge
+      );
+    }
+  );
+
+
+  analyzeBtn.addEventListener(
+    "click",
+    function () {
+
+      if (!obverseFile && !reverseFile) {
+
+        status.textContent =
+          "Najpierw dodaj zdjęcie monety.";
+
+        status.className =
+          "status error";
+
+        return;
+      }
+
+
+      analyzeBtn.disabled = true;
+
+      buttonText.textContent =
+        "Analizuję...";
+
+      status.textContent =
+        "Przygotowywanie analizy monety...";
+
+      status.className =
+        "status loading";
+
+
+      setTimeout(function () {
+
+        status.textContent =
+          "Zdjęcia zostały poprawnie przygotowane.";
+
+        status.className =
+          "status success";
+
+        resultPanel.classList.remove("hidden");
+
+        analyzeBtn.disabled = false;
+
+        buttonText.textContent =
+          "Analizuj ponownie";
+
+
+        setTimeout(function () {
+
+          resultPanel.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+
+        }, 100);
+
+      }, 800);
+    }
+  );
+
+
+  updatePhotoStatus();
+
+});
+
+</script>
+
+</body>
+
+</html>
