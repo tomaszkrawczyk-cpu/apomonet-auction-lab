@@ -33,12 +33,12 @@
     .header h1 {
       margin: 0;
       font-size: 32px;
-      color: #f5c542;
+      color: #c88a19;
     }
 
     .header p {
       margin-top: 8px;
-      color: #bbbbbb;
+      color: #999999;
       font-size: 15px;
     }
 
@@ -49,25 +49,25 @@
     }
 
     .coin-card {
-      background: #181818;
-      border: 1px solid #333333;
-      border-radius: 16px;
+      background: #111111;
+      border: 1px solid #444444;
+      border-radius: 22px;
       padding: 14px;
       text-align: center;
     }
 
     .coin-card h2 {
-      margin: 2px 0 12px;
-      font-size: 18px;
-      color: #f5c542;
+      margin: 2px 0 16px;
+      font-size: 22px;
+      color: #c88a19;
     }
 
     .preview-box {
       width: 100%;
       aspect-ratio: 1 / 1;
-      background: #0b0b0b;
-      border: 2px dashed #444444;
-      border-radius: 14px;
+      background: #080808;
+      border: 2px dashed #555555;
+      border-radius: 22px;
       overflow: hidden;
       display: flex;
       justify-content: center;
@@ -81,6 +81,7 @@
       height: 100%;
       object-fit: contain;
       display: none;
+      background: #d9d9d9;
     }
 
     .placeholder {
@@ -96,37 +97,33 @@
     .file-button {
       display: block;
       width: 100%;
-      background: #2b2b2b;
+      background: #090909;
       color: #ffffff;
-      padding: 12px 8px;
-      border-radius: 10px;
+      padding: 14px 8px;
+      border-radius: 14px;
       cursor: pointer;
       font-weight: bold;
-      font-size: 14px;
-    }
-
-    .file-button:active {
-      transform: scale(0.98);
+      font-size: 16px;
     }
 
     .file-name {
-      color: #999999;
-      margin-top: 8px;
+      color: #777777;
+      margin-top: 10px;
       font-size: 12px;
-      min-height: 16px;
+      min-height: 28px;
       word-break: break-word;
     }
 
     .analyze-button {
       width: 100%;
       border: none;
-      background: #f5c542;
-      color: #111111;
-      padding: 17px;
-      border-radius: 13px;
-      font-size: 18px;
+      background: #9b5f00;
+      color: #ffffff;
+      padding: 19px;
+      border-radius: 20px;
+      font-size: 22px;
       font-weight: bold;
-      margin-top: 22px;
+      margin-top: 24px;
       cursor: pointer;
     }
 
@@ -135,27 +132,24 @@
       cursor: not-allowed;
     }
 
-    .analyze-button:active {
-      transform: scale(0.99);
-    }
-
     .status {
-      margin-top: 18px;
+      margin-top: 22px;
       text-align: center;
-      color: #bbbbbb;
+      color: #999999;
       min-height: 24px;
+      font-size: 18px;
     }
 
     .result {
       margin-top: 20px;
-      padding: 18px;
-      background: #181818;
-      border: 1px solid #333333;
-      border-radius: 14px;
+      padding: 20px;
+      background: #111111;
+      border: 1px solid #444444;
+      border-radius: 18px;
       display: none;
       white-space: pre-wrap;
       word-break: break-word;
-      line-height: 1.5;
+      line-height: 1.55;
     }
 
     @media (max-width: 520px) {
@@ -164,7 +158,7 @@
       }
 
       .header h1 {
-        font-size: 27px;
+        font-size: 28px;
       }
 
       .coin-grid {
@@ -173,16 +167,20 @@
 
       .coin-card {
         padding: 9px;
-        border-radius: 13px;
+        border-radius: 18px;
       }
 
       .coin-card h2 {
-        font-size: 16px;
+        font-size: 18px;
       }
 
       .file-button {
-        font-size: 13px;
-        padding: 11px 5px;
+        font-size: 14px;
+        padding: 12px 5px;
+      }
+
+      .analyze-button {
+        font-size: 20px;
       }
     }
   </style>
@@ -205,10 +203,7 @@
         <h2>Awers</h2>
 
         <div class="preview-box">
-          <span
-            class="placeholder"
-            id="obversePlaceholder"
-          >
+          <span id="obversePlaceholder" class="placeholder">
             Dodaj zdjęcie awersu
           </span>
 
@@ -218,10 +213,7 @@
           />
         </div>
 
-        <label
-          for="obverseInput"
-          class="file-button"
-        >
+        <label for="obverseInput" class="file-button">
           Wybierz awers
         </label>
 
@@ -231,15 +223,11 @@
           accept="image/*"
         />
 
-        <div
-          class="file-name"
-          id="obverseName"
-        >
+        <div id="obverseName" class="file-name">
           Nie wybrano zdjęcia
         </div>
 
       </div>
-
 
       <!-- REWERS -->
       <div class="coin-card">
@@ -247,10 +235,7 @@
         <h2>Rewers</h2>
 
         <div class="preview-box">
-          <span
-            class="placeholder"
-            id="reversePlaceholder"
-          >
+          <span id="reversePlaceholder" class="placeholder">
             Dodaj zdjęcie rewersu
           </span>
 
@@ -260,10 +245,7 @@
           />
         </div>
 
-        <label
-          for="reverseInput"
-          class="file-button"
-        >
+        <label for="reverseInput" class="file-button">
           Wybierz rewers
         </label>
 
@@ -273,17 +255,13 @@
           accept="image/*"
         />
 
-        <div
-          class="file-name"
-          id="reverseName"
-        >
+        <div id="reverseName" class="file-name">
           Nie wybrano zdjęcia
         </div>
 
       </div>
 
     </div>
-
 
     <button
       id="analyzeButton"
@@ -292,35 +270,16 @@
       Analizuj monetę
     </button>
 
+    <div id="status" class="status"></div>
 
-    <div
-      id="status"
-      class="status"
-    ></div>
-
-
-    <div
-      id="result"
-      class="result"
-    ></div>
+    <div id="result" class="result"></div>
 
   </div>
 
-
   <script>
-
-    /*
-      WAŻNE:
-
-      AWERS i REWERS mają osobne zmienne.
-
-      Dzięki temu wybranie rewersu
-      NIE NADPISUJE awersu.
-    */
 
     let obverseFile = null;
     let reverseFile = null;
-
 
     const obverseInput =
       document.getElementById("obverseInput");
@@ -328,13 +287,11 @@
     const reverseInput =
       document.getElementById("reverseInput");
 
-
     const obversePreview =
       document.getElementById("obversePreview");
 
     const reversePreview =
       document.getElementById("reversePreview");
-
 
     const obversePlaceholder =
       document.getElementById("obversePlaceholder");
@@ -342,13 +299,11 @@
     const reversePlaceholder =
       document.getElementById("reversePlaceholder");
 
-
     const obverseName =
       document.getElementById("obverseName");
 
     const reverseName =
       document.getElementById("reverseName");
-
 
     const analyzeButton =
       document.getElementById("analyzeButton");
@@ -360,11 +315,10 @@
       document.getElementById("result");
 
 
-
     /*
-      ================================
-      AWERS
-      ================================
+      ==================================
+      PODGLĄD AWERSU
+      ==================================
     */
 
     obverseInput.addEventListener(
@@ -374,9 +328,7 @@
         const file =
           event.target.files[0];
 
-        if (!file) {
-          return;
-        }
+        if (!file) return;
 
         obverseFile = file;
 
@@ -403,11 +355,10 @@
     );
 
 
-
     /*
-      ================================
-      REWERS
-      ================================
+      ==================================
+      PODGLĄD REWERSU
+      ==================================
     */
 
     reverseInput.addEventListener(
@@ -417,9 +368,7 @@
         const file =
           event.target.files[0];
 
-        if (!file) {
-          return;
-        }
+        if (!file) return;
 
         reverseFile = file;
 
@@ -446,12 +395,26 @@
     );
 
 
-
     /*
-      Zamiana zdjęcia na Base64
+      ==================================
+      KOMPRESJA ZDJĘCIA
+      ==================================
+
+      Maksymalny bok:
+      1200 px
+
+      JPEG quality:
+      0.72
+
+      To znacząco zmniejsza wagę zdjęcia
+      przed wysłaniem do Vercela.
     */
 
-    function fileToBase64(file) {
+    function compressImage(
+      file,
+      maxSize = 1200,
+      quality = 0.72
+    ) {
 
       return new Promise(
         (resolve, reject) => {
@@ -459,22 +422,96 @@
           const reader =
             new FileReader();
 
-          reader.onload = () =>
-            resolve(reader.result);
+          reader.onerror =
+            reject;
 
-          reader.onerror = reject;
+          reader.onload = function (event) {
 
-          reader.readAsDataURL(file);
+            const img =
+              new Image();
+
+            img.onerror =
+              reject;
+
+            img.onload = function () {
+
+              let width =
+                img.width;
+
+              let height =
+                img.height;
+
+              if (
+                width > maxSize ||
+                height > maxSize
+              ) {
+
+                const ratio =
+                  Math.min(
+                    maxSize / width,
+                    maxSize / height
+                  );
+
+                width =
+                  Math.round(
+                    width * ratio
+                  );
+
+                height =
+                  Math.round(
+                    height * ratio
+                  );
+              }
+
+              const canvas =
+                document.createElement(
+                  "canvas"
+                );
+
+              canvas.width =
+                width;
+
+              canvas.height =
+                height;
+
+              const ctx =
+                canvas.getContext("2d");
+
+              ctx.drawImage(
+                img,
+                0,
+                0,
+                width,
+                height
+              );
+
+              const compressedData =
+                canvas.toDataURL(
+                  "image/jpeg",
+                  quality
+                );
+
+              resolve(
+                compressedData
+              );
+            };
+
+            img.src =
+              event.target.result;
+          };
+
+          reader.readAsDataURL(
+            file
+          );
         }
       );
     }
 
 
-
     /*
-      ================================
-      ANALIZA MONETY
-      ================================
+      ==================================
+      ANALIZA
+      ==================================
     */
 
     analyzeButton.addEventListener(
@@ -490,7 +527,6 @@
           return;
         }
 
-
         if (!reverseFile) {
 
           alert(
@@ -500,14 +536,13 @@
           return;
         }
 
-
         try {
 
           analyzeButton.disabled =
             true;
 
           status.textContent =
-            "Analizuję monetę...";
+            "Przygotowuję zdjęcia...";
 
           result.style.display =
             "none";
@@ -516,22 +551,25 @@
             "";
 
 
-          const obverseBase64 =
-            await fileToBase64(
+          /*
+            Kompresujemy oba zdjęcia
+            PRZED wysłaniem.
+          */
+
+          const obverseCompressed =
+            await compressImage(
               obverseFile
             );
 
-
-          const reverseBase64 =
-            await fileToBase64(
+          const reverseCompressed =
+            await compressImage(
               reverseFile
             );
 
 
-          /*
-            Wysyłamy DWA oddzielne zdjęcia
-            do naszego /api/analyze
-          */
+          status.textContent =
+            "Analizuję monetę...";
+
 
           const response =
             await fetch(
@@ -547,14 +585,14 @@
                 body: JSON.stringify({
 
                   obverse:
-                    obverseBase64,
+                    obverseCompressed,
 
                   reverse:
-                    reverseBase64,
+                    reverseCompressed,
 
                   images: [
-                    obverseBase64,
-                    reverseBase64
+                    obverseCompressed,
+                    reverseCompressed
                   ]
 
                 })
