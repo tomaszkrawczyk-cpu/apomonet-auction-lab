@@ -54,26 +54,35 @@
     </div>
 
 
-    <!-- UKRYTY INPUT -->
+    <!--
+      Jeden natywny input.
+      Android może wybrać 1 albo 2 zdjęcia jednocześnie.
+    -->
 
     <input
       id="coinImages"
       type="file"
       accept="image/*"
       multiple
-      style="display:none;"
+      style="
+        position:absolute;
+        width:1px;
+        height:1px;
+        opacity:0;
+        overflow:hidden;
+        pointer-events:none;
+      "
     >
 
-
-    <!-- KAFELKI -->
 
     <div class="coin-sides">
 
       <!-- AWERS -->
 
-      <div
+      <label
         id="obverseTile"
         class="coin-side"
+        for="coinImages"
       >
 
         <div
@@ -86,7 +95,7 @@
           <strong>AWERS</strong>
 
           <span>
-            Dotknij, aby wybrać zdjęcia
+            Dotknij i wybierz awers oraz rewers
           </span>
 
         </div>
@@ -106,14 +115,15 @@
           ✓ Awers
         </div>
 
-      </div>
+      </label>
 
 
       <!-- REWERS -->
 
-      <div
+      <label
         id="reverseTile"
         class="coin-side"
+        for="coinImages"
       >
 
         <div
@@ -126,7 +136,7 @@
           <strong>REWERS</strong>
 
           <span>
-            Dotknij, aby wybrać zdjęcia
+            Możesz zaznaczyć 2 zdjęcia jednocześnie
           </span>
 
         </div>
@@ -146,7 +156,7 @@
           ✓ Rewers
         </div>
 
-      </div>
+      </label>
 
     </div>
 
@@ -192,6 +202,7 @@
   </section>
 
 
+
   <!-- WYNIK -->
 
   <section
@@ -229,14 +240,12 @@
     </div>
 
 
+
     <!-- IDENTYFIKACJA -->
 
     <div class="result-section">
 
-      <h3>
-        Identyfikacja
-      </h3>
-
+      <h3>Identyfikacja</h3>
 
       <div class="data-grid">
 
@@ -245,24 +254,20 @@
           <strong id="nominal">—</strong>
         </div>
 
-
         <div class="data-item">
           <span>Władca / emitent</span>
           <strong id="ruler">—</strong>
         </div>
-
 
         <div class="data-item">
           <span>Rok</span>
           <strong id="year">—</strong>
         </div>
 
-
         <div class="data-item">
           <span>Mennica</span>
           <strong id="mint">—</strong>
         </div>
-
 
         <div class="data-item full">
           <span>Odmiana / typ</span>
@@ -274,14 +279,12 @@
     </div>
 
 
+
     <!-- STAN -->
 
     <div class="result-section">
 
-      <h3>
-        Stan zachowania
-      </h3>
-
+      <h3>Stan zachowania</h3>
 
       <div class="grade-box">
 
@@ -291,12 +294,9 @@
             —
           </strong>
 
-          <span>
-            Ocena
-          </span>
+          <span>Ocena</span>
 
         </div>
-
 
         <div class="grade-description">
           Ocena stanu pojawi się po podłączeniu
@@ -308,14 +308,12 @@
     </div>
 
 
+
     <!-- RZADKOŚĆ -->
 
     <div class="result-section">
 
-      <h3>
-        Rzadkość
-      </h3>
-
+      <h3>Rzadkość</h3>
 
       <div class="rarity-row">
 
@@ -331,7 +329,6 @@
 
         </div>
 
-
         <div class="rarity-scale">
           <span></span>
           <span></span>
@@ -345,22 +342,18 @@
     </div>
 
 
+
     <!-- WYCENA -->
 
     <div class="result-section">
 
-      <h3>
-        Szacunkowa wartość
-      </h3>
-
+      <h3>Szacunkowa wartość</h3>
 
       <div class="valuation">
 
         <div class="price-main">
 
-          <span>
-            Estymacja
-          </span>
+          <span>Estymacja</span>
 
           <strong id="estimatedPrice">
             —
@@ -384,22 +377,18 @@
     </div>
 
 
+
     <!-- PARAMETRY -->
 
     <div class="result-section">
 
-      <h3>
-        Parametry
-      </h3>
-
+      <h3>Parametry</h3>
 
       <div class="data-grid">
 
         <div class="data-item">
 
-          <span>
-            Waga
-          </span>
+          <span>Waga</span>
 
           <strong id="weight">
             —
@@ -410,9 +399,7 @@
 
         <div class="data-item">
 
-          <span>
-            Średnica
-          </span>
+          <span>Średnica</span>
 
           <strong id="diameter">
             —
@@ -425,21 +412,18 @@
     </div>
 
 
+
     <!-- ŹRÓDŁA -->
 
     <div class="result-section">
 
-      <h3>
-        Katalogi i źródła
-      </h3>
-
+      <h3>Katalogi i źródła</h3>
 
       <div class="source-box">
 
         <div class="source-icon">
           ⌕
         </div>
-
 
         <div>
 
@@ -459,8 +443,466 @@
     </div>
 
 
+
     <div class="demo-warning">
 
       <strong>
         Wersja demonstracyjna
       </strong>
+
+      <span>
+        Ten ekran prezentuje strukturę wyniku.
+        Identyfikację, grading i wycenę
+        podłączymy do modułu AI.
+      </span>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+
+<script>
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function () {
+
+    const coinImages =
+      document.getElementById("coinImages");
+
+    const obversePreview =
+      document.getElementById("obversePreview");
+
+    const reversePreview =
+      document.getElementById("reversePreview");
+
+    const obverseEmpty =
+      document.getElementById("obverseEmpty");
+
+    const reverseEmpty =
+      document.getElementById("reverseEmpty");
+
+    const obverseBadge =
+      document.getElementById("obverseBadge");
+
+    const reverseBadge =
+      document.getElementById("reverseBadge");
+
+    const photoStatus =
+      document.getElementById("photoStatus");
+
+    const photoCount =
+      document.getElementById("photoCount");
+
+    const analyzeBtn =
+      document.getElementById("analyzeBtn");
+
+    const buttonText =
+      document.getElementById("buttonText");
+
+    const status =
+      document.getElementById("status");
+
+    const resultPanel =
+      document.getElementById("resultPanel");
+
+
+    let obverseFile = null;
+    let reverseFile = null;
+
+    let obverseURL = null;
+    let reverseURL = null;
+
+
+    /*
+      CZYSZCZENIE STAREGO PODGLĄDU
+    */
+
+    function clearOldPreviews() {
+
+      if (obverseURL) {
+        URL.revokeObjectURL(obverseURL);
+        obverseURL = null;
+      }
+
+      if (reverseURL) {
+        URL.revokeObjectURL(reverseURL);
+        reverseURL = null;
+      }
+
+
+      obversePreview.removeAttribute("src");
+      reversePreview.removeAttribute("src");
+
+
+      obversePreview.style.display = "none";
+      reversePreview.style.display = "none";
+
+
+      obversePreview.classList.remove("visible");
+      reversePreview.classList.remove("visible");
+
+
+      obverseEmpty.style.display = "";
+      reverseEmpty.style.display = "";
+
+
+      obverseEmpty.classList.remove("hidden");
+      reverseEmpty.classList.remove("hidden");
+
+
+      obverseBadge.style.display = "none";
+      reverseBadge.style.display = "none";
+
+
+      obverseBadge.classList.remove("visible");
+      reverseBadge.classList.remove("visible");
+
+    }
+
+
+    /*
+      POKAŻ MINIATURĘ
+    */
+
+    function showPreview(
+      file,
+      preview,
+      empty,
+      badge,
+      side
+    ) {
+
+      if (!file) {
+        return;
+      }
+
+
+      const imageURL =
+        URL.createObjectURL(file);
+
+
+      if (side === "obverse") {
+        obverseURL = imageURL;
+      }
+
+      if (side === "reverse") {
+        reverseURL = imageURL;
+      }
+
+
+      preview.onload =
+        function () {
+
+          preview.style.display =
+            "block";
+
+          preview.classList.add(
+            "visible"
+          );
+
+
+          empty.style.display =
+            "none";
+
+          empty.classList.add(
+            "hidden"
+          );
+
+
+          badge.style.display =
+            "block";
+
+          badge.classList.add(
+            "visible"
+          );
+
+        };
+
+
+      preview.onerror =
+        function () {
+
+          /*
+            Jeżeli np. Android wybrał HEIC,
+            którego Chrome nie potrafi pokazać,
+            NIE tracimy pliku.
+          */
+
+          preview.style.display =
+            "none";
+
+
+          empty.style.display =
+            "flex";
+
+
+          empty.classList.remove(
+            "hidden"
+          );
+
+
+          empty.querySelector("strong").textContent =
+            side === "obverse"
+              ? "AWERS ✓"
+              : "REWERS ✓";
+
+
+          empty.querySelector("span").textContent =
+            "Zdjęcie zostało dodane";
+
+
+          badge.style.display =
+            "block";
+
+          badge.classList.add(
+            "visible"
+          );
+
+        };
+
+
+      preview.src =
+        imageURL;
+
+    }
+
+
+    /*
+      STATUS
+    */
+
+    function updatePhotoStatus() {
+
+      let count = 0;
+
+
+      if (obverseFile) {
+        count++;
+      }
+
+
+      if (reverseFile) {
+        count++;
+      }
+
+
+      photoCount.textContent =
+        count + " / 2";
+
+
+      if (count === 0) {
+
+        photoStatus.textContent =
+          "Dodaj przynajmniej jedno zdjęcie";
+
+      }
+
+
+      if (count === 1) {
+
+        photoStatus.textContent =
+          "Dodano jedno zdjęcie ✓";
+
+      }
+
+
+      if (count === 2) {
+
+        photoStatus.textContent =
+          "Awers i rewers gotowe ✓";
+
+      }
+
+
+      analyzeBtn.disabled =
+        count === 0;
+
+    }
+
+
+    /*
+      ODBIERANIE ZDJĘĆ Z ANDROIDA
+    */
+
+    function handleSelectedFiles() {
+
+      const files =
+        Array.from(
+          coinImages.files || []
+        );
+
+
+      if (files.length === 0) {
+        return;
+      }
+
+
+      clearOldPreviews();
+
+
+      obverseFile =
+        files[0] || null;
+
+
+      reverseFile =
+        files[1] || null;
+
+
+      if (obverseFile) {
+
+        showPreview(
+          obverseFile,
+          obversePreview,
+          obverseEmpty,
+          obverseBadge,
+          "obverse"
+        );
+
+      }
+
+
+      if (reverseFile) {
+
+        showPreview(
+          reverseFile,
+          reversePreview,
+          reverseEmpty,
+          reverseBadge,
+          "reverse"
+        );
+
+      }
+
+
+      updatePhotoStatus();
+
+
+      status.textContent =
+        files.length >= 2
+          ? "Dwa zdjęcia zostały dodane ✓"
+          : "Zdjęcie zostało dodane ✓";
+
+
+      status.className =
+        "status success";
+
+    }
+
+
+    /*
+      Android/Chrome:
+      nasłuchujemy zarówno CHANGE,
+      jak i INPUT.
+    */
+
+    coinImages.addEventListener(
+      "change",
+      handleSelectedFiles
+    );
+
+
+    coinImages.addEventListener(
+      "input",
+      handleSelectedFiles
+    );
+
+
+    /*
+      ANALIZA
+    */
+
+    analyzeBtn.addEventListener(
+      "click",
+      function () {
+
+        if (
+          !obverseFile &&
+          !reverseFile
+        ) {
+
+          status.textContent =
+            "Najpierw dodaj zdjęcie monety.";
+
+          status.className =
+            "status error";
+
+          return;
+
+        }
+
+
+        analyzeBtn.disabled =
+          true;
+
+
+        buttonText.textContent =
+          "Analizuję...";
+
+
+        status.textContent =
+          "Przygotowywanie analizy monety...";
+
+
+        status.className =
+          "status loading";
+
+
+        setTimeout(
+          function () {
+
+            resultPanel.classList.remove(
+              "hidden"
+            );
+
+
+            status.textContent =
+              "Zdjęcia zostały poprawnie przygotowane ✓";
+
+
+            status.className =
+              "status success";
+
+
+            analyzeBtn.disabled =
+              false;
+
+
+            buttonText.textContent =
+              "Analizuj ponownie";
+
+
+            setTimeout(
+              function () {
+
+                resultPanel.scrollIntoView({
+                  behavior: "smooth",
+                  block: "start"
+                });
+
+              },
+              150
+            );
+
+          },
+          700
+        );
+
+      }
+    );
+
+
+    clearOldPreviews();
+    updatePhotoStatus();
+
+  }
+);
+
+</script>
+
+</body>
+
+</html>
