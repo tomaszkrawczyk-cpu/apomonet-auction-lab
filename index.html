@@ -3,54 +3,30 @@
 
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <meta
-    name="theme-color"
-    content="#080b0d"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080b0d">
 
   <title>APOMONET AUCTION LAB</title>
 
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <main class="container">
 
-
-  <!-- HEADER -->
-
   <header class="hero">
 
     <div class="logo">
 
-      <span class="coin-logo">
-        1
-      </span>
+      <span class="coin-logo">1</span>
 
       <div>
-
-        <h1>
-          APOMONET
-        </h1>
-
-        <div class="lab">
-          AUCTION LAB
-        </div>
-
+        <h1>APOMONET</h1>
+        <div class="lab">AUCTION LAB</div>
       </div>
 
     </div>
-
 
     <p>
       Profesjonalna analiza monet<br>
@@ -60,34 +36,24 @@
   </header>
 
 
-
-  <!-- ZDJĘCIA -->
-
   <section class="panel">
 
     <div class="section-title">
 
-      <span class="number">
-        01
-      </span>
+      <span class="number">01</span>
 
       <div>
-
-        <h2>
-          Dodaj zdjęcia monety
-        </h2>
-
-        <p>
-          Awers i rewers
-        </p>
-
+        <h2>Dodaj zdjęcia monety</h2>
+        <p>Awers i rewers</p>
       </div>
 
     </div>
 
 
-
-    <!-- UKRYTY INPUT -->
+    <!--
+      TEN INPUT ZOSTAWIAMY W FORMIE,
+      KTÓRA JUŻ DZIAŁAŁA NA TWOIM ANDROIDZIE.
+    -->
 
     <input
       id="coinImages"
@@ -95,23 +61,17 @@
       accept="image/*"
       multiple
       style="
-        position: fixed;
-        left: -9999px;
-        top: -9999px;
-        width: 1px;
-        height: 1px;
-        opacity: 0;
+        position:absolute;
+        width:1px;
+        height:1px;
+        opacity:0;
+        overflow:hidden;
+        pointer-events:none;
       "
     >
 
 
-
-    <!-- KAFELKI -->
-
     <div class="coin-sides">
-
-
-      <!-- AWERS -->
 
       <label
         class="coin-side"
@@ -123,13 +83,9 @@
           class="empty-upload"
         >
 
-          <div class="upload-icon">
-            ＋
-          </div>
+          <div class="upload-icon">＋</div>
 
-          <strong>
-            AWERS
-          </strong>
+          <strong>AWERS</strong>
 
           <span>
             Dotknij i wybierz awers oraz rewers
@@ -137,13 +93,11 @@
 
         </div>
 
-
         <img
           id="obversePreview"
           class="coin-preview"
           alt="Awers monety"
         >
-
 
         <div
           id="obverseBadge"
@@ -155,9 +109,6 @@
       </label>
 
 
-
-      <!-- REWERS -->
-
       <label
         class="coin-side"
         for="coinImages"
@@ -168,13 +119,9 @@
           class="empty-upload"
         >
 
-          <div class="upload-icon">
-            ＋
-          </div>
+          <div class="upload-icon">＋</div>
 
-          <strong>
-            REWERS
-          </strong>
+          <strong>REWERS</strong>
 
           <span>
             Możesz zaznaczyć 2 zdjęcia jednocześnie
@@ -182,13 +129,11 @@
 
         </div>
 
-
         <img
           id="reversePreview"
           class="coin-preview"
           alt="Rewers monety"
         >
-
 
         <div
           id="reverseBadge"
@@ -201,9 +146,6 @@
 
     </div>
 
-
-
-    <!-- LICZNIK -->
 
     <div class="photo-counter">
 
@@ -218,9 +160,6 @@
     </div>
 
 
-
-    <!-- ANALIZA -->
-
     <button
       id="analyzeBtn"
       class="analyze-button analyze-btn"
@@ -228,9 +167,7 @@
       disabled
     >
 
-      <span>
-        ✦
-      </span>
+      <span>✦</span>
 
       <span id="buttonText">
         Analizuj monetę
@@ -247,8 +184,6 @@
   </section>
 
 
-
-  <!-- WYNIK -->
 
   <section
     id="resultPanel"
@@ -276,89 +211,42 @@
           —
         </strong>
 
-        <span>
-          Pewność
-        </span>
+        <span>Pewność</span>
 
       </div>
 
     </div>
 
 
-
-    <!-- IDENTYFIKACJA -->
-
     <div class="result-section">
 
-      <h3>
-        Identyfikacja
-      </h3>
-
+      <h3>Identyfikacja</h3>
 
       <div class="data-grid">
 
         <div class="data-item">
-
-          <span>
-            Nominał
-          </span>
-
-          <strong id="nominal">
-            —
-          </strong>
-
+          <span>Nominał</span>
+          <strong id="nominal">—</strong>
         </div>
-
 
         <div class="data-item">
-
-          <span>
-            Władca / emitent
-          </span>
-
-          <strong id="ruler">
-            —
-          </strong>
-
+          <span>Władca / emitent</span>
+          <strong id="ruler">—</strong>
         </div>
-
 
         <div class="data-item">
-
-          <span>
-            Rok
-          </span>
-
-          <strong id="year">
-            —
-          </strong>
-
+          <span>Rok</span>
+          <strong id="year">—</strong>
         </div>
-
 
         <div class="data-item">
-
-          <span>
-            Mennica
-          </span>
-
-          <strong id="mint">
-            —
-          </strong>
-
+          <span>Mennica</span>
+          <strong id="mint">—</strong>
         </div>
-
 
         <div class="data-item full">
-
-          <span>
-            Odmiana / typ
-          </span>
-
-          <strong id="variant">
-            —
-          </strong>
-
+          <span>Odmiana / typ</span>
+          <strong id="variant">—</strong>
         </div>
 
       </div>
@@ -366,15 +254,9 @@
     </div>
 
 
-
-    <!-- STAN -->
-
     <div class="result-section">
 
-      <h3>
-        Stan zachowania
-      </h3>
-
+      <h3>Stan zachowania</h3>
 
       <div class="grade-box">
 
@@ -384,12 +266,9 @@
             —
           </strong>
 
-          <span>
-            Ocena
-          </span>
+          <span>Ocena</span>
 
         </div>
-
 
         <div class="grade-description">
           Ocena stanu na podstawie widocznych
@@ -401,15 +280,9 @@
     </div>
 
 
-
-    <!-- RZADKOŚĆ -->
-
     <div class="result-section">
 
-      <h3>
-        Rzadkość
-      </h3>
-
+      <h3>Rzadkość</h3>
 
       <div class="rarity-row">
 
@@ -425,7 +298,6 @@
 
         </div>
 
-
         <div class="rarity-scale">
           <span></span>
           <span></span>
@@ -439,30 +311,21 @@
     </div>
 
 
-
-    <!-- WYCENA -->
-
     <div class="result-section">
 
-      <h3>
-        Szacunkowa wartość
-      </h3>
-
+      <h3>Szacunkowa wartość</h3>
 
       <div class="valuation">
 
         <div class="price-main">
 
-          <span>
-            Estymacja
-          </span>
+          <span>Estymacja</span>
 
           <strong id="estimatedPrice">
             —
           </strong>
 
         </div>
-
 
         <div class="price-range">
 
@@ -479,214 +342,27 @@
     </div>
 
 
-
-    <!-- PARAMETRY -->
-
     <div class="result-section">
 
-      <h3>
-        Parametry
-      </h3>
-
+      <h3>Parametry</h3>
 
       <div class="data-grid">
 
         <div class="data-item">
-
-          <span>
-            Waga
-          </span>
-
-          <strong id="weight">
-            —
-          </strong>
-
+          <span>Waga</span>
+          <strong id="weight">—</strong>
         </div>
 
-
         <div class="data-item">
-
-          <span>
-            Średnica
-          </span>
-
-          <strong id="diameter">
-            —
-          </strong>
-
+          <span>Średnica</span>
+          <strong id="diameter">—</strong>
         </div>
 
       </div>
 
     </div>
 
-
-
-    <!-- ŹRÓDŁA -->
 
     <div class="result-section">
 
-      <h3>
-        Katalogi i źródła
-      </h3>
-
-
-      <div class="source-box">
-
-        <div class="source-icon">
-          ⌕
-        </div>
-
-
-        <div>
-
-          <strong id="source">
-            —
-          </strong>
-
-          <span>
-            Identyfikacja katalogowa ma charakter
-            pomocniczy i wymaga weryfikacji eksperckiej.
-          </span>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-
-    <!-- INFORMACJA -->
-
-    <div class="demo-warning">
-
-      <strong>
-        Analiza wspomagana AI
-      </strong>
-
-      <span>
-        Wynik należy traktować jako analizę wstępną.
-        Szczególnie odmiana, autentyczność,
-        grading i wycena powinny być
-        potwierdzone przez eksperta.
-      </span>
-
-    </div>
-
-  </section>
-
-</main>
-
-
-
-<script>
-
-document.addEventListener(
-  "DOMContentLoaded",
-  function () {
-
-
-    /* ============================
-       ELEMENTY ZDJĘĆ
-    ============================ */
-
-
-    const coinImages =
-      document.getElementById(
-        "coinImages"
-      );
-
-
-    const obversePreview =
-      document.getElementById(
-        "obversePreview"
-      );
-
-
-    const reversePreview =
-      document.getElementById(
-        "reversePreview"
-      );
-
-
-    const obverseEmpty =
-      document.getElementById(
-        "obverseEmpty"
-      );
-
-
-    const reverseEmpty =
-      document.getElementById(
-        "reverseEmpty"
-      );
-
-
-    const obverseBadge =
-      document.getElementById(
-        "obverseBadge"
-      );
-
-
-    const reverseBadge =
-      document.getElementById(
-        "reverseBadge"
-      );
-
-
-    const photoStatus =
-      document.getElementById(
-        "photoStatus"
-      );
-
-
-    const photoCount =
-      document.getElementById(
-        "photoCount"
-      );
-
-
-    const analyzeBtn =
-      document.getElementById(
-        "analyzeBtn"
-      );
-
-
-    const buttonText =
-      document.getElementById(
-        "buttonText"
-      );
-
-
-    const status =
-      document.getElementById(
-        "status"
-      );
-
-
-    const resultPanel =
-      document.getElementById(
-        "resultPanel"
-      );
-
-
-
-    /* ============================
-       POLA WYNIKU
-    ============================ */
-
-
-    const coinTitle =
-      document.getElementById(
-        "coinTitle"
-      );
-
-
-    const nominal =
-      document.getElementById(
-        "nominal"
-      );
-
-
-    const ruler =
-      document.getElementBy
+      <h3>Katalogi i źródła</h3
