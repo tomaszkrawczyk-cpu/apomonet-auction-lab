@@ -1,194 +1,295 @@
 <!DOCTYPE html>
 <html lang="pl">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#080b0d">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>APOMONET AUCTION LAB</title>
+  <title>ApoMonet Auction Lab</title>
 
-  <link rel="stylesheet" href="style.css">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0d0d0d;
+      color: #ffffff;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 24px 16px 50px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 32px;
+      color: #f5c542;
+    }
+
+    .header p {
+      margin-top: 8px;
+      color: #bbbbbb;
+      font-size: 15px;
+    }
+
+    .coin-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .coin-card {
+      background: #181818;
+      border: 1px solid #333333;
+      border-radius: 16px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .coin-card h2 {
+      margin: 2px 0 12px;
+      font-size: 18px;
+      color: #f5c542;
+    }
+
+    .preview-box {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #0b0b0b;
+      border: 2px dashed #444444;
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .preview-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: none;
+    }
+
+    .placeholder {
+      color: #777777;
+      font-size: 14px;
+      padding: 10px;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .file-button {
+      display: block;
+      width: 100%;
+      background: #2b2b2b;
+      color: #ffffff;
+      padding: 12px 8px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .file-button:active {
+      transform: scale(0.98);
+    }
+
+    .file-name {
+      color: #999999;
+      margin-top: 8px;
+      font-size: 12px;
+      min-height: 16px;
+      word-break: break-word;
+    }
+
+    .analyze-button {
+      width: 100%;
+      border: none;
+      background: #f5c542;
+      color: #111111;
+      padding: 17px;
+      border-radius: 13px;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 22px;
+      cursor: pointer;
+    }
+
+    .analyze-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .analyze-button:active {
+      transform: scale(0.99);
+    }
+
+    .status {
+      margin-top: 18px;
+      text-align: center;
+      color: #bbbbbb;
+      min-height: 24px;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 18px;
+      background: #181818;
+      border: 1px solid #333333;
+      border-radius: 14px;
+      display: none;
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 520px) {
+      .container {
+        padding: 18px 12px 40px;
+      }
+
+      .header h1 {
+        font-size: 27px;
+      }
+
+      .coin-grid {
+        gap: 9px;
+      }
+
+      .coin-card {
+        padding: 9px;
+        border-radius: 13px;
+      }
+
+      .coin-card h2 {
+        font-size: 16px;
+      }
+
+      .file-button {
+        font-size: 13px;
+        padding: 11px 5px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<main class="container">
+  <div class="container">
 
-  <!-- HEADER -->
-
-  <header class="hero">
-
-    <div class="logo">
-
-      <span class="coin-logo">1</span>
-
-      <div>
-        <h1>APOMONET</h1>
-        <div class="lab">AUCTION LAB</div>
-      </div>
-
+    <div class="header">
+      <h1>ApoMonet Auction Lab</h1>
+      <p>Wersja demonstracyjna dla domów aukcyjnych</p>
     </div>
 
-    <p>
-      Profesjonalna analiza monet<br>
-      dla domów aukcyjnych
-    </p>
-
-  </header>
-
-
-  <!-- ZDJĘCIA -->
-
-  <section class="panel">
-
-    <div class="section-title">
-
-      <span class="number">01</span>
-
-      <div>
-        <h2>Dodaj zdjęcia monety</h2>
-        <p>Awers i rewers</p>
-      </div>
-
-    </div>
-
-
-    <!--
-      TEN MECHANIZM WYBORU ZDJĘĆ ZOSTAWIAMY.
-      To jest wersja, która wcześniej działała na Androidzie.
-    -->
-
-    <input
-      id="coinImages"
-      type="file"
-      accept="image/*"
-      multiple
-      style="
-        position:absolute;
-        width:1px;
-        height:1px;
-        opacity:0;
-        overflow:hidden;
-        pointer-events:none;
-      "
-    >
-
-
-    <div class="coin-sides">
+    <div class="coin-grid">
 
       <!-- AWERS -->
+      <div class="coin-card">
 
-      <label
-        class="coin-side"
-        for="coinImages"
-      >
+        <h2>Awers</h2>
 
-        <div
-          id="obverseEmpty"
-          class="empty-upload"
-        >
-
-          <div class="upload-icon">＋</div>
-
-          <strong>AWERS</strong>
-
-          <span>
-            Dotknij i wybierz awers oraz rewers
+        <div class="preview-box">
+          <span
+            class="placeholder"
+            id="obversePlaceholder"
+          >
+            Dodaj zdjęcie awersu
           </span>
 
+          <img
+            id="obversePreview"
+            alt="Podgląd awersu"
+          />
         </div>
 
-
-        <img
-          id="obversePreview"
-          class="coin-preview"
-          alt="Awers monety"
+        <label
+          for="obverseInput"
+          class="file-button"
         >
+          Wybierz awers
+        </label>
 
+        <input
+          id="obverseInput"
+          type="file"
+          accept="image/*"
+        />
 
         <div
-          id="obverseBadge"
-          class="photo-badge"
+          class="file-name"
+          id="obverseName"
         >
-          ✓ Awers
+          Nie wybrano zdjęcia
         </div>
 
-      </label>
+      </div>
 
 
       <!-- REWERS -->
+      <div class="coin-card">
 
-      <label
-        class="coin-side"
-        for="coinImages"
-      >
+        <h2>Rewers</h2>
 
-        <div
-          id="reverseEmpty"
-          class="empty-upload"
-        >
-
-          <div class="upload-icon">＋</div>
-
-          <strong>REWERS</strong>
-
-          <span>
-            Możesz zaznaczyć 2 zdjęcia jednocześnie
+        <div class="preview-box">
+          <span
+            class="placeholder"
+            id="reversePlaceholder"
+          >
+            Dodaj zdjęcie rewersu
           </span>
 
+          <img
+            id="reversePreview"
+            alt="Podgląd rewersu"
+          />
         </div>
 
-
-        <img
-          id="reversePreview"
-          class="coin-preview"
-          alt="Rewers monety"
+        <label
+          for="reverseInput"
+          class="file-button"
         >
+          Wybierz rewers
+        </label>
 
+        <input
+          id="reverseInput"
+          type="file"
+          accept="image/*"
+        />
 
         <div
-          id="reverseBadge"
-          class="photo-badge"
+          class="file-name"
+          id="reverseName"
         >
-          ✓ Rewers
+          Nie wybrano zdjęcia
         </div>
 
-      </label>
+      </div>
 
     </div>
 
-
-    <!-- LICZNIK -->
-
-    <div class="photo-counter">
-
-      <span id="photoStatus">
-        Dodaj przynajmniej jedno zdjęcie
-      </span>
-
-      <strong id="photoCount">
-        0 / 2
-      </strong>
-
-    </div>
-
-
-    <!-- ANALIZA -->
 
     <button
-      id="analyzeBtn"
-      class="analyze-button analyze-btn"
-      type="button"
-      disabled
+      id="analyzeButton"
+      class="analyze-button"
     >
-
-      <span>✦</span>
-
-      <span id="buttonText">
-        Analizuj monetę
-      </span>
-
+      Analizuj monetę
     </button>
 
 
@@ -197,270 +298,36 @@
       class="status"
     ></div>
 
-  </section>
 
+    <div
+      id="result"
+      class="result"
+    ></div>
 
-  <!-- WYNIK -->
+  </div>
 
-  <section
-    id="resultPanel"
-    class="result-panel hidden"
-  >
 
-    <div class="result-header">
+  <script>
 
-      <div>
+    /*
+      WAŻNE:
 
-        <div class="result-small">
-          WYNIK ANALIZY
-        </div>
+      AWERS i REWERS mają osobne zmienne.
 
-        <h2 id="coinTitle">
-          Analiza monety
-        </h2>
+      Dzięki temu wybranie rewersu
+      NIE NADPISUJE awersu.
+    */
 
-      </div>
+    let obverseFile = null;
+    let reverseFile = null;
 
 
-      <div class="confidence">
+    const obverseInput =
+      document.getElementById("obverseInput");
 
-        <strong id="confidence">
-          —
-        </strong>
+    const reverseInput =
+      document.getElementById("reverseInput");
 
-        <span>
-          Pewność
-        </span>
-
-      </div>
-
-    </div>
-
-
-    <!-- IDENTYFIKACJA -->
-
-    <div class="result-section">
-
-      <h3>Identyfikacja</h3>
-
-      <div class="data-grid">
-
-        <div class="data-item">
-          <span>Nominał</span>
-          <strong id="nominal">—</strong>
-        </div>
-
-        <div class="data-item">
-          <span>Władca / emitent</span>
-          <strong id="ruler">—</strong>
-        </div>
-
-        <div class="data-item">
-          <span>Rok</span>
-          <strong id="year">—</strong>
-        </div>
-
-        <div class="data-item">
-          <span>Mennica</span>
-          <strong id="mint">—</strong>
-        </div>
-
-        <div class="data-item full">
-          <span>Odmiana / typ</span>
-          <strong id="variant">—</strong>
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <!-- STAN -->
-
-    <div class="result-section">
-
-      <h3>Stan zachowania</h3>
-
-      <div class="grade-box">
-
-        <div class="grade-main">
-
-          <strong id="grade">
-            —
-          </strong>
-
-          <span>
-            Ocena
-          </span>
-
-        </div>
-
-        <div class="grade-description">
-          Ocena stanu na podstawie widocznych
-          cech powierzchni, zużycia i detalu.
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <!-- RZADKOŚĆ -->
-
-    <div class="result-section">
-
-      <h3>Rzadkość</h3>
-
-      <div class="rarity-row">
-
-        <div>
-
-          <span class="label">
-            Klasa rzadkości
-          </span>
-
-          <strong id="rarity">
-            —
-          </strong>
-
-        </div>
-
-
-        <div class="rarity-scale">
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <!-- WYCENA -->
-
-    <div class="result-section">
-
-      <h3>Szacunkowa wartość</h3>
-
-      <div class="valuation">
-
-        <div class="price-main">
-
-          <span>
-            Estymacja
-          </span>
-
-          <strong id="estimatedPrice">
-            —
-          </strong>
-
-        </div>
-
-
-        <div class="price-range">
-
-          Zakres aukcyjny:
-
-          <strong id="priceRange">
-            —
-          </strong>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <!-- PARAMETRY -->
-
-    <div class="result-section">
-
-      <h3>Parametry</h3>
-
-      <div class="data-grid">
-
-        <div class="data-item">
-          <span>Waga</span>
-          <strong id="weight">—</strong>
-        </div>
-
-        <div class="data-item">
-          <span>Średnica</span>
-          <strong id="diameter">—</strong>
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <!-- ŹRÓDŁA -->
-
-    <div class="result-section">
-
-      <h3>Katalogi i źródła</h3>
-
-      <div class="source-box">
-
-        <div class="source-icon">
-          ⌕
-        </div>
-
-
-        <div>
-
-          <strong id="source">
-            —
-          </strong>
-
-          <span>
-            Identyfikacja katalogowa ma charakter
-            pomocniczy i wymaga weryfikacji eksperckiej.
-          </span>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="demo-warning">
-
-      <strong>
-        Analiza wspomagana AI
-      </strong>
-
-      <span>
-        Wynik należy traktować jako analizę wstępną.
-        Szczególnie odmiana, autentyczność,
-        grading i wycena powinny być
-        potwierdzone przez eksperta.
-      </span>
-
-    </div>
-
-  </section>
-
-</main>
-
-
-<script>
-
-document.addEventListener(
-  "DOMContentLoaded",
-  function () {
-
-    /* =========================
-       ELEMENTY
-    ========================== */
-
-    const coinImages =
-      document.getElementById("coinImages");
 
     const obversePreview =
       document.getElementById("obversePreview");
@@ -468,1050 +335,335 @@ document.addEventListener(
     const reversePreview =
       document.getElementById("reversePreview");
 
-    const obverseEmpty =
-      document.getElementById("obverseEmpty");
 
-    const reverseEmpty =
-      document.getElementById("reverseEmpty");
+    const obversePlaceholder =
+      document.getElementById("obversePlaceholder");
 
-    const obverseBadge =
-      document.getElementById("obverseBadge");
+    const reversePlaceholder =
+      document.getElementById("reversePlaceholder");
 
-    const reverseBadge =
-      document.getElementById("reverseBadge");
 
-    const photoStatus =
-      document.getElementById("photoStatus");
+    const obverseName =
+      document.getElementById("obverseName");
 
-    const photoCount =
-      document.getElementById("photoCount");
+    const reverseName =
+      document.getElementById("reverseName");
 
-    const analyzeBtn =
-      document.getElementById("analyzeBtn");
 
-    const buttonText =
-      document.getElementById("buttonText");
+    const analyzeButton =
+      document.getElementById("analyzeButton");
 
     const status =
       document.getElementById("status");
 
-    const resultPanel =
-      document.getElementById("resultPanel");
+    const result =
+      document.getElementById("result");
 
-
-    const coinTitle =
-      document.getElementById("coinTitle");
-
-    const nominal =
-      document.getElementById("nominal");
-
-    const ruler =
-      document.getElementById("ruler");
-
-    const year =
-      document.getElementById("year");
-
-    const mint =
-      document.getElementById("mint");
-
-    const variant =
-      document.getElementById("variant");
-
-    const grade =
-      document.getElementById("grade");
-
-    const rarity =
-      document.getElementById("rarity");
-
-    const estimatedPrice =
-      document.getElementById("estimatedPrice");
-
-    const priceRange =
-      document.getElementById("priceRange");
-
-    const weight =
-      document.getElementById("weight");
-
-    const diameter =
-      document.getElementById("diameter");
-
-    const source =
-      document.getElementById("source");
-
-    const confidence =
-      document.getElementById("confidence");
-
-
-    let obverseFile = null;
-    let reverseFile = null;
-
-    let obverseURL = null;
-    let reverseURL = null;
-
-
-    /* =========================
-       CZYSZCZENIE PODGLĄDÓW
-    ========================== */
-
-    function clearOldPreviews() {
-
-      if (obverseURL) {
-
-        URL.revokeObjectURL(
-          obverseURL
-        );
-
-        obverseURL = null;
-
-      }
-
-
-      if (reverseURL) {
-
-        URL.revokeObjectURL(
-          reverseURL
-        );
-
-        reverseURL = null;
-
-      }
-
-
-      obversePreview.removeAttribute(
-        "src"
-      );
-
-      reversePreview.removeAttribute(
-        "src"
-      );
-
-
-      obversePreview.style.display =
-        "none";
-
-      reversePreview.style.display =
-        "none";
-
-
-      obversePreview.classList.remove(
-        "visible"
-      );
-
-      reversePreview.classList.remove(
-        "visible"
-      );
-
-
-      obverseEmpty.style.display =
-        "";
-
-      reverseEmpty.style.display =
-        "";
-
-
-      obverseEmpty.classList.remove(
-        "hidden"
-      );
-
-      reverseEmpty.classList.remove(
-        "hidden"
-      );
-
-
-      obverseBadge.style.display =
-        "none";
-
-      reverseBadge.style.display =
-        "none";
-
-
-      obverseBadge.classList.remove(
-        "visible"
-      );
-
-      reverseBadge.classList.remove(
-        "visible"
-      );
-
-    }
-
-
-    /* =========================
-       PODGLĄD
-    ========================== */
-
-    function showPreview(
-      file,
-      preview,
-      empty,
-      badge,
-      side
-    ) {
-
-      if (!file) {
-        return;
-      }
-
-
-      const imageURL =
-        URL.createObjectURL(
-          file
-        );
-
-
-      if (side === "obverse") {
-
-        obverseURL =
-          imageURL;
-
-      }
-
-
-      if (side === "reverse") {
-
-        reverseURL =
-          imageURL;
-
-      }
-
-
-      preview.onload =
-        function () {
-
-          preview.style.display =
-            "block";
-
-          preview.classList.add(
-            "visible"
-          );
-
-
-          empty.style.display =
-            "none";
-
-          empty.classList.add(
-            "hidden"
-          );
-
-
-          badge.style.display =
-            "block";
-
-          badge.classList.add(
-            "visible"
-          );
-
-        };
-
-
-      preview.onerror =
-        function () {
-
-          /*
-            Jeżeli telefon nie potrafi wyświetlić
-            podglądu np. HEIC, plik nadal pozostaje
-            poprawnie dodany.
-          */
-
-          preview.style.display =
-            "none";
-
-
-          empty.style.display =
-            "flex";
-
-          empty.classList.remove(
-            "hidden"
-          );
-
-
-          const strong =
-            empty.querySelector(
-              "strong"
-            );
-
-
-          const text =
-            empty.querySelector(
-              "span"
-            );
-
-
-          if (strong) {
-
-            strong.textContent =
-              side === "obverse"
-                ? "AWERS ✓"
-                : "REWERS ✓";
-
-          }
-
-
-          if (text) {
-
-            text.textContent =
-              "Zdjęcie zostało dodane";
-
-          }
-
-
-          badge.style.display =
-            "block";
-
-          badge.classList.add(
-            "visible"
-          );
-
-        };
-
-
-      preview.src =
-        imageURL;
-
-    }
-
-
-    /* =========================
-       STATUS ZDJĘĆ
-    ========================== */
-
-    function updatePhotoStatus() {
-
-      let count = 0;
-
-
-      if (obverseFile) {
-        count++;
-      }
-
-
-      if (reverseFile) {
-        count++;
-      }
-
-
-      photoCount.textContent =
-        count + " / 2";
-
-
-      if (count === 0) {
-
-        photoStatus.textContent =
-          "Dodaj przynajmniej jedno zdjęcie";
-
-      } else if (count === 1) {
-
-        photoStatus.textContent =
-          "Dodano jedno zdjęcie ✓";
-
-      } else {
-
-        photoStatus.textContent =
-          "Awers i rewers gotowe ✓";
-
-      }
-
-
-      analyzeBtn.disabled =
-        count === 0;
-
-    }
-
-
-    /* =========================
-       WYBRANO ZDJĘCIA
-    ========================== */
-
-    function handleSelectedFiles() {
-
-      const files =
-        Array.from(
-          coinImages.files || []
-        );
-
-
-      if (files.length === 0) {
-        return;
-      }
-
-
-      clearOldPreviews();
-
-
-      obverseFile =
-        files[0] || null;
-
-
-      reverseFile =
-        files[1] || null;
-
-
-      if (obverseFile) {
-
-        showPreview(
-          obverseFile,
-          obversePreview,
-          obverseEmpty,
-          obverseBadge,
-          "obverse"
-        );
-
-      }
-
-
-      if (reverseFile) {
-
-        showPreview(
-          reverseFile,
-          reversePreview,
-          reverseEmpty,
-          reverseBadge,
-          "reverse"
-        );
-
-      }
-
-
-      updatePhotoStatus();
-
-
-      status.textContent =
-        files.length >= 2
-          ? "Dwa zdjęcia zostały dodane ✓"
-          : "Zdjęcie zostało dodane ✓";
-
-
-      status.className =
-        "status success";
-
-    }
 
 
     /*
-      ZOSTAWIAMY OBA ZDARZENIA,
-      BO TO WŁAŚNIE WCZEŚNIEJ
-      ZADZIAŁAŁO NA TWOIM ANDROIDZIE.
+      ================================
+      AWERS
+      ================================
     */
 
-    coinImages.addEventListener(
+    obverseInput.addEventListener(
       "change",
-      handleSelectedFiles
+      function (event) {
+
+        const file =
+          event.target.files[0];
+
+        if (!file) {
+          return;
+        }
+
+        obverseFile = file;
+
+        obverseName.textContent =
+          file.name;
+
+        const reader =
+          new FileReader();
+
+        reader.onload = function (e) {
+
+          obversePreview.src =
+            e.target.result;
+
+          obversePreview.style.display =
+            "block";
+
+          obversePlaceholder.style.display =
+            "none";
+        };
+
+        reader.readAsDataURL(file);
+      }
     );
 
 
-    coinImages.addEventListener(
-      "input",
-      handleSelectedFiles
+
+    /*
+      ================================
+      REWERS
+      ================================
+    */
+
+    reverseInput.addEventListener(
+      "change",
+      function (event) {
+
+        const file =
+          event.target.files[0];
+
+        if (!file) {
+          return;
+        }
+
+        reverseFile = file;
+
+        reverseName.textContent =
+          file.name;
+
+        const reader =
+          new FileReader();
+
+        reader.onload = function (e) {
+
+          reversePreview.src =
+            e.target.result;
+
+          reversePreview.style.display =
+            "block";
+
+          reversePlaceholder.style.display =
+            "none";
+        };
+
+        reader.readAsDataURL(file);
+      }
     );
 
 
-    /* =========================
-       ODCZYT ZDJĘCIA
-    ========================== */
 
-    function readFileAsDataURL(file) {
+    /*
+      Zamiana zdjęcia na Base64
+    */
+
+    function fileToBase64(file) {
 
       return new Promise(
-        function (resolve, reject) {
+        (resolve, reject) => {
 
           const reader =
             new FileReader();
 
+          reader.onload = () =>
+            resolve(reader.result);
 
-          reader.onload =
-            function () {
+          reader.onerror = reject;
 
-              resolve(
-                reader.result
-              );
-
-            };
-
-
-          reader.onerror =
-            function () {
-
-              reject(
-                new Error(
-                  "Nie udało się odczytać zdjęcia."
-                )
-              );
-
-            };
-
-
-          reader.readAsDataURL(
-            file
-          );
-
+          reader.readAsDataURL(file);
         }
       );
-
     }
 
 
-    /* =========================
-       DATA URL -> IMAGE
-    ========================== */
 
-    function loadImage(dataURL) {
+    /*
+      ================================
+      ANALIZA MONETY
+      ================================
+    */
 
-      return new Promise(
-        function (resolve, reject) {
-
-          const image =
-            new Image();
-
-
-          image.onload =
-            function () {
-
-              resolve(
-                image
-              );
-
-            };
-
-
-          image.onerror =
-            function () {
-
-              reject(
-                new Error(
-                  "Nie udało się przygotować zdjęcia do analizy."
-                )
-              );
-
-            };
-
-
-          image.src =
-            dataURL;
-
-        }
-      );
-
-    }
-
-
-    /* =========================
-       KOMPRESJA
-
-       WAŻNE:
-       Ta funkcja uruchamia się DOPIERO
-       po kliknięciu Analizuj monetę.
-
-       Nie dotyka mechanizmu wyboru plików.
-    ========================== */
-
-    async function compressImage(file) {
-
-      if (!file) {
-        return null;
-      }
-
-
-      const originalDataURL =
-        await readFileAsDataURL(
-          file
-        );
-
-
-      const image =
-        await loadImage(
-          originalDataURL
-        );
-
-
-      /*
-        1280 px daje dużo szczegółów monety,
-        ale mocno zmniejsza wielkość danych.
-      */
-
-      const MAX_SIDE =
-        1280;
-
-
-      const originalWidth =
-        image.naturalWidth ||
-        image.width;
-
-
-      const originalHeight =
-        image.naturalHeight ||
-        image.height;
-
-
-      const largestSide =
-        Math.max(
-          originalWidth,
-          originalHeight
-        );
-
-
-      const scale =
-        Math.min(
-          1,
-          MAX_SIDE /
-          largestSide
-        );
-
-
-      const width =
-        Math.max(
-          1,
-          Math.round(
-            originalWidth *
-            scale
-          )
-        );
-
-
-      const height =
-        Math.max(
-          1,
-          Math.round(
-            originalHeight *
-            scale
-          )
-        );
-
-
-      const canvas =
-        document.createElement(
-          "canvas"
-        );
-
-
-      canvas.width =
-        width;
-
-
-      canvas.height =
-        height;
-
-
-      const ctx =
-        canvas.getContext(
-          "2d",
-          {
-            alpha: false
-          }
-        );
-
-
-      if (!ctx) {
-
-        throw new Error(
-          "Telefon nie mógł przygotować zdjęcia."
-        );
-
-      }
-
-
-      ctx.fillStyle =
-        "#ffffff";
-
-
-      ctx.fillRect(
-        0,
-        0,
-        width,
-        height
-      );
-
-
-      ctx.drawImage(
-        image,
-        0,
-        0,
-        width,
-        height
-      );
-
-
-      /*
-        JPEG 0.72:
-        dużo mniejszy payload,
-        nadal wystarczająco dużo szczegółów.
-      */
-
-      return canvas.toDataURL(
-        "image/jpeg",
-        0.72
-      );
-
-    }
-
-
-    /* =========================
-       WYPEŁNIANIE WYNIKÓW
-    ========================== */
-
-    function fillResult(data) {
-
-      coinTitle.textContent =
-        data.title ||
-        "Nie ustalono";
-
-
-      nominal.textContent =
-        data.nominal ||
-        "Nie ustalono";
-
-
-      ruler.textContent =
-        data.ruler ||
-        "Nie ustalono";
-
-
-      year.textContent =
-        data.year ||
-        "Nie ustalono";
-
-
-      mint.textContent =
-        data.mint ||
-        "Nie ustalono";
-
-
-      variant.textContent =
-        data.variant ||
-        "Nie ustalono";
-
-
-      grade.textContent =
-        data.grade ||
-        "Nie ustalono";
-
-
-      rarity.textContent =
-        data.rarity ||
-        "Nie ustalono";
-
-
-      estimatedPrice.textContent =
-        data.estimatedPrice ||
-        "Nie ustalono";
-
-
-      priceRange.textContent =
-        data.priceRange ||
-        "Nie ustalono";
-
-
-      weight.textContent =
-        data.weight ||
-        "Nie ustalono";
-
-
-      diameter.textContent =
-        data.diameter ||
-        "Nie ustalono";
-
-
-      source.textContent =
-        data.source ||
-        "Nie ustalono";
-
-
-      if (
-        typeof data.confidence ===
-        "number"
-      ) {
-
-        confidence.textContent =
-          data.confidence +
-          "%";
-
-      } else {
-
-        confidence.textContent =
-          "—";
-
-      }
-
-    }
-
-
-    /* =========================
-       ANALIZA AI
-    ========================== */
-
-    analyzeBtn.addEventListener(
+    analyzeButton.addEventListener(
       "click",
       async function () {
 
-        if (
-          !obverseFile &&
-          !reverseFile
-        ) {
+        if (!obverseFile) {
 
-          status.textContent =
-            "Najpierw dodaj zdjęcie monety.";
-
-          status.className =
-            "status error";
+          alert(
+            "Najpierw dodaj zdjęcie awersu."
+          );
 
           return;
-
         }
 
 
-        analyzeBtn.disabled =
-          true;
+        if (!reverseFile) {
 
+          alert(
+            "Dodaj również zdjęcie rewersu."
+          );
 
-        buttonText.textContent =
-          "Analizuję...";
-
-
-        status.textContent =
-          "Optymalizacja awersu...";
-
-
-        status.className =
-          "status loading";
+          return;
+        }
 
 
         try {
 
-          /*
-            Dopiero TERAZ kompresujemy.
-            Sam wybór zdjęć pozostaje nietknięty.
-          */
-
-          const obverseImage =
-            obverseFile
-              ? await compressImage(
-                  obverseFile
-                )
-              : null;
-
-
-          if (reverseFile) {
-
-            status.textContent =
-              "Optymalizacja rewersu...";
-
-          }
-
-
-          const reverseImage =
-            reverseFile
-              ? await compressImage(
-                  reverseFile
-                )
-              : null;
-
-
-          const payload =
-            JSON.stringify({
-
-              obverseImage:
-                obverseImage,
-
-              reverseImage:
-                reverseImage
-
-            });
-
-
-          /*
-            Sprawdzamy wielkość jeszcze
-            przed wysłaniem do Vercela.
-          */
-
-          const payloadBytes =
-            new Blob(
-              [payload]
-            ).size;
-
-
-          if (
-            payloadBytes >
-            3000000
-          ) {
-
-            throw new Error(
-              "Zdjęcia są nadal zbyt duże do analizy."
-            );
-
-          }
-
+          analyzeButton.disabled =
+            true;
 
           status.textContent =
-            "Rozpoznawanie monety przez AI...";
+            "Analizuję monetę...";
 
+          result.style.display =
+            "none";
+
+          result.textContent =
+            "";
+
+
+          const obverseBase64 =
+            await fileToBase64(
+              obverseFile
+            );
+
+
+          const reverseBase64 =
+            await fileToBase64(
+              reverseFile
+            );
+
+
+          /*
+            Wysyłamy DWA oddzielne zdjęcia
+            do naszego /api/analyze
+          */
 
           const response =
             await fetch(
               "/api/analyze",
               {
-
-                method:
-                  "POST",
+                method: "POST",
 
                 headers: {
-
                   "Content-Type":
                     "application/json"
-
                 },
 
-                body:
-                  payload
+                body: JSON.stringify({
 
+                  obverse:
+                    obverseBase64,
+
+                  reverse:
+                    reverseBase64,
+
+                  images: [
+                    obverseBase64,
+                    reverseBase64
+                  ]
+
+                })
               }
             );
 
 
-          /*
-            Najpierw pobieramy tekst.
-            Dzięki temu przy błędzie Vercela
-            zobaczymy kod statusu zamiast
-            ogólnego błędu JSON.
-          */
-
-          const responseText =
+          const text =
             await response.text();
-
-
-          let data;
-
-
-          try {
-
-            data =
-              JSON.parse(
-                responseText
-              );
-
-          } catch (parseError) {
-
-            if (
-              response.status ===
-              413
-            ) {
-
-              throw new Error(
-                "Zdjęcia przekroczyły limit serwera."
-              );
-
-            }
-
-
-            throw new Error(
-              "Serwer zwrócił błąd " +
-              response.status +
-              "."
-            );
-
-          }
 
 
           if (!response.ok) {
 
             throw new Error(
-              data.error ||
-              (
-                "Błąd serwera " +
-                response.status
-              )
+              text ||
+              "Błąd podczas analizy monety."
             );
-
           }
 
 
-          if (!data.analysis) {
+          let data;
 
-            throw new Error(
-              "Serwer nie zwrócił wyniku analizy."
-            );
+          try {
 
+            data =
+              JSON.parse(text);
+
+          } catch {
+
+            data =
+              text;
           }
-
-
-          fillResult(
-            data.analysis
-          );
-
-
-          resultPanel.classList.remove(
-            "hidden"
-          );
 
 
           status.textContent =
-            "Analiza zakończona ✓";
+            "Analiza zakończona.";
 
 
-          status.className =
-            "status success";
+          result.style.display =
+            "block";
 
 
-          buttonText.textContent =
-            "Analizuj ponownie";
+          if (
+            typeof data === "string"
+          ) {
 
+            result.textContent =
+              data;
 
-          setTimeout(
-            function () {
+          } else if (
+            data.result
+          ) {
 
-              resultPanel.scrollIntoView({
+            result.textContent =
+              typeof data.result === "string"
+                ? data.result
+                : JSON.stringify(
+                    data.result,
+                    null,
+                    2
+                  );
 
-                behavior:
-                  "smooth",
+          } else if (
+            data.analysis
+          ) {
 
-                block:
-                  "start"
+            result.textContent =
+              typeof data.analysis === "string"
+                ? data.analysis
+                : JSON.stringify(
+                    data.analysis,
+                    null,
+                    2
+                  );
 
-              });
+          } else {
 
-            },
-            150
-          );
+            result.textContent =
+              JSON.stringify(
+                data,
+                null,
+                2
+              );
+          }
 
 
         } catch (error) {
 
-          console.error(
-            "APOMONET:",
-            error
-          );
-
+          console.error(error);
 
           status.textContent =
-            "Błąd analizy: " +
+            "Wystąpił błąd.";
+
+          result.style.display =
+            "block";
+
+          result.textContent =
             error.message;
-
-
-          status.className =
-            "status error";
-
-
-          buttonText.textContent =
-            "Spróbuj ponownie";
-
 
         } finally {
 
-          analyzeBtn.disabled =
+          analyzeButton.disabled =
             false;
-
         }
 
       }
     );
 
-
-    clearOldPreviews();
-    updatePhotoStatus();
-
-  }
-);
-
-</script>
+  </script>
 
 </body>
-
 </html>
