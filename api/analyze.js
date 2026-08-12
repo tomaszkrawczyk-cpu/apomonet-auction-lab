@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-
   if (req.method !== "POST") {
     return res.status(405).json({
       error: "Dozwolona jest tylko metoda POST."
@@ -7,22 +6,48 @@ export default async function handler(req, res) {
   }
 
   try {
+    /*
+      ========================================
+      KLUCZ OPENAI
+      ========================================
+    */
 
-    const apiKey =
-      process.env.OPENAI_API_KEY;
-
+    const apiKey = process.env.OPENAI_API_KEY?.trim();
 
     if (!apiKey) {
       return res.status(500).json({
-        error: "Brak OPENAI_API_KEY na serwerze."
+        error: "Brak OPENAI_API_KEY na aktywnym deploymentcie.",
+        diagnostic: {
+          vercelEnvironment: process.env.VERCEL_ENV || "unknown",
+          keyDetected: false
+        }
       });
     }
 
 
-    const {
-      obverseImage,
-      reverseImage
-    } = req.body || {};
+    /*
+      ========================================
+      ODCZYT ZDJĘĆ
+      ========================================
+
+      Obsługujemy zarówno starszy format:
+      obverseImage / reverseImage
+
+      jak i obecny index.html:
+      obverse / reverse / images
+    */
+
+    const body = req.body || {};
+
+    const obverseImage =
+      body.obverseImage ||
+      body.obverse ||
+      (Array.isArray(body.images) ? body.images[0] : null);
+
+    const reverseImage =
+      body.reverseImage ||
+      body.reverse ||
+      (Array.isArray(body.images) ? body.images[1] : null);
 
 
     if (!obverseImage && !reverseImage) {
@@ -32,16 +57,24 @@ export default async function handler(req, res) {
     }
 
 
-    const content = [
+    /*
+      ========================================
+      PROMPT DLA MODELU
+      ========================================
+    */
 
+    const content = [
       {
         type: "input_text",
-        text:
-          `Jesteś ekspertem numizmatycznym pracującym dla domu aukcyjnego.
+        text: `
+Jesteś ekspertem numizmatycznym pracującym dla domu aukcyjnego.
 
 Przeanalizuj dostarczone zdjęcia monety.
 
+Jeżeli otrzymałeś awers i rewers, analizuj je łącznie jako dwie strony tej samej monety.
+
 Twoim zadaniem jest możliwie precyzyjnie ustalić:
+
 - tytuł monety,
 - nominał,
 - władcę lub emitenta,
@@ -51,305 +84,289 @@ Twoim zadaniem jest możliwie precyzyjnie ustalić:
 - przybliżony stan zachowania,
 - klasę rzadkości,
 - przybliżoną wartość rynkową,
-- zakres aukcyjny,
+- orientacyjny zakres aukcyjny,
 - wagę,
 - średnicę,
 - możliwe katalogi lub źródła,
 - procentową pewność identyfikacji.
 
 Bardzo ważne:
-1. Nie wymyślaj danych.
-2. Jeżeli czegoś nie da się wiarygodnie ustalić ze zdjęcia, wpisz "Nie ustalono".
-3. Odróżniaj obserwację ze zdjęcia od przypuszczenia.
-4. Nie podawaj fałszywej pewności.
-5. Wycena ma być ostrożna i orientacyjna.
-6. Jeśli zdjęcia przedstawiają dwie strony tej samej monety, analizuj je łącznie.
-7. Jeśli identyfikacja jest niepewna, zaznacz to w polach i obniż confidence.
-8. Odpowiedź musi być po polsku.`
-      }
 
+1. Nie wymyślaj danych.
+2. Jeżeli czegoś nie można wiarygodnie ustalić ze zdjęcia, wpisz "Nie ustalono".
+3. Odróżniaj fakty widoczne na zdjęciu od przypuszczeń.
+4. Nie przedstawiaj niepewnej identyfikacji jako pewnej.
+5. Wycena ma być ostrożna i orientacyjna.
+6. Jeżeli identyfikacja jest niepewna, zaznacz to i odpowiednio obniż confidence.
+7. Odpowiedź musi być po polsku.
+`
+      }
     ];
 
 
-    if (obverseImage) {
+    /*
+      ========================================
+      AWERS
+      ========================================
+    */
 
+    if (obverseImage) {
       content.push({
         type: "input_image",
         image_url: obverseImage,
         detail: "high"
       });
-
     }
 
 
-    if (reverseImage) {
+    /*
+      ========================================
+      REWERS
+      ========================================
+    */
 
+    if (reverseImage) {
       content.push({
         type: "input_image",
         image_url: reverseImage,
         detail: "high"
       });
-
     }
 
 
-    const response =
-      await fetch(
-        "https://api.openai.com/v1/responses",
-        {
-          method: "POST",
+    /*
+      ========================================
+      WYWOŁANIE OPENAI
+      ========================================
+    */
 
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization":
-              `Bearer ${apiKey}`
-          },
+    const response = await fetch(
+      "https://api.openai.com/v1/responses",
+      {
+        method: "POST",
 
-          body: JSON.stringify({
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`
+        },
 
-            model: "gpt-5.6",
+        body: JSON.stringify({
+          model: "gpt-5.6",
 
-            input: [
-              {
-                role: "user",
-                content: content
-              }
-            ],
+          input: [
+            {
+              role: "user",
+              content
+            }
+          ],
 
-            text: {
+          text: {
+            format: {
+              type: "json_schema",
+              name: "coin_analysis",
+              strict: true,
 
-              format: {
+              schema: {
+                type: "object",
+                additionalProperties: false,
 
-                type: "json_schema",
-
-                name: "coin_analysis",
-
-                strict: true,
-
-                schema: {
-
-                  type: "object",
-
-                  additionalProperties: false,
-
-                  properties: {
-
-                    title: {
-                      type: "string"
-                    },
-
-                    nominal: {
-                      type: "string"
-                    },
-
-                    ruler: {
-                      type: "string"
-                    },
-
-                    year: {
-                      type: "string"
-                    },
-
-                    mint: {
-                      type: "string"
-                    },
-
-                    variant: {
-                      type: "string"
-                    },
-
-                    grade: {
-                      type: "string"
-                    },
-
-                    rarity: {
-                      type: "string"
-                    },
-
-                    estimatedPrice: {
-                      type: "string"
-                    },
-
-                    priceRange: {
-                      type: "string"
-                    },
-
-                    weight: {
-                      type: "string"
-                    },
-
-                    diameter: {
-                      type: "string"
-                    },
-
-                    source: {
-                      type: "string"
-                    },
-
-                    confidence: {
-                      type: "integer",
-                      minimum: 0,
-                      maximum: 100
-                    }
-
+                properties: {
+                  title: {
+                    type: "string"
                   },
 
-                  required: [
-                    "title",
-                    "nominal",
-                    "ruler",
-                    "year",
-                    "mint",
-                    "variant",
-                    "grade",
-                    "rarity",
-                    "estimatedPrice",
-                    "priceRange",
-                    "weight",
-                    "diameter",
-                    "source",
-                    "confidence"
-                  ]
+                  nominal: {
+                    type: "string"
+                  },
 
-                }
+                  ruler: {
+                    type: "string"
+                  },
 
+                  year: {
+                    type: "string"
+                  },
+
+                  mint: {
+                    type: "string"
+                  },
+
+                  variant: {
+                    type: "string"
+                  },
+
+                  grade: {
+                    type: "string"
+                  },
+
+                  rarity: {
+                    type: "string"
+                  },
+
+                  estimatedPrice: {
+                    type: "string"
+                  },
+
+                  priceRange: {
+                    type: "string"
+                  },
+
+                  weight: {
+                    type: "string"
+                  },
+
+                  diameter: {
+                    type: "string"
+                  },
+
+                  source: {
+                    type: "string"
+                  },
+
+                  confidence: {
+                    type: "integer",
+                    minimum: 0,
+                    maximum: 100
+                  }
+                },
+
+                required: [
+                  "title",
+                  "nominal",
+                  "ruler",
+                  "year",
+                  "mint",
+                  "variant",
+                  "grade",
+                  "rarity",
+                  "estimatedPrice",
+                  "priceRange",
+                  "weight",
+                  "diameter",
+                  "source",
+                  "confidence"
+                ]
               }
-
             }
+          }
+        })
+      }
+    );
 
-          })
 
-        }
-      );
+    /*
+      ========================================
+      ODPOWIEDŹ OPENAI
+      ========================================
+    */
 
-
-    const data =
-      await response.json();
+    const data = await response.json();
 
 
     if (!response.ok) {
+      console.error("OpenAI error:", data);
 
-      console.error(
-        "OpenAI error:",
-        data
-      );
-
-      return res.status(
-        response.status
-      ).json({
-
+      return res.status(response.status).json({
         error:
           data?.error?.message ||
           "Błąd podczas analizy OpenAI."
-
       });
-
     }
 
 
+    /*
+      ========================================
+      WYCIĄGNIĘCIE TEKSTU
+      ========================================
+    */
+
     let outputText = "";
 
+    if (
+      typeof data.output_text === "string" &&
+      data.output_text.trim()
+    ) {
+      outputText = data.output_text.trim();
+    }
 
-    if (data.output_text) {
 
-      outputText =
-        data.output_text;
-
-    } else if (
+    if (
+      !outputText &&
       Array.isArray(data.output)
     ) {
-
-      for (
-        const item of data.output
-      ) {
-
+      for (const item of data.output) {
         if (
           item.type === "message" &&
           Array.isArray(item.content)
         ) {
-
-          for (
-            const part of item.content
-          ) {
-
+          for (const part of item.content) {
             if (
               part.type === "output_text" &&
-              part.text
+              typeof part.text === "string"
             ) {
-
-              outputText +=
-                part.text;
-
+              outputText += part.text;
             }
-
           }
-
         }
-
       }
-
     }
 
 
     if (!outputText) {
-
       console.error(
-        "Brak output_text:",
+        "Model nie zwrócił output_text:",
         data
       );
 
       return res.status(500).json({
-        error:
-          "Model nie zwrócił wyniku analizy."
+        error: "Model nie zwrócił wyniku analizy."
       });
-
     }
 
 
+    /*
+      ========================================
+      PARSOWANIE JSON
+      ========================================
+    */
+
     let analysis;
 
-
     try {
-
-      analysis =
-        JSON.parse(outputText);
-
+      analysis = JSON.parse(outputText);
     } catch (parseError) {
-
       console.error(
-        "Błąd JSON:",
+        "Błąd parsowania JSON:",
         outputText
       );
 
       return res.status(500).json({
-        error:
-          "Nie udało się odczytać wyniku analizy."
+        error: "Nie udało się odczytać wyniku analizy."
       });
-
     }
 
 
+    /*
+      ========================================
+      GOTOWA ODPOWIEDŹ
+      ========================================
+    */
+
     return res.status(200).json({
       success: true,
-      analysis: analysis
+      analysis
     });
 
-
   } catch (error) {
-
     console.error(
       "APOMONET backend error:",
       error
     );
 
-
     return res.status(500).json({
-
       error:
+        error?.message ||
         "Wewnętrzny błąd serwera APOMONET."
-
     });
-
   }
-
 }
