@@ -9,11 +9,50 @@
   <title>APOMONET AUCTION LAB</title>
 
   <link rel="stylesheet" href="style.css">
+
+  <style>
+    /*
+      WAŻNE:
+      prawdziwy input plików leży nad kafelkami.
+      Android klika bezpośrednio w input,
+      a nie w label kierujący do ukrytego pola.
+    */
+
+    .upload-zone {
+      position: relative;
+    }
+
+    #coinImages {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+      z-index: 20;
+      font-size: 0;
+    }
+
+    .coin-sides {
+      position: relative;
+      z-index: 1;
+    }
+
+    .coin-preview {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  </style>
 </head>
+
 
 <body>
 
 <main class="container">
+
+
+  <!-- HEADER -->
 
   <header class="hero">
 
@@ -36,6 +75,9 @@
   </header>
 
 
+
+  <!-- PANEL ZDJĘĆ -->
+
   <section class="panel">
 
     <div class="section-title">
@@ -50,102 +92,119 @@
     </div>
 
 
+
     <!--
-      TEN INPUT ZOSTAWIAMY W FORMIE,
-      KTÓRA JUŻ DZIAŁAŁA NA TWOIM ANDROIDZIE.
+      CAŁY OBSZAR JEST PRAWDZIWYM
+      KLIKALNYM INPUTEM PLIKÓW
     -->
 
-    <input
-      id="coinImages"
-      type="file"
-      accept="image/*"
-      multiple
-      style="
-        position:absolute;
-        width:1px;
-        height:1px;
-        opacity:0;
-        overflow:hidden;
-        pointer-events:none;
-      "
-    >
+    <div class="upload-zone">
 
-
-    <div class="coin-sides">
-
-      <label
-        class="coin-side"
-        for="coinImages"
+      <input
+        id="coinImages"
+        type="file"
+        accept="image/*"
+        multiple
+        aria-label="Wybierz awers i rewers monety"
       >
 
-        <div
-          id="obverseEmpty"
-          class="empty-upload"
-        >
 
-          <div class="upload-icon">＋</div>
-
-          <strong>AWERS</strong>
-
-          <span>
-            Dotknij i wybierz awers oraz rewers
-          </span>
-
-        </div>
-
-        <img
-          id="obversePreview"
-          class="coin-preview"
-          alt="Awers monety"
-        >
-
-        <div
-          id="obverseBadge"
-          class="photo-badge"
-        >
-          ✓ Awers
-        </div>
-
-      </label>
+      <div class="coin-sides">
 
 
-      <label
-        class="coin-side"
-        for="coinImages"
-      >
+        <!-- AWERS -->
 
-        <div
-          id="reverseEmpty"
-          class="empty-upload"
-        >
+        <div class="coin-side">
 
-          <div class="upload-icon">＋</div>
+          <div
+            id="obverseEmpty"
+            class="empty-upload"
+          >
 
-          <strong>REWERS</strong>
+            <div class="upload-icon">
+              ＋
+            </div>
 
-          <span>
-            Możesz zaznaczyć 2 zdjęcia jednocześnie
-          </span>
+            <strong>
+              AWERS
+            </strong>
+
+            <span>
+              Dotknij i wybierz awers oraz rewers
+            </span>
+
+          </div>
+
+
+          <img
+            id="obversePreview"
+            class="coin-preview"
+            alt="Awers monety"
+            style="display:none;"
+          >
+
+
+          <div
+            id="obverseBadge"
+            class="photo-badge"
+            style="display:none;"
+          >
+            ✓ Awers
+          </div>
 
         </div>
 
-        <img
-          id="reversePreview"
-          class="coin-preview"
-          alt="Rewers monety"
-        >
 
-        <div
-          id="reverseBadge"
-          class="photo-badge"
-        >
-          ✓ Rewers
+
+        <!-- REWERS -->
+
+        <div class="coin-side">
+
+          <div
+            id="reverseEmpty"
+            class="empty-upload"
+          >
+
+            <div class="upload-icon">
+              ＋
+            </div>
+
+            <strong>
+              REWERS
+            </strong>
+
+            <span>
+              Wybierz dwa zdjęcia jednocześnie
+            </span>
+
+          </div>
+
+
+          <img
+            id="reversePreview"
+            class="coin-preview"
+            alt="Rewers monety"
+            style="display:none;"
+          >
+
+
+          <div
+            id="reverseBadge"
+            class="photo-badge"
+            style="display:none;"
+          >
+            ✓ Rewers
+          </div>
+
         </div>
 
-      </label>
+      </div>
 
     </div>
 
+
+
+    <!-- LICZNIK -->
 
     <div class="photo-counter">
 
@@ -159,6 +218,9 @@
 
     </div>
 
+
+
+    <!-- PRZYCISK -->
 
     <button
       id="analyzeBtn"
@@ -184,6 +246,8 @@
   </section>
 
 
+
+  <!-- PANEL WYNIKÓW -->
 
   <section
     id="resultPanel"
@@ -211,16 +275,24 @@
           —
         </strong>
 
-        <span>Pewność</span>
+        <span>
+          Pewność
+        </span>
 
       </div>
 
     </div>
 
 
+
+    <!-- IDENTYFIKACJA -->
+
     <div class="result-section">
 
-      <h3>Identyfikacja</h3>
+      <h3>
+        Identyfikacja
+      </h3>
+
 
       <div class="data-grid">
 
@@ -254,9 +326,15 @@
     </div>
 
 
+
+    <!-- STAN -->
+
     <div class="result-section">
 
-      <h3>Stan zachowania</h3>
+      <h3>
+        Stan zachowania
+      </h3>
+
 
       <div class="grade-box">
 
@@ -266,9 +344,12 @@
             —
           </strong>
 
-          <span>Ocena</span>
+          <span>
+            Ocena
+          </span>
 
         </div>
+
 
         <div class="grade-description">
           Ocena stanu na podstawie widocznych
@@ -280,9 +361,15 @@
     </div>
 
 
+
+    <!-- RZADKOŚĆ -->
+
     <div class="result-section">
 
-      <h3>Rzadkość</h3>
+      <h3>
+        Rzadkość
+      </h3>
+
 
       <div class="rarity-row">
 
@@ -298,6 +385,7 @@
 
         </div>
 
+
         <div class="rarity-scale">
           <span></span>
           <span></span>
@@ -311,21 +399,30 @@
     </div>
 
 
+
+    <!-- WYCENA -->
+
     <div class="result-section">
 
-      <h3>Szacunkowa wartość</h3>
+      <h3>
+        Szacunkowa wartość
+      </h3>
+
 
       <div class="valuation">
 
         <div class="price-main">
 
-          <span>Estymacja</span>
+          <span>
+            Estymacja
+          </span>
 
           <strong id="estimatedPrice">
             —
           </strong>
 
         </div>
+
 
         <div class="price-range">
 
@@ -342,20 +439,41 @@
     </div>
 
 
+
+    <!-- PARAMETRY -->
+
     <div class="result-section">
 
-      <h3>Parametry</h3>
+      <h3>
+        Parametry
+      </h3>
+
 
       <div class="data-grid">
 
         <div class="data-item">
-          <span>Waga</span>
-          <strong id="weight">—</strong>
+
+          <span>
+            Waga
+          </span>
+
+          <strong id="weight">
+            —
+          </strong>
+
         </div>
 
+
         <div class="data-item">
-          <span>Średnica</span>
-          <strong id="diameter">—</strong>
+
+          <span>
+            Średnica
+          </span>
+
+          <strong id="diameter">
+            —
+          </strong>
+
         </div>
 
       </div>
@@ -363,6 +481,132 @@
     </div>
 
 
+
+    <!-- ŹRÓDŁA -->
+
     <div class="result-section">
 
-      <h3>Katalogi i źródła</h3
+      <h3>
+        Katalogi i źródła
+      </h3>
+
+
+      <div class="source-box">
+
+        <div class="source-icon">
+          ⌕
+        </div>
+
+
+        <div>
+
+          <strong id="source">
+            —
+          </strong>
+
+          <span>
+            Identyfikacja katalogowa ma charakter
+            pomocniczy i wymaga weryfikacji eksperckiej.
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <div class="demo-warning">
+
+      <strong>
+        Analiza wspomagana AI
+      </strong>
+
+      <span>
+        Wynik należy traktować jako analizę wstępną.
+        Szczególnie odmiana, autentyczność,
+        grading i wycena powinny być
+        potwierdzone przez eksperta.
+      </span>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+
+  /* =========================
+     ELEMENTY
+  ========================= */
+
+  const coinImages =
+    document.getElementById("coinImages");
+
+  const obversePreview =
+    document.getElementById("obversePreview");
+
+  const reversePreview =
+    document.getElementById("reversePreview");
+
+  const obverseEmpty =
+    document.getElementById("obverseEmpty");
+
+  const reverseEmpty =
+    document.getElementById("reverseEmpty");
+
+  const obverseBadge =
+    document.getElementById("obverseBadge");
+
+  const reverseBadge =
+    document.getElementById("reverseBadge");
+
+  const photoStatus =
+    document.getElementById("photoStatus");
+
+  const photoCount =
+    document.getElementById("photoCount");
+
+  const analyzeBtn =
+    document.getElementById("analyzeBtn");
+
+  const buttonText =
+    document.getElementById("buttonText");
+
+  const status =
+    document.getElementById("status");
+
+  const resultPanel =
+    document.getElementById("resultPanel");
+
+
+  const coinTitle =
+    document.getElementById("coinTitle");
+
+  const nominal =
+    document.getElementById("nominal");
+
+  const ruler =
+    document.getElementById("ruler");
+
+  const year =
+    document.getElementById("year");
+
+  const mint =
+    document.getElementById("mint");
+
+  const variant =
+    document.getElementById("variant");
+
+  const grade =
+    document.getElementById("grade");
+
+  const rarity =
+   
