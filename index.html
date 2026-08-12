@@ -3,17 +3,29 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#080b0d">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="theme-color"
+    content="#080b0d"
+  >
 
   <title>APOMONET AUCTION LAB</title>
 
-  <link rel="stylesheet" href="style.css">
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
 </head>
 
 <body>
 
 <main class="container">
+
 
   <!-- HEADER -->
 
@@ -21,14 +33,24 @@
 
     <div class="logo">
 
-      <span class="coin-logo">1</span>
+      <span class="coin-logo">
+        1
+      </span>
 
       <div>
-        <h1>APOMONET</h1>
-        <div class="lab">AUCTION LAB</div>
+
+        <h1>
+          APOMONET
+        </h1>
+
+        <div class="lab">
+          AUCTION LAB
+        </div>
+
       </div>
 
     </div>
+
 
     <p>
       Profesjonalna analiza monet<br>
@@ -38,23 +60,34 @@
   </header>
 
 
+
   <!-- ZDJĘCIA -->
 
   <section class="panel">
 
     <div class="section-title">
 
-      <span class="number">01</span>
+      <span class="number">
+        01
+      </span>
 
       <div>
-        <h2>Dodaj zdjęcia monety</h2>
-        <p>Awers i rewers</p>
+
+        <h2>
+          Dodaj zdjęcia monety
+        </h2>
+
+        <p>
+          Awers i rewers
+        </p>
+
       </div>
 
     </div>
 
 
-    <!-- UKRYTY WYBÓR ZDJĘĆ -->
+
+    <!-- UKRYTY INPUT -->
 
     <input
       id="coinImages"
@@ -62,19 +95,21 @@
       accept="image/*"
       multiple
       style="
-        position:absolute;
-        width:1px;
-        height:1px;
-        opacity:0;
-        overflow:hidden;
-        pointer-events:none;
+        position: fixed;
+        left: -9999px;
+        top: -9999px;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
       "
     >
 
 
-    <!-- KAFELKI ZDJĘĆ -->
+
+    <!-- KAFELKI -->
 
     <div class="coin-sides">
+
 
       <!-- AWERS -->
 
@@ -88,9 +123,13 @@
           class="empty-upload"
         >
 
-          <div class="upload-icon">＋</div>
+          <div class="upload-icon">
+            ＋
+          </div>
 
-          <strong>AWERS</strong>
+          <strong>
+            AWERS
+          </strong>
 
           <span>
             Dotknij i wybierz awers oraz rewers
@@ -116,6 +155,7 @@
       </label>
 
 
+
       <!-- REWERS -->
 
       <label
@@ -128,9 +168,13 @@
           class="empty-upload"
         >
 
-          <div class="upload-icon">＋</div>
+          <div class="upload-icon">
+            ＋
+          </div>
 
-          <strong>REWERS</strong>
+          <strong>
+            REWERS
+          </strong>
 
           <span>
             Możesz zaznaczyć 2 zdjęcia jednocześnie
@@ -158,6 +202,7 @@
     </div>
 
 
+
     <!-- LICZNIK -->
 
     <div class="photo-counter">
@@ -173,7 +218,8 @@
     </div>
 
 
-    <!-- PRZYCISK ANALIZY -->
+
+    <!-- ANALIZA -->
 
     <button
       id="analyzeBtn"
@@ -182,7 +228,9 @@
       disabled
     >
 
-      <span>✦</span>
+      <span>
+        ✦
+      </span>
 
       <span id="buttonText">
         Analizuj monetę
@@ -200,7 +248,7 @@
 
 
 
-  <!-- PANEL WYNIKU -->
+  <!-- WYNIK -->
 
   <section
     id="resultPanel"
@@ -266,4 +314,1104 @@
 
           <span>
             Władca / emitent
-          </
+          </span>
+
+          <strong id="ruler">
+            —
+          </strong>
+
+        </div>
+
+
+        <div class="data-item">
+
+          <span>
+            Rok
+          </span>
+
+          <strong id="year">
+            —
+          </strong>
+
+        </div>
+
+
+        <div class="data-item">
+
+          <span>
+            Mennica
+          </span>
+
+          <strong id="mint">
+            —
+          </strong>
+
+        </div>
+
+
+        <div class="data-item full">
+
+          <span>
+            Odmiana / typ
+          </span>
+
+          <strong id="variant">
+            —
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- STAN -->
+
+    <div class="result-section">
+
+      <h3>
+        Stan zachowania
+      </h3>
+
+
+      <div class="grade-box">
+
+        <div class="grade-main">
+
+          <strong id="grade">
+            —
+          </strong>
+
+          <span>
+            Ocena
+          </span>
+
+        </div>
+
+
+        <div class="grade-description">
+          Ocena stanu na podstawie widocznych
+          cech powierzchni, zużycia i detalu.
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- RZADKOŚĆ -->
+
+    <div class="result-section">
+
+      <h3>
+        Rzadkość
+      </h3>
+
+
+      <div class="rarity-row">
+
+        <div>
+
+          <span class="label">
+            Klasa rzadkości
+          </span>
+
+          <strong id="rarity">
+            —
+          </strong>
+
+        </div>
+
+
+        <div class="rarity-scale">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- WYCENA -->
+
+    <div class="result-section">
+
+      <h3>
+        Szacunkowa wartość
+      </h3>
+
+
+      <div class="valuation">
+
+        <div class="price-main">
+
+          <span>
+            Estymacja
+          </span>
+
+          <strong id="estimatedPrice">
+            —
+          </strong>
+
+        </div>
+
+
+        <div class="price-range">
+
+          Zakres aukcyjny:
+
+          <strong id="priceRange">
+            —
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- PARAMETRY -->
+
+    <div class="result-section">
+
+      <h3>
+        Parametry
+      </h3>
+
+
+      <div class="data-grid">
+
+        <div class="data-item">
+
+          <span>
+            Waga
+          </span>
+
+          <strong id="weight">
+            —
+          </strong>
+
+        </div>
+
+
+        <div class="data-item">
+
+          <span>
+            Średnica
+          </span>
+
+          <strong id="diameter">
+            —
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- ŹRÓDŁA -->
+
+    <div class="result-section">
+
+      <h3>
+        Katalogi i źródła
+      </h3>
+
+
+      <div class="source-box">
+
+        <div class="source-icon">
+          ⌕
+        </div>
+
+
+        <div>
+
+          <strong id="source">
+            —
+          </strong>
+
+          <span>
+            Identyfikacja katalogowa ma charakter
+            pomocniczy i wymaga weryfikacji eksperckiej.
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- INFORMACJA -->
+
+    <div class="demo-warning">
+
+      <strong>
+        Analiza wspomagana AI
+      </strong>
+
+      <span>
+        Wynik należy traktować jako analizę wstępną.
+        Szczególnie odmiana, autentyczność,
+        grading i wycena powinny być
+        potwierdzone przez eksperta.
+      </span>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+
+<script>
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function () {
+
+
+    /* ============================
+       ELEMENTY ZDJĘĆ
+    ============================ */
+
+
+    const coinImages =
+      document.getElementById(
+        "coinImages"
+      );
+
+
+    const obversePreview =
+      document.getElementById(
+        "obversePreview"
+      );
+
+
+    const reversePreview =
+      document.getElementById(
+        "reversePreview"
+      );
+
+
+    const obverseEmpty =
+      document.getElementById(
+        "obverseEmpty"
+      );
+
+
+    const reverseEmpty =
+      document.getElementById(
+        "reverseEmpty"
+      );
+
+
+    const obverseBadge =
+      document.getElementById(
+        "obverseBadge"
+      );
+
+
+    const reverseBadge =
+      document.getElementById(
+        "reverseBadge"
+      );
+
+
+    const photoStatus =
+      document.getElementById(
+        "photoStatus"
+      );
+
+
+    const photoCount =
+      document.getElementById(
+        "photoCount"
+      );
+
+
+    const analyzeBtn =
+      document.getElementById(
+        "analyzeBtn"
+      );
+
+
+    const buttonText =
+      document.getElementById(
+        "buttonText"
+      );
+
+
+    const status =
+      document.getElementById(
+        "status"
+      );
+
+
+    const resultPanel =
+      document.getElementById(
+        "resultPanel"
+      );
+
+
+
+    /* ============================
+       ELEMENTY WYNIKU
+    ============================ */
+
+
+    const coinTitle =
+      document.getElementById(
+        "coinTitle"
+      );
+
+
+    const nominal =
+      document.getElementById(
+        "nominal"
+      );
+
+
+    const ruler =
+      document.getElementById(
+        "ruler"
+      );
+
+
+    const year =
+      document.getElementById(
+        "year"
+      );
+
+
+    const mint =
+      document.getElementById(
+        "mint"
+      );
+
+
+    const variant =
+      document.getElementById(
+        "variant"
+      );
+
+
+    const grade =
+      document.getElementById(
+        "grade"
+      );
+
+
+    const rarity =
+      document.getElementById(
+        "rarity"
+      );
+
+
+    const estimatedPrice =
+      document.getElementById(
+        "estimatedPrice"
+      );
+
+
+    const priceRange =
+      document.getElementById(
+        "priceRange"
+      );
+
+
+    const weight =
+      document.getElementById(
+        "weight"
+      );
+
+
+    const diameter =
+      document.getElementById(
+        "diameter"
+      );
+
+
+    const source =
+      document.getElementById(
+        "source"
+      );
+
+
+    const confidence =
+      document.getElementById(
+        "confidence"
+      );
+
+
+
+    /* ============================
+       PLIKI
+    ============================ */
+
+
+    let obverseFile =
+      null;
+
+
+    let reverseFile =
+      null;
+
+
+
+    /* ============================
+       PODGLĄD
+    ============================ */
+
+
+    function showPhoto(
+      file,
+      preview,
+      empty,
+      badge
+    ) {
+
+
+      if (!file) {
+        return;
+      }
+
+
+      const reader =
+        new FileReader();
+
+
+      reader.onload =
+        function (event) {
+
+
+          preview.src =
+            event.target.result;
+
+
+          preview.style.display =
+            "block";
+
+
+          preview.classList.add(
+            "visible"
+          );
+
+
+          empty.style.display =
+            "none";
+
+
+          empty.classList.add(
+            "hidden"
+          );
+
+
+          badge.style.display =
+            "block";
+
+
+          badge.classList.add(
+            "visible"
+          );
+
+        };
+
+
+      reader.onerror =
+        function () {
+
+
+          empty.style.display =
+            "flex";
+
+
+          empty.classList.remove(
+            "hidden"
+          );
+
+
+          badge.style.display =
+            "block";
+
+
+          badge.classList.add(
+            "visible"
+          );
+
+        };
+
+
+      reader.readAsDataURL(
+        file
+      );
+
+    }
+
+
+
+    /* ============================
+       STATUS ZDJĘĆ
+    ============================ */
+
+
+    function updatePhotoStatus() {
+
+
+      let count =
+        0;
+
+
+      if (obverseFile) {
+        count++;
+      }
+
+
+      if (reverseFile) {
+        count++;
+      }
+
+
+      photoCount.textContent =
+        count + " / 2";
+
+
+      if (count === 0) {
+
+
+        photoStatus.textContent =
+          "Dodaj przynajmniej jedno zdjęcie";
+
+
+      } else if (count === 1) {
+
+
+        photoStatus.textContent =
+          "Dodano jedno zdjęcie ✓";
+
+
+      } else {
+
+
+        photoStatus.textContent =
+          "Awers i rewers gotowe ✓";
+
+      }
+
+
+      analyzeBtn.disabled =
+        count === 0;
+
+    }
+
+
+
+    /* ============================
+       WYBÓR ZDJĘĆ
+    ============================ */
+
+
+    function handleSelectedFiles(
+      event
+    ) {
+
+
+      const files =
+        Array.from(
+          event.target.files || []
+        );
+
+
+      if (
+        files.length === 0
+      ) {
+
+        return;
+
+      }
+
+
+      obverseFile =
+        files[0] || null;
+
+
+      reverseFile =
+        files[1] || null;
+
+
+
+      if (obverseFile) {
+
+
+        showPhoto(
+          obverseFile,
+          obversePreview,
+          obverseEmpty,
+          obverseBadge
+        );
+
+      }
+
+
+
+      if (reverseFile) {
+
+
+        showPhoto(
+          reverseFile,
+          reversePreview,
+          reverseEmpty,
+          reverseBadge
+        );
+
+      }
+
+
+
+      updatePhotoStatus();
+
+
+      status.textContent =
+        files.length >= 2
+          ? "Dwa zdjęcia zostały dodane ✓"
+          : "Zdjęcie zostało dodane ✓";
+
+
+      status.className =
+        "status success";
+
+    }
+
+
+
+    coinImages.addEventListener(
+      "change",
+      handleSelectedFiles
+    );
+
+
+    coinImages.addEventListener(
+      "input",
+      handleSelectedFiles
+    );
+
+
+
+    /* ============================
+       PLIK -> DATA URL
+    ============================ */
+
+
+    function fileToDataURL(
+      file
+    ) {
+
+
+      return new Promise(
+        function (
+          resolve,
+          reject
+        ) {
+
+
+          if (!file) {
+
+            resolve(
+              null
+            );
+
+            return;
+
+          }
+
+
+          const reader =
+            new FileReader();
+
+
+          reader.onload =
+            function () {
+
+              resolve(
+                reader.result
+              );
+
+            };
+
+
+          reader.onerror =
+            function () {
+
+              reject(
+                new Error(
+                  "Nie udało się przygotować zdjęcia."
+                )
+              );
+
+            };
+
+
+          reader.readAsDataURL(
+            file
+          );
+
+        }
+      );
+
+    }
+
+
+
+    /* ============================
+       WYPEŁNIANIE WYNIKU
+    ============================ */
+
+
+    function fillResult(
+      data
+    ) {
+
+
+      coinTitle.textContent =
+        data.title ||
+        "Nie ustalono";
+
+
+      nominal.textContent =
+        data.nominal ||
+        "Nie ustalono";
+
+
+      ruler.textContent =
+        data.ruler ||
+        "Nie ustalono";
+
+
+      year.textContent =
+        data.year ||
+        "Nie ustalono";
+
+
+      mint.textContent =
+        data.mint ||
+        "Nie ustalono";
+
+
+      variant.textContent =
+        data.variant ||
+        "Nie ustalono";
+
+
+      grade.textContent =
+        data.grade ||
+        "Nie ustalono";
+
+
+      rarity.textContent =
+        data.rarity ||
+        "Nie ustalono";
+
+
+      estimatedPrice.textContent =
+        data.estimatedPrice ||
+        "Nie ustalono";
+
+
+      priceRange.textContent =
+        data.priceRange ||
+        "Nie ustalono";
+
+
+      weight.textContent =
+        data.weight ||
+        "Nie ustalono";
+
+
+      diameter.textContent =
+        data.diameter ||
+        "Nie ustalono";
+
+
+      source.textContent =
+        data.source ||
+        "Nie ustalono";
+
+
+      if (
+        typeof data.confidence ===
+        "number"
+      ) {
+
+
+        confidence.textContent =
+          data.confidence +
+          "%";
+
+
+      } else {
+
+
+        confidence.textContent =
+          "—";
+
+      }
+
+    }
+
+
+
+    /* ============================
+       ANALIZA AI
+    ============================ */
+
+
+    analyzeBtn.addEventListener(
+      "click",
+      async function () {
+
+
+        if (
+          !obverseFile &&
+          !reverseFile
+        ) {
+
+
+          status.textContent =
+            "Najpierw dodaj zdjęcie monety.";
+
+
+          status.className =
+            "status error";
+
+
+          return;
+
+        }
+
+
+
+        analyzeBtn.disabled =
+          true;
+
+
+        buttonText.textContent =
+          "Analizuję...";
+
+
+        status.textContent =
+          "APOMONET przygotowuje zdjęcia...";
+
+
+        status.className =
+          "status loading";
+
+
+        try {
+
+
+          const obverseImage =
+            await fileToDataURL(
+              obverseFile
+            );
+
+
+          const reverseImage =
+            await fileToDataURL(
+              reverseFile
+            );
+
+
+          status.textContent =
+            "Rozpoznawanie monety przez AI...";
+
+
+          const response =
+            await fetch(
+              "/api/analyze",
+              {
+
+                method:
+                  "POST",
+
+                headers: {
+
+                  "Content-Type":
+                    "application/json"
+
+                },
+
+                body:
+                  JSON.stringify({
+
+                    obverseImage:
+                      obverseImage,
+
+                    reverseImage:
+                      reverseImage
+
+                  })
+
+              }
+            );
+
+
+
+          let data;
+
+
+          try {
+
+
+            data =
+              await response.json();
+
+
+          } catch (
+            jsonError
+          ) {
+
+
+            throw new Error(
+              "Serwer zwrócił nieprawidłową odpowiedź."
+            );
+
+          }
+
+
+
+          if (
+            !response.ok
+          ) {
+
+
+            throw new Error(
+
+              data.error ||
+              "Nie udało się wykonać analizy."
+
+            );
+
+          }
+
+
+
+          if (
+            !data.analysis
+          ) {
+
+
+            throw new Error(
+              "Serwer nie zwrócił wyniku analizy."
+            );
+
+          }
+
+
+
+          fillResult(
+            data.analysis
+          );
+
+
+          resultPanel.classList.remove(
+            "hidden"
+          );
+
+
+          status.textContent =
+            "Analiza zakończona ✓";
+
+
+          status.className =
+            "status success";
+
+
+          buttonText.textContent =
+            "Analizuj ponownie";
+
+
+          setTimeout(
+            function () {
+
+
+              resultPanel.scrollIntoView({
+
+                behavior:
+                  "smooth",
+
+                block:
+                  "start"
+
+              });
+
+
+            },
+            120
+          );
+
+
+        } catch (
+          error
+        ) {
+
+
+          console.error(
+            "APOMONET:",
+            error
+          );
+
+
+          status.textContent =
+            "Błąd analizy: " +
+            error.message;
+
+
+          status.className =
+            "status error";
+
+
+          buttonText.textContent =
+            "Spróbuj ponownie";
+
+
+        } finally {
+
+
+          analyzeBtn.disabled =
+            false;
+
+        }
+
+      }
+    );
+
+
+
+    /* START */
+
+    updatePhotoStatus();
+
+  }
+);
+
+</script>
+
+</body>
+
+</html>
