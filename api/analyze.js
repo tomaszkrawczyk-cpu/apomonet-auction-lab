@@ -14,38 +14,37 @@ export default async function handler(req, res) {
     const content = [
       {
         type: "input_text",
-        text: `Jesteś ekspertem numizmatycznym analizującym awers i rewers tej samej monety.
+        text: `Jesteś konserwatywnym ekspertem numizmatycznym. Analizujesz awers i rewers tej samej monety dla profesjonalnej karty katalogowej.
 
-NAJWAŻNIEJSZA ZASADA: DATA WIDOCZNA NA MONECIE JEST TWARDYM DOWODEM, NIE PODPOWIEDZIĄ.
+PRIORYTET: poprawna identyfikacja jest ważniejsza niż kompletność odpowiedzi. Jeśli czegoś nie potrafisz ustalić, wpisz "Nie ustalono".
 
-Pracuj w tej kolejności:
-A. ODCZYT DATY
-- Znajdź na obu stronach wszystkie grupy cyfr, które mogą być datą.
-- Odczytaj każdą cyfrę osobno od lewej do prawej.
-- Zwróć dateDigits jako dokładnie cztery elementy, np. ["1","5","5","1"].
-- Dla każdej cyfry podaj pewność 0-100 w dateDigitConfidence.
-- visibleDateReading ma być złożeniem tych czterech cyfr WYŁĄCZNIE wtedy, gdy są wizualnie odczytane.
-- Nie wolno zmieniać widocznej daty dlatego, że inny rocznik lepiej pasuje do znanego typu monety.
+1. DATA
+- znajdź wszystkie widoczne grupy cyfr,
+- odczytaj rok CYFRA PO CYFRZE,
+- dateDigits ma zawierać dokładnie cztery znaki,
+- dateDigitConfidence ma zawierać pewność każdej cyfry 0-100,
+- nie wolno podmieniać widocznego roku na rocznik lepiej pasujący do zapamiętanego typu.
 
-B. ODCZYT LEGENDY I SYMBOLI
-- Transkrybuj tylko litery rzeczywiście widoczne. Nie uzupełniaj legendy z pamięci.
-- Opisz portret, herb, koronę, monogram, znaki mennicze i kompozycję rewersu.
+2. WŁADCA / EMITENT
+- ustalaj na podstawie legendy, portretu, tytulatury, herbu, monogramów i roku,
+- jeśli proponowany władca nie mógł emitować monety w odczytanym roku, odrzuć go,
+- nie identyfikuj władcy wyłącznie po podobieństwie portretu.
 
-C. IDENTYFIKACJA
-- Dopiero po A i B wybierz władcę/emitenta, nominał i typ.
-- Każdy kandydat, którego okres panowania/emisji jest sprzeczny z pewnie odczytaną datą, MUSI zostać odrzucony.
-- Jeśli data jest np. 1551, nie wolno zwrócić 1538 ani władcy, który nie mógł emitować tej monety w 1551.
-- ruler i year muszą być wzajemnie zgodne oraz zgodne z legendą, portretem i rewersem.
-- Jeśli nie potrafisz znaleźć zgodnego kandydata, wpisz "Nie ustalono" zamiast dopasowywać błędny typ.
+3. KATALOG I RZADKOŚĆ
+- jeśli potrafisz wiarygodnie wskazać pozycję w katalogu Edmunda Kopickiego, podaj ją w kopickiReference,
+- jeśli potrafisz wiarygodnie ustalić stopień rzadkości wg Kopickiego, podaj go w kopickiRarity (np. R, R1, R2...); w przeciwnym razie wpisz "Nie ustalono",
+- nie wymyślaj numeru katalogowego ani stopnia rzadkości,
+- rarityGeneral może zawierać ogólną ocenę rzadkości, ale musi być odróżniona od klasyfikacji Kopickiego.
 
-D. KONTROLA KOŃCOWA
-Przed odpowiedzią wykonaj kontrolę:
-1. Czy year jest identyczny z visibleDateReading, jeśli data została pewnie odczytana?
-2. Czy ruler mógł emitować monetę w tym roku?
-3. Czy legenda i symbole wspierają tego emitenta?
-Jeżeli którakolwiek odpowiedź brzmi NIE, nie zatwierdzaj identyfikacji i obniż confidence.
+4. OPIS
+- fullDescription ma być uporządkowanym, profesjonalnym opisem katalogowo-aukcyjnym po polsku,
+- zacznij od identyfikacji, potem opisz awers, rewers, legendy, stan i uwagi,
+- nie powtarzaj chaotycznie danych, które są już w polach strukturalnych.
 
-Nie zgaduj wagi ani średnicy bez skali. Nie przypisuj numeru katalogowego bez wysokiej pewności. Przy confidence <70 nie wyceniaj. Odpowiadaj po polsku.`
+5. KONTROLA
+Przed odpowiedzią sprawdź: czy year = visibleDateReading, czy ruler pasuje do roku, czy legenda wspiera identyfikację. Jeśli nie — nie zatwierdzaj identyfikacji.
+
+Nie zgaduj wagi ani średnicy bez skali. Przy confidence <70 nie podawaj wyceny. Odpowiadaj po polsku.`
       },
       { type: "input_image", image_url: obverseImage, detail: "high" },
       { type: "input_image", image_url: reverseImage, detail: "high" }
@@ -60,17 +59,38 @@ Nie zgaduj wagi ani średnicy bez skali. Nie przypisuj numeru katalogowego bez w
         text: { format: { type: "json_schema", name: "coin_analysis", strict: true, schema: {
           type: "object", additionalProperties: false,
           properties: {
-            title: { type: "string" }, nominal: { type: "string" }, ruler: { type: "string" }, year: { type: "string" },
-            mint: { type: "string" }, variant: { type: "string" }, grade: { type: "string" }, rarity: { type: "string" },
-            estimatedPrice: { type: "string" }, priceRange: { type: "string" }, weight: { type: "string" }, diameter: { type: "string" },
-            source: { type: "string" }, confidence: { type: "integer", minimum: 0, maximum: 100 },
-            obverseLegend: { type: "string" }, reverseLegend: { type: "string" }, visibleDateReading: { type: "string" },
+            title: { type: "string" },
+            country: { type: "string" },
+            nominal: { type: "string" },
+            ruler: { type: "string" },
+            year: { type: "string" },
+            mint: { type: "string" },
+            metal: { type: "string" },
+            variant: { type: "string" },
+            grade: { type: "string" },
+            rarityGeneral: { type: "string" },
+            kopickiReference: { type: "string" },
+            kopickiRarity: { type: "string" },
+            estimatedPrice: { type: "string" },
+            priceRange: { type: "string" },
+            weight: { type: "string" },
+            diameter: { type: "string" },
+            source: { type: "string" },
+            confidence: { type: "integer", minimum: 0, maximum: 100 },
+            rulerConfidence: { type: "integer", minimum: 0, maximum: 100 },
+            yearConfidence: { type: "integer", minimum: 0, maximum: 100 },
+            obverseLegend: { type: "string" },
+            reverseLegend: { type: "string" },
+            visibleDateReading: { type: "string" },
             dateDigits: { type: "array", items: { type: "string" }, minItems: 4, maxItems: 4 },
             dateDigitConfidence: { type: "array", items: { type: "integer", minimum: 0, maximum: 100 }, minItems: 4, maxItems: 4 },
-            evidenceSummary: { type: "array", items: { type: "string" } }, alternatives: { type: "array", items: { type: "string" } },
-            rejectedCandidates: { type: "array", items: { type: "string" } }, warnings: { type: "array", items: { type: "string" } }
+            fullDescription: { type: "string" },
+            evidenceSummary: { type: "array", items: { type: "string" } },
+            alternatives: { type: "array", items: { type: "string" } },
+            rejectedCandidates: { type: "array", items: { type: "string" } },
+            warnings: { type: "array", items: { type: "string" } }
           },
-          required: ["title","nominal","ruler","year","mint","variant","grade","rarity","estimatedPrice","priceRange","weight","diameter","source","confidence","obverseLegend","reverseLegend","visibleDateReading","dateDigits","dateDigitConfidence","evidenceSummary","alternatives","rejectedCandidates","warnings"]
+          required: ["title","country","nominal","ruler","year","mint","metal","variant","grade","rarityGeneral","kopickiReference","kopickiRarity","estimatedPrice","priceRange","weight","diameter","source","confidence","rulerConfidence","yearConfidence","obverseLegend","reverseLegend","visibleDateReading","dateDigits","dateDigitConfidence","fullDescription","evidenceSummary","alternatives","rejectedCandidates","warnings"]
         } } }
       })
     });
@@ -79,29 +99,47 @@ Nie zgaduj wagi ani średnicy bez skali. Nie przypisuj numeru katalogowego bez w
     if (!response.ok) return res.status(response.status).json({ error: data?.error?.message || "Błąd podczas analizy OpenAI." });
 
     let outputText = typeof data.output_text === "string" ? data.output_text.trim() : "";
-    if (!outputText && Array.isArray(data.output)) for (const item of data.output) if (item.type === "message" && Array.isArray(item.content)) for (const part of item.content) if (part.type === "output_text" && typeof part.text === "string") outputText += part.text;
+    if (!outputText && Array.isArray(data.output)) {
+      for (const item of data.output) {
+        if (item.type === "message" && Array.isArray(item.content)) {
+          for (const part of item.content) {
+            if (part.type === "output_text" && typeof part.text === "string") outputText += part.text;
+          }
+        }
+      }
+    }
     if (!outputText) return res.status(500).json({ error: "Model nie zwrócił wyniku analizy." });
 
     let analysis;
-    try { analysis = JSON.parse(outputText); } catch { return res.status(500).json({ error: "Nie udało się odczytać wyniku analizy." }); }
+    try { analysis = JSON.parse(outputText); }
+    catch { return res.status(500).json({ error: "Nie udało się odczytać wyniku analizy." }); }
 
-    // Programowa blokada: jeśli model sam odczytał pewną datę, nie może zwrócić innego roku.
     const digits = Array.isArray(analysis.dateDigits) ? analysis.dateDigits : [];
     const digitConfidence = Array.isArray(analysis.dateDigitConfidence) ? analysis.dateDigitConfidence : [];
     const visualYear = digits.length === 4 && digits.every(d => /^\d$/.test(String(d))) ? digits.join("") : null;
-    const dateIsStrong = visualYear && digitConfidence.length === 4 && digitConfidence.every(v => Number(v) >= 70);
+    const dateIsStrong = visualYear && digitConfidence.length === 4 && digitConfidence.every(v => Number(v) >= 75);
 
     if (dateIsStrong) {
       analysis.visibleDateReading = visualYear;
+      analysis.yearConfidence = Math.max(Number(analysis.yearConfidence) || 0, Math.min(...digitConfidence));
       if (analysis.year !== visualYear) {
-        analysis.warnings = [...(analysis.warnings || []), `Automatyczna kontrola odrzuciła rok ${analysis.year}: obraz został odczytany jako ${visualYear}.`];
+        analysis.warnings = [...(analysis.warnings || []), `Kontrola APOMONET odrzuciła rok ${analysis.year}; odczyt obrazu wskazuje ${visualYear}.`];
         analysis.year = visualYear;
-        analysis.confidence = Math.min(Number(analysis.confidence) || 0, 65);
-        analysis.ruler = "Nie ustalono – wymaga zgodności z odczytanym rokiem";
+        analysis.ruler = "Nie ustalono – wymaga ponownej weryfikacji z rokiem";
+        analysis.rulerConfidence = 0;
         analysis.title = "Identyfikacja niezatwierdzona";
+        analysis.confidence = Math.min(Number(analysis.confidence) || 0, 55);
         analysis.estimatedPrice = "Nie wyceniono – identyfikacja zbyt niepewna";
         analysis.priceRange = "Nie wyceniono – identyfikacja zbyt niepewna";
+        analysis.kopickiReference = "Nie ustalono";
+        analysis.kopickiRarity = "Nie ustalono";
       }
+    }
+
+    if ((Number(analysis.rulerConfidence) || 0) < 60) {
+      analysis.ruler = "Nie ustalono";
+      analysis.kopickiReference = "Nie ustalono";
+      analysis.kopickiRarity = "Nie ustalono";
     }
 
     return res.status(200).json({ success: true, analysis });
