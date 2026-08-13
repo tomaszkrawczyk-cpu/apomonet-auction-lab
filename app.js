@@ -12,7 +12,8 @@ const ApoMonet = (() => {
   function addToWatchlist(item){const s=load();s.watchlist=s.watchlist||[];if(!s.watchlist.some(x=>x.id===item.id))s.watchlist.unshift(item);save(s)}
   function createAlbum(name,description=''){const s=load(),album={id:uid('album'),name:String(name||'Nowy album').trim(),description:String(description||'').trim(),createdAt:new Date().toISOString()};s.albums.unshift(album);pushHistory(s,{type:'album_created',albumId:album.id,title:album.name});save(s);return album}
   function assignCoinToAlbum(coinId,albumId){const s=load(),i=s.coins.findIndex(x=>x.id===coinId);if(i<0)return null;const ids=Array.isArray(s.coins[i].albumIds)?s.coins[i].albumIds:[];if(!ids.includes(albumId))ids.push(albumId);s.coins[i]={...s.coins[i],albumIds:ids,updatedAt:new Date().toISOString()};pushHistory(s,{type:'coin_added_to_album',coinId,albumId,title:s.coins[i].title||'Moneta'});save(s);return s.coins[i]}
-  return{load,save,seed,uid,upsertCoin,getCoin,deleteCoin,addToWatchlist,createAlbum,assignCoinToAlbum};
+  function removeCoinFromAlbum(coinId,albumId){const s=load(),i=s.coins.findIndex(x=>x.id===coinId);if(i<0)return null;s.coins[i]={...s.coins[i],albumIds:(s.coins[i].albumIds||[]).filter(x=>x!==albumId),updatedAt:new Date().toISOString()};pushHistory(s,{type:'coin_removed_from_album',coinId,albumId,title:s.coins[i].title||'Moneta'});save(s);return s.coins[i]}
+  return{load,save,seed,uid,upsertCoin,getCoin,deleteCoin,addToWatchlist,createAlbum,assignCoinToAlbum,removeCoinFromAlbum};
 })();
 window.ApoMonet=ApoMonet;ApoMonet.seed();
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
