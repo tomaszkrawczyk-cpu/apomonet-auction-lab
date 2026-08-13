@@ -55,6 +55,8 @@ const ApoI18n=(()=>{
     'Cele kolekcjonerskie':{en:'Collecting goals',de:'Sammelziele',fr:'Objectifs de collection',es:'Objetivos de colección',it:'Obiettivi di collezione',cs:'Sběratelské cíle',uk:'Цілі колекції',ru:'Цели коллекции'},
     'Monety marzeń':{en:'Dream coins',de:'Traummünzen',fr:'Pièces de rêve',es:'Monedas soñadas',it:'Monete dei sogni',cs:'Mince snů',uk:'Монети мрії',ru:'Монеты мечты'},
     'Moje monety':{en:'My coins',de:'Meine Münzen',fr:'Mes monnaies',es:'Mis monedas',it:'Le mie monete',cs:'Moje mince',uk:'Мої монети',ru:'Мои монеты'},
+    'Szukaj po roku, władcy, nominale…':{en:'Search by year, ruler, denomination…',de:'Nach Jahr, Herrscher, Nominal suchen…',fr:'Rechercher par année, souverain, valeur…',es:'Buscar por año, gobernante, denominación…',it:'Cerca per anno, sovrano, nominale…',cs:'Hledat podle roku, panovníka, nominálu…',uk:'Пошук за роком, правителем, номіналом…',ru:'Поиск по году, правителю, номиналу…'},
+    'Language':{pl:'Język',en:'Language',de:'Sprache',fr:'Langue',es:'Idioma',it:'Lingua',cs:'Jazyk',uk:'Мова',ru:'Язык'},
     'Lista':{en:'List',de:'Liste',fr:'Liste',es:'Lista',it:'Elenco',cs:'Seznam',uk:'Список',ru:'Список'},
     'Małe kafelki':{en:'Small tiles',de:'Kleine Kacheln',fr:'Petites vignettes',es:'Tarjetas pequeñas',it:'Riquadri piccoli',cs:'Malé dlaždice',uk:'Малі плитки',ru:'Малые плитки'},
     'Duże kafelki':{en:'Large tiles',de:'Große Kacheln',fr:'Grandes vignettes',es:'Tarjetas grandes',it:'Riquadri grandi',cs:'Velké dlaždice',uk:'Великі плитки',ru:'Большие плитки'},
@@ -68,7 +70,21 @@ const ApoI18n=(()=>{
   };
   function current(){return localStorage.getItem(KEY)||'pl'}
   function tr(text,lang=current()){const x=T[text];return lang==='pl'||!x?text:(x[lang]||text)}
-  function translateDOM(){const lang=current();document.documentElement.lang=lang;const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);nodes.forEach(n=>{if(n.parentElement&&['SCRIPT','STYLE','TEXTAREA','OPTION'].includes(n.parentElement.tagName))return;const raw=n.nodeValue,trim=raw.trim();if(!trim)return;if(!n.parentElement.dataset.i18nOriginal)n.parentElement.dataset.i18nOriginal=trim;const original=n.parentElement.dataset.i18nOriginal;if(T[original])n.nodeValue=raw.replace(trim,tr(original,lang))});document.querySelectorAll('option').forEach(el=>{if(!el.dataset.i18nOriginal)el.dataset.i18nOriginal=el.textContent.trim();el.textContent=tr(el.dataset.i18nOriginal,lang)})}
+  function translateDOM(){
+    const lang=current();document.documentElement.lang=lang;
+    const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),nodes=[];
+    while(walker.nextNode())nodes.push(walker.currentNode);
+    nodes.forEach(n=>{if(n.parentElement&&['SCRIPT','STYLE','TEXTAREA','OPTION'].includes(n.parentElement.tagName))return;const raw=n.nodeValue,trim=raw.trim();if(!trim)return;if(!n.parentElement.dataset.i18nOriginal)n.parentElement.dataset.i18nOriginal=trim;const original=n.parentElement.dataset.i18nOriginal;if(T[original])n.nodeValue=raw.replace(trim,tr(original,lang))});
+    document.querySelectorAll('option').forEach(el=>{if(!el.dataset.i18nOriginal)el.dataset.i18nOriginal=el.textContent.trim();el.textContent=tr(el.dataset.i18nOriginal,lang)});
+    document.querySelectorAll('[placeholder],[title],[aria-label]').forEach(el=>{
+      ['placeholder','title','aria-label'].forEach(attr=>{
+        if(!el.hasAttribute(attr))return;
+        const key='i18n'+attr.replace(/(^|-)([a-z])/g,(_,a,b)=>b.toUpperCase())+'Original';
+        if(!el.dataset[key])el.dataset[key]=el.getAttribute(attr);
+        el.setAttribute(attr,tr(el.dataset[key],lang));
+      });
+    });
+  }
   function mount(){if(document.getElementById('apomonetLang'))return;const box=document.createElement('div');box.id='apomonetLang';box.style.cssText='position:fixed;right:10px;top:10px;z-index:9999;background:#111;border:1px solid #3b3b3f;border-radius:12px;padding:5px 7px';const sel=document.createElement('select');sel.setAttribute('aria-label','Language');sel.style.cssText='background:#111;color:#fff;border:0;font:inherit;max-width:130px';Object.entries(langs).forEach(([code,name])=>{const o=document.createElement('option');o.value=code;o.textContent=name;sel.appendChild(o)});sel.value=current();sel.onchange=()=>{localStorage.setItem(KEY,sel.value);location.reload()};box.appendChild(sel);document.body.appendChild(box);translateDOM()}
   return{current,tr,mount,translateDOM,langs};
 })();
