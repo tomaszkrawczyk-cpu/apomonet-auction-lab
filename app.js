@@ -1,1 +1,2 @@
 document.write('<script src="app-core.js"><\/script><script src="i18n-hotfix.js"><\/script>');
+addEventListener('DOMContentLoaded',()=>{if(!location.pathname.endsWith('coin-edit.html'))return;let s;try{s=JSON.parse(sessionStorage.getItem('apomonetAnalysisSession')||'null')}catch{}if(!s?.a)return;for(const k of ['title','nominal','ruler','year','mint','variant','grade']){const e=document.getElementById(k);if(e&&!e.value&&s.a[k]!=null)e.value=s.a[k]}});
