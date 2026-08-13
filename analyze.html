@@ -5,11 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Analiza monety — ApoMonet</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .analysis-panel{margin-top:20px}.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.fact{background:#121214;border:1px solid #29292c;border-radius:15px;padding:14px}.fact span{display:block;color:#8f8f95;font-size:12px;margin-bottom:5px}.fact strong{font-size:16px;line-height:1.35}.fact.highlight{border-color:#5e441c;background:#16120c}.confidence{display:inline-flex;padding:5px 9px;border-radius:999px;background:#1d1d20;color:#ddd;font-size:12px;margin-top:6px}.description-box{margin-top:14px;background:#121214;border:1px solid #29292c;border-radius:18px;padding:18px}.description-box h2{margin:0 0 12px}.description-box p{color:#ddd;line-height:1.7;white-space:pre-wrap}.actions{margin-top:16px}.actions-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.action-card{border:1px solid #303034;background:#151517;color:#fff;border-radius:16px;padding:16px;text-align:left;cursor:pointer}.action-card strong{display:block;font-size:16px;margin-bottom:5px}.action-card span{color:#999;font-size:13px;line-height:1.4}.action-card.primary{border-color:#6b4814;background:#241806}.warnings-box{margin-top:14px;padding:14px;border-radius:14px;background:#17130d;border:1px solid #4a3518;color:#d7b477}.mini-title{margin:22px 0 10px;font-size:14px;color:#d89a2b;text-transform:uppercase;letter-spacing:.09em}.legend-box{display:grid;gap:8px}.legend-row{background:#101012;border:1px solid #262629;border-radius:12px;padding:12px}.legend-row b{color:#d89a2b}.hidden{display:none!important}@media(max-width:560px){.facts,.actions-grid{grid-template-columns:1fr}.fact strong{font-size:15px}}
+  </style>
 </head>
 <body>
   <header class="topbar"><a class="brand" href="index.html">ApoMonet</a><nav class="nav"><a class="active" href="analyze.html">Analiza</a><a href="collection.html">Kolekcja</a><a href="albums.html">Albumy</a><a href="calendar.html">Kalendarz</a><a href="auction-houses.html">Domy aukcyjne</a></nav></header>
+
   <main class="shell narrow">
     <section class="hero compact"><span class="eyebrow">AI Coin Lab</span><h1>Analiza monety</h1><p>Wybierz awers i rewers jednocześnie. Pierwsze zdjęcie = awers, drugie = rewers.</p></section>
+
     <label class="picker" for="coinImagesInput">
       <div class="picker-title">Dotknij całego pola i wybierz 2 zdjęcia naraz</div>
       <div class="coin-grid">
@@ -18,21 +23,114 @@
       </div>
       <div class="hint">Możesz zamienić strony przed analizą.</div>
     </label>
+
     <input id="coinImagesInput" type="file" accept="image/*" multiple hidden />
     <button id="swapButton" class="btn secondary full hidden" type="button">Zamień awers ↔ rewers</button>
     <button id="analyzeButton" class="btn primary full" type="button">Analizuj monetę</button>
     <div id="status" class="status"></div>
-    <pre id="result" class="result hidden"></pre>
+
+    <section id="analysisPanel" class="analysis-panel hidden">
+      <div class="section-title"><h2>Karta identyfikacyjna</h2><span id="confidenceBadge" class="todo">0%</span></div>
+      <div id="facts" class="facts"></div>
+
+      <div class="mini-title">Legendа i odczyt</div>
+      <div class="legend-box">
+        <div class="legend-row"><b>Awers:</b> <span id="obverseLegend">—</span></div>
+        <div class="legend-row"><b>Rewers:</b> <span id="reverseLegend">—</span></div>
+        <div class="legend-row"><b>Odczyt daty:</b> <span id="dateReading">—</span></div>
+      </div>
+
+      <div class="description-box">
+        <h2>Pełny opis monety</h2>
+        <p id="fullDescription">—</p>
+      </div>
+
+      <div id="warningsBox" class="warnings-box hidden"></div>
+
+      <div class="actions">
+        <div class="section-title"><h2>Co chcesz zrobić z monetą?</h2></div>
+        <div class="actions-grid">
+          <button id="saveCoin" class="action-card primary"><strong>💾 Zapisz do kolekcji</strong><span>Zachowaj wynik analizy w ApoMonet.</span></button>
+          <button id="editCoin" class="action-card"><strong>✏️ Popraw dane i opis</strong><span>Ręcznie skoryguj rok, władcę, mennicę i pełny opis.</span></button>
+          <button id="watchCoin" class="action-card"><strong>👁 Dodaj do obserwowanych</strong><span>Odłóż monetę do późniejszego porównania.</span></button>
+          <button id="newAnalysis" class="action-card"><strong>🪙 Analizuj kolejną</strong><span>Wyczyść ekran i dodaj następną monetę.</span></button>
+        </div>
+      </div>
+    </section>
   </main>
+
+<script src="app.js"></script>
 <script>
-let obverseFile=null,reverseFile=null;
-const input=document.getElementById('coinImagesInput'),obversePreview=document.getElementById('obversePreview'),reversePreview=document.getElementById('reversePreview'),obversePlaceholder=document.getElementById('obversePlaceholder'),reversePlaceholder=document.getElementById('reversePlaceholder'),swapButton=document.getElementById('swapButton'),analyzeButton=document.getElementById('analyzeButton'),status=document.getElementById('status'),result=document.getElementById('result');
+let obverseFile=null, reverseFile=null, currentAnalysis=null, currentCoinId=null;
+const input=document.getElementById('coinImagesInput'),obversePreview=document.getElementById('obversePreview'),reversePreview=document.getElementById('reversePreview'),obversePlaceholder=document.getElementById('obversePlaceholder'),reversePlaceholder=document.getElementById('reversePlaceholder'),swapButton=document.getElementById('swapButton'),analyzeButton=document.getElementById('analyzeButton'),status=document.getElementById('status'),analysisPanel=document.getElementById('analysisPanel'),facts=document.getElementById('facts');
+
 function preview(file,img,placeholder){const r=new FileReader();r.onload=e=>{img.src=e.target.result;img.style.display='block';placeholder.style.display='none'};r.readAsDataURL(file)}
 function refresh(){if(obverseFile)preview(obverseFile,obversePreview,obversePlaceholder);if(reverseFile)preview(reverseFile,reversePreview,reversePlaceholder);swapButton.classList.toggle('hidden',!(obverseFile&&reverseFile))}
 input.addEventListener('change',()=>{const files=Array.from(input.files||[]);if(files.length<2){status.textContent='Wybierz dwa zdjęcia jednocześnie.';return}obverseFile=files[0];reverseFile=files[1];status.textContent='Dwa zdjęcia gotowe do analizy.';refresh()});
 swapButton.addEventListener('click',()=>{[obverseFile,reverseFile]=[reverseFile,obverseFile];obversePreview.style.display='none';reversePreview.style.display='none';obversePlaceholder.style.display='block';reversePlaceholder.style.display='block';refresh()});
+
 function compressImage(file,maxSize=1100,quality=.68){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onerror=reject;reader.onload=e=>{const img=new Image();img.onerror=reject;img.onload=()=>{let w=img.width,h=img.height;if(w>maxSize||h>maxSize){const ratio=Math.min(maxSize/w,maxSize/h);w=Math.round(w*ratio);h=Math.round(h*ratio)}const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,w,h);resolve(c.toDataURL('image/jpeg',quality))};img.src=e.target.result};reader.readAsDataURL(file)})}
-function format(a){const lines=[`Moneta: ${a.title||'Nie ustalono'}`,`Nominał: ${a.nominal||'Nie ustalono'}`,`Władca / emitent: ${a.ruler||'Nie ustalono'}`,`Rok: ${a.year||'Nie ustalono'}`,`Odczyt daty: ${a.visibleDateReading||'Nie ustalono'}`,`Mennica: ${a.mint||'Nie ustalono'}`,`Odmiana: ${a.variant||'Nie ustalono'}`,`Stan: ${a.grade||'Nie ustalono'}`,`Rzadkość: ${a.rarity||'Nie ustalono'}`,`Wycena: ${a.estimatedPrice||'Nie ustalono'}`,`Zakres aukcyjny: ${a.priceRange||'Nie ustalono'}`,`Pewność: ${Number.isFinite(a.confidence)?a.confidence+'%':'Nie ustalono'}`,`Legenda awersu: ${a.obverseLegend||'Nie ustalono'}`,`Legenda rewersu: ${a.reverseLegend||'Nie ustalono'}`];if(a.evidenceSummary?.length)lines.push('\nDowody:',...a.evidenceSummary.map(x=>'• '+x));if(a.alternatives?.length)lines.push('\nAlternatywy:',...a.alternatives.map(x=>'• '+x));if(a.rejectedCandidates?.length)lines.push('\nOdrzucone kandydatury:',...a.rejectedCandidates.map(x=>'• '+x));if(a.warnings?.length)lines.push('\nUwagi:',...a.warnings.map(x=>'• '+x));return lines.join('\n')}
-analyzeButton.addEventListener('click',async()=>{if(!obverseFile||!reverseFile){alert('Wybierz dwa zdjęcia monety naraz.');return}try{analyzeButton.disabled=true;result.classList.add('hidden');status.textContent='Przygotowuję zdjęcia...';const [obverse,reverse]=await Promise.all([compressImage(obverseFile),compressImage(reverseFile)]);status.textContent='Analizuję monetę...';const response=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({images:[obverse,reverse]})});const text=await response.text();let data;try{data=JSON.parse(text)}catch{data=null}if(!response.ok)throw new Error(data?.error||text||'Błąd analizy.');status.textContent='Analiza zakończona.';result.classList.remove('hidden');result.textContent=data?.analysis?format(data.analysis):text}catch(e){status.textContent='Wystąpił błąd.';result.classList.remove('hidden');result.textContent=e?.message||'Nie udało się połączyć z serwerem.'}finally{analyzeButton.disabled=false}});
+
+function val(v){return v && String(v).trim() ? v : 'Nie ustalono'}
+function fact(label,value,extra='',highlight=false){return `<div class="fact${highlight?' highlight':''}"><span>${label}</span><strong>${val(value)}</strong>${extra?`<div class="confidence">${extra}</div>`:''}</div>`}
+
+function renderAnalysis(a){
+  currentAnalysis=a;
+  facts.innerHTML=[
+    fact('Moneta',a.title),
+    fact('Kraj / emitent',a.country),
+    fact('Władca / emitent',a.ruler,`pewność ${a.rulerConfidence??0}%`,true),
+    fact('Rok',a.year,`pewność ${a.yearConfidence??0}%`,true),
+    fact('Nominał',a.nominal),
+    fact('Mennica',a.mint),
+    fact('Metal',a.metal),
+    fact('Odmiana / typ',a.variant),
+    fact('Stan zachowania',a.grade),
+    fact('Rzadkość ogólna',a.rarityGeneral),
+    fact('Kopicki — pozycja',a.kopickiReference,true),
+    fact('Kopicki — rzadkość',a.kopickiRarity,'',true),
+    fact('Waga',a.weight),
+    fact('Średnica',a.diameter),
+    fact('Wycena orientacyjna',a.estimatedPrice),
+    fact('Zakres aukcyjny',a.priceRange)
+  ].join('');
+  document.getElementById('confidenceBadge').textContent=`Pewność ${a.confidence??0}%`;
+  document.getElementById('obverseLegend').textContent=val(a.obverseLegend);
+  document.getElementById('reverseLegend').textContent=val(a.reverseLegend);
+  document.getElementById('dateReading').textContent=val(a.visibleDateReading);
+  document.getElementById('fullDescription').textContent=val(a.fullDescription);
+  const warnings=[...(a.warnings||[]),...(a.alternatives?.length?[`Alternatywy: ${a.alternatives.join(' | ')}`]:[])];
+  const box=document.getElementById('warningsBox');
+  if(warnings.length){box.classList.remove('hidden');box.innerHTML='<strong>Uwagi do identyfikacji</strong><br>'+warnings.map(x=>'• '+x).join('<br>')}else box.classList.add('hidden');
+  analysisPanel.classList.remove('hidden');
+  analysisPanel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function saveCurrent(){
+  if(!currentAnalysis) return null;
+  const coin=ApoMonet.upsertCoin({id:currentCoinId||undefined,...currentAnalysis,description:currentAnalysis.fullDescription,source:'AI analysis'});
+  currentCoinId=coin.id;
+  return coin;
+}
+
+document.getElementById('saveCoin').addEventListener('click',()=>{const coin=saveCurrent();if(coin){status.textContent='Moneta zapisana w kolekcji.';document.getElementById('saveCoin').innerHTML='<strong>✅ Zapisano w kolekcji</strong><span>Możesz teraz poprawić dane albo przejść do kolekcji.</span>'}});
+document.getElementById('editCoin').addEventListener('click',()=>{const coin=saveCurrent();if(coin) location.href=`coin-edit.html?id=${encodeURIComponent(coin.id)}`});
+document.getElementById('watchCoin').addEventListener('click',()=>{const coin=saveCurrent();if(coin){ApoMonet.addToWatchlist({id:coin.id,type:'coin',title:coin.title||'Moneta',year:coin.year||'',ruler:coin.ruler||''});status.textContent='Dodano do obserwowanych.'}});
+document.getElementById('newAnalysis').addEventListener('click',()=>location.reload());
+
+analyzeButton.addEventListener('click',async()=>{
+  if(!obverseFile||!reverseFile){alert('Wybierz dwa zdjęcia monety naraz.');return}
+  try{
+    analyzeButton.disabled=true;analysisPanel.classList.add('hidden');status.textContent='Przygotowuję zdjęcia...';
+    const [obverse,reverse]=await Promise.all([compressImage(obverseFile),compressImage(reverseFile)]);
+    status.textContent='Analizuję monetę...';
+    const response=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({images:[obverse,reverse]})});
+    const text=await response.text();let data;try{data=JSON.parse(text)}catch{data=null}
+    if(!response.ok)throw new Error(data?.error||text||'Błąd analizy.');
+    status.textContent='Analiza zakończona.';
+    if(data?.analysis)renderAnalysis(data.analysis);else throw new Error('Brak danych analizy.');
+  }catch(e){status.textContent='Wystąpił błąd: '+(e?.message||'Nie udało się połączyć z serwerem.')}finally{analyzeButton.disabled=false}
+});
 </script>
-</body></html>
+</body>
+</html>
