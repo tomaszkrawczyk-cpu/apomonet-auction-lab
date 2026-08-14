@@ -13,37 +13,40 @@
 - własne albumy użytkownika są otwieralne i pokazują realne monety; mają filtry, zaznaczanie, eksport, „Usuń tylko z albumu” oraz przenoszenie do innego albumu,
 - domyślne realne albumy: Mój album / Moje cele / Marzenia,
 - album „Moje cele” zasila silnik alertów aukcyjnych,
-- natywny XLSX na stronie eksportu,
+- natywny XLSX na stronie eksportu; stary hook XLSX został usunięty,
+- stare runtime-patche Metal/Stary Sklep zostały usunięte; runtime-fixes pozostał tylko dla wyboru zdjęcia,
 - Kalkulator aukcyjny PRO: buyer premium, VAT od prowizji, transport, ubezpieczenie, cło, VAT importowy, inne koszty, FX oraz wynik sprzedającego,
 - Tryb eksperta z seryjną weryfikacją, notatką i profilami prywatności eksportu,
 - Katalog, Archiwum/Wycena, Wartość/ROI, Centrum Narzędzi PRO,
 - silniki Cele/Marzenia ↔ aukcje i akcje dodawania lotu do kolekcji/celów są ładowane globalnie,
-- lokalny Backup/Restore kolekcji, albumów, ustawień i wiedzy,
+- lokalny Backup/Restore kolekcji, albumów, ustawień i wiedzy; backup używa aktualnych magazynów wiedzy v2 i zachowuje zgodność z backupami v1,
 - rozszerzony ekran diagnostyczny health.html.
 
 ## Knowledge Builder — legalna wiedza
 - warstwa obserwacji faktograficznych + provenance,
 - konsensus między źródłami,
 - audyt sprzeczności,
-- osobna warstwa Verified Knowledge: promocja tylko przy ≥2 niezależnych źródłach albo potwierdzeniu eksperta,
-- Verified Knowledge jest automatycznie rejestrowane jako typy katalogowe APOMONET,
+- osobna warstwa Verified Knowledge: promocja tylko przy ≥2 niezależnych dozwolonych źródłach albo potwierdzeniu eksperta,
+- Verified Knowledge ma własną ponowną kontrolę legalności provenance; stare niedozwolone rekordy nie przechodzą do v2,
+- Verified Knowledge jest rejestrowane w katalogu wyłącznie przez bezpieczną warstwę ApoVerifiedKnowledge,
 - twarda biała lista źródeł z blokadą źródeł bez jednoznacznego prawa,
-- źródła otwarte: Nomisma (CC-BY), Wikidata (CC0), Europeana metadata CC0 z obowiązkowym filtrem praw obiektu,
-- dodatkowy kontrolowany importer otwartych pojęć Nomisma / Wikidata: tylko etykieta, typ, identyfikator, licencja i provenance,
+- otwarte adaptery: Nomisma (CC-BY), Wikidata (CC0), The Met Open Access (wyłącznie isPublicDomain=true),
+- Europeana Record API v2: adapter metadata-only gotowy, zapisuje rights statement i nie pobiera mediów; wymaga jeszcze EUROPEANA_API_KEY na Vercelu,
 - archiwa WCN/OneBid pozostają wyłącznie referencyjne do czasu jasnej zgody/licencji; Niemczyk/NumisBids/Coinstrail/Allegro są zablokowane dla warstwy uczącej bez zgody,
+- Smithsonian pozostaje zatwierdzonym kierunkiem Open Access, ale adapter nie jest jeszcze aktywowany do czasu jednoznacznego filtra CC0 na rekordzie,
 - stare próbki aukcyjne zostały wyłączone z warstwy uczącej,
 - brak automatycznego scrapingu źródeł bez wyraźnego prawa/zgody,
 - datowany audyt compliance i wzory próśb o zgodę są zapisane w repo,
-- język/selekcja globalna podpięta także do ekranów LAB; rozszerzono słownik nowych funkcji.
+- rozszerzony pakiet tłumaczeń PL/EN/DE/FR obejmuje nowe albumy, backup, otwarte dane i przypomnienia aukcyjne.
 
 ## Smoke test produkcji wykonany bez udziału telefonu
-- najnowsze deploymenty Vercel: READY,
-- collection.html: HTTP 200,
-- export.html: HTTP 200,
-- user-album.html: HTTP 200,
-- calendar.html: HTTP 200,
-- backup.html: HTTP 200,
-- brak logów error/fatal w ostatnim sprawdzeniu produkcji.
+- wszystkie deploymenty bieżącego pakietu: READY,
+- app.js po cleanupie: HTTP 200 i nie ładuje starego XLSX hooka,
+- open-data.html: HTTP 200,
+- health.html: HTTP 200,
+- /api/europeana?health=1: HTTP 200; adapter obecny, klucz Europeany obecnie nie skonfigurowany,
+- wcześniejsze testy collection/export/user-album/calendar/backup: HTTP 200,
+- brak błędu aplikacji w runtime; widoczne było wyłącznie ostrzeżenie Node/Vercel o url.parse().
 
 ## Czeka na test fizycznego telefonu
 - aparat vs galeria w systemowym pickerze Androida,
@@ -56,8 +59,9 @@
 - pełna ścieżka analiza → pytania → korekta → detal → zapis → album → eksport.
 
 ## Nadal do dalszej budowy
-- dokończenie pełnego audytu wszystkich dynamicznych tekstów PL/EN/DE/FR,
-- dalsza integracja legalnych otwartych źródeł wiedzy oraz adapter Europeany z filtrem praw na rekordzie,
+- dokończenie ręcznego audytu wszystkich dynamicznie generowanych tekstów PL/EN/DE/FR,
+- uzyskanie i konfiguracja klucza projektu Europeana przed realnym importem,
+- ewentualny adapter Smithsonian dopiero po jednoznacznym filtrowaniu rekordów CC0,
 - dalsza rozbudowa zweryfikowanej bazy polskich monet od średniowiecza do współczesności,
 - legalny feed prawdziwych przyszłych lotów aukcyjnych; dopiero wtedy aktywne dopasowanie Celów/Marzeń do konkretnych lotów,
 - profile kosztów konkretnych domów aukcyjnych po zweryfikowaniu regulaminów,
