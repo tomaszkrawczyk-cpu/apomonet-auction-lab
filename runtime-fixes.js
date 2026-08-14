@@ -1,5 +1,8 @@
 (()=>{function onReady(fn){if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fn);else fn()}
 onReady(()=>{
+ if(location.pathname.endsWith('analyze.html')){
+  ['obverseInput','reverseInput'].forEach(id=>{const e=document.getElementById(id);if(e)e.removeAttribute('capture')});
+ }
  if(location.pathname.endsWith('coin-edit.html')){
   const ruler=document.getElementById('ruler');
   if(ruler&&!document.getElementById('metal')){const lab=document.createElement('label');lab.textContent='Metal';const input=document.createElement('input');input.className='input';input.id='metal';lab.appendChild(input);ruler.closest('label')?.after(lab)}
