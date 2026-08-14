@@ -1,0 +1,9 @@
+function clean(v){return String(v??'').trim()}
+function coinLike(r){const c=r?.content||{},txt=[r?.title,c?.descriptiveNonRepeating?.title?.content,c?.freetext?.objectType?.map(x=>x.content).join(' '),c?.freetext?.name?.map(x=>x.content).join(' ')].filter(Boolean).join(' ').toLowerCase();return /coin|medal|token|currency|numismatic/.test(txt)}
+function cc0Media(r){const media=r?.content?.descriptiveNonRepeating?.online_media?.media||[];return media.find(m=>String(m?.usage?.access||'').toUpperCase()==='CC0'&&(m?.content||m?.resources?.[0]?.url))||null}
+module.exports=async function handler(req,res){
+ if(req.method!=='GET')return res.status(405).json({ok:false,error:'GET only'});const key=process.env.SMITHSONIAN_API_KEY?.trim();
+ if(String(req.query?.health||'')==='1')return res.status(200).json({ok:true,source:'Smithsonian Open Access',mode:'CC0_ONLY',keyConfigured:!!key,storesRestrictedMedia:false});
+ if(!key)return res.status(503).json({ok:false,error:'Brak SMITHSONIAN_API_KEY na Vercelu.'});const q=clean(req.query?.q);if(!q)return res.status(400).json({ok:false,error:'Podaj q.'});
+ try{const u='https://api.si.edu/openaccess/api/v1.0/search?q='+encodeURIComponent(q)+'&rows=20&api_key='+encodeURIComponent(key),r=await fetch(u);if(!r.ok)throw Error('Smithsonian '+r.status);const j=await r.json(),rows=(j?.response?.rows||[]).filter(coinLike).map(x=>{const m=cc0Media(x);return{source:'SMITHSONIAN',id:String(x.id||''),uri:x?.content?.descriptiveNonRepeating?.record_link||'',label:x.title||x?.content?.descriptiveNonRepeating?.title?.content||x.id,conceptType:'numismatic object',provider:x.unitCode||'Smithsonian Institution',rightsStatement:m?'CC0 media available':'CC0 metadata only / no CC0 media detected',license:'CC0',openImage:m?(m.content||m.resources?.[0]?.url||null):null}});return res.status(200).json({ok:true,total:rows.length,items:rows,mediaFilter:'CC0 only'});}catch(e){return res.status(422).json({ok:false,error:e.message})}
+};
