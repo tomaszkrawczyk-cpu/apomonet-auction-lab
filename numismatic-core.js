@@ -1,4 +1,4 @@
-(()=>{const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+(()=>{const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ł/g,'l').replace(/đ/g,'d').replace(/ß/g,'ss').replace(/[^a-z0-9]+/g,' ').trim();
 const eras=[
 {id:'medieval',name:'Średniowiecze',from:960,to:1506},{id:'jagiellonian',name:'Jagiellonowie',from:1386,to:1572},{id:'elective',name:'Rzeczpospolita Obojga Narodów',from:1573,to:1795},{id:'partitions',name:'Zabory i XIX wiek',from:1795,to:1918},{id:'ii-rp',name:'II Rzeczpospolita',from:1918,to:1939},{id:'war',name:'Okres wojenny',from:1939,to:1945},{id:'prl',name:'PRL',from:1945,to:1989},{id:'iii-rp',name:'III Rzeczpospolita',from:1990,to:2100}];
 const rulers=[
