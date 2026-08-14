@@ -9,6 +9,15 @@
 - Kalendarz, przypomnienie .ics, Tryb eksperta, kalkulator aukcyjny PRO,
 - backup/restore v4.
 
+## Analiza i kontrola jakości — wdrożone
+- data odczytywana cyfra po cyfrze; brak pewności nie jest uzupełniany z historii,
+- kontrola konfliktu rok–władca i ostrożne traktowanie rodziny talar/półtalar/dwutalar,
+- poprawiona normalizacja polskich znaków (`ł` m.in. w Władysław/Stanisław/złoty),
+- po Etapie 1 cicha kontrola referencyjna w Smithsonian oraz American Numismatic Society,
+- zgodne źródło może wyłącznie wesprzeć wynik; nie podnosi automatycznie confidence,
+- konflikt referencyjny nie nadpisuje identyfikacji: ogranicza confidence do maks. 72%, dodaje ostrzeżenie i wstrzymuje wycenę,
+- brak rekordu referencyjnego jest wynikiem neutralnym.
+
 ## Rynek i wycena — wdrożone
 - własny model faktów rynkowych zamiast kopiowania archiwów,
 - hammerPrice / realizedPrice / totalPrice rozdzielone,
@@ -18,48 +27,32 @@
 - WCN: kontrolowany import bezpośrednich kart, batch do 8 URL, bez list/paginacji, opisów i zdjęć, z deduplikacją i provenance.
 
 ## Open Data / Multi-source — wdrożone
-- wspólny rdzeń źródeł z source/sourceId/sourceUrl/license/rightsCheckedAt,
 - Nomisma — GREEN / CC BY,
 - Wikidata — GREEN / CC0,
-- The Met Open Access — GREEN wyłącznie isPublicDomain=true,
-- American Numismatic Society — GREEN / dane ODbL; rekord produkcyjny 1989.91.2 przetestowany,
-- Smithsonian Open Access — GREEN wyłącznie CC0; adapter produkcyjny aktywny, ale SMITHSONIAN_API_KEY obecnie nie skonfigurowany,
-- Europeana — metadata CC0, media osobno kwalifikowane przez rights statement; adapter produkcyjny aktywny, ale EUROPEANA_API_KEY obecnie nie skonfigurowany,
+- The Met Open Access — GREEN wyłącznie `isPublicDomain=true`,
+- American Numismatic Society — GREEN / ODbL: pojedynczy rekord, wyszukiwanie metadata oraz kontrola referencyjna w jednym endpointcie; bez automatycznego przechowywania obrazów,
+- Smithsonian Open Access — GREEN wyłącznie CC0: `SMITHSONIAN_API_KEY` skonfigurowany i aktywny; filtrowane są rzeczywiste obiekty NMAH, katalogi/książki odrzucane,
+- Europeana — metadata CC0, media osobno kwalifikowane przez rights statement; `EUROPEANA_API_KEY` oczekuje na konfigurację,
 - WCN — YELLOW_DIRECT_RECORD_BATCH dla faktów rynkowych,
 - Stary Sklep — GREEN_AFTER_PERMISSION jako przyszłe źródło eksperckie,
 - NumisBids / Coinstrail pozostają RED dla automatycznego ingestu bez odpowiednich praw.
 
-## Fingerprint / biometria — wdrożone
-- Etap 2 zwraca ustrukturyzowane cechy: interpunkcja, data, legenda, litery/cyfry, portret, korona, herb/tarcza, znak menniczy, ogon orła, skrzydła, pióra, monogram, rant,
-- każda cecha ma value/confidence/method/note; niewidoczne cechy mają confidence=0,
-- silnik ważonego porównania fingerprintów,
+## Fingerprint / quality learning — wdrożone
+- ustrukturyzowane cechy Etapu 2: interpunkcja, data, legenda, litery/cyfry, portret, korona, herb/tarcza, znak menniczy, ogon orła, skrzydła, pióra, monogram, rant,
 - ownerAccepted i expertAccepted rozdzielone,
-- tylko expertVerified może tworzyć wzorzec wysokiej pewności,
-- fingerprint-open-source z The Met Public Domain: zapisuje cechy + provenance, nie zapisuje źródłowego zdjęcia ani opisu,
-- stage2-fingerprint-match aktywny na produkcji,
-- ekspercki konflikt fingerprintu może ograniczyć confidence Etapu 2 i dodać ostrzeżenie,
-- panel Fingerprint pokazuje najbliższe wzorce i konflikty.
-
-## Quality learning — wdrożone
-- hard-negative learning: zaakceptowana korekta może zapisać błędna identyfikacja → poprawna identyfikacja,
-- powtarzające się błędy zwiększają karę dla danego błędnego kandydata,
-- master fingerprint powstaje z co najmniej 2 wzorców expertAccepted tej samej tożsamości,
-- master fingerprint używa konsensusu cech zamiast pojedynczego egzemplarza,
-- Etap 2 preferuje master fingerprints przed pojedynczymi wzorcami,
-- panel Fingerprint pokazuje: liczbę fingerprintów, wzorców eksperckich, master fingerprintów i zapamiętanych pomyłek AI oraz listę najczęstszych hard negatives,
-- backup v4 obejmuje apomonetHardNegativesV1, więc historia korekt jakościowych jest zachowywana.
+- master fingerprint z co najmniej 2 wzorców eksperckich tej samej tożsamości,
+- hard-negative learning zapamiętuje `błędna identyfikacja AI -> zaakceptowana korekta`,
+- Etap 2 preferuje master fingerprints; tylko zweryfikowane wzorce mogą wpływać na confidence,
+- backup v4 zachowuje fingerprinty i hard negatives.
 
 ## Produkcja Vercel — smoke test 2026-08-14
-- app.js ładuje quality-learning-core.js oraz stage2-fingerprint-match.js,
-- /api/ans-open-data?health=1 — HTTP 200,
-- /api/ans-open-data?id=1989.91.2 — HTTP 200,
-- /api/smithsonian-open-access?health=1 — HTTP 200, keyConfigured=false,
-- /api/europeana?health=1 — HTTP 200, configured=false, mediaRequiresOpenRights=true,
-- /api/fingerprint-open-source?health=1 — HTTP 200,
-- open-data.html — HTTP 200 i pokazuje Nomisma/ANS/Wikidata/Europeana/Met/Smithsonian,
-- backup.html — HTTP 200, APOMONET_BACKUP v4,
-- fingerprints.html — HTTP 200 i ma diagnostykę hard negatives/master fingerprints,
-- brak grup błędów runtime aplikacji; jedyny wpis to Node DEP0169 url.parse() deprecation warning.
+- `/api/health` — HTTP 200: OpenAI=true, Smithsonian=true, Europeana=false,
+- Smithsonian wyszukiwanie działa na produkcji; przykładowe polskie rekordy: 2 dukaty Augusta II 1702, talar Stanisława Augusta 1766,
+- Smithsonian validator: poprawny talar 1766 Stanisława Augusta => `supported`; celowo błędny władca => `possible_conflict`,
+- ANS wyszukiwanie `Poland 1593` zwraca realne trojaki Zygmunta III, dukata i egzemplarze z kilku mennic,
+- ANS funkcje zostały skonsolidowane do jednego endpointu, aby zmieścić się w limicie 12 Serverless Functions planu Hobby,
+- deployment po konsolidacji ponownie READY,
+- brak krytycznych grup błędów runtime; pozostaje nieblokujące ostrzeżenie Node DEP0169 `url.parse()` z warstwy runtime/dependency.
 
 ## Czeka na test fizycznego telefonu
 - aparat vs galeria w pickerze Androida,
@@ -71,12 +64,10 @@
 - backup v4 download/restore,
 - .ics do kalendarza,
 - własny album i trwałość po restarcie,
-- Tryb eksperta → promocja fingerprintu → powstanie master fingerprintu po drugim zgodnym wzorcu.
+- Tryb eksperta → promocja fingerprintu → master fingerprint po drugim zgodnym wzorcu.
 
-## Najważniejsza dalsza praca
-1. Napełnić zweryfikowaną bazę polskich monet od średniowiecza do współczesności.
-2. Napełnić fingerprinty materiałem Open Access i ekspertami.
-3. Uzyskać SMITHSONIAN_API_KEY i EUROPEANA_API_KEY, jeśli chcemy aktywnego importu tych źródeł.
-4. Budować rzeczywiste master fingerprinty i obserwować hard-negative errors.
-5. Dalej zasilać fakty aukcyjne i wycenę.
-6. Po stabilizacji: prawdziwy feed lotów aukcyjnych, profile kosztów domów aukcyjnych, Standard/PRO, synchronizacja urządzeń, finalny design i aplikacje mobilne/desktop.
+## Rzeczywiste blokery dalszego etapu
+1. `EUROPEANA_API_KEY` — oczekuje na wiadomość od Europeany.
+2. Materiał ekspercki Starego Sklepu — wymaga zgody właściciela.
+3. Testy zachowania Androida — wymagają fizycznego telefonu użytkownika.
+4. Rozbudowa zweryfikowanej bazy i master fingerprintów wymaga kolejnych realnych, prawidłowo opisanych monet/wzorców.
