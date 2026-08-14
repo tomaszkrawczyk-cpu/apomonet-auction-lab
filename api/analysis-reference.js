@@ -1,5 +1,6 @@
 function text(v){return String(v??'').trim()}
 function norm(v){return text(v).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ł/g,'l').replace(/đ/g,'d').replace(/ß/g,'ss')}
+function countryForm(v){const x=norm(v);if(/polsk|poland|polonia/.test(x))return'Poland';return text(v)||'Poland'}
 function nominalForms(v){const x=norm(v);if(/dwutalar|2 talar/.test(x))return['2 taler','2 talar','dwutalar'];if(/talar/.test(x))return['taler','thaler','talar'];if(/dukat/.test(x))return['ducat','dukat'];if(/zlot/.test(x))return['zloty','zlote','zlotych'];if(/grosz|grosh/.test(x))return['grosz','grosh','groszy'];return x?[x]:[]}
 function rulerForms(v){const x=norm(v),m=[['zygmunt i stary',['sigismund i','zygmunt i']],['zygmunt ii august',['sigismund ii','zygmunt ii']],['zygmunt iii waza',['sigismund iii','zygmunt iii']],['stefan batory',['stephen bathory','stefan batory']],['wladyslaw iv waza',['ladislaus iv','wladyslaw iv']],['jan ii kazimierz',['john ii casimir','jan ii kazimierz']],['jan iii sobieski',['john iii sobieski','jan iii sobieski']],['august ii',['augustus ii','august ii']],['august iii',['augustus iii','august iii']],['stanislaw august poniatowski',['stanislaus august poniatowski','stanislaw august poniatowski']]];for(const [k,a] of m)if(x.includes(k))return a;return x?[x]:[]}
 module.exports=async function handler(req,res){
@@ -8,7 +9,7 @@ module.exports=async function handler(req,res){
   if(!['GET','POST'].includes(req.method)) return res.status(405).json({ok:false,error:'GET/POST only'});
   if(!key) return res.status(503).json({ok:false,error:'Reference source unavailable'});
   const a=req.method==='POST'?(req.body?.analysis||{}):req.query||{};
-  const year=text(a.year), nominal=text(a.nominal), ruler=text(a.ruler), country=text(a.country)||'Poland';
+  const year=text(a.year), nominal=text(a.nominal), ruler=text(a.ruler), country=countryForm(a.country);
   if(!/^\d{4}$/.test(year)||!nominal) return res.status(200).json({ok:true,status:'neutral',reason:'insufficient_identity',items:[]});
   const q=[country,nominalForms(nominal)[0]||nominal,year].filter(Boolean).join(' ');
   try{
