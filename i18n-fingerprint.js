@@ -1,0 +1,15 @@
+(()=>{const K='apomonet_language_v2',D={
+'Fingerprint / biometria monety':{en:'Coin fingerprint / biometrics',de:'Münz-Fingerprint / Biometrie',fr:'Empreinte / biométrie de la monnaie'},
+'Porównanie diagnostycznych cech stempla bez przechowywania cudzych opisów lub fotografii źródłowych.':{en:'Comparison of diagnostic die features without storing third-party catalogue descriptions or source photographs.',de:'Vergleich diagnostischer Stempelmerkmale ohne fremde Katalogbeschreibungen oder Quellfotos zu speichern.',fr:'Comparaison des caractéristiques diagnostiques du coin sans stocker les descriptions de catalogue ni les photos sources de tiers.'},
+'Dodaj fingerprint z otwartego źródła':{en:'Add fingerprint from an open source',de:'Fingerprint aus offener Quelle hinzufügen',fr:'Ajouter une empreinte depuis une source ouverte'},
+'Zbuduj fingerprint':{en:'Build fingerprint',de:'Fingerprint erstellen',fr:'Créer l’empreinte'},
+'Porównaj zapisaną monetę':{en:'Compare a saved coin',de:'Gespeicherte Münze vergleichen',fr:'Comparer une monnaie enregistrée'},
+'Wybierz monetę z fingerprintem…':{en:'Choose a coin with a fingerprint…',de:'Münze mit Fingerprint wählen…',fr:'Choisir une monnaie avec empreinte…'},
+'Cechy diagnostyczne':{en:'Diagnostic features',de:'Diagnostische Merkmale',fr:'Caractéristiques diagnostiques'},
+'Najbliższe fingerprinty':{en:'Closest fingerprints',de:'Ähnlichste Fingerprints',fr:'Empreintes les plus proches'},
+'Fingerprinty':{en:'Fingerprints',de:'Fingerprints',fr:'Empreintes'},
+'Zaakceptowane / eksperckie':{en:'Owner accepted / expert',de:'Vom Eigentümer akzeptiert / Experte',fr:'Acceptées / expertes'},
+'Rodziny wzorców eksperckich':{en:'Expert template families',de:'Experten-Vorlagenfamilien',fr:'Familles de modèles experts'},
+'Podaj Met object ID.':{en:'Enter a Met object ID.',de:'Met-Objekt-ID eingeben.',fr:'Saisissez un identifiant d’objet du Met.'},
+'Fingerprint zapisany. Zdjęcie źródłowe i opis katalogowy nie zostały zapisane.':{en:'Fingerprint saved. The source image and catalogue description were not stored.',de:'Fingerprint gespeichert. Quellbild und Katalogbeschreibung wurden nicht gespeichert.',fr:'Empreinte enregistrée. L’image source et la description du catalogue n’ont pas été stockées.'}
+};function go(){const l=localStorage.getItem(K)||'pl';if(l==='pl')return;const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode()){if(!n.parentElement||['SCRIPT','STYLE'].includes(n.parentElement.tagName))continue;const raw=n.nodeValue,t=raw.trim(),x=D[t]?.[l];if(x)n.nodeValue=raw.replace(t,x)}document.querySelectorAll('input[placeholder],textarea[placeholder]').forEach(e=>{const x=D[e.placeholder]?.[l];if(x)e.placeholder=x})}addEventListener('DOMContentLoaded',()=>{setTimeout(go,20);new MutationObserver(()=>go()).observe(document.body,{childList:true,subtree:true,characterData:true})})})();
