@@ -1,12 +1,12 @@
 {
-  "version": "2026-08-14-v4",
+  "version": "2026-08-14-v5",
   "default": "YELLOW_MANUAL_FACTS",
   "sources": {
     "NUMISBIDS": {"automation":"RED","factsManual":true,"marketSingleRecord":false,"images":false,"reason":"Terms prohibit automated storage/harvesting"},
     "COINSTRAIL": {"automation":"RED","factsManual":true,"marketSingleRecord":false,"images":false,"reason":"Terms prohibit copying/reproducing/using service materials without permission"},
     "NIEMCZYK": {"automation":"RED","factsManual":true,"marketSingleRecord":false,"images":false,"reason":"Terms prohibit automated downloading/aggregation without written permission","upgrade":"GREEN_WITH_WRITTEN_PERMISSION"},
     "ONEBID": {"automation":"YELLOW","factsManual":true,"marketSingleRecord":false,"images":false,"reason":"Public facts may be recorded manually; platform automation remains pending separate terms/rights review"},
-    "WCN": {"automation":"YELLOW_SINGLE_RECORD","factsManual":true,"marketSingleRecord":true,"images":false,"allowedPath":"/archive/{numeric_id}","reason":"Controlled fetch of one public lot page may extract normalized sale facts only; no list pagination, descriptions or images"},
+    "WCN": {"automation":"YELLOW_DIRECT_RECORD_BATCH","factsManual":true,"marketSingleRecord":true,"marketBoundedBatch":true,"maxBatch":8,"delayMs":250,"images":false,"allowedPath":"/archive/{numeric_id}","reason":"Controlled fetch of a bounded set of user-supplied direct public lot URLs may extract normalized sale facts only; no discovery, list pagination, crawling, descriptions or images"},
     "STARY_SKLEP": {"automation":"YELLOW","factsManual":true,"marketSingleRecord":false,"images":false,"reason":"Public facts allowed manually; awaiting direct permission/export for broader use","upgrade":"GREEN_WITH_WRITTEN_PERMISSION"},
     "NOMISMA": {"automation":"GREEN","factsManual":true,"images":"PER_LICENSE"},
     "WIKIDATA": {"automation":"GREEN","factsManual":true,"images":"PER_ITEM_LICENSE"},
@@ -24,6 +24,7 @@
     "singleRecordAdaptersOnlyDirectItemUrl": true,
     "singleRecordAdaptersNoPagination": true,
     "singleRecordAdaptersNoCrawler": true,
-    "marketFactsFields": ["ruler","nominal","year","mint","variant","grade","saleDate","auctionHouse","hammerPrice","totalPrice","currency","sourceUrl","sourceId","accessMode"]
+    "boundedBatchRequiresUserSuppliedUrls": true,
+    "marketFactsFields": ["ruler","nominal","year","mint","variant","grade","saleDate","auctionHouse","realizedPrice","hammerPrice","totalPrice","currency","sourceUrl","sourceId","accessMode","priceType"]
   }
 }
