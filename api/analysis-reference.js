@@ -1,5 +1,5 @@
 function text(v){return String(v??'').trim()}
-function norm(v){return text(v).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
+function norm(v){return text(v).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ł/g,'l').replace(/đ/g,'d').replace(/ß/g,'ss')}
 function nominalForms(v){const x=norm(v);if(/dwutalar|2 talar/.test(x))return['2 taler','2 talar','dwutalar'];if(/talar/.test(x))return['taler','thaler','talar'];if(/dukat/.test(x))return['ducat','dukat'];if(/zlot/.test(x))return['zloty','zlote','zlotych'];if(/grosz|grosh/.test(x))return['grosz','grosh','groszy'];return x?[x]:[]}
 function rulerForms(v){const x=norm(v),m=[['zygmunt i stary',['sigismund i','zygmunt i']],['zygmunt ii august',['sigismund ii','zygmunt ii']],['zygmunt iii waza',['sigismund iii','zygmunt iii']],['stefan batory',['stephen bathory','stefan batory']],['wladyslaw iv waza',['ladislaus iv','wladyslaw iv']],['jan ii kazimierz',['john ii casimir','jan ii kazimierz']],['jan iii sobieski',['john iii sobieski','jan iii sobieski']],['august ii',['augustus ii','august ii']],['august iii',['augustus iii','august iii']],['stanislaw august poniatowski',['stanislaus august poniatowski','stanislaw august poniatowski']]];for(const [k,a] of m)if(x.includes(k))return a;return x?[x]:[]}
 module.exports=async function handler(req,res){
