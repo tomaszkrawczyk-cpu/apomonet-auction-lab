@@ -1,0 +1,26 @@
+{
+  "version": "2026-08-14-v2",
+  "default": "HOLD",
+  "sources": {
+    "NUMISBIDS": {"automation":"RED","factsManual":true,"images":false,"reason":"Terms prohibit automated storage/harvesting"},
+    "COINSTRAIL": {"automation":"RED","factsManual":true,"images":false,"reason":"Terms prohibit copying/reproducing/using service materials without permission"},
+    "NIEMCZYK": {"automation":"RED","factsManual":true,"images":false,"reason":"Terms prohibit automated downloading/aggregation without written permission","upgrade":"GREEN_WITH_WRITTEN_PERMISSION"},
+    "ONEBID": {"automation":"HOLD","factsManual":true,"images":false,"reason":"Public facts usable as references; platform automation requires separate terms/rights review"},
+    "WCN": {"automation":"HOLD","factsManual":true,"images":false,"reason":"Public facts usable as references; bulk adapter pending terms/licence review"},
+    "STARY_SKLEP": {"automation":"HOLD","factsManual":true,"images":false,"reason":"Awaiting permission; direct owner export preferred","upgrade":"GREEN_WITH_WRITTEN_PERMISSION"},
+    "NOMISMA": {"automation":"GREEN","factsManual":true,"images":"PER_LICENSE"},
+    "WIKIDATA": {"automation":"GREEN","factsManual":true,"images":"PER_ITEM_LICENSE"},
+    "EUROPEANA": {"automation":"GREEN","factsManual":true,"images":"PER_RIGHTS_STATEMENT"},
+    "SMITHSONIAN": {"automation":"GREEN","factsManual":true,"images":"PER_LICENSE"},
+    "MET": {"automation":"GREEN","factsManual":true,"images":"PUBLIC_DOMAIN_ITEMS_ONLY"}
+  },
+  "rules": {
+    "storeNormalizedFactsOnly": true,
+    "storeSourceDescriptions": false,
+    "storeSourceImagesWithoutPermission": false,
+    "bypassCaptchaLoginPaywall": false,
+    "respectRateLimits": true,
+    "requireProvenance": true,
+    "marketFactsFields": ["ruler","nominal","year","mint","variant","saleDate","auctionHouse","hammerPrice","totalPrice","currency","sourceUrl","sourceId"]
+  }
+}
