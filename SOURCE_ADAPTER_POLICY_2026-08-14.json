@@ -1,18 +1,18 @@
 {
-  "version": "2026-08-14-v3",
-  "default": "PUBLIC_FACTS_ALLOWED_REVIEW_AUTOMATION",
+  "version": "2026-08-14-v4",
+  "default": "YELLOW_MANUAL_FACTS",
   "sources": {
-    "NUMISBIDS": {"automation":"RED","factsManual":true,"normalizedFacts":true,"images":false,"reason":"Terms explicitly prohibit automated storage/harvesting"},
-    "COINSTRAIL": {"automation":"RED","factsManual":true,"normalizedFacts":false,"images":false,"reason":"Terms say service content may not be copied, reproduced or used; obtain permission before using Coinstrail-derived data in APOMONET"},
-    "NIEMCZYK": {"automation":"RED","factsManual":true,"normalizedFacts":true,"images":false,"reason":"Current auction terms protect and prohibit aggregation/use of visual/text materials without written permission; use isolated public sale facts cautiously, no bulk reproduction","upgrade":"GREEN_WITH_WRITTEN_PERMISSION"},
-    "ONEBID": {"automation":"HOLD","factsManual":true,"normalizedFacts":true,"images":false,"reason":"Use isolated public factual observations with provenance; platform-scale automation remains subject to platform/source terms review"},
-    "WCN": {"automation":"YELLOW","factsManual":true,"normalizedFacts":true,"images":false,"reason":"Public archive exposes sale facts; permit low-rate fact extraction only after checking machine-readable TDM reservation/robots for the target endpoint; no descriptions/images or database cloning"},
-    "STARY_SKLEP": {"automation":"HOLD","factsManual":true,"normalizedFacts":true,"images":false,"reason":"Public facts may be referenced; direct owner permission/export preferred for bulk learning material and images","upgrade":"GREEN_WITH_WRITTEN_PERMISSION"},
-    "NOMISMA": {"automation":"GREEN","factsManual":true,"normalizedFacts":true,"images":"PER_LICENSE"},
-    "WIKIDATA": {"automation":"GREEN","factsManual":true,"normalizedFacts":true,"images":"PER_ITEM_LICENSE"},
-    "EUROPEANA": {"automation":"GREEN","factsManual":true,"normalizedFacts":true,"images":"PER_RIGHTS_STATEMENT"},
-    "SMITHSONIAN": {"automation":"GREEN","factsManual":true,"normalizedFacts":true,"images":"PER_LICENSE"},
-    "MET": {"automation":"GREEN","factsManual":true,"normalizedFacts":true,"images":"PUBLIC_DOMAIN_ITEMS_ONLY"}
+    "NUMISBIDS": {"automation":"RED","factsManual":true,"marketSingleRecord":false,"images":false,"reason":"Terms prohibit automated storage/harvesting"},
+    "COINSTRAIL": {"automation":"RED","factsManual":true,"marketSingleRecord":false,"images":false,"reason":"Terms prohibit copying/reproducing/using service materials without permission"},
+    "NIEMCZYK": {"automation":"RED","factsManual":true,"marketSingleRecord":false,"images":false,"reason":"Terms prohibit automated downloading/aggregation without written permission","upgrade":"GREEN_WITH_WRITTEN_PERMISSION"},
+    "ONEBID": {"automation":"YELLOW","factsManual":true,"marketSingleRecord":false,"images":false,"reason":"Public facts may be recorded manually; platform automation remains pending separate terms/rights review"},
+    "WCN": {"automation":"YELLOW_SINGLE_RECORD","factsManual":true,"marketSingleRecord":true,"images":false,"allowedPath":"/archive/{numeric_id}","reason":"Controlled fetch of one public lot page may extract normalized sale facts only; no list pagination, descriptions or images"},
+    "STARY_SKLEP": {"automation":"YELLOW","factsManual":true,"marketSingleRecord":false,"images":false,"reason":"Public facts allowed manually; awaiting direct permission/export for broader use","upgrade":"GREEN_WITH_WRITTEN_PERMISSION"},
+    "NOMISMA": {"automation":"GREEN","factsManual":true,"images":"PER_LICENSE"},
+    "WIKIDATA": {"automation":"GREEN","factsManual":true,"images":"PER_ITEM_LICENSE"},
+    "EUROPEANA": {"automation":"GREEN","factsManual":true,"images":"PER_RIGHTS_STATEMENT"},
+    "SMITHSONIAN": {"automation":"GREEN","factsManual":true,"images":"PER_LICENSE"},
+    "MET": {"automation":"GREEN","factsManual":true,"images":"PUBLIC_DOMAIN_ITEMS_ONLY"}
   },
   "rules": {
     "storeNormalizedFactsOnly": true,
@@ -20,9 +20,10 @@
     "storeSourceImagesWithoutPermission": false,
     "bypassCaptchaLoginPaywall": false,
     "respectRateLimits": true,
-    "checkMachineReadableTdmReservationBeforeBulkAutomation": true,
-    "avoidRepeatedSystematicExtractionThatReconstructsSourceDatabase": true,
     "requireProvenance": true,
-    "marketFactsFields": ["ruler","nominal","year","mint","variant","saleDate","auctionHouse","hammerPrice","totalPrice","currency","sourceUrl","sourceId"]
+    "singleRecordAdaptersOnlyDirectItemUrl": true,
+    "singleRecordAdaptersNoPagination": true,
+    "singleRecordAdaptersNoCrawler": true,
+    "marketFactsFields": ["ruler","nominal","year","mint","variant","grade","saleDate","auctionHouse","hammerPrice","totalPrice","currency","sourceUrl","sourceId","accessMode"]
   }
 }
