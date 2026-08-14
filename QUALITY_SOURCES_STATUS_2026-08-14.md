@@ -3,30 +3,42 @@
 ## Cel
 Zmniejszać błędy identyfikacji przez połączenie otwartej wiedzy, fingerprintów stempli, korekt użytkownika i wzorców eksperckich. Nie budujemy kopii cudzych archiwów.
 
-## Źródła aktywne / przygotowane
-- The Met Open Access: CC0/Public Domain per object; fingerprint może powstać wyłącznie dla `isPublicDomain=true`; źródłowy obraz i opis nie są zapisywane.
+## Źródła aktywne
+- The Met Open Access: CC0/Public Domain per object; fingerprint wyłącznie dla `isPublicDomain=true`; źródłowy obraz i opis nie są zapisywane.
 - Nomisma: otwarta wiedza pojęciowa / numizmatyczna.
 - Wikidata: CC0 metadata.
-- American Numismatic Society: adapter pojedynczych rekordów działa; dane ODbL, prawa do obrazów oceniane oddzielnie.
-- Smithsonian Open Access: adapter przygotowany; automatycznie dopuszcza tylko media z oznaczeniem CC0; wymaga `SMITHSONIAN_API_KEY` na Vercelu.
-- Europeana: metadata CC0; `mediaReusable=true` wyłącznie przy otwartym rights statement; wymaga `EUROPEANA_API_KEY`.
+- American Numismatic Society: aktywny endpoint ODbL obsługuje pojedyncze rekordy, wyszukiwanie metadata i kontrolę referencyjną po analizie. Obrazy nie są automatycznie przechowywane.
+- Smithsonian Open Access: `SMITHSONIAN_API_KEY` aktywny; adapter ograniczony do rzeczywistych obiektów numizmatycznych NMAH, katalogi/książki odrzucane, media tylko przy potwierdzonym CC0.
+- Europeana: metadata CC0; `mediaReusable=true` wyłącznie przy otwartym rights statement; oczekujemy na `EUROPEANA_API_KEY`.
 - WCN: wyłącznie kontrolowane fakty rynkowe z bezpośrednich kart, maks. 8 URL, bez zdjęć/opisów/list/paginacji.
+
+## Kontrola wieloźródłowa Etapu 1
+- Smithsonian i ANS są sprawdzane jako niezależne źródła referencyjne po podstawowej analizie.
+- Zgodny rekord nie podnosi automatycznie confidence i nie udaje certyfikatu odmiany.
+- Brak rekordu jest neutralny.
+- Możliwy konflikt przy zgodnym roku/nominale i niezgodnym władcy: confidence maks. 72%, ostrzeżenie i wstrzymanie wyceny; dane nie są nadpisywane automatycznie.
+- Normalizacja obsługuje polskie `ł`, transliteracje nazw władców oraz odpowiedniki talar/taler/thaler, dukat/ducat itd.
 
 ## Uczenie jakościowe
 - `apomonetHardNegativesV1`: zapisuje pary `błędna identyfikacja AI -> zaakceptowana korekta` wraz z liczbą powtórzeń.
-- Hard negative może obniżyć ranking znanego błędnego kandydata; nie zmienia samodzielnie danych użytkownika.
-- Master fingerprint powstaje dopiero z co najmniej 2 fingerprintów oznaczonych `expertAccepted` dla tej samej tożsamości.
-- Master fingerprint wybiera konsensus cech i przechowuje informację, ile wzorców było zgodnych.
+- Hard negative wpływa na ranking, ale nie zmienia samodzielnie danych użytkownika.
+- Master fingerprint powstaje z co najmniej 2 fingerprintów `expertAccepted` tej samej tożsamości.
 - Etap 2 porównuje najpierw master fingerprinty, potem pojedyncze egzemplarze.
-- Tylko ekspercko zweryfikowany wzorzec/master może wpływać na confidence. Korekta właściciela pozostaje materiałem uczącym, ale nie udaje opinii eksperta.
-- Istotny konflikt ze zweryfikowanym wzorcem ogranicza confidence Etapu 2 i wymusza ostrzeżenie.
+- Tylko ekspercko zweryfikowany wzorzec/master może wpływać na confidence.
+- Backup v4 zachowuje fingerprinty i hard negatives.
 
-## Backup
-- Backup v4 obejmuje fingerprinty i `apomonetHardNegativesV1`, aby historia nauki nie ginęła przy zmianie urządzenia.
+## Zweryfikowane przykłady produkcyjne
+- Smithsonian: `1 Taler, Stanislaus August Poniatowski, Poland, 1766` wspiera poprawną identyfikację; celowo podany Zygmunt III przy roku 1766 daje `possible_conflict`.
+- Smithsonian: `2 Ducats, Augustus II, Poland, 1702` poprawnie wspiera identyfikację Augusta II.
+- ANS: zapytanie `Poland 1593` zwraca m.in. kilka 3 groschen Zygmunta III Wazy (różne mennice) i dukata 1593.
+
+## Technika
+- Funkcje ANS zostały skonsolidowane do jednego endpointu, aby pozostać poniżej limitu 12 funkcji serverless na planie Vercel Hobby.
+- Produkcja po konsolidacji jest READY.
 
 ## Następny wzrost jakości
-1. zwiększać liczbę ekspercko potwierdzonych fingerprintów,
-2. importować więcej rekordów z otwartych źródeł z jednoznacznymi prawami do mediów,
+1. dodać Europeanę po otrzymaniu klucza,
+2. zwiększać liczbę ekspercko potwierdzonych fingerprintów,
 3. budować master fingerprinty z wielu egzemplarzy,
-4. zbierać i analizować najczęstsze hard negatives,
-5. po zgodzie Starego Sklepu użyć materiału Sylwestra jako eksperckiej warstwy referencyjnej w zakresie udzielonej zgody.
+4. obserwować najczęstsze hard negatives,
+5. po zgodzie Starego Sklepu dołączyć materiał Sylwestra jako ekspercką warstwę referencyjną.
