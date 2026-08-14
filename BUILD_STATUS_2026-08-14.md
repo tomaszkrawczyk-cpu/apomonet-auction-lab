@@ -1,82 +1,82 @@
 # APOMONET — status 2026-08-14
 
-## Domknięte / wdrożone
-- backendowy bezpiecznik słabego zdjęcia: API zwraca 422 zamiast pewnego wyniku, jeśli zdjęcia nie nadają się do wiarygodnej analizy,
-- wybór aparat / galeria z kafelków analizy,
-- kontrola katalogowa po analizie jest ładowana globalnie,
-- Metal jest natywnym polem korekty; korekta zachowuje zdjęcia, pierwotny wynik AI, widełki wyceny i informacje właściciela,
-- powrót po korekcie oraz automatyczne otwarcie wyboru albumu po wybraniu „Dodaj do albumu”,
-- pytania dodatkowe, widełki wartości i przekazanie odpowiedzi właściciela do etapu szczegółowego,
-- Stary Sklep — Sylwester Kopyciński w domach aukcyjnych i natywnie w ulubionych Kalendarza,
-- Kalendarz generuje przypomnienie .ics z alarmem 2 dni wcześniej,
-- Kolekcja realnych monet: filtry władca / nominał / mennica / metal, zaznaczanie, PDF, XLSX, udostępnianie i wyraźne usunięcie z całej kolekcji,
-- własne albumy użytkownika są otwieralne i pokazują realne monety; mają filtry, zaznaczanie, eksport, „Usuń tylko z albumu” oraz przenoszenie do innego albumu,
-- domyślne realne albumy: Mój album / Moje cele / Marzenia,
-- album „Moje cele” zasila silnik alertów aukcyjnych,
-- natywny XLSX na stronie eksportu,
-- Kalkulator aukcyjny PRO: buyer premium, VAT od prowizji, transport, ubezpieczenie, cło, VAT importowy, inne koszty, FX oraz wynik sprzedającego,
-- Tryb eksperta z seryjną weryfikacją, notatką, profilami prywatności eksportu i promocją istniejącego fingerprintu do wzorca eksperckiego,
-- Katalog, Archiwum/Wycena, Wartość/ROI, Centrum Narzędzi PRO,
-- lokalny Backup/Restore v3 obejmuje kolekcję, albumy, ustawienia, wiedzę, fakty aukcyjne, multi-source knowledge i fingerprinty monet,
-- rozszerzony ekran diagnostyczny health.html.
+## Rdzeń użytkownika — wdrożone
+- analiza awers + rewers, kontrola jakości zdjęcia i komunikat 422 dla materiału niewiarygodnego,
+- korekta danych z zachowaniem zdjęć, surowego AI, danych właściciela i sesji,
+- Etap 2 analizy szczegółowej,
+- zapis do kolekcji/albumu, przygotowanie zdjęcia albumowego, PDF/XLSX/share,
+- własne albumy, Cele/Marzenia, filtry, przenoszenie i selektywny eksport,
+- Kalendarz, przypomnienie .ics, Tryb eksperta, kalkulator aukcyjny PRO,
+- backup/restore v4.
 
-## Rynek i wycena
-- własny model faktów rynkowych zamiast kopiowania cudzych archiwów,
-- rozdzielenie hammerPrice / realizedPrice / totalPrice,
-- porównywanie po władcy, nominale, roku, mennicy, odmianie, metalu i stanie,
+## Rynek i wycena — wdrożone
+- własny model faktów rynkowych zamiast kopiowania archiwów,
+- hammerPrice / realizedPrice / totalPrice rozdzielone,
+- podobieństwo po władcy, nominale, roku, mennicy, odmianie, metalu i stanie,
 - klasy strict / good / indicative / weak,
-- widełki 10–90 percentyl + mediana zamiast surowego minimum/maksimum,
-- brak wyceny, jeśli materiał jest zbyt słaby,
-- WCN: kontrolowany import publicznych faktów z bezpośrednich kart; batch maks. 8 URL, bez list/paginacji, bez zapisu zdjęć i opisów, z deduplikacją i provenance.
+- widełki 10–90 percentyl + mediana; brak wyceny przy słabym materiale,
+- WCN: kontrolowany import bezpośrednich kart, batch do 8 URL, bez list/paginacji, opisów i zdjęć, z deduplikacją i provenance.
 
-## Multi-source Knowledge
-- wspólny rdzeń łączenia dowodów z wielu źródeł,
-- zachowanie source / sourceId / sourceUrl / licencji / rightsCheckedAt,
-- źródła RED blokowane przed automatycznym ingestem,
-- otwarte adaptery: Nomisma, Wikidata, The Met Open Access,
-- The Met: automatyczny ingest tylko dla obiektów isPublicDomain=true i przechodzących filtr numizmatyczny,
-- konsensus źródeł: single-source / supported / strong,
-- Stary Sklep przygotowany jako przyszłe źródło eksperckie po zgodzie,
-- NumisBids i Coinstrail pozostają zablokowane dla automatycznego ingestu bez odpowiednich praw/zgody,
-- Niemczyk pozostaje bez automatycznego adaptera do czasu zgody/zweryfikowania warunków.
+## Open Data / Multi-source — wdrożone
+- wspólny rdzeń źródeł z source/sourceId/sourceUrl/license/rightsCheckedAt,
+- Nomisma — GREEN / CC BY,
+- Wikidata — GREEN / CC0,
+- The Met Open Access — GREEN wyłącznie isPublicDomain=true,
+- American Numismatic Society — GREEN / dane ODbL; rekord produkcyjny 1989.91.2 przetestowany,
+- Smithsonian Open Access — GREEN wyłącznie CC0; adapter produkcyjny aktywny, ale SMITHSONIAN_API_KEY obecnie nie skonfigurowany,
+- Europeana — metadata CC0, media osobno kwalifikowane przez rights statement; adapter produkcyjny aktywny, ale EUROPEANA_API_KEY obecnie nie skonfigurowany,
+- WCN — YELLOW_DIRECT_RECORD_BATCH dla faktów rynkowych,
+- Stary Sklep — GREEN_AFTER_PERMISSION jako przyszłe źródło eksperckie,
+- NumisBids / Coinstrail pozostają RED dla automatycznego ingestu bez odpowiednich praw.
 
-## Fingerprint / biometria monety
-- Etap 2 zwraca ustrukturyzowane cechy diagnostyczne zamiast samego tekstu,
-- cechy obejmują m.in. interpunkcję, rozstaw/pozycję daty, pozycje legendy, formy liter i cyfr, portret, koronę, tarczę/herb, znak menniczy, ogon orła, skrzydła, pióra, monogram i rant,
-- każda cecha ma wartość, confidence, metodę i notatkę; cechy niewidoczne mają confidence=0 zamiast zgadywania,
-- silnik porównania fingerprintów liczy podobieństwo ważone i pokazuje liczbę wspólnych cech oraz konflikty,
-- rozdzielone statusy ownerAccepted i expertAccepted; korekta właściciela nie udaje weryfikacji eksperckiej,
-- biblioteka wzorców eksperckich budowana tylko z expertVerified,
-- panel fingerprints.html pokazuje fingerprinty, wzorce i najbliższe dopasowania,
-- endpoint fingerprint-open-source potrafi zbudować fingerprint z obiektu The Met Public Domain i zwraca tylko cechy + provenance; nie zapisuje źródłowego zdjęcia ani opisu,
-- panel Fingerprint ma przepływ Met object ID → budowa fingerprintu → zapis lokalny,
-- stage2-fingerprint-match.js przygotowany do pokazania dopasowań fingerprintu bezpośrednio po Etapie 2.
+## Fingerprint / biometria — wdrożone
+- Etap 2 zwraca ustrukturyzowane cechy: interpunkcja, data, legenda, litery/cyfry, portret, korona, herb/tarcza, znak menniczy, ogon orła, skrzydła, pióra, monogram, rant,
+- każda cecha ma value/confidence/method/note; niewidoczne cechy mają confidence=0,
+- silnik ważonego porównania fingerprintów,
+- ownerAccepted i expertAccepted rozdzielone,
+- tylko expertVerified może tworzyć wzorzec wysokiej pewności,
+- fingerprint-open-source z The Met Public Domain: zapisuje cechy + provenance, nie zapisuje źródłowego zdjęcia ani opisu,
+- stage2-fingerprint-match aktywny na produkcji,
+- ekspercki konflikt fingerprintu może ograniczyć confidence Etapu 2 i dodać ostrzeżenie,
+- panel Fingerprint pokazuje najbliższe wzorce i konflikty.
 
-## Produkcja Vercel
-- Etap 2 z fingerprintem, rdzeń fingerprintów i dashboard fingerprintów mają deployment READY,
-- Git→Vercel wznowił działanie po krótkim zatorze, ale produkcyjny app.js w ostatnim sprawdzeniu nie ładował jeszcze stage2-fingerprint-match.js,
-- ostatnie commity: loader dopasowań, ulepszony Tryb eksperta, backup v3, endpoint fingerprint-open-source i UI importu The Met są w GitHubie; wymagają potwierdzenia na produkcyjnej domenie przed oznaczeniem jako wdrożone.
+## Quality learning — wdrożone
+- hard-negative learning: zaakceptowana korekta może zapisać błędna identyfikacja → poprawna identyfikacja,
+- powtarzające się błędy zwiększają karę dla danego błędnego kandydata,
+- master fingerprint powstaje z co najmniej 2 wzorców expertAccepted tej samej tożsamości,
+- master fingerprint używa konsensusu cech zamiast pojedynczego egzemplarza,
+- Etap 2 preferuje master fingerprints przed pojedynczymi wzorcami,
+- panel Fingerprint pokazuje: liczbę fingerprintów, wzorców eksperckich, master fingerprintów i zapamiętanych pomyłek AI oraz listę najczęstszych hard negatives,
+- backup v4 obejmuje apomonetHardNegativesV1, więc historia korekt jakościowych jest zachowywana.
+
+## Produkcja Vercel — smoke test 2026-08-14
+- app.js ładuje quality-learning-core.js oraz stage2-fingerprint-match.js,
+- /api/ans-open-data?health=1 — HTTP 200,
+- /api/ans-open-data?id=1989.91.2 — HTTP 200,
+- /api/smithsonian-open-access?health=1 — HTTP 200, keyConfigured=false,
+- /api/europeana?health=1 — HTTP 200, configured=false, mediaRequiresOpenRights=true,
+- /api/fingerprint-open-source?health=1 — HTTP 200,
+- open-data.html — HTTP 200 i pokazuje Nomisma/ANS/Wikidata/Europeana/Met/Smithsonian,
+- backup.html — HTTP 200, APOMONET_BACKUP v4,
+- fingerprints.html — HTTP 200 i ma diagnostykę hard negatives/master fingerprints,
+- brak grup błędów runtime aplikacji; jedyny wpis to Node DEP0169 url.parse() deprecation warning.
 
 ## Czeka na test fizycznego telefonu
-- aparat vs galeria w systemowym pickerze Androida,
-- odrzucenie naprawdę słabego zdjęcia i czytelność komunikatu 422,
-- pełna ścieżka analiza → korekta → Etap 2 → fingerprint → zapis → album → PDF/XLSX,
-- pytanie o przygotowanie zdjęcia / usunięcie tła przed zapisem,
-- faktyczne pobranie i otwarcie XLSX na Androidzie,
-- systemowe udostępnianie do WhatsApp/Messenger/e-mail,
-- pobranie/przywrócenie backupu v3 na Androidzie,
-- import przypomnienia .ics do kalendarza telefonu,
-- + Nowy album, otwieranie własnego albumu i trwałość po restarcie przeglądarki,
-- Tryb eksperta: weryfikacja monety z fingerprintem i potwierdzenie promocji wzorca.
+- aparat vs galeria w pickerze Androida,
+- słabe zdjęcie → UX komunikatu 422,
+- pełna ścieżka analiza → korekta → Etap 2 → fingerprint → album → PDF/XLSX,
+- przygotowanie zdjęcia / usuwanie tła,
+- XLSX na Androidzie,
+- WhatsApp/Messenger/e-mail share,
+- backup v4 download/restore,
+- .ics do kalendarza,
+- własny album i trwałość po restarcie,
+- Tryb eksperta → promocja fingerprintu → powstanie master fingerprintu po drugim zgodnym wzorcu.
 
-## Nadal do dalszej budowy
-- napełnienie zweryfikowanej bazy polskich monet od średniowiecza do współczesności,
-- napełnienie biblioteki fingerprintów wzorcami Open Access i później materiałem eksperckim Starego Sklepu po zgodzie,
-- dalsze zasilanie publicznymi faktami aukcyjnymi i wzmacnianie wyceny,
-- pełne podpięcie fingerprintu jako dowodu do finalnej identyfikacji, tak aby konflikt cech mógł obniżać confidence zamiast być tylko informacją,
-- legalny feed prawdziwych przyszłych lotów aukcyjnych; dopiero wtedy aktywne dopasowanie Celów/Marzeń do konkretnych lotów,
-- profile kosztów konkretnych domów aukcyjnych po zweryfikowaniu regulaminów,
-- dokończenie audytu dynamicznych tekstów PL/EN/DE/FR,
-- synchronizacja między urządzeniami / konto i ewentualny PIN/biometria dostępu — późniejszy etap wymagający odrębnej architektury prywatności,
-- rozbudowa demo monet i finalna szata graficzna dopiero po stabilizacji,
-- Standard/PRO i docelowe aplikacje mobilne/desktop.
+## Najważniejsza dalsza praca
+1. Napełnić zweryfikowaną bazę polskich monet od średniowiecza do współczesności.
+2. Napełnić fingerprinty materiałem Open Access i ekspertami.
+3. Uzyskać SMITHSONIAN_API_KEY i EUROPEANA_API_KEY, jeśli chcemy aktywnego importu tych źródeł.
+4. Budować rzeczywiste master fingerprinty i obserwować hard-negative errors.
+5. Dalej zasilać fakty aukcyjne i wycenę.
+6. Po stabilizacji: prawdziwy feed lotów aukcyjnych, profile kosztów domów aukcyjnych, Standard/PRO, synchronizacja urządzeń, finalny design i aplikacje mobilne/desktop.
