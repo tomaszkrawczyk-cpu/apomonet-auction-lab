@@ -2,6 +2,7 @@ export default async function handler(req,res){
  if(req.method!=='GET')return res.status(405).json({error:'Dozwolona jest tylko metoda GET.'});
  try{
   const key=process.env.EUROPEANA_API_KEY?.trim();
+  if(String(req.query?.health||'')==='1')return res.status(200).json({success:true,configured:!!key,adapter:'EUROPEANA_RECORD_API_V2'});
   if(!key)return res.status(503).json({error:'Brak EUROPEANA_API_KEY. Adapter jest gotowy, ale wymaga klucza projektu Europeana.'});
   const raw=String(req.query?.id||'').trim();
   const id=raw.replace(/^https?:\/\/www\.europeana\.eu\/[^/]+\/item\//,'/').replace(/^https?:\/\/www\.europeana\.eu\/item\//,'/');
