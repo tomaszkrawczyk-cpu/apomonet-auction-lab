@@ -6,6 +6,7 @@
     sessionStorage.removeItem('apomonetAnalysisSession');
     sessionStorage.removeItem('apomonetReturnToAnalysis');
     sessionStorage.removeItem('apomonetOpenAlbumAfterResume');
+    sessionStorage.removeItem('apomonetAlbumPhotoPrep');
   };
   addEventListener('DOMContentLoaded',()=>{
     if(isAnalyze()){
@@ -33,6 +34,7 @@
       if(s?.id&&coinId&&s.id!==coinId){
         sessionStorage.removeItem('apomonetAnalysisSession');
         sessionStorage.removeItem('apomonetReturnToAnalysis');
+        sessionStorage.removeItem('apomonetAlbumPhotoPrep');
       }
     }
   });
