@@ -2,9 +2,11 @@
  const KEY='apomonetMultiSourceKnowledgeV1';
  const SOURCES={
   nomisma:{tier:'GREEN',kind:'knowledge',license:'CC BY 3.0',automated:true},
+  ans:{tier:'GREEN',kind:'knowledge',license:'Open Database License; image rights per record/date',automated:true},
   met:{tier:'GREEN',kind:'knowledge_visual',license:'CC0/public-domain per object',automated:true},
   smithsonian:{tier:'GREEN',kind:'knowledge_visual',license:'CC0 per Open Access record',automated:true},
   wikidata:{tier:'GREEN',kind:'knowledge',license:'CC0',automated:true},
+  europeana:{tier:'GREEN_METADATA_MEDIA_CONDITIONAL',kind:'knowledge',license:'metadata CC0; media per rights statement',automated:true},
   wcn:{tier:'YELLOW_DIRECT_RECORD_BATCH',kind:'market_fact',automated:true,maxBatch:8,noDiscovery:true,storeDescriptions:false,storeImages:false},
   stary_sklep:{tier:'GREEN_AFTER_PERMISSION',kind:'expert_reference',automated:false},
   onebid:{tier:'YELLOW',kind:'market_reference',automated:false},
