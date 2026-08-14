@@ -13,58 +13,70 @@
 - własne albumy użytkownika są otwieralne i pokazują realne monety; mają filtry, zaznaczanie, eksport, „Usuń tylko z albumu” oraz przenoszenie do innego albumu,
 - domyślne realne albumy: Mój album / Moje cele / Marzenia,
 - album „Moje cele” zasila silnik alertów aukcyjnych,
-- natywny XLSX na stronie eksportu; stary hook XLSX został usunięty,
-- stare runtime-patche Metal/Stary Sklep zostały usunięte; runtime-fixes pozostał tylko dla wyboru zdjęcia,
+- natywny XLSX na stronie eksportu,
 - Kalkulator aukcyjny PRO: buyer premium, VAT od prowizji, transport, ubezpieczenie, cło, VAT importowy, inne koszty, FX oraz wynik sprzedającego,
-- Tryb eksperta z seryjną weryfikacją, notatką i profilami prywatności eksportu,
+- Tryb eksperta z seryjną weryfikacją, notatką, profilami prywatności eksportu i promocją istniejącego fingerprintu do wzorca eksperckiego,
 - Katalog, Archiwum/Wycena, Wartość/ROI, Centrum Narzędzi PRO,
-- silniki Cele/Marzenia ↔ aukcje i akcje dodawania lotu do kolekcji/celów są ładowane globalnie,
-- lokalny Backup/Restore kolekcji, albumów, ustawień i wiedzy; backup używa aktualnych magazynów wiedzy v2 i zachowuje zgodność z backupami v1,
+- lokalny Backup/Restore v3 obejmuje kolekcję, albumy, ustawienia, wiedzę, fakty aukcyjne, multi-source knowledge i fingerprinty monet,
 - rozszerzony ekran diagnostyczny health.html.
 
-## Knowledge Builder — legalna wiedza
-- warstwa obserwacji faktograficznych + provenance,
-- konsensus między źródłami,
-- audyt sprzeczności,
-- osobna warstwa Verified Knowledge: promocja tylko przy ≥2 niezależnych dozwolonych źródłach albo potwierdzeniu eksperta,
-- Verified Knowledge ma własną ponowną kontrolę legalności provenance; stare niedozwolone rekordy nie przechodzą do v2,
-- Verified Knowledge jest rejestrowane w katalogu wyłącznie przez bezpieczną warstwę ApoVerifiedKnowledge,
-- twarda biała lista źródeł z blokadą źródeł bez jednoznacznego prawa,
-- otwarte adaptery: Nomisma (CC-BY), Wikidata (CC0), The Met Open Access (wyłącznie isPublicDomain=true),
-- Europeana Record API v2: adapter metadata-only gotowy, zapisuje rights statement i nie pobiera mediów; wymaga jeszcze EUROPEANA_API_KEY na Vercelu,
-- archiwa WCN/OneBid pozostają wyłącznie referencyjne do czasu jasnej zgody/licencji; Niemczyk/NumisBids/Coinstrail/Allegro są zablokowane dla warstwy uczącej bez zgody,
-- Smithsonian pozostaje zatwierdzonym kierunkiem Open Access, ale adapter nie jest jeszcze aktywowany do czasu jednoznacznego filtra CC0 na rekordzie,
-- stare próbki aukcyjne zostały wyłączone z warstwy uczącej,
-- brak automatycznego scrapingu źródeł bez wyraźnego prawa/zgody,
-- datowany audyt compliance i wzory próśb o zgodę są zapisane w repo,
-- rozszerzony pakiet tłumaczeń PL/EN/DE/FR obejmuje nowe albumy, backup, otwarte dane i przypomnienia aukcyjne.
+## Rynek i wycena
+- własny model faktów rynkowych zamiast kopiowania cudzych archiwów,
+- rozdzielenie hammerPrice / realizedPrice / totalPrice,
+- porównywanie po władcy, nominale, roku, mennicy, odmianie, metalu i stanie,
+- klasy strict / good / indicative / weak,
+- widełki 10–90 percentyl + mediana zamiast surowego minimum/maksimum,
+- brak wyceny, jeśli materiał jest zbyt słaby,
+- WCN: kontrolowany import publicznych faktów z bezpośrednich kart; batch maks. 8 URL, bez list/paginacji, bez zapisu zdjęć i opisów, z deduplikacją i provenance.
 
-## Smoke test produkcji wykonany bez udziału telefonu
-- wszystkie deploymenty bieżącego pakietu: READY,
-- app.js po cleanupie: HTTP 200 i nie ładuje starego XLSX hooka,
-- open-data.html: HTTP 200,
-- health.html: HTTP 200,
-- /api/europeana?health=1: HTTP 200; adapter obecny, klucz Europeany obecnie nie skonfigurowany,
-- wcześniejsze testy collection/export/user-album/calendar/backup: HTTP 200,
-- brak błędu aplikacji w runtime; widoczne było wyłącznie ostrzeżenie Node/Vercel o url.parse().
+## Multi-source Knowledge
+- wspólny rdzeń łączenia dowodów z wielu źródeł,
+- zachowanie source / sourceId / sourceUrl / licencji / rightsCheckedAt,
+- źródła RED blokowane przed automatycznym ingestem,
+- otwarte adaptery: Nomisma, Wikidata, The Met Open Access,
+- The Met: automatyczny ingest tylko dla obiektów isPublicDomain=true i przechodzących filtr numizmatyczny,
+- konsensus źródeł: single-source / supported / strong,
+- Stary Sklep przygotowany jako przyszłe źródło eksperckie po zgodzie,
+- NumisBids i Coinstrail pozostają zablokowane dla automatycznego ingestu bez odpowiednich praw/zgody,
+- Niemczyk pozostaje bez automatycznego adaptera do czasu zgody/zweryfikowania warunków.
+
+## Fingerprint / biometria monety
+- Etap 2 zwraca ustrukturyzowane cechy diagnostyczne zamiast samego tekstu,
+- cechy obejmują m.in. interpunkcję, rozstaw/pozycję daty, pozycje legendy, formy liter i cyfr, portret, koronę, tarczę/herb, znak menniczy, ogon orła, skrzydła, pióra, monogram i rant,
+- każda cecha ma wartość, confidence, metodę i notatkę; cechy niewidoczne mają confidence=0 zamiast zgadywania,
+- silnik porównania fingerprintów liczy podobieństwo ważone i pokazuje liczbę wspólnych cech oraz konflikty,
+- rozdzielone statusy ownerAccepted i expertAccepted; korekta właściciela nie udaje weryfikacji eksperckiej,
+- biblioteka wzorców eksperckich budowana tylko z expertVerified,
+- panel fingerprints.html pokazuje fingerprinty, wzorce i najbliższe dopasowania,
+- endpoint fingerprint-open-source potrafi zbudować fingerprint z obiektu The Met Public Domain i zwraca tylko cechy + provenance; nie zapisuje źródłowego zdjęcia ani opisu,
+- panel Fingerprint ma przepływ Met object ID → budowa fingerprintu → zapis lokalny,
+- stage2-fingerprint-match.js przygotowany do pokazania dopasowań fingerprintu bezpośrednio po Etapie 2.
+
+## Produkcja Vercel
+- Etap 2 z fingerprintem, rdzeń fingerprintów i dashboard fingerprintów mają deployment READY,
+- Git→Vercel wznowił działanie po krótkim zatorze, ale produkcyjny app.js w ostatnim sprawdzeniu nie ładował jeszcze stage2-fingerprint-match.js,
+- ostatnie commity: loader dopasowań, ulepszony Tryb eksperta, backup v3, endpoint fingerprint-open-source i UI importu The Met są w GitHubie; wymagają potwierdzenia na produkcyjnej domenie przed oznaczeniem jako wdrożone.
 
 ## Czeka na test fizycznego telefonu
 - aparat vs galeria w systemowym pickerze Androida,
 - odrzucenie naprawdę słabego zdjęcia i czytelność komunikatu 422,
+- pełna ścieżka analiza → korekta → Etap 2 → fingerprint → zapis → album → PDF/XLSX,
+- pytanie o przygotowanie zdjęcia / usunięcie tła przed zapisem,
 - faktyczne pobranie i otwarcie XLSX na Androidzie,
 - systemowe udostępnianie do WhatsApp/Messenger/e-mail,
-- pobranie/przywrócenie backupu na Androidzie,
+- pobranie/przywrócenie backupu v3 na Androidzie,
 - import przypomnienia .ics do kalendarza telefonu,
 - + Nowy album, otwieranie własnego albumu i trwałość po restarcie przeglądarki,
-- pełna ścieżka analiza → pytania → korekta → detal → zapis → album → eksport.
+- Tryb eksperta: weryfikacja monety z fingerprintem i potwierdzenie promocji wzorca.
 
 ## Nadal do dalszej budowy
-- dokończenie ręcznego audytu wszystkich dynamicznie generowanych tekstów PL/EN/DE/FR,
-- uzyskanie i konfiguracja klucza projektu Europeana przed realnym importem,
-- ewentualny adapter Smithsonian dopiero po jednoznacznym filtrowaniu rekordów CC0,
-- dalsza rozbudowa zweryfikowanej bazy polskich monet od średniowiecza do współczesności,
+- napełnienie zweryfikowanej bazy polskich monet od średniowiecza do współczesności,
+- napełnienie biblioteki fingerprintów wzorcami Open Access i później materiałem eksperckim Starego Sklepu po zgodzie,
+- dalsze zasilanie publicznymi faktami aukcyjnymi i wzmacnianie wyceny,
+- pełne podpięcie fingerprintu jako dowodu do finalnej identyfikacji, tak aby konflikt cech mógł obniżać confidence zamiast być tylko informacją,
 - legalny feed prawdziwych przyszłych lotów aukcyjnych; dopiero wtedy aktywne dopasowanie Celów/Marzeń do konkretnych lotów,
 - profile kosztów konkretnych domów aukcyjnych po zweryfikowaniu regulaminów,
-- synchronizacja między urządzeniami / konto i ewentualny PIN/biometria — późniejszy etap wymagający odrębnej architektury prywatności,
+- dokończenie audytu dynamicznych tekstów PL/EN/DE/FR,
+- synchronizacja między urządzeniami / konto i ewentualny PIN/biometria dostępu — późniejszy etap wymagający odrębnej architektury prywatności,
 - rozbudowa demo monet i finalna szata graficzna dopiero po stabilizacji,
 - Standard/PRO i docelowe aplikacje mobilne/desktop.
