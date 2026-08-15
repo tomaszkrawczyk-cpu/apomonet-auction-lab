@@ -34,6 +34,20 @@ function albumPhotoResolver(){
   return sandbox.ApoAlbumPhotos.resolve;
 }
 
+function collectionI18n(){
+  const sandbox={
+    console,
+    location:{pathname:'/collection.html'},
+    localStorage:{getItem(){return 'de'},setItem(){}},
+    document:{readyState:'loading',addEventListener(){}},
+    addEventListener(){},
+    MutationObserver:class {},
+  };
+  sandbox.window=sandbox;
+  vm.runInNewContext(read('collection-content-i18n.js'),sandbox,{filename:'collection-content-i18n.js'});
+  return sandbox.ApoCollectionI18n;
+}
+
 test('safe crop keeps a generous margin around a reliable coin edge',()=>{
   const {safeCrop}=imagePipeline();
   const crop=safeCrop({width:600,height:600},{cx:300,cy:300,r:100,score:22});
@@ -182,15 +196,21 @@ test('a saved coin reopens from the collection with both photos and accepted dat
 test('selected language translates analysis values without sending photos or owner notes',()=>{
   const app=read('app.js');
   const client=read('analysis-content-i18n.js');
+  const collectionClient=read('collection-content-i18n.js');
   const api=read('api/translate-analysis.js');
   const analysis=read('analyze.html');
   const coin=read('coin.html');
   assert.match(app,/analysis-content-i18n\.js/);
+  assert.match(app,/collection-content-i18n\.js/);
   assert.match(client,/fetch\("\/api\/translate-analysis"/);
   assert.match(client,/"fullDescription"/);
   assert.match(client,/"warnings"/);
   assert.doesNotMatch(client,/obverseImage|reverseImage|userAdditionalInfo|provenance/);
   assert.doesNotMatch(api,/obverseImage|reverseImage|userAdditionalInfo|provenance/);
+  assert.doesNotMatch(collectionClient,/obverseImage|reverseImage|rawAI|notes|provenance/);
+  assert.match(collectionClient,/MAX_ITEMS = 60/);
+  assert.match(collectionClient,/fetch\("\/api\/translate-analysis"/);
+  assert.doesNotMatch(collectionClient,/hidden\s*=/);
   assert.match(api,/Preserve dates, numbers, catalog references, rarity codes, mint marks and transcribed coin legends exactly/);
   assert.match(analysis,/await localizeCurrent/);
   assert.match(analysis,/window\.__apoLocalizedAnalysis = translated/);
@@ -200,6 +220,30 @@ test('selected language translates analysis values without sending photos or own
       coin.indexOf("await translator.localize(coin)"),
     "the saved card must remain visible while its translation is loading",
   );
+});
+
+test('collection and album translations are batched and limited to safe summary fields',()=>{
+  const {buildItems}=collectionI18n();
+  const records=Array.from({length:40},(_,index)=>({
+    id:`coin-${index}`,
+    title:`Tytuł ${index}`,
+    ruler:`Władca ${index}`,
+    nominal:`Nominał ${index}`,
+    metal:'Srebro',
+    mint:`Mennica ${index}`,
+    notes:`Prywatna notatka ${index}`,
+    provenance:`Proweniencja ${index}`,
+    obverseImage:`photo-${index}`,
+  }));
+  const result=buildItems(records);
+  assert.equal(result.items.length,60);
+  assert.ok(result.items.every(item=>/^summary\.\d+\.(title|country|ruler|nominal|metal|mint|variant|grade|rarity)$/.test(item.key)));
+  assert.ok(result.items.every(item=>!item.text.includes('Prywatna notatka')));
+  assert.ok(result.items.every(item=>!item.text.includes('photo-')));
+
+  const api=read('api/translate-analysis.js');
+  assert.match(api,/SUMMARY_FIELDS/);
+  assert.match(api,/\^summary\\\.\(\\d\{1,2\}\)\\\./);
 });
 
 test('background removal detects the coin and writes a transparent PNG only when reliable',()=>{

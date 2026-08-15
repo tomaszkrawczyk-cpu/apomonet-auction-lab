@@ -34,8 +34,24 @@ const ARRAY_PREFIXES = [
   "detail.diagnosticFeatures.",
 ];
 
+const SUMMARY_FIELDS = new Set([
+  "title",
+  "country",
+  "ruler",
+  "nominal",
+  "metal",
+  "mint",
+  "variant",
+  "grade",
+  "rarity",
+]);
+
 function allowedKey(key) {
   if (STRING_KEYS.has(key)) return true;
+  const summary = key.match(/^summary\.(\d{1,2})\.([a-zA-Z]+)$/);
+  if (summary && Number(summary[1]) < 60 && SUMMARY_FIELDS.has(summary[2])) {
+    return true;
+  }
   return ARRAY_PREFIXES.some(
     (prefix) => key.startsWith(prefix) && /^\d+$/.test(key.slice(prefix.length)),
   );

@@ -22,6 +22,7 @@
 - Przed wysłaniem zdjęć do analizy aplikacja lokalnie rozpoznaje wzorzyste tło, niepewną krawędź lub pełny kadr i pokazuje prostą wskazówkę. Ostrzeżenie nie blokuje analizy ani nie wymaga zapytania do serwera.
 - Karta, album użytkownika, okładka albumu i eksport korzystają z jednego mechanizmu wyboru zdjęcia. Przy trybie „Usuń tło” wszędzie preferowany jest zapisany przezroczysty PNG; tryb „Bez zdjęcia” nie może już przypadkowo przywrócić oryginału.
 - Okładki własnych albumów pokazują teraz do czterech rzeczywistych miniatur zapisanych monet zamiast samych pustych kół.
+- Dane monet na listach kolekcji i albumu użytkownika są tłumaczone w PL/EN/DE/FR jednym ograniczonym zapytaniem z lokalnym cache'em. Oryginalne rekordy pozostają bez zmian, a prywatne notatki, proweniencja, zdjęcia i `rawAI` są wykluczone z tego przepływu.
 
 ## Źródła i diagnostyka
 - Smithsonian: skonfigurowany i zweryfikowany na produkcji; health => valid=true.
@@ -40,7 +41,7 @@
 - Automatyczny test w chmurowym Chrome przeszedł cały przepływ: wybór awersu i rewersu razem → lokalne przygotowanie zdjęć → `/api/analyze` → korekta użytkownika → ponowny powrót z obiema miniaturami → zapis → kolekcja → otwarcie karty monety.
 - `/api/analyze` zwrócił HTTP 200; logi tej wersji nie zawierają odpowiedzi 4xx/5xx dla testowanego przepływu.
 - Po ponownym otwarciu potwierdzono: oba zdjęcia obecne, skorygowany nominał i emitent widoczne, `userAccepted` pokazany jako dane użytkownika, puste sekcje opcjonalne ukryte.
-- Testy regresji: 14/14 zaliczonych, w tym granice prywatności tłumaczeń, rzeczywiste przezroczyste wycięcie tła, wspólny wybór zdjęcia dla wszystkich powierzchni albumowych oraz ostrzeżenie o jakości zdjęcia przed analizą; kontrola składni JavaScript i `git diff --check` bez błędów.
+- Testy regresji: 15/15 zaliczonych, w tym granice prywatności i limitów tłumaczenia list, rzeczywiste przezroczyste wycięcie tła, wspólny wybór zdjęcia dla wszystkich powierzchni albumowych oraz ostrzeżenie o jakości zdjęcia przed analizą; kontrola składni JavaScript i `git diff --check` bez błędów.
 
 ## Test fizycznego Androida i Etapu 2
 - Tester potwierdził, że na pierwszej realnej monecie analiza podstawowa pomyliła monetę, władcę i rok, ale korekta była możliwa i została przyjęta.

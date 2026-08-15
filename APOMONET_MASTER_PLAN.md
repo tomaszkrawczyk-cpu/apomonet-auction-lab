@@ -19,7 +19,7 @@ Legenda: ✅ działa / 🟡 częściowo / 🔴 brak / 🔵 etap PRO/LAB / ⚠️
 - 🟡 Responsywny webowy prototyp/PWA.
 - 🟡 Spójny UI ApoMonet — część ekranów wymaga dalszego ujednolicenia.
 - 🟡 Dashboard: istnieje Start, ale brakuje pełnego podsumowania kolekcji, ostatnich monet i wartości.
-- 🟡 Wielojęzyczność: wspólny mechanizm istnieje; pełne pokrycie ekranów do audytu. Języki docelowe z ustaleń: PL, EN, DE, FR, ES, IT, UK, RU; dodatkowo CZ.
+- 🟡 Wielojęzyczność: wspólny mechanizm istnieje; dynamiczne dane monety są tłumaczone na analizie, karcie, liście kolekcji i w albumie użytkownika dla PL/EN/DE/FR, a pełne pokrycie pozostałych ekranów wymaga audytu. Języki docelowe z ustaleń: PL, EN, DE, FR, ES, IT, UK, RU; dodatkowo CZ.
 - 🔴 Docelowe aplikacje Flutter: Android, iOS, Windows, macOS, Linux.
 
 ### B. Zdjęcie i analiza
@@ -117,6 +117,8 @@ Legenda: ✅ działa / 🟡 częściowo / 🔴 brak / 🔵 etap PRO/LAB / ⚠️
 Kamień milowy 2026-08-15: najważniejszy przepływ zdjęcia → analiza → korekta → zapis → ponowne otwarcie przeszedł automatyczny test E2E na wersji preview. Fizyczny Android potwierdził zapis do albumu i prawidłowy wynik na jednolitym tle. Wdrożono następnie prawdziwe przezroczyste wycięcie tła z bezpieczną odmową przy niepewnym obrysie oraz tłumaczenie dynamicznych danych i opisów AI; oba elementy wymagają krótkiego testu potwierdzającego na telefonie.
 
 Aktualizacja stabilizacji: karta monety, album użytkownika, okładka albumu i eksport korzystają z jednego mechanizmu wyboru zdjęcia. Tryb „Usuń tło” preferuje przygotowany przezroczysty PNG, „Oryginał” zachowuje pierwotne zdjęcie, a „Bez zdjęcia” nie przywraca go przez awaryjny fallback. Przed analizą aplikacja ostrzega teraz o wzorzystym tle lub niepewnej krawędzi i podaje prostą instrukcję ponownego zdjęcia.
+
+Aktualizacja językowa: listy kolekcji i albumów tłumaczą widoczne tytuły oraz bezpieczne pola numizmatyczne jednym ograniczonym zapytaniem i cache'em. Oryginalny rekord nie jest nadpisywany, a zdjęcia, `rawAI`, notatki właściciela i proweniencja nie trafiają do tłumaczenia list.
 
 Aktualizacja testu fizycznego: Android potwierdził analizę i zachowanie ręcznej korekty na dwóch monetach. Do zamknięcia pozostają trafność identyfikacji na reprezentatywnym zestawie, analiza szczegółowa po optymalizacji oraz ponowny zapis/otwarcie wykonane przez testera na telefonie.
 
