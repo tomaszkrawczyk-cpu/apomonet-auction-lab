@@ -416,6 +416,71 @@
         preview(imgs[1], "ri", "rp");
       };
       const v = (x) => (x && String(x).trim() ? x : "Nie ustalono");
+      function apiError(payload, fallback) {
+        const error = payload?.error;
+        if (typeof error === "string" && error.trim()) return error;
+        if (typeof error?.message === "string" && error.message.trim()) {
+          return error.message;
+        }
+        if (typeof payload?.message === "string" && payload.message.trim()) {
+          return payload.message;
+        }
+        if (typeof error?.code === "string" && error.code.trim()) {
+          return `${fallback} (${error.code})`;
+        }
+        return fallback;
+      }
+      const detailBaseFields = [
+        "country",
+        "ruler",
+        "year",
+        "nominal",
+        "mint",
+        "metal",
+        "variant",
+        "grade",
+        "rarity",
+        "description",
+        "fullDescription",
+        "confidence",
+        "userAccepted",
+        "userAdditionalInfo",
+      ];
+      function detailBase() {
+        return Object.fromEntries(
+          detailBaseFields
+            .filter((key) => a?.[key] !== undefined)
+            .map((key) => [key, a[key]]),
+        );
+      }
+      function renderDetail(detail) {
+        const container = $("deepText");
+        container.replaceChildren();
+        const add = (label, value) => {
+          const heading = document.createElement("b");
+          heading.textContent = label;
+          const paragraph = document.createElement("p");
+          paragraph.textContent = v(value);
+          container.append(heading, paragraph);
+        };
+        add("Odmiana", detail.variant);
+        add(
+          "Katalog Kopickiego",
+          [detail.kopickiReference, detail.kopickiRarity]
+            .filter((item) => item && String(item).trim())
+            .join(" • "),
+        );
+        add("Interpunkcja legendy", detail.legendPunctuation);
+        add("Awers — obserwacje", detail.obverseDetails);
+        add("Rewers — obserwacje", detail.reverseDetails);
+        if (detail.diagnosticFeatures?.length) {
+          add("Cechy diagnostyczne", detail.diagnosticFeatures.join("; "));
+        }
+        if (detail.warnings?.length) {
+          add("Uwagi i ograniczenia", detail.warnings.join(" "));
+        }
+        add("Pełny opis", detail.fullDescription);
+      }
       function render() {
         const rows = [
           ["Kraj / emitent", a.country],
@@ -522,7 +587,7 @@
           } catch {
             throw Error("Serwer nie zwrócił poprawnej odpowiedzi.");
           }
-          if (!r.ok) throw Error(d.error || "HTTP " + r.status);
+          if (!r.ok) throw Error(apiError(d, "Błąd serwera HTTP " + r.status));
           a = d.analysis;
           render();
           $("status").textContent = "Etap 1 gotowy.";
@@ -534,26 +599,53 @@
         }
       };
       $("deep").onclick = async () => {
+        const controller = new AbortController();
+        const progressTimers = [
+          setTimeout(() => {
+            $("status").textContent = "Odczytuję legendę i detale stempla…";
+          }, 8_000),
+          setTimeout(() => {
+            $("status").textContent = "Porównuję odmianę i znaki mennicze…";
+          }, 20_000),
+          setTimeout(() => {
+            $("status").textContent =
+              "To trudna moneta — jeszcze analizuję. Zdjęcia są bezpieczne.";
+          }, 35_000),
+        ];
+        const requestTimeout = setTimeout(() => controller.abort(), 62_000);
         try {
           $("deep").disabled = true;
-          $("status").textContent = "Analiza szczegółowa…";
+          $("deep").setAttribute("aria-busy", "true");
+          $("status").textContent = "Rozpoczynam analizę szczegółową…";
           const r = await fetch("/api/analyze-detail", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ images: analysisImgs, base: a }),
-            }),
+            method: "POST",
+            signal: controller.signal,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ images: analysisImgs, base: detailBase() }),
+          });
+          let d;
+          try {
             d = await r.json();
-          if (!r.ok) throw Error(d.error || "HTTP " + r.status);
+          } catch {
+            throw Error("Serwer nie zwrócił poprawnej odpowiedzi.");
+          }
+          if (!r.ok) throw Error(apiError(d, "Błąd serwera HTTP " + r.status));
           a = { ...a, ...d.detail, detail: d.detail };
           $("deepConf").textContent = `Pewność ${d.detail.confidence || 0}%`;
-          $("deepText").innerHTML =
-            `<b>Odmiana:</b> ${v(d.detail.variant)}<br><b>Kopicki:</b> ${v(d.detail.kopickiReference)} • ${v(d.detail.kopickiRarity)}<br><b>Interpunkcja:</b> ${v(d.detail.legendPunctuation)}<br><br>${v(d.detail.fullDescription)}`;
+          renderDetail(d.detail);
           $("deepPanel").classList.remove("hidden");
           $("status").textContent = "Analiza szczegółowa zakończona.";
         } catch (e) {
-          $("status").textContent = "Błąd: " + e.message;
+          console.error("[analyze-detail]", e);
+          $("status").textContent =
+            e.name === "AbortError"
+              ? "Analiza trwała zbyt długo. Zdjęcia i poprawione dane są bezpieczne — spróbuj ponownie."
+              : "Nie udało się ukończyć analizy: " + e.message;
         } finally {
+          progressTimers.forEach(clearTimeout);
+          clearTimeout(requestTimeout);
           $("deep").disabled = false;
+          $("deep").removeAttribute("aria-busy");
         }
       };
       $("save").onclick = () => {
