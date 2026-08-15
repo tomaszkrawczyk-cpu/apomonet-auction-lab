@@ -38,6 +38,11 @@
         border-color: #5e441c;
         color: #d7c29b;
       }
+      .btn.danger {
+        border: 1px solid #74342f;
+        background: #311714;
+        color: #ffd8d3;
+      }
       @media (max-width: 560px) {
         .facts {
           grid-template-columns: 1fr;
@@ -107,6 +112,9 @@
           >
           <a class="btn secondary" href="collection.html">Wróć do kolekcji</a>
           <a class="btn secondary" href="analyze.html">Analizuj inną monetę</a>
+          <button id="deleteCoin" class="btn danger" type="button">
+            Usuń monetę z kolekcji
+          </button>
         </div>
       </div>
     </main>
@@ -192,6 +200,18 @@
         document.getElementById("acceptedBadge").hidden = !coin.userAccepted;
         document.getElementById("editLink").href =
           "coin-edit.html?id=" + encodeURIComponent(coin.id);
+        document.getElementById("deleteCoin").onclick = () => {
+          if (
+            !confirm(
+              "Usunąć „" +
+                (coin.title || "tę monetę") +
+                "” z całej kolekcji? Tej operacji nie można cofnąć.",
+            )
+          )
+            return;
+          ApoMonet.deleteCoin(coin.id);
+          location.href = "collection.html";
+        };
 
         const preparedObverse = window.ApoAlbumPhotos
           ? ApoAlbumPhotos.resolve(coin, "obverse")
