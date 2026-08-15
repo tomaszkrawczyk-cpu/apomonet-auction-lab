@@ -1,3 +1,361 @@
-<!DOCTYPE html><html lang="pl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kolekcja • ApoMonet</title><link rel="stylesheet" href="style.css"><link rel="manifest" href="manifest.webmanifest"><style>.value-box{margin:14px 0 20px;padding:18px;border:1px solid #3a2a15;border-radius:18px;background:#111}.value-box[hidden]{display:none}.value-total{font-size:32px;font-weight:800;color:#d9952f;margin:5px 0}.value-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.value-stat{padding:10px;border-radius:12px;background:#191919}.value-stat small{display:block;color:#888}.value-stat strong{display:block;margin-top:3px}.value-note{font-size:12px;color:#888;margin-top:12px}.filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:12px 0}.selectbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0 18px}.coin-card{position:relative}.pick{position:absolute;right:12px;top:12px}.pick input{width:20px;height:20px}.coin-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.selected-info{color:#aaa;font-size:13px}@media(max-width:700px){.filters{grid-template-columns:1fr 1fr}.value-grid{grid-template-columns:1fr}}@media(max-width:430px){.filters{grid-template-columns:1fr}}</style></head><body><header class="topbar"><a class="brand" href="index.html">ApoMonet</a><nav class="nav"><a href="index.html">Start</a><a href="analyze.html">Analiza</a><a class="active" href="collection.html">Kolekcja</a><a href="albums.html">Albumy</a><a href="calendar.html">Kalendarz</a><a href="auction-houses.html">Domy aukcyjne</a></nav></header><main class="shell"><section class="hero compact"><span class="eyebrow">Kolekcja</span><h1>Moje monety</h1><p>Katalog monet z edycją danych, historią korekt, wyceną, pochodzeniem i notatkami.</p></section><div class="toolbar"><input id="search" class="input" placeholder="Szukaj po roku, władcy, nominale…"><a class="btn primary" href="analyze.html">+ Dodaj przez analizę</a><a class="btn secondary" href="coin-edit.html">+ Dodaj ręcznie</a><button id="valueBtn" class="btn primary" type="button">Podaj wartość mojej kolekcji</button><a class="btn secondary" href="fees.html">Kalkulator aukcyjny</a></div><div class="filters"><select id="rulerFilter" class="input"><option value="">Wszyscy władcy / emitenci</option></select><select id="nominalFilter" class="input"><option value="">Wszystkie nominały</option></select><select id="mintFilter" class="input"><option value="">Wszystkie mennice</option></select><select id="metalFilter" class="input"><option value="">Wszystkie metale</option></select></div><div class="selectbar"><button id="selectAll" class="btn secondary" type="button">Zaznacz wszystko</button><button id="clearSelection" class="btn secondary" type="button">Odznacz wszystko</button><button id="pdfSelected" class="btn primary" type="button">PDF z wybranych</button><button id="xlsxSelected" class="btn primary" type="button">Excel z wybranych</button><button id="shareSelected" class="btn secondary" type="button">Udostępnij wybrane</button><span id="selectedInfo" class="selected-info">Zaznaczono: 0</span></div><section id="valueBox" class="value-box" hidden></section><section id="coins" class="grid"></section></main><nav class="bottom-nav"><a href="index.html">Start</a><a href="analyze.html">Analiza</a><a class="active" href="collection.html">Kolekcja</a><a href="calendar.html">Aukcje</a><a href="albums.html">Albumy</a></nav><script src="app.js"></script><script>
-const selected=new Set();const filterIds=['rulerFilter','nominalFilter','mintFilter','metalFilter'];function money(v){return new Intl.NumberFormat('pl-PL',{style:'currency',currency:'PLN',maximumFractionDigits:0}).format(v||0)}function coinValue(c){const vals=[c.value,c.estimatedValue,c.estimate,c.valuation,c.priceEstimate,c.marketValue,Number(c.estimateLow&&c.estimateHigh?(Number(c.estimateLow)+Number(c.estimateHigh))/2:0)].map(Number).filter(v=>Number.isFinite(v)&&v>0);return vals[0]||0}function state(){return ApoMonet.load()}function rebuildFilters(){const list=state().coins;const defs=[['rulerFilter','ruler'],['nominalFilter','nominal'],['mintFilter','mint'],['metalFilter','metal']];for(const [id,key] of defs){const e=document.getElementById(id),keep=e.value,first=e.options[0].textContent;e.innerHTML='<option value="">'+first+'</option>';[...new Set(list.map(c=>c[key]).filter(Boolean))].sort().forEach(v=>e.insertAdjacentHTML('beforeend','<option>'+String(v).replaceAll('&','&amp;').replaceAll('<','&lt;')+'</option>'));if([...e.options].some(o=>o.value===keep))e.value=keep}}function filtered(){const q=(search.value||'').toLowerCase(),r=rulerFilter.value,n=nominalFilter.value,m=mintFilter.value,me=metalFilter.value;return state().coins.filter(c=>[c.title,c.nominal,c.ruler,c.year,c.mint,c.metal,c.variant].join(' ').toLowerCase().includes(q)&&(!r||c.ruler===r)&&(!n||c.nominal===n)&&(!m||c.mint===m)&&(!me||c.metal===me))}function updateSelected(){selectedInfo.textContent='Zaznaczono: '+selected.size}function render(){const list=filtered();coins.innerHTML=list.length?list.map(c=>`<article class="card coin-card"><label class="pick"><input class="coin-pick" type="checkbox" data-id="${c.id}" ${selected.has(c.id)?'checked':''}></label><span class="eyebrow">${c.year||'Rok nieustalony'}</span><h2>${c.title||'Moneta bez nazwy'}</h2><p>${[c.nominal,c.ruler,c.mint,c.metal].filter(Boolean).join(' • ')||'Dane do uzupełnienia'}</p><div class="meta">${coinValue(c)?`Szacunkowo: ${money(coinValue(c))} • `:''}</div><div class="coin-actions"><a class="btn secondary" href="coin-edit.html?id=${encodeURIComponent(c.id)}">Edytuj i popraw</a><button class="btn secondary delete-coin" data-id="${c.id}" type="button">Usuń monetę z kolekcji</button></div></article>`).join(''):'<div class="empty">Kolekcja jest pusta albo filtry ukrywają wszystkie monety.</div>';document.querySelectorAll('.coin-pick').forEach(x=>x.onchange=()=>{x.checked?selected.add(x.dataset.id):selected.delete(x.dataset.id);updateSelected()});document.querySelectorAll('.delete-coin').forEach(b=>b.onclick=()=>{const c=state().coins.find(x=>x.id===b.dataset.id);if(!c||!confirm('Usunąć „'+(c.title||'tę monetę')+'” z całej kolekcji? Tej operacji nie traktujemy jako usunięcia tylko z albumu.'))return;ApoMonet.deleteCoin(c.id);selected.delete(c.id);rebuildFilters();render();updateSelected()})}function exportSelected(type){const ids=[...selected];if(!ids.length)return alert('Najpierw zaznacz monety.');sessionStorage.setItem('apomonet_export_ids',JSON.stringify(ids));sessionStorage.removeItem('apomonet_demo_export_coins');location.href='export.html?type='+encodeURIComponent(type)}async function share(){const list=state().coins.filter(c=>selected.has(c.id));if(!list.length)return alert('Najpierw zaznacz monety.');const text='APOMONET — wybrane monety\n\n'+list.map((c,i)=>`${i+1}. ${c.title||'Moneta'}${c.year?' — '+c.year:''}${c.ruler?' — '+c.ruler:''}${c.nominal?' — '+c.nominal:''}`).join('\n');if(navigator.share){try{await navigator.share({title:'APOMONET — wybrane monety',text});return}catch(e){if(e.name==='AbortError')return}}try{await navigator.clipboard.writeText(text);alert('Lista została skopiowana.')}catch{location.href='mailto:?subject='+encodeURIComponent('APOMONET — wybrane monety')+'&body='+encodeURIComponent(text)}}search.addEventListener('input',render);filterIds.forEach(id=>document.getElementById(id).addEventListener('change',render));selectAll.onclick=()=>{filtered().forEach(c=>selected.add(c.id));render();updateSelected()};clearSelection.onclick=()=>{selected.clear();render();updateSelected()};pdfSelected.onclick=()=>exportSelected('pdf');xlsxSelected.onclick=()=>exportSelected('excel');shareSelected.onclick=share;valueBtn.onclick=()=>{const list=state().coins,valued=list.filter(c=>coinValue(c)>0),sum=valued.reduce((s,c)=>s+coinValue(c),0);valueBox.hidden=false;if(!list.length){valueBox.innerHTML='<h2>Wartość kolekcji</h2><p>Najpierw dodaj monety do kolekcji.</p>';return}if(!valued.length){valueBox.innerHTML=`<h2>Wartość kolekcji</h2><p>Masz ${list.length} monet, ale żadna nie ma jeszcze zapisanej wyceny.</p>`;return}valueBox.innerHTML=`<span class="eyebrow">Szacunkowa wartość</span><div class="value-total">${money(sum)}</div><div class="value-grid"><div class="value-stat"><small>Monety w kolekcji</small><strong>${list.length}</strong></div><div class="value-stat"><small>Z wyceną</small><strong>${valued.length}</strong></div><div class="value-stat"><small>Bez wyceny</small><strong>${list.length-valued.length}</strong></div></div><div class="value-note">To suma zapisanych wycen, a nie gwarantowana cena sprzedaży.</div>`};rebuildFilters();render();updateSelected();
-</script></body></html>
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Kolekcja • ApoMonet</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <style>
+      .value-box {
+        margin: 14px 0 20px;
+        padding: 18px;
+        border: 1px solid #3a2a15;
+        border-radius: 18px;
+        background: #111;
+      }
+      .value-box[hidden] {
+        display: none;
+      }
+      .value-total {
+        font-size: 32px;
+        font-weight: 800;
+        color: #d9952f;
+        margin: 5px 0;
+      }
+      .value-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-top: 12px;
+      }
+      .value-stat {
+        padding: 10px;
+        border-radius: 12px;
+        background: #191919;
+      }
+      .value-stat small {
+        display: block;
+        color: #888;
+      }
+      .value-stat strong {
+        display: block;
+        margin-top: 3px;
+      }
+      .value-note {
+        font-size: 12px;
+        color: #888;
+        margin-top: 12px;
+      }
+      .filters {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+        margin: 12px 0;
+      }
+      .selectbar {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+        margin: 10px 0 18px;
+      }
+      .coin-card {
+        position: relative;
+      }
+      .pick {
+        position: absolute;
+        right: 12px;
+        top: 12px;
+      }
+      .pick input {
+        width: 20px;
+        height: 20px;
+      }
+      .coin-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+      }
+      .selected-info {
+        color: #aaa;
+        font-size: 13px;
+      }
+      @media (max-width: 700px) {
+        .filters {
+          grid-template-columns: 1fr 1fr;
+        }
+        .value-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 430px) {
+        .filters {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="index.html">ApoMonet</a>
+      <nav class="nav">
+        <a href="index.html">Start</a><a href="analyze.html">Analiza</a
+        ><a class="active" href="collection.html">Kolekcja</a
+        ><a href="albums.html">Albumy</a><a href="calendar.html">Kalendarz</a
+        ><a href="auction-houses.html">Domy aukcyjne</a>
+      </nav>
+    </header>
+    <main class="shell">
+      <section class="hero compact">
+        <span class="eyebrow">Kolekcja</span>
+        <h1>Moje monety</h1>
+        <p>
+          Katalog monet z edycją danych, historią korekt, wyceną, pochodzeniem i
+          notatkami.
+        </p>
+      </section>
+      <div class="toolbar">
+        <input
+          id="search"
+          class="input"
+          placeholder="Szukaj po roku, władcy, nominale…"
+        /><a class="btn primary" href="analyze.html">+ Dodaj przez analizę</a
+        ><a class="btn secondary" href="coin-edit.html">+ Dodaj ręcznie</a
+        ><button id="valueBtn" class="btn primary" type="button">
+          Podaj wartość mojej kolekcji</button
+        ><a class="btn secondary" href="fees.html">Kalkulator aukcyjny</a>
+      </div>
+      <div class="filters">
+        <select id="rulerFilter" class="input">
+          <option value="">Wszyscy władcy / emitenci</option></select
+        ><select id="nominalFilter" class="input">
+          <option value="">Wszystkie nominały</option></select
+        ><select id="mintFilter" class="input">
+          <option value="">Wszystkie mennice</option></select
+        ><select id="metalFilter" class="input">
+          <option value="">Wszystkie metale</option>
+        </select>
+      </div>
+      <div class="selectbar">
+        <button id="selectAll" class="btn secondary" type="button">
+          Zaznacz wszystko</button
+        ><button id="clearSelection" class="btn secondary" type="button">
+          Odznacz wszystko</button
+        ><button id="pdfSelected" class="btn primary" type="button">
+          PDF z wybranych</button
+        ><button id="xlsxSelected" class="btn primary" type="button">
+          Excel z wybranych</button
+        ><button id="shareSelected" class="btn secondary" type="button">
+          Udostępnij wybrane</button
+        ><span id="selectedInfo" class="selected-info">Zaznaczono: 0</span>
+      </div>
+      <section id="valueBox" class="value-box" hidden></section>
+      <section id="coins" class="grid"></section>
+    </main>
+    <nav class="bottom-nav">
+      <a href="index.html">Start</a><a href="analyze.html">Analiza</a
+      ><a class="active" href="collection.html">Kolekcja</a
+      ><a href="calendar.html">Aukcje</a><a href="albums.html">Albumy</a>
+    </nav>
+    <script src="app.js"></script>
+    <script>
+      const selected = new Set();
+      const filterIds = [
+        "rulerFilter",
+        "nominalFilter",
+        "mintFilter",
+        "metalFilter",
+      ];
+      function money(v) {
+        return new Intl.NumberFormat("pl-PL", {
+          style: "currency",
+          currency: "PLN",
+          maximumFractionDigits: 0,
+        }).format(v || 0);
+      }
+      function coinValue(c) {
+        const vals = [
+          c.value,
+          c.estimatedValue,
+          c.estimate,
+          c.valuation,
+          c.priceEstimate,
+          c.marketValue,
+          Number(
+            c.estimateLow && c.estimateHigh
+              ? (Number(c.estimateLow) + Number(c.estimateHigh)) / 2
+              : 0,
+          ),
+        ]
+          .map(Number)
+          .filter((v) => Number.isFinite(v) && v > 0);
+        return vals[0] || 0;
+      }
+      function state() {
+        return ApoMonet.load();
+      }
+      function rebuildFilters() {
+        const list = state().coins;
+        const defs = [
+          ["rulerFilter", "ruler"],
+          ["nominalFilter", "nominal"],
+          ["mintFilter", "mint"],
+          ["metalFilter", "metal"],
+        ];
+        for (const [id, key] of defs) {
+          const e = document.getElementById(id),
+            keep = e.value,
+            first = e.options[0].textContent;
+          e.innerHTML = '<option value="">' + first + "</option>";
+          [...new Set(list.map((c) => c[key]).filter(Boolean))]
+            .sort()
+            .forEach((v) =>
+              e.insertAdjacentHTML(
+                "beforeend",
+                "<option>" +
+                  String(v).replaceAll("&", "&amp;").replaceAll("<", "&lt;") +
+                  "</option>",
+              ),
+            );
+          if ([...e.options].some((o) => o.value === keep)) e.value = keep;
+        }
+      }
+      function filtered() {
+        const q = (search.value || "").toLowerCase(),
+          r = rulerFilter.value,
+          n = nominalFilter.value,
+          m = mintFilter.value,
+          me = metalFilter.value;
+        return state().coins.filter(
+          (c) =>
+            [c.title, c.nominal, c.ruler, c.year, c.mint, c.metal, c.variant]
+              .join(" ")
+              .toLowerCase()
+              .includes(q) &&
+            (!r || c.ruler === r) &&
+            (!n || c.nominal === n) &&
+            (!m || c.mint === m) &&
+            (!me || c.metal === me),
+        );
+      }
+      function updateSelected() {
+        selectedInfo.textContent = "Zaznaczono: " + selected.size;
+      }
+      function render() {
+        const list = filtered();
+        coins.innerHTML = list.length
+          ? list
+              .map(
+                (c) =>
+                  `<article class="card coin-card"><label class="pick"><input class="coin-pick" type="checkbox" data-id="${c.id}" ${selected.has(c.id) ? "checked" : ""}></label><span class="eyebrow">${c.year || "Rok nieustalony"}</span><h2>${c.title || "Moneta bez nazwy"}</h2><p>${[c.nominal, c.ruler, c.mint, c.metal].filter(Boolean).join(" • ") || "Dane do uzupełnienia"}</p><div class="meta">${coinValue(c) ? `Szacunkowo: ${money(coinValue(c))} • ` : ""}</div><div class="coin-actions"><a class="btn primary" href="coin.html?id=${encodeURIComponent(c.id)}">Otwórz kartę</a><a class="btn secondary" href="coin-edit.html?id=${encodeURIComponent(c.id)}">Edytuj i popraw</a><button class="btn secondary delete-coin" data-id="${c.id}" type="button">Usuń monetę z kolekcji</button></div></article>`,
+              )
+              .join("")
+          : '<div class="empty">Kolekcja jest pusta albo filtry ukrywają wszystkie monety.</div>';
+        document.querySelectorAll(".coin-pick").forEach(
+          (x) =>
+            (x.onchange = () => {
+              x.checked
+                ? selected.add(x.dataset.id)
+                : selected.delete(x.dataset.id);
+              updateSelected();
+            }),
+        );
+        document.querySelectorAll(".delete-coin").forEach(
+          (b) =>
+            (b.onclick = () => {
+              const c = state().coins.find((x) => x.id === b.dataset.id);
+              if (
+                !c ||
+                !confirm(
+                  "Usunąć „" +
+                    (c.title || "tę monetę") +
+                    "” z całej kolekcji? Tej operacji nie traktujemy jako usunięcia tylko z albumu.",
+                )
+              )
+                return;
+              ApoMonet.deleteCoin(c.id);
+              selected.delete(c.id);
+              rebuildFilters();
+              render();
+              updateSelected();
+            }),
+        );
+      }
+      function exportSelected(type) {
+        const ids = [...selected];
+        if (!ids.length) return alert("Najpierw zaznacz monety.");
+        sessionStorage.setItem("apomonet_export_ids", JSON.stringify(ids));
+        sessionStorage.removeItem("apomonet_demo_export_coins");
+        location.href = "export.html?type=" + encodeURIComponent(type);
+      }
+      async function share() {
+        const list = state().coins.filter((c) => selected.has(c.id));
+        if (!list.length) return alert("Najpierw zaznacz monety.");
+        const text =
+          "APOMONET — wybrane monety\n\n" +
+          list
+            .map(
+              (c, i) =>
+                `${i + 1}. ${c.title || "Moneta"}${c.year ? " — " + c.year : ""}${c.ruler ? " — " + c.ruler : ""}${c.nominal ? " — " + c.nominal : ""}`,
+            )
+            .join("\n");
+        if (navigator.share) {
+          try {
+            await navigator.share({ title: "APOMONET — wybrane monety", text });
+            return;
+          } catch (e) {
+            if (e.name === "AbortError") return;
+          }
+        }
+        try {
+          await navigator.clipboard.writeText(text);
+          alert("Lista została skopiowana.");
+        } catch {
+          location.href =
+            "mailto:?subject=" +
+            encodeURIComponent("APOMONET — wybrane monety") +
+            "&body=" +
+            encodeURIComponent(text);
+        }
+      }
+      search.addEventListener("input", render);
+      filterIds.forEach((id) =>
+        document.getElementById(id).addEventListener("change", render),
+      );
+      selectAll.onclick = () => {
+        filtered().forEach((c) => selected.add(c.id));
+        render();
+        updateSelected();
+      };
+      clearSelection.onclick = () => {
+        selected.clear();
+        render();
+        updateSelected();
+      };
+      pdfSelected.onclick = () => exportSelected("pdf");
+      xlsxSelected.onclick = () => exportSelected("excel");
+      shareSelected.onclick = share;
+      valueBtn.onclick = () => {
+        const list = state().coins,
+          valued = list.filter((c) => coinValue(c) > 0),
+          sum = valued.reduce((s, c) => s + coinValue(c), 0);
+        valueBox.hidden = false;
+        if (!list.length) {
+          valueBox.innerHTML =
+            "<h2>Wartość kolekcji</h2><p>Najpierw dodaj monety do kolekcji.</p>";
+          return;
+        }
+        if (!valued.length) {
+          valueBox.innerHTML = `<h2>Wartość kolekcji</h2><p>Masz ${list.length} monet, ale żadna nie ma jeszcze zapisanej wyceny.</p>`;
+          return;
+        }
+        valueBox.innerHTML = `<span class="eyebrow">Szacunkowa wartość</span><div class="value-total">${money(sum)}</div><div class="value-grid"><div class="value-stat"><small>Monety w kolekcji</small><strong>${list.length}</strong></div><div class="value-stat"><small>Z wyceną</small><strong>${valued.length}</strong></div><div class="value-stat"><small>Bez wyceny</small><strong>${list.length - valued.length}</strong></div></div><div class="value-note">To suma zapisanych wycen, a nie gwarantowana cena sprzedaży.</div>`;
+      };
+      rebuildFilters();
+      render();
+      updateSelected();
+    </script>
+  </body>
+</html>
