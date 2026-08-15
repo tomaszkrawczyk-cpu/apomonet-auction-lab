@@ -100,10 +100,20 @@
       const shown = localizedById.get(id);
       if (!shown) return;
       setText(card.querySelector("h2"), shown.title || "Moneta");
+      const summary = card.querySelector(".coin-summary");
       const details = albumPage
         ? [shown.ruler, shown.nominal, shown.mint, shown.metal]
-        : [shown.nominal, shown.ruler, shown.mint, shown.metal];
-      setText(card.querySelector(":scope > p"), details.filter(Boolean).join(" • "));
+        : summary
+          ? [shown.nominal, shown.ruler]
+          : [shown.nominal, shown.ruler, shown.mint, shown.metal];
+      setText(
+        summary || card.querySelector(":scope > p"),
+        details.filter(Boolean).join(" • "),
+      );
+      setText(
+        card.querySelector(".coin-secondary"),
+        [shown.mint, shown.metal, shown.rarity].filter(Boolean).join(" • "),
+      );
     });
 
     const filters = {
