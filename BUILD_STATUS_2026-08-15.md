@@ -13,6 +13,9 @@
 - Nowe elementy mają pokrycie tłumaczeń PL/EN/DE/FR.
 - Kolekcja prowadzi teraz do rzeczywistej karty zapisanej monety. Karta ponownie pokazuje oba zdjęcia, zaakceptowane dane użytkownika, opis i odsyła do dalszej edycji.
 - Naprawiono błąd składni `chronology-guard.js`, który wyłączał wspólną kontrolę chronologii w przeglądarce.
+- Etap 2 nie przekazuje już zapisanych zdjęć i `rawAI` drugi raz wewnątrz tekstowego kontekstu. API otrzymuje tylko dozwolone pola po korekcie.
+- Etap 2 ma trzy czytelne komunikaty postępu, limit 55 s po stronie API i 62 s w UI oraz bezpieczny komunikat ponowienia bez utraty zdjęć/danych.
+- Błędy infrastruktury w formie obiektu są pokazywane czytelnie zamiast jako `[object Object]`.
 
 ## Źródła i diagnostyka
 - Smithsonian: skonfigurowany i zweryfikowany na produkcji; health => valid=true.
@@ -31,7 +34,14 @@
 - Automatyczny test w chmurowym Chrome przeszedł cały przepływ: wybór awersu i rewersu razem → lokalne przygotowanie zdjęć → `/api/analyze` → korekta użytkownika → ponowny powrót z obiema miniaturami → zapis → kolekcja → otwarcie karty monety.
 - `/api/analyze` zwrócił HTTP 200; logi tej wersji nie zawierają odpowiedzi 4xx/5xx dla testowanego przepływu.
 - Po ponownym otwarciu potwierdzono: oba zdjęcia obecne, skorygowany nominał i emitent widoczne, `userAccepted` pokazany jako dane użytkownika, puste sekcje opcjonalne ukryte.
-- Testy regresji: 9/9 zaliczonych; kontrola składni wszystkich plików JavaScript i `git diff --check` bez błędów.
+- Testy regresji: 10/10 zaliczonych; kontrola składni wszystkich plików JavaScript i `git diff --check` bez błędów.
+
+## Test fizycznego Androida i Etapu 2
+- Tester potwierdził, że na pierwszej realnej monecie analiza podstawowa pomyliła monetę, władcę i rok, ale korekta była możliwa i została przyjęta.
+- Na drugiej realnej monecie wynik był lepszy: jedynym zgłoszonym błędem był rok, a korekta została przyjęta.
+- Dotychczasowa analiza szczegółowa odpowiedziała HTTP 200, lecz w kontrolowanym teście trwała około 64 s i na telefonie wyglądała jak zawieszona.
+- Nowy preview `dpl_AoKbKd2vzLqgTqRiDGt7phFrcAs1` zawiera optymalizację Etapu 2 i stan `READY`; produkcja pozostała bez zmian.
+- Automatyczny test POST nowego preview jest zablokowany przez Vercel Deployment Protection komunikatem `Protected deployment`. Oficjalna ścieżka wymaga `VERCEL_AUTOMATION_BYPASS_SECRET`; ochrony nie wyłączono i nie eksportowano klucza OpenAI.
 
 ## Korekta / zapis / eksport
 - Ręczna korekta zachowuje `rawAI`, zdjęcia, sesję i dane zaakceptowane przez użytkownika.
@@ -40,8 +50,8 @@
 - Udostępnianie pozostaje wywoływane świadomie przez użytkownika; kolekcja i dashboard są lokalne.
 
 ## Co wymaga teraz fizycznego testu Androida
-1. potwierdzenie aparatu i systemowego wyboru dwóch realnych zdjęć na docelowym telefonie,
-2. powtórzenie zweryfikowanego przepływu na fizycznym Androidzie i słabszej sieci,
+1. zapis poprawionej monety i ponowne otwarcie jej karty na telefonie,
+2. powtórzenie przepływu na słabszej sieci i większym zestawie monet,
 3. Etap 2 po podaniu wagi/średnicy/rantu,
 4. zapis do albumu i miniatury,
 5. PDF oraz XLSX na Androidzie,
