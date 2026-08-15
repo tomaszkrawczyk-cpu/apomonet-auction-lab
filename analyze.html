@@ -39,6 +39,7 @@
         border-radius: 16px;
         padding: 16px;
         text-align: left;
+        text-decoration: none;
         cursor: pointer;
       }
       .action-card strong {
@@ -53,6 +54,11 @@
       .action-card.primary {
         border-color: #6b4814;
         background: #241806;
+      }
+      .saved-next {
+        margin-top: 18px;
+        padding-top: 4px;
+        border-top: 1px solid #29292c;
       }
       .detail {
         margin-top: 12px;
@@ -240,6 +246,23 @@
             ><span>Wybierz istniejący album albo utwórz nowy.</span>
           </button>
         </div>
+        <section id="savedActions" class="saved-next hidden" aria-live="polite">
+          <div class="section-title"><h2>Moneta zapisana — co dalej?</h2></div>
+          <div class="actions-grid">
+            <a id="savedCoinLink" class="action-card primary" href="collection.html">
+              <strong>🪙 Otwórz kartę monety</strong>
+              <span>Zobacz zapisane zdjęcia i zaakceptowane dane.</span>
+            </a>
+            <a class="action-card" href="collection.html">
+              <strong>📚 Przejdź do kolekcji</strong>
+              <span>Zobacz wszystkie zapisane monety.</span>
+            </a>
+            <a class="action-card" href="albums.html">
+              <strong>🗂️ Przejdź do albumów</strong>
+              <span>Otwórz swoje albumy bez używania przycisku „Wstecz”.</span>
+            </a>
+          </div>
+        </section>
         <section id="deepPanel" class="hidden">
           <div class="section-title">
             <h2>Etap 2 — analiza szczegółowa</h2>
@@ -516,6 +539,15 @@
         id = c.id;
         return c;
       }
+      function showSavedActions(c, message) {
+        if (!c) return;
+        $("savedCoinLink").href =
+          "coin.html?id=" + encodeURIComponent(c.id);
+        $("savedActions").classList.remove("hidden");
+        $("status").textContent =
+          message || "Moneta zapisana. Wybierz poniżej, dokąd chcesz przejść.";
+        $("savedActions").scrollIntoView({ behavior: "smooth", block: "start" });
+      }
       function persistAnalysisSession() {
         sessionStorage.setItem(
           "apomonetAnalysisSession",
@@ -566,7 +598,7 @@
               (b.onclick = () => {
                 ApoMonet.assignCoinToAlbum(c.id, b.dataset.id);
                 $("albumModal").classList.add("hidden");
-                $("status").textContent = "Moneta zapisana i dodana do albumu.";
+                showSavedActions(c, "Moneta zapisana i dodana do albumu.");
               }),
           );
         $("albumModal").classList.remove("hidden");
@@ -649,9 +681,11 @@
         }
       };
       $("save").onclick = () => {
-        save();
-        $("status").textContent =
-          "Moneta zapisana w kolekcji razem ze zdjęciami.";
+        const c = save();
+        showSavedActions(
+          c,
+          "Moneta zapisana w kolekcji razem ze zdjęciami. Wybierz, dokąd chcesz przejść.",
+        );
       };
       $("edit").onclick = () => {
         const c = save();
@@ -672,8 +706,7 @@
         ApoMonet.assignCoinToAlbum(c.id, al.id);
         $("albumModal").classList.add("hidden");
         $("newAlbumName").value = "";
-        $("status").textContent =
-          `Moneta dodana do nowego albumu „${al.name}”.`;
+        showSavedActions(c, `Moneta dodana do nowego albumu „${al.name}”.`);
       };
       if (
         new URLSearchParams(location.search).get("resume") === "1" ||

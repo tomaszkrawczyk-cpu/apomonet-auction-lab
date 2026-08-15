@@ -40,8 +40,9 @@
 - Tester potwierdził, że na pierwszej realnej monecie analiza podstawowa pomyliła monetę, władcę i rok, ale korekta była możliwa i została przyjęta.
 - Na drugiej realnej monecie wynik był lepszy: jedynym zgłoszonym błędem był rok, a korekta została przyjęta.
 - Dotychczasowa analiza szczegółowa odpowiedziała HTTP 200, lecz w kontrolowanym teście trwała około 64 s i na telefonie wyglądała jak zawieszona.
-- Optymalizacja Etapu 2 z gotowego preview `dpl_AoKbKd2vzLqgTqRiDGt7phFrcAs1` jest przenoszona na produkcyjny `main`.
-- Pełny test POST po promocji wymaga realnych zdjęć lub kontrolowanego testu telefonu; nie wyłączono ochrony preview i nie eksportowano klucza OpenAI.
+- Optymalizacja Etapu 2 została wdrożona na produkcyjny `main`; deployment osiągnął stan `READY`.
+- Fizyczny test Androida po wdrożeniu potwierdził poprawną analizę realnej monety bez potrzeby korekty oraz skuteczny zapis.
+- Test ujawnił brak oczywistej drogi z ekranu analizy do zapisanej monety i albumów. Po zapisie dodano duże przyciski: „Otwórz kartę monety”, „Przejdź do kolekcji” i „Przejdź do albumów”, bez używania systemowego „Wstecz”.
 
 ## Korekta / zapis / eksport
 - Ręczna korekta zachowuje `rawAI`, zdjęcia, sesję i dane zaakceptowane przez użytkownika.
@@ -50,7 +51,7 @@
 - Udostępnianie pozostaje wywoływane świadomie przez użytkownika; kolekcja i dashboard są lokalne.
 
 ## Co wymaga teraz fizycznego testu Androida
-1. zapis poprawionej monety i ponowne otwarcie jej karty na telefonie,
+1. nowe przyciski po zapisie: karta monety → kolekcja → albumy,
 2. powtórzenie przepływu na słabszej sieci i większym zestawie monet,
 3. Etap 2 po podaniu wagi/średnicy/rantu,
 4. zapis do albumu i miniatury,

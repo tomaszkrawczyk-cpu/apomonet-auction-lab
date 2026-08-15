@@ -31,7 +31,7 @@ Legenda: ✅ działa / 🟡 częściowo / 🔴 brak / 🔵 etap PRO/LAB / ⚠️
 - 🟡 Poziom pewności dla pól identyfikacji — UI pokazuje osobno pewność władcy, roku i nominału; wymaga benchmarku na realnych monetach.
 - 🟡 Korekta po analizie — sesja, oba zdjęcia, `rawAI` i dane zaakceptowane przez użytkownika przeszły test preview; fizyczny Android potwierdził przyjęcie korekty, a zapis/ponowne otwarcie na telefonie pozostają do domknięcia.
 - 🟡 Fizyczny test Androida potwierdził wybór zdjęć, analizę podstawową oraz przyjęcie korekty. Trafność była nierówna: pierwsza moneta miała błędną tożsamość, władcę i rok; druga tylko błędny rok.
-- 🟡 Optymalizacja Etapu 2 jest przenoszona na produkcję: usuwa duplikowanie zdjęć i `rawAI` w kontekście, dodaje komunikaty postępu oraz kontrolowane limity 55 s w API i 62 s w UI. Pozostaje test fizycznego telefonu.
+- 🟡 Optymalizacja Etapu 2 działa na produkcji: usuwa duplikowanie zdjęć i `rawAI` w kontekście, dodaje komunikaty postępu oraz kontrolowane limity 55 s w API i 62 s w UI. Fizyczny Android potwierdził poprawną analizę realnej monety i zapis; nowe przyciski do karty/kolekcji/albumów wymagają krótkiej regresji.
 - 🟡 Waga i średnica jako dane korygujące identyfikację — pola i przekazanie do dalszej analizy są wdrożone.
 - 🟡 „Czy mam już tę odmianę?” — działa ostrożne wykrycie możliwego duplikatu podstawowej tożsamości.
 - 🔵 Porównanie stempli 1:1.

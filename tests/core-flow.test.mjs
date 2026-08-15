@@ -116,8 +116,14 @@ test('chronology guard is valid JavaScript and remains non-blocking',()=>{
 });
 
 test('a saved coin reopens from the collection with both photos and accepted data',()=>{
+  const analysis=read('analyze.html');
   const collection=read('collection.html');
   const coin=read('coin.html');
+  assert.match(analysis,/id="savedActions"/);
+  assert.match(analysis,/id="savedCoinLink"/);
+  assert.match(analysis,/"coin\.html\?id=" \+ encodeURIComponent\(c\.id\)/);
+  assert.match(analysis,/href="collection\.html"/);
+  assert.match(analysis,/href="albums\.html"/);
   assert.match(collection,/coin\.html\?id=/);
   assert.match(collection,/Otwórz kartę/);
   assert.match(coin,/ApoMonet\.getCoin\(id\)/);
