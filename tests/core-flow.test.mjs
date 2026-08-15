@@ -48,6 +48,13 @@ function collectionI18n(){
   return sandbox.ApoCollectionI18n;
 }
 
+function collectionSort(){
+  const sandbox={console,Intl};
+  sandbox.window=sandbox;
+  vm.runInNewContext(read('collection-sort.js'),sandbox,{filename:'collection-sort.js'});
+  return sandbox.ApoCollectionSort;
+}
+
 test('safe crop keeps a generous margin around a reliable coin edge',()=>{
   const {safeCrop}=imagePipeline();
   const crop=safeCrop({width:600,height:600},{cx:300,cy:300,r:100,score:22});
@@ -275,4 +282,41 @@ test('every album surface resolves the prepared transparent image consistently',
   assert.equal(resolve({...coin,albumPhotoMode:'cut'},'reverse'),'transparent-reverse');
   assert.equal(resolve({...coin,albumPhotoMode:'original'},'obverse'),'original-obverse');
   assert.equal(resolve({...coin,albumPhotoMode:'none'},'obverse'),'');
+});
+
+test('collection sorting keeps years and traditional denominations predictable',()=>{
+  const {nominalRank,sortCoins,yearValue}=collectionSort();
+  assert.ok(nominalRank({nominal:'Dwutalar'})>nominalRank({nominal:'Talar'}));
+  assert.ok(nominalRank({nominal:'Talar'})>nominalRank({nominal:'Ort'}));
+  assert.ok(nominalRank({nominal:'Trojak'})>nominalRank({nominal:'Grosz'}));
+  assert.equal(yearValue({year:'ok. X–XI w.'}),900);
+
+  const coins=[
+    {id:'unknown',title:'Bez daty'},
+    {id:'new',year:'1934'},
+    {id:'old',year:'1650'},
+  ];
+  assert.deepEqual(
+    Array.from(sortCoins(coins,'year-asc'),coin=>coin.id),
+    ['old','new','unknown'],
+  );
+  assert.deepEqual(
+    Array.from(sortCoins(coins,'year-desc'),coin=>coin.id),
+    ['new','old','unknown'],
+  );
+});
+
+test('large collections use thumbnails, two views and bounded batches',()=>{
+  const collection=read('collection.html');
+  const coin=read('coin.html');
+  assert.match(collection,/id="gridView"/);
+  assert.match(collection,/id="listView"/);
+  assert.match(collection,/id="sortDialog"/);
+  assert.match(collection,/ApoAlbumPhotos\.resolve\(coin, "obverse"\)/);
+  assert.match(collection,/const PAGE_SIZE = 60/);
+  assert.match(collection,/loading="lazy"/);
+  assert.match(collection,/Pokaż kolejne 60/);
+  assert.match(collection,/aria-label="Otwórz kartę:/);
+  assert.match(coin,/id="deleteCoin"/);
+  assert.match(coin,/ApoMonet\.deleteCoin\(coin\.id\)/);
 });
