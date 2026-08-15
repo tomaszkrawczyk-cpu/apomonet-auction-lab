@@ -45,7 +45,7 @@ Legenda: ✅ działa / 🟡 częściowo / 🔴 brak / 🔵 etap PRO/LAB / ⚠️
 - 🟡 Historia korekt/danych istnieje technicznie, wymaga kompletnego UI i testu sesji.
 - 🟡 Albumy Moje / Cele / Marzenia z miniaturami demonstracyjnymi; albumy użytkownika pokazują własne miniatury zgodnie z wybranym trybem zdjęcia.
 - 🟡 Przenoszenie między albumami — wdrożone, wymaga testu regresji.
-- ✅ Widok lista / małe kafelki / duże kafelki z zapamiętaniem preferencji.
+- ✅ Kolekcja ma domyślne kafelki z prawdziwymi miniaturami oraz zwarty widok listy; preferencja widoku jest zapamiętywana, a duże zbiory są renderowane porcjami po 60 monet.
 - 🟡 Filtry: władca, nominał, mennica, metal, rzadkość i stan są wdrożone; epoka wymaga ujednolicenia.
 - 🟡 Notatki eksperta są edytowalne i oddzielone od zachowanego `rawAI`; UI historii wymaga dalszego dopracowania.
 - 🟡 Historia/proweniencja egzemplarza ma podstawowe pola i historię zmian; pełny model nadal do rozbudowy.
@@ -71,7 +71,7 @@ Legenda: ✅ działa / 🟡 częściowo / 🔴 brak / 🔵 etap PRO/LAB / ⚠️
 - 🔴 „Szukaj tej monety na aukcjach” z Celów/Marzeń.
 
 ### F. Eksport i udostępnianie
-- 🟡 Zaznaczanie pojedynczych monet do eksportu — wdrożone w albumach demo, wymaga testu.
+- 🟡 Zaznaczanie pojedynczych monet do eksportu — rzeczywista kolekcja, karta, tryb zaznaczania i ekran eksportu przeszły test przeglądarkowy; pozostaje test Androida.
 - 🟡 PDF z wybranych — ekran drukowania/zapisu PDF; wymaga dopracowania raportu i testu zdjęć.
 - 🟡 Udostępnianie przez system telefonu — wdrożone, wymaga testu Android.
 - ✅ Prawdziwy XLSX jest generowany dla wybranych monet; pozostaje test pobierania na Androidzie.
@@ -119,6 +119,8 @@ Kamień milowy 2026-08-15: najważniejszy przepływ zdjęcia → analiza → kor
 Aktualizacja stabilizacji: karta monety, album użytkownika, okładka albumu i eksport korzystają z jednego mechanizmu wyboru zdjęcia. Tryb „Usuń tło” preferuje przygotowany przezroczysty PNG, „Oryginał” zachowuje pierwotne zdjęcie, a „Bez zdjęcia” nie przywraca go przez awaryjny fallback. Przed analizą aplikacja ostrzega teraz o wzorzystym tle lub niepewnej krawędzi i podaje prostą instrukcję ponownego zdjęcia.
 
 Aktualizacja językowa: listy kolekcji i albumów tłumaczą widoczne tytuły oraz bezpieczne pola numizmatyczne jednym ograniczonym zapytaniem i cache'em. Oryginalny rekord nie jest nadpisywany, a zdjęcia, `rawAI`, notatki właściciela i proweniencja nie trafiają do tłumaczenia list.
+
+Aktualizacja kolekcji: produkcyjny ekran ma prawdziwe miniatury, czytelne tryby `Kafelki` / `Lista`, wyszukiwanie, filtry i tryb zaznaczania uruchamiane dopiero na żądanie. Sortowanie jest ukryte w prostym oknie z pięcioma wariantami: ostatnio dodane, rok w obu kierunkach oraz nominał w obu kierunkach. Nowy interfejs i dynamiczne dane monet są spójne w PL/EN/DE/FR.
 
 Aktualizacja testu fizycznego: Android potwierdził analizę i zachowanie ręcznej korekty na dwóch monetach. Do zamknięcia pozostają trafność identyfikacji na reprezentatywnym zestawie, analiza szczegółowa po optymalizacji oraz ponowny zapis/otwarcie wykonane przez testera na telefonie.
 

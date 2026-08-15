@@ -1,6 +1,10 @@
 # APOMONET — status 2026-08-15
 
 ## Najważniejsze zmiany tej rundy
+- Kolekcja została przebudowana pod zbiory od kilkudziesięciu do setek monet: prawdziwe miniatury, `Kafelki` / `Lista`, lazy loading, renderowanie po 60 pozycji, proste sortowanie i akcje zaznaczania ukryte do momentu użycia.
+- Usuwanie całej monety zostało przeniesione do otwartej karty, aby ograniczyć przypadkowe operacje na liście.
+- Nowy ekran kolekcji i dynamiczne podsumowania monet mają kompletne pokrycie PL/EN/DE/FR, włącznie z wyszukiwarką, licznikiem, pustym stanem i etykietami dostępności.
+- Rzeczywisty przepływ ręczny zapis → karta → kolekcja → lista/kafelki → zaznaczenie → ekran PDF przeszedł test w produkcyjnym Chrome. Struktura XLSX i granice prywatności pliku mają osobny test automatyczny.
 - Etap 1 nie nadpisuje już automatycznie władcy na podstawie samego roku. Konflikt chronologiczny obniża confidence, wstrzymuje wycenę i wymaga kontroli portretu/legendy.
 - Confidence całej analizy jest ograniczony do 95%; UI pokazuje osobno pewność władcy, roku i nominału.
 - Dodano kontrolę możliwego duplikatu podstawowej tożsamości w lokalnej kolekcji.
@@ -41,7 +45,13 @@
 - Automatyczny test w chmurowym Chrome przeszedł cały przepływ: wybór awersu i rewersu razem → lokalne przygotowanie zdjęć → `/api/analyze` → korekta użytkownika → ponowny powrót z obiema miniaturami → zapis → kolekcja → otwarcie karty monety.
 - `/api/analyze` zwrócił HTTP 200; logi tej wersji nie zawierają odpowiedzi 4xx/5xx dla testowanego przepływu.
 - Po ponownym otwarciu potwierdzono: oba zdjęcia obecne, skorygowany nominał i emitent widoczne, `userAccepted` pokazany jako dane użytkownika, puste sekcje opcjonalne ukryte.
-- Testy regresji: 15/15 zaliczonych, w tym granice prywatności i limitów tłumaczenia list, rzeczywiste przezroczyste wycięcie tła, wspólny wybór zdjęcia dla wszystkich powierzchni albumowych oraz ostrzeżenie o jakości zdjęcia przed analizą; kontrola składni JavaScript i `git diff --check` bez błędów.
+- Testy regresji: 18/18 zaliczonych, w tym granice prywatności i limitów tłumaczenia list, rzeczywiste przezroczyste wycięcie tła, wspólny wybór zdjęcia dla wszystkich powierzchni albumowych, sortowanie dużej kolekcji, prawdziwy prywatny XLSX oraz ostrzeżenie o jakości zdjęcia przed analizą; kontrola składni JavaScript i `git diff --check` bez błędów.
+
+## Wdrożenie kolekcji 2026-08-15
+- GitHub `main`: `3a71a7c` (`Complete collection translations and export checks`).
+- Vercel production: `dpl_EpovTaGPXR95ZRKPd76L8QBZMbPB`, stan `READY`.
+- Testy przeglądarkowe potwierdziły działanie sortowania, filtrów, `Kafelki` / `Lista`, zaznaczania, otwierania karty, ręcznego zapisu, ekranu PDF i języka niemieckiego bez błędów aplikacji.
+- `/api/health` zwraca HTTP 200; OpenAI i Smithsonian są aktywne, Europeana pozostaje nieaktywna z powodu nieważnego klucza.
 
 ## Test fizycznego Androida i Etapu 2
 - Tester potwierdził, że na pierwszej realnej monecie analiza podstawowa pomyliła monetę, władcę i rok, ale korekta była możliwa i została przyjęta.
