@@ -91,6 +91,24 @@ test('Stage 1 API requires two bounded images and returns a structured analysis'
   assert.match(api,/analysis:a/);
 });
 
+test('Stage 2 strips saved photos, reports progress and has bounded latency',()=>{
+  const api=read('api/analyze-detail.js');
+  const page=read('analyze.html');
+  assert.match(api,/const BASE_FIELDS = \[/);
+  assert.doesNotMatch(api,/BASE_FIELDS = \[[\s\S]*?obverseImage/);
+  assert.doesNotMatch(api,/BASE_FIELDS = \[[\s\S]*?reverseImage/);
+  assert.match(api,/reasoning: \{ effort: "low" \}/);
+  assert.match(api,/DETAIL_TIMEOUT_MS = 55_000/);
+  assert.match(api,/status\(timedOut \? 504 : 500\)/);
+  assert.match(page,/body: JSON\.stringify\(\{ images: analysisImgs, base: detailBase\(\) \}\)/);
+  assert.doesNotMatch(page,/images: analysisImgs, base: a/);
+  assert.match(page,/Odczytuję legendę i detale stempla/);
+  assert.match(page,/const controller = new AbortController\(\)/);
+  assert.match(page,/controller\.abort\(\), 62_000/);
+  assert.match(page,/typeof error\?\.message === "string"/);
+  assert.doesNotMatch(page,/throw Error\(d\.error \|\|/);
+});
+
 test('chronology guard is valid JavaScript and remains non-blocking',()=>{
   const guard=read('chronology-guard.js');
   assert.doesNotThrow(()=>new Function(guard));
