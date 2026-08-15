@@ -128,6 +128,22 @@
     return {x:left,y:top,width:half*2,height:half*2,mode:'safe-crop'};
   }
 
+  function assessPhoto(detection,crop){
+    const confidence=Number(detection?.confidence||0);
+    const score=Number(detection?.score||0);
+    const backgroundTexture=Number(detection?.backgroundTexture||0);
+    if(backgroundTexture>10){
+      return {level:'retake',reason:'textured-background'};
+    }
+    if(score<12||confidence<50){
+      return {level:'retake',reason:'uncertain-edge'};
+    }
+    if(crop?.mode!=='safe-crop'){
+      return {level:'warning',reason:'full-frame'};
+    }
+    return {level:'good',reason:'clear-edge'};
+  }
+
   function render(source,rect,maxEdge){
     const scale=Math.min(1,maxEdge/Math.max(rect.width,rect.height));
     const canvas=document.createElement('canvas');
@@ -156,13 +172,18 @@
     const source=scaledCanvas(image,WORK_MAX);
     const detection=detectCircle(source);
     const rect=safeCrop(source,detection);
+    const quality=assessPhoto(detection,rect);
     const displayCanvas=render(source,rect,DISPLAY_MAX);
     const analysisCanvas=render(source,rect,ANALYSIS_MAX);
     return {
       display:boundedDataUrl(displayCanvas,'image/webp',.74),
       analysis:boundedDataUrl(analysisCanvas,'image/jpeg',.62),
       confidence:detection.confidence,
+      edgeScore:detection.score,
+      backgroundTexture:detection.backgroundTexture,
       cropMode:rect.mode,
+      quality:quality.level,
+      qualityReason:quality.reason,
       analysisWidth:analysisCanvas.width,
       analysisHeight:analysisCanvas.height
     };
@@ -175,6 +196,6 @@
     if(note) note.textContent='ApoMonet przygotowuje lekki kadr z bezpiecznym marginesem. Jeśli wykrycie krawędzi jest niepewne, zachowuje całe zdjęcie, żeby nie uciąć rantu, daty ani legendy.';
   }
 
-  window.ApoImagePipeline={processCoin,detectCircle,safeCrop,boundedDataUrl,install};
+  window.ApoImagePipeline={processCoin,detectCircle,safeCrop,assessPhoto,boundedDataUrl,install};
   document.readyState==='loading'?addEventListener('DOMContentLoaded',install):install();
 })();

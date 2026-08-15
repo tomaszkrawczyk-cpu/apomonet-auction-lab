@@ -260,6 +260,7 @@
   }
 
   function albumPhoto(coin, side = "obverse") {
+    if (!coin) return "";
     if (coin.albumPhotoMode === "none") return "";
     if (coin.albumPhotoMode === "cut") {
       return side === "obverse"
@@ -270,6 +271,10 @@
       ? coin.obverseImage || coin.reverseImage || coin.image || coin.img || ""
       : coin.reverseImage || coin.obverseImage || "";
   }
+
+  // Jedno źródło prawdy dla karty, albumów, okładek i eksportu.
+  // Oryginały pozostają w rekordzie, a tryb albumowy steruje prezentacją.
+  window.ApoAlbumPhotos = Object.freeze({ resolve: albumPhoto });
 
   function applyAlbumPhoto(card, coin) {
     const box = card.querySelector(".coin-photo");
@@ -398,7 +403,7 @@
   addEventListener("DOMContentLoaded", () => {
     patchAssign();
     setTimeout(hookAnalyze, 40);
-    setTimeout(hookAlbum, 40);
+    hookAlbum();
     setTimeout(hookExport, 40);
   });
 })();

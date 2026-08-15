@@ -19,6 +19,21 @@ function imagePipeline(){
   return sandbox.ApoImagePipeline;
 }
 
+function albumPhotoResolver(){
+  const sandbox={
+    console,
+    location:{pathname:'/tests'},
+    localStorage:{getItem(){return 'pl'}},
+    sessionStorage:{getItem(){return null},removeItem(){},setItem(){}},
+    document:{readyState:'loading'},
+    addEventListener(){},
+    Image:class {},
+  };
+  sandbox.window=sandbox;
+  vm.runInNewContext(read('album-photo-prep.js'),sandbox,{filename:'album-photo-prep.js'});
+  return sandbox.ApoAlbumPhotos.resolve;
+}
+
 test('safe crop keeps a generous margin around a reliable coin edge',()=>{
   const {safeCrop}=imagePipeline();
   const crop=safeCrop({width:600,height:600},{cx:300,cy:300,r:100,score:22});
@@ -38,6 +53,32 @@ test('uncertain or edge-touching detection falls back to the full photo',()=>{
   assert.deepEqual({...weak},{x:0,y:0,width:800,height:600,mode:'full'});
   assert.equal(textured.mode,'full');
   assert.equal(edge.mode,'full');
+});
+
+test('photo quality warns before analysis on textured or uncertain photos',()=>{
+  const {assessPhoto}=imagePipeline();
+  const textured=assessPhoto(
+    {score:24,confidence:90,backgroundTexture:14},
+    {mode:'full'},
+  );
+  const uncertain=assessPhoto(
+    {score:8,confidence:18,backgroundTexture:3},
+    {mode:'full'},
+  );
+  const clear=assessPhoto(
+    {score:24,confidence:90,backgroundTexture:3},
+    {mode:'safe-crop'},
+  );
+  assert.equal(textured.level,'retake');
+  assert.equal(textured.reason,'textured-background');
+  assert.equal(uncertain.reason,'uncertain-edge');
+  assert.equal(clear.level,'good');
+
+  const page=read('analyze.html');
+  assert.match(page,/id="photoQuality"/);
+  assert.match(page,/photoDiagnostics/);
+  assert.match(page,/Tło jest wzorzyste/);
+  assert.match(page,/photoDiagnostics, at: Date\.now\(\), version: 5/);
 });
 
 test('analysis data URL quality is reduced until it is below the transport budget',()=>{
@@ -131,9 +172,8 @@ test('a saved coin reopens from the collection with both photos and accepted dat
   assert.match(coin,/ApoMonet\.getCoin\(id\)/);
   assert.match(coin,/coin\.obverseImage/);
   assert.match(coin,/coin\.reverseImage/);
-  assert.match(coin,/coin\.albumObverseImage/);
-  assert.match(coin,/coin\.albumReverseImage/);
-  assert.match(coin,/coin\.albumPhotoMode === "cut"/);
+  assert.match(coin,/ApoAlbumPhotos\.resolve\(coin, "obverse"\)/);
+  assert.match(coin,/ApoAlbumPhotos\.resolve\(coin, "reverse"\)/);
   assert.match(coin,/coin\.userAccepted/);
   assert.match(coin,/coin-edit\.html\?id=/);
   assert.match(coin,/\[hidden\]\s*\{\s*display:\s*none\s*!important/);
@@ -164,6 +204,7 @@ test('selected language translates analysis values without sending photos or own
 
 test('background removal detects the coin and writes a transparent PNG only when reliable',()=>{
   const prep=read('album-photo-prep.js');
+  const albumCovers=read('user-albums-ui.js');
   assert.match(prep,/ApoImagePipeline\?\.detectCircle\?\.\(work\)/);
   assert.match(prep,/detection\.confidence/);
   assert.match(prep,/detection\.backgroundTexture/);
@@ -172,4 +213,22 @@ test('background removal detects the coin and writes a transparent PNG only when
   assert.match(prep,/output\.toDataURL\("image\/png"\)/);
   assert.match(prep,/removed: false, reason: "uncertain"/);
   assert.match(prep,/Zdjęcie nie zostało zmienione/);
+  assert.match(prep,/window\.ApoAlbumPhotos = Object\.freeze/);
+  assert.match(prep,/albumObverseImage \|\| coin\.albumReverseImage/);
+  assert.match(albumCovers,/ApoAlbumPhotos\.resolve\(coin, "obverse"\)/);
+  assert.match(albumCovers,/coverPhotos\(coins\)/);
+});
+
+test('every album surface resolves the prepared transparent image consistently',()=>{
+  const resolve=albumPhotoResolver();
+  const coin={
+    obverseImage:'original-obverse',
+    reverseImage:'original-reverse',
+    albumObverseImage:'transparent-obverse',
+    albumReverseImage:'transparent-reverse',
+  };
+  assert.equal(resolve({...coin,albumPhotoMode:'cut'},'obverse'),'transparent-obverse');
+  assert.equal(resolve({...coin,albumPhotoMode:'cut'},'reverse'),'transparent-reverse');
+  assert.equal(resolve({...coin,albumPhotoMode:'original'},'obverse'),'original-obverse');
+  assert.equal(resolve({...coin,albumPhotoMode:'none'},'obverse'),'');
 });

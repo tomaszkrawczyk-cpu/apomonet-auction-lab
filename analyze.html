@@ -109,6 +109,21 @@
         font-size: 12px;
         margin: 12px 0;
       }
+      .photo-quality {
+        margin: 10px 0 14px;
+        padding: 12px 14px;
+        border: 1px solid #4a361b;
+        border-radius: 14px;
+        background: #17120c;
+        color: #edb65f;
+        font-size: 13px;
+        line-height: 1.45;
+      }
+      .photo-quality.good {
+        border-color: #28543a;
+        background: #0f1d15;
+        color: #8ed0a6;
+      }
       .modal-bg {
         position: fixed;
         inset: 0;
@@ -214,6 +229,7 @@
         ApoMonet zachowuje bezpieczny margines. Gdy krawędź jest niepewna,
         pozostawia całe zdjęcie, żeby nie uciąć rantu, daty ani legendy.
       </div>
+      <div id="photoQuality" class="photo-quality hidden" role="status"></div>
       <button id="swap" class="btn secondary full hidden">
         Zamień awers ↔ rewers</button
       ><button id="go" class="btn primary full" disabled>Szybka analiza</button>
@@ -293,6 +309,7 @@
       let a = null,
         imgs = [null, null],
         analysisImgs = [null, null],
+        photoDiagnostics = [null, null],
         id = null,
         localizedA = null;
       const $ = (x) => document.getElementById(x);
@@ -409,6 +426,47 @@
         $("swap").classList.toggle("hidden", !yes);
         return yes;
       }
+      function qualityText(key) {
+        const language = window.ApoI18n?.current?.() || "pl";
+        const messages = {
+          good: {
+            pl: "Zdjęcia wyglądają dobrze — krawędź monety jest czytelna.",
+            en: "The photos look good — the coin edge is clear.",
+            de: "Die Fotos sehen gut aus — der Münzrand ist klar erkennbar.",
+            fr: "Les photos sont bonnes — le bord de la monnaie est net.",
+          },
+          textured: {
+            pl: "Tło jest wzorzyste. Analiza jest możliwa, ale dokładniejszy wynik uzyskasz na gładkim, jasnym tle.",
+            en: "The background is textured. Analysis is possible, but a plain light background will give a more accurate result.",
+            de: "Der Hintergrund ist gemustert. Die Analyse ist möglich, aber ein glatter, heller Hintergrund liefert ein genaueres Ergebnis.",
+            fr: "Le fond est texturé. L’analyse reste possible, mais un fond clair et uni donnera un résultat plus précis.",
+          },
+          uncertain: {
+            pl: "Krawędź monety jest słabo widoczna. Dla lepszego rozpoznania połóż monetę płasko na jednolitym tle i zrób zdjęcie z góry.",
+            en: "The coin edge is unclear. For better recognition, place the coin flat on a plain background and photograph it from above.",
+            de: "Der Münzrand ist nicht klar. Legen Sie die Münze flach auf einen einfarbigen Hintergrund und fotografieren Sie sie von oben.",
+            fr: "Le bord est peu visible. Posez la monnaie à plat sur un fond uni et photographiez-la du dessus.",
+          },
+        };
+        return messages[key]?.[language] || messages[key]?.pl || "";
+      }
+      function updatePhotoQuality() {
+        const box = $("photoQuality");
+        const present = photoDiagnostics.filter(Boolean);
+        if (!present.length) {
+          box.classList.add("hidden");
+          return;
+        }
+        const reasons = present.map((item) => item.qualityReason);
+        const key = reasons.includes("textured-background")
+          ? "textured"
+          : present.some((item) => item.quality !== "good")
+            ? "uncertain"
+            : "good";
+        box.textContent = qualityText(key);
+        box.classList.toggle("good", key === "good");
+        box.classList.remove("hidden");
+      }
       async function take(input, index, imgId, placeholderId, name) {
         const f = input.files && input.files[0];
         if (!f) return;
@@ -418,7 +476,13 @@
           const p = await processCoin(f);
           imgs[index] = p.display;
           analysisImgs[index] = p.analysis;
+          photoDiagnostics[index] = {
+            quality: p.quality || "good",
+            qualityReason: p.qualityReason || "clear-edge",
+            cropMode: p.cropMode || "full",
+          };
           preview(imgs[index], imgId, placeholderId);
+          updatePhotoQuality();
           $("status").textContent = ready()
             ? "Obie strony gotowe. Kliknij „Szybka analiza”."
             : name + " gotowy. Dodaj drugą stronę.";
@@ -436,8 +500,13 @@
       $("swap").onclick = () => {
         [imgs[0], imgs[1]] = [imgs[1], imgs[0]];
         [analysisImgs[0], analysisImgs[1]] = [analysisImgs[1], analysisImgs[0]];
+        [photoDiagnostics[0], photoDiagnostics[1]] = [
+          photoDiagnostics[1],
+          photoDiagnostics[0],
+        ];
         preview(imgs[0], "oi", "op");
         preview(imgs[1], "ri", "rp");
+        updatePhotoQuality();
       };
       const v = (x) => (x && String(x).trim() ? x : "Nie ustalono");
       function apiError(payload, fallback) {
@@ -581,7 +650,7 @@
         $("savedActions").scrollIntoView({ behavior: "smooth", block: "start" });
       }
       function persistAnalysisSession({ light = false } = {}) {
-        const session = { id, a, imgs, at: Date.now(), version: 4 };
+        const session = { id, a, imgs, photoDiagnostics, at: Date.now(), version: 5 };
         if (!light) session.analysisImgs = analysisImgs;
         try {
           sessionStorage.setItem("apomonetAnalysisSession", JSON.stringify(session));
@@ -600,6 +669,9 @@
           id = s.id || c?.id || null;
           imgs = s.imgs || [c?.obverseImage || null, c?.reverseImage || null];
           analysisImgs = s.analysisImgs || imgs;
+          photoDiagnostics = Array.isArray(s.photoDiagnostics)
+            ? s.photoDiagnostics
+            : [null, null];
           a = {
             ...(s.a || {}),
             ...(c || {}),
@@ -609,6 +681,7 @@
           if (imgs[0]) preview(imgs[0], "oi", "op");
           if (imgs[1]) preview(imgs[1], "ri", "rp");
           ready();
+          updatePhotoQuality();
           localizedA = null;
           render();
           void localizeCurrent({ scroll: false, showDetail: !!a.detail });

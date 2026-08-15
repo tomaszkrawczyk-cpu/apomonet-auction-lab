@@ -19,6 +19,9 @@
 - Tłumaczenie PL/EN/DE/FR obejmuje teraz nie tylko etykiety interfejsu, lecz także wartości rozpoznania, opis katalogowy, stan, typ i ostrzeżenia AI. Do usługi tłumaczącej trafiają wyłącznie dozwolone pola tekstowe — bez zdjęć, notatek właściciela i proweniencji.
 - „Usuń tło” wykonuje teraz rzeczywiste wykrycie obrysu i zapisuje PNG z przezroczystością. Przy niepewnym obrysie nie zmienia zdjęcia i prosi o jednolite, kontrastowe tło.
 - Automatyczny kadr ma wyższy próg pewności: na wzorzystym tle częściej zachowuje całe zdjęcie, zamiast ryzykować ucięcie monety.
+- Przed wysłaniem zdjęć do analizy aplikacja lokalnie rozpoznaje wzorzyste tło, niepewną krawędź lub pełny kadr i pokazuje prostą wskazówkę. Ostrzeżenie nie blokuje analizy ani nie wymaga zapytania do serwera.
+- Karta, album użytkownika, okładka albumu i eksport korzystają z jednego mechanizmu wyboru zdjęcia. Przy trybie „Usuń tło” wszędzie preferowany jest zapisany przezroczysty PNG; tryb „Bez zdjęcia” nie może już przypadkowo przywrócić oryginału.
+- Okładki własnych albumów pokazują teraz do czterech rzeczywistych miniatur zapisanych monet zamiast samych pustych kół.
 
 ## Źródła i diagnostyka
 - Smithsonian: skonfigurowany i zweryfikowany na produkcji; health => valid=true.
@@ -37,7 +40,7 @@
 - Automatyczny test w chmurowym Chrome przeszedł cały przepływ: wybór awersu i rewersu razem → lokalne przygotowanie zdjęć → `/api/analyze` → korekta użytkownika → ponowny powrót z obiema miniaturami → zapis → kolekcja → otwarcie karty monety.
 - `/api/analyze` zwrócił HTTP 200; logi tej wersji nie zawierają odpowiedzi 4xx/5xx dla testowanego przepływu.
 - Po ponownym otwarciu potwierdzono: oba zdjęcia obecne, skorygowany nominał i emitent widoczne, `userAccepted` pokazany jako dane użytkownika, puste sekcje opcjonalne ukryte.
-- Testy regresji: 12/12 zaliczonych, w tym nowe granice prywatności tłumaczeń i rzeczywiste przezroczyste wycięcie tła; kontrola składni JavaScript i `git diff --check` bez błędów.
+- Testy regresji: 14/14 zaliczonych, w tym granice prywatności tłumaczeń, rzeczywiste przezroczyste wycięcie tła, wspólny wybór zdjęcia dla wszystkich powierzchni albumowych oraz ostrzeżenie o jakości zdjęcia przed analizą; kontrola składni JavaScript i `git diff --check` bez błędów.
 
 ## Test fizycznego Androida i Etapu 2
 - Tester potwierdził, że na pierwszej realnej monecie analiza podstawowa pomyliła monetę, władcę i rok, ale korekta była możliwa i została przyjęta.
@@ -59,13 +62,14 @@
 
 ## Co wymaga teraz fizycznego testu Androida
 1. ponowne użycie „Usuń tło” na zapisanym półtalarze sfotografowanym na jednolitym tle,
-2. zmiana języka na niemiecki i kontrola, czy przetłumaczone są również wartości, stan, typ, ostrzeżenia i pełny opis,
-3. kontrola, czy na wzorzystym tle aplikacja bezpiecznie zachowuje całe zdjęcie zamiast błędnego wycięcia,
-4. powtórzenie przepływu na słabszej sieci i większym zestawie monet,
-5. Etap 2 po podaniu wagi/średnicy/rantu,
-6. PDF oraz XLSX na Androidzie,
-7. share przez WhatsApp/Messenger/e-mail,
-8. backup/restore i `.ics`.
+2. sprawdzenie komunikatu jakości na wzorzystym blacie i na jednolitym tle,
+3. zmiana języka na niemiecki i kontrola, czy przetłumaczone są również wartości, stan, typ, ostrzeżenia i pełny opis,
+4. kontrola, czy na wzorzystym tle aplikacja bezpiecznie zachowuje całe zdjęcie zamiast błędnego wycięcia,
+5. powtórzenie przepływu na słabszej sieci i większym zestawie monet,
+6. Etap 2 po podaniu wagi/średnicy/rantu,
+7. PDF oraz XLSX na Androidzie,
+8. share przez WhatsApp/Messenger/e-mail,
+9. backup/restore i `.ics`.
 
 ## Blokery zewnętrzne
 - Europeana: potrzebny działający Personal API Key; oba ciągi z dotychczasowych notatek zostały ręcznie sprawdzone i są odrzucane jako invalid.

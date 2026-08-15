@@ -193,14 +193,12 @@
         document.getElementById("editLink").href =
           "coin-edit.html?id=" + encodeURIComponent(coin.id);
 
-        const preparedObverse =
-          coin.albumPhotoMode === "cut" && coin.albumObverseImage
-            ? coin.albumObverseImage
-            : coin.obverseImage;
-        const preparedReverse =
-          coin.albumPhotoMode === "cut" && coin.albumReverseImage
-            ? coin.albumReverseImage
-            : coin.reverseImage;
+        const preparedObverse = window.ApoAlbumPhotos
+          ? ApoAlbumPhotos.resolve(coin, "obverse")
+          : coin.obverseImage;
+        const preparedReverse = window.ApoAlbumPhotos
+          ? ApoAlbumPhotos.resolve(coin, "reverse")
+          : coin.reverseImage;
         setPhoto("obverseImage", "obverseEmpty", preparedObverse);
         setPhoto("reverseImage", "reverseEmpty", preparedReverse);
         setSection("notesCard", "notes", coin.notes);
