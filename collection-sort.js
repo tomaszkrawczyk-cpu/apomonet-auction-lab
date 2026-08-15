@@ -1,0 +1,123 @@
+(() => {
+  const collator = new Intl.Collator("pl-PL", {
+    sensitivity: "base",
+    numeric: true,
+  });
+
+  const nominalRules = [
+    ["portugal", 160],
+    ["dwudukat", 150],
+    ["2 dukat", 150],
+    ["poldukat", 135],
+    ["1/2 dukat", 135],
+    ["dukat", 140],
+    ["dwutalar", 130],
+    ["2 talar", 130],
+    ["poltalar", 110],
+    ["1/2 talar", 110],
+    ["talar", 120],
+    ["zlotow", 100],
+    ["ort", 90],
+    ["szostak", 80],
+    ["trojak", 70],
+    ["poltorak", 60],
+    ["polgrosz", 40],
+    ["1/2 grosz", 40],
+    ["grosz", 50],
+    ["kwartnik", 30],
+    ["ternar", 25],
+    ["denar", 20],
+    ["obol", 10],
+    ["fenig", 5],
+  ];
+
+  function normalize(value) {
+    return String(value || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLocaleLowerCase("pl-PL")
+      .replace(/ł/g, "l")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function nominalRank(coin) {
+    const text = normalize(coin?.nominal || coin?.title);
+    if (!text) return Number.NEGATIVE_INFINITY;
+
+    const modernZloty = text.match(/(\d+(?:[.,]\d+)?)\s*(?:zl|zlot)/);
+    if (modernZloty) {
+      const value = Number(modernZloty[1].replace(",", "."));
+      return 100 + Math.log10(Math.max(1, value) + 1) * 10;
+    }
+
+    for (const [token, rank] of nominalRules) {
+      if (text.includes(token)) return rank;
+    }
+
+    const number = text.match(/\d+(?:[.,]\d+)?/);
+    return number ? Number(number[0].replace(",", ".")) : 0;
+  }
+
+  function romanNumber(value) {
+    const map = { I: 1, V: 5, X: 10, L: 50, C: 100 };
+    let total = 0;
+    let previous = 0;
+    for (const char of String(value || "").toUpperCase().split("").reverse()) {
+      const current = map[char] || 0;
+      total += current < previous ? -current : current;
+      previous = Math.max(previous, current);
+    }
+    return total;
+  }
+
+  function yearValue(coin) {
+    const text = String(coin?.year || coin?.title || "");
+    const exact = text.match(/\b(\d{3,4})\b/);
+    if (exact) return Number(exact[1]);
+
+    const century = text.match(/\b([IVXLC]{1,5})(?:\s*[–—-]\s*[IVXLC]{1,5})?\s*w\.?/i);
+    if (century) {
+      const value = romanNumber(century[1]);
+      if (value > 0) return (value - 1) * 100;
+    }
+    return null;
+  }
+
+  function timestamp(coin) {
+    const value = Date.parse(coin?.createdAt || coin?.updatedAt || "");
+    return Number.isFinite(value) ? value : 0;
+  }
+
+  function sortCoins(coins, mode = "added-desc") {
+    const result = [...(coins || [])];
+    result.sort((a, b) => {
+      if (mode === "year-asc" || mode === "year-desc") {
+        const aYear = yearValue(a);
+        const bYear = yearValue(b);
+        if (aYear === null && bYear !== null) return 1;
+        if (aYear !== null && bYear === null) return -1;
+        if (aYear !== bYear) {
+          return mode === "year-asc" ? aYear - bYear : bYear - aYear;
+        }
+      } else if (mode === "nominal-desc" || mode === "nominal-asc") {
+        const difference = nominalRank(a) - nominalRank(b);
+        if (difference) return mode === "nominal-asc" ? difference : -difference;
+      } else {
+        const difference = timestamp(b) - timestamp(a);
+        if (difference) return difference;
+      }
+
+      const nominalCompare = collator.compare(a?.nominal || "", b?.nominal || "");
+      if (nominalCompare) return nominalCompare;
+      return collator.compare(a?.title || "", b?.title || "");
+    });
+    return result;
+  }
+
+  window.ApoCollectionSort = Object.freeze({
+    nominalRank,
+    sortCoins,
+    yearValue,
+  });
+})();
