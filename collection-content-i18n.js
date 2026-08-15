@@ -100,6 +100,17 @@
       const shown = localizedById.get(id);
       if (!shown) return;
       setText(card.querySelector("h2"), shown.title || "Moneta");
+      const openLink = card.querySelector(".coin-open");
+      if (openLink) {
+        const language = window.ApoAnalysisI18n?.currentLanguage?.() || "pl";
+        const label = {
+          pl: "Otwórz kartę",
+          en: "Open coin card",
+          de: "Münzkarte öffnen",
+          fr: "Ouvrir la fiche monnaie",
+        }[language] || "Otwórz kartę";
+        openLink.setAttribute("aria-label", `${label}: ${shown.title || "Moneta"}`);
+      }
       const summary = card.querySelector(".coin-summary");
       const details = albumPage
         ? [shown.ruler, shown.nominal, shown.mint, shown.metal]

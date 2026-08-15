@@ -55,6 +55,15 @@ function collectionSort(){
   return sandbox.ApoCollectionSort;
 }
 
+function xlsxPackage(){
+  const sandbox={console,TextEncoder,Uint8Array};
+  sandbox.window=sandbox;
+  vm.runInNewContext(read('zip-store.js'),sandbox,{filename:'zip-store.js'});
+  vm.runInNewContext(read('xlsx-sheet.js'),sandbox,{filename:'xlsx-sheet.js'});
+  vm.runInNewContext(read('xlsx-package.js'),sandbox,{filename:'xlsx-package.js'});
+  return sandbox.ApoXLSXPackage;
+}
+
 test('safe crop keeps a generous margin around a reliable coin edge',()=>{
   const {safeCrop}=imagePipeline();
   const crop=safeCrop({width:600,height:600},{cx:300,cy:300,r:100,score:22});
@@ -317,6 +326,28 @@ test('large collections use thumbnails, two views and bounded batches',()=>{
   assert.match(collection,/loading="lazy"/);
   assert.match(collection,/Pokaż kolejne 60/);
   assert.match(collection,/aria-label="Otwórz kartę:/);
+  assert.match(collection,/message\("shown", visible\.length, all\.length\)/);
+  assert.match(collection,/viewOptions\.setAttribute\("aria-label", tr\("Sposób wyświetlania kolekcji"\)\)/);
+  assert.match(read('collection-content-i18n.js'),/openLink\.setAttribute\("aria-label"/);
   assert.match(coin,/id="deleteCoin"/);
   assert.match(coin,/ApoMonet\.deleteCoin\(coin\.id\)/);
+});
+
+test('XLSX export is a real private workbook with selected coin fields',()=>{
+  const bytes=xlsxPackage().build([{
+    title:'Talar 1794',
+    ruler:'Stanisław August Poniatowski',
+    year:'1794',
+    nominal:'Talar',
+    metal:'Srebro',
+    rawAI:'PRIVATE RAW RESULT',
+    obverseImage:'PRIVATE PHOTO',
+  }]);
+  assert.equal(bytes[0],0x50);
+  assert.equal(bytes[1],0x4b);
+  const text=new TextDecoder().decode(bytes);
+  assert.match(text,/xl\/worksheets\/sheet1\.xml/);
+  assert.match(text,/Talar 1794/);
+  assert.match(text,/Stanisław August Poniatowski/);
+  assert.doesNotMatch(text,/PRIVATE RAW RESULT|PRIVATE PHOTO/);
 });
