@@ -23,15 +23,15 @@ Legenda: ✅ działa / 🟡 częściowo / 🔴 brak / 🔵 etap PRO/LAB / ⚠️
 - 🔴 Docelowe aplikacje Flutter: Android, iOS, Windows, macOS, Linux.
 
 ### B. Zdjęcie i analiza
-- 🟡 Awers/rewers z aparatu i pliku.
-- 🟡 Automatyczne kadrowanie/wycinanie tła — działa prototypowo, wymaga ochrony całego rantu i rocznika.
+- 🟡 Awers/rewers z aparatu i pliku — pełny przepływ zweryfikowany w wersji preview; pozostaje fizyczny test Androida.
+- 🟡 Automatyczne kadrowanie — bezpieczny margines i powrót do całego zdjęcia przy niepewnym wykryciu są wdrożone i przetestowane; pozostaje test realnych monet na Androidzie.
 - 🔴 Ocena jakości zdjęcia przed analizą.
 - 🔴 Obsługa wielu monet na jednym zdjęciu (PRO).
 - 🟡 Identyfikacja: nominał, władca/emitent, rok, mennica, metal — wymaga poprawy niezawodności.
-- 🔴 Poziom pewności dla pól identyfikacji.
-- 🟡 Korekta po analizie — musi zachowywać tę samą sesję i scalać poprawione dane.
-- 🔴 Waga i średnica jako dane korygujące identyfikację.
-- 🔴 „Czy mam już tę odmianę?”.
+- 🟡 Poziom pewności dla pól identyfikacji — UI pokazuje osobno pewność władcy, roku i nominału; wymaga benchmarku na realnych monetach.
+- 🟡 Korekta po analizie — sesja, oba zdjęcia, `rawAI` i dane zaakceptowane przez użytkownika przeszły pełny test preview; pozostaje test Androida.
+- 🟡 Waga i średnica jako dane korygujące identyfikację — pola i przekazanie do dalszej analizy są wdrożone.
+- 🟡 „Czy mam już tę odmianę?” — działa ostrożne wykrycie możliwego duplikatu podstawowej tożsamości.
 - 🔵 Porównanie stempli 1:1.
 - 🔵 Wykrywanie tego samego egzemplarza w archiwach.
 - 🔵 AI grading.
@@ -39,13 +39,14 @@ Legenda: ✅ działa / 🟡 częściowo / 🔴 brak / 🔵 etap PRO/LAB / ⚠️
 
 ### C. Kolekcja i albumy
 - ✅ Kolekcja i ręczna edycja monet.
+- ✅ Zapisana moneta ma otwieraną kartę z awersem, rewersem i danymi zaakceptowanymi przez użytkownika.
 - 🟡 Historia korekt/danych istnieje technicznie, wymaga kompletnego UI i testu sesji.
 - 🟡 Albumy Moje / Cele / Marzenia z miniaturami demonstracyjnymi.
 - 🟡 Przenoszenie między albumami — wdrożone, wymaga testu regresji.
 - ✅ Widok lista / małe kafelki / duże kafelki z zapamiętaniem preferencji.
-- 🟡 Filtry: władca, nominał, mennica, epoka; brakuje pełnego zestawu: metal, rzadkość, stan.
-- 🔴 Notatki eksperta jako oddzielna warstwa od wyniku AI.
-- 🔴 Pełna historia/proweniencja egzemplarza.
+- 🟡 Filtry: władca, nominał, mennica, metal, rzadkość i stan są wdrożone; epoka wymaga ujednolicenia.
+- 🟡 Notatki eksperta są edytowalne i oddzielone od zachowanego `rawAI`; UI historii wymaga dalszego dopracowania.
+- 🟡 Historia/proweniencja egzemplarza ma podstawowe pola i historię zmian; pełny model nadal do rozbudowy.
 - 🔴 Dodaj z aukcji do Moje/Cele/Marzenia.
 - 🟡 Pełny podział historyczny: demo obejmuje szeroki zakres, katalog wymaga kompletnego modelu, w tym Andegawenów, okresu wojennego, prób, destruktów i błędów menniczych.
 
@@ -71,7 +72,7 @@ Legenda: ✅ działa / 🟡 częściowo / 🔴 brak / 🔵 etap PRO/LAB / ⚠️
 - 🟡 Zaznaczanie pojedynczych monet do eksportu — wdrożone w albumach demo, wymaga testu.
 - 🟡 PDF z wybranych — ekran drukowania/zapisu PDF; wymaga dopracowania raportu i testu zdjęć.
 - 🟡 Udostępnianie przez system telefonu — wdrożone, wymaga testu Android.
-- 🟡 CSV istnieje; 🔴 prawdziwy XLSX.
+- ✅ Prawdziwy XLSX jest generowany dla wybranych monet; pozostaje test pobierania na Androidzie.
 - 🔴 Raporty kolekcji wg władców, mennic, wartości itd.
 - 🔴 Bezpieczne opcje redakcji danych w pliku przed wysyłką.
 
@@ -98,6 +99,8 @@ Legenda: ✅ działa / 🟡 częściowo / 🔴 brak / 🔵 etap PRO/LAB / ⚠️
 3. Ujednolicenie danych i migracje localStorage bez kasowania danych użytkownika.
 4. Audyt wielojęzyczności i brakujących tłumaczeń.
 5. Audyt wydajności zdjęć, list i startu aplikacji.
+
+Kamień milowy 2026-08-15: najważniejszy przepływ zdjęcia → analiza → korekta → zapis → ponowne otwarcie przeszedł automatyczny test E2E na wersji preview. Produkcja pozostała bez zmian. Przed uznaniem kryterium mobilnego za zamknięte pozostaje test fizycznego Androida z realnymi zdjęciami.
 
 ### Etap 1 — najważniejszy przepływ monety
 1. Bezpieczne kadrowanie z marginesem całego rantu.

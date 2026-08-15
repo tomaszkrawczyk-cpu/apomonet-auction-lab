@@ -2,11 +2,31 @@ const ApoMonet=(()=>{
   const KEY='apomonet_state_v2';
   const defaults={coins:[],albums:[],watchlist:[],events:[],settings:{currency:'PLN'},history:[]};
   const clone=x=>JSON.parse(JSON.stringify(x));
-  function load(){try{return {...clone(defaults),...(JSON.parse(localStorage.getItem(KEY)||'{}'))}}catch(e){return clone(defaults)}}
-  function save(s){localStorage.setItem(KEY,JSON.stringify(s))}
+  function load(){
+    try{
+      const raw=JSON.parse(localStorage.getItem(KEY)||'{}');
+      return {
+        ...clone(defaults),...raw,
+        coins:Array.isArray(raw.coins)?raw.coins:[],
+        albums:Array.isArray(raw.albums)?raw.albums:[],
+        watchlist:Array.isArray(raw.watchlist)?raw.watchlist:[],
+        events:Array.isArray(raw.events)?raw.events:[],
+        history:Array.isArray(raw.history)?raw.history:[],
+        settings:{...defaults.settings,...(raw.settings&&typeof raw.settings==='object'?raw.settings:{})}
+      };
+    }catch(e){return clone(defaults)}
+  }
+  function save(s){
+    try{localStorage.setItem(KEY,JSON.stringify(s));return true}
+    catch(cause){
+      const quota=cause?.name==='QuotaExceededError'||cause?.code===22;
+      const error=new Error(quota?'Brakuje miejsca na zapis zdjęć. Dane nie zostały nadpisane. Utwórz kopię zapasową i usuń zbędne duże zdjęcia.':'Nie udało się bezpiecznie zapisać danych lokalnie. Spróbuj ponownie.');
+      error.code='APOMONET_STORAGE_WRITE_FAILED';error.cause=cause;throw error;
+    }
+  }
   function uid(p='id'){return `${p}_${Date.now()}_${Math.random().toString(36).slice(2,8)}`}
   function pushHistory(s,e){s.history=s.history||[];s.history.unshift({id:uid('h'),at:new Date().toISOString(),...e});s.history=s.history.slice(0,200)}
-  function seed(){const s=load();if(!Array.isArray(s.albums)||!s.albums.length)s.albums=[{id:'polska-krolewska',name:'Polska królewska',description:'Monety władców Polski'},{id:'srebro',name:'Srebro',description:'Monety srebrne'},{id:'do-opracowania',name:'Do opracowania',description:'Monety wymagające identyfikacji'}];save(s);return s}
+  function seed(){const s=load();if(!Array.isArray(s.albums)||!s.albums.length){s.albums=[{id:'polska-krolewska',name:'Polska królewska',description:'Monety władców Polski'},{id:'srebro',name:'Srebro',description:'Monety srebrne'},{id:'do-opracowania',name:'Do opracowania',description:'Monety wymagające identyfikacji'}];save(s)}return s}
   function upsertCoin(c){const s=load(),old=c.id?s.coins.find(x=>x.id===c.id):null,item={...(old||{}),id:c.id||uid('coin'),createdAt:old?.createdAt||c.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString(),...c};const i=s.coins.findIndex(x=>x.id===item.id);if(i>=0)s.coins[i]=item;else s.coins.unshift(item);pushHistory(s,{type:i>=0?'coin_updated':'coin_created',coinId:item.id,title:item.title||'Moneta'});save(s);return item}
   function getCoin(id){return load().coins.find(x=>x.id===id)||null}
   function deleteCoin(id){const s=load();s.coins=s.coins.filter(x=>x.id!==id);save(s)}
@@ -17,7 +37,20 @@ const ApoMonet=(()=>{
   function moveCoinBetweenAlbums(coinId,fromAlbumId,toAlbumId){const s=load(),i=s.coins.findIndex(x=>x.id===coinId);if(i<0)return null;let ids=Array.isArray(s.coins[i].albumIds)?[...s.coins[i].albumIds]:[];if(fromAlbumId)ids=ids.filter(x=>x!==fromAlbumId);if(toAlbumId&&!ids.includes(toAlbumId))ids.push(toAlbumId);s.coins[i]={...s.coins[i],albumIds:ids,updatedAt:new Date().toISOString()};save(s);return s.coins[i]}
   return {load,save,seed,uid,upsertCoin,getCoin,deleteCoin,addToWatchlist,createAlbum,assignCoinToAlbum,removeCoinFromAlbum,moveCoinBetweenAlbums};
 })();
-window.ApoMonet=ApoMonet;ApoMonet.seed();
+window.ApoMonet=ApoMonet;
+
+addEventListener('error',event=>{
+  if(event?.error?.code!=='APOMONET_STORAGE_WRITE_FAILED')return;
+  const status=document.getElementById('status')||document.getElementById('saved');
+  if(status)status.textContent=event.error.message;
+});
+try{ApoMonet.seed()}catch(error){
+  console.error(error);
+  addEventListener('DOMContentLoaded',()=>{
+    const status=document.getElementById('status')||document.getElementById('saved');
+    if(status)status.textContent=error.message;
+  },{once:true});
+}
 
 const ApoI18n=(()=>{
   const KEY='apomonet_language_v2';
@@ -82,15 +115,9 @@ window.ApoI18n=ApoI18n;
   function safeImageProcessor(){
     if(!location.pathname.endsWith('/analyze.html')&&!location.pathname.endsWith('analyze.html'))return;
     document.querySelectorAll('input[type=file][capture]').forEach(i=>i.removeAttribute('capture'));
-    const note=document.querySelector('.photo-note');if(note)note.textContent='ApoMonet zachowuje pełną monetę i bezpieczny margines. Tło może pozostać — ważniejsze jest, aby nie uciąć daty, legendy ani rantu.';
+    const note=document.querySelector('.photo-note');if(note)note.textContent='ApoMonet przygotowuje lekki kadr z bezpiecznym marginesem. Przy niepewnym wykryciu zachowuje całe zdjęcie, żeby nie uciąć daty, legendy ani rantu.';
     const hero=document.querySelector('.hero.compact p');if(hero)hero.textContent='Dotknij kafla awersu lub rewersu i wybierz: aparat albo galerię.';
-    window.processCoin=async function(file){
-      const loadImage=f=>new Promise((ok,no)=>{const r=new FileReader;r.onerror=no;r.onload=e=>{const im=new Image();im.onerror=no;im.onload=()=>ok(im);im.src=e.target.result};r.readAsDataURL(f)});
-      const im=await loadImage(file),max=1200,scale=Math.min(1,max/Math.max(im.width,im.height));
-      const c=document.createElement('canvas');c.width=Math.round(im.width*scale);c.height=Math.round(im.height*scale);
-      c.getContext('2d').drawImage(im,0,0,c.width,c.height);
-      return {display:c.toDataURL('image/webp',.84),analysis:c.toDataURL('image/jpeg',.82),confidence:100};
-    };
+    window.ApoImagePipeline?.install?.();
     document.querySelectorAll('.capture-card').forEach(label=>{
       label.addEventListener('click',e=>{
         if(label.dataset.choiceOpen==='1')return;

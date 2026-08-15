@@ -1,1 +1,194 @@
-<!DOCTYPE html><html lang="pl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Moneta • ApoMonet</title><link rel="stylesheet" href="style.css"></head><body><header class="topbar"><a class="brand" href="index.html">ApoMonet</a><nav class="nav"><a href="collection.html">← Kolekcja</a><a href="albums.html">Albumy</a><a href="watchlist.html">Obserwowane</a></nav></header><main class="shell narrow"><section class="hero compact"><span class="eyebrow">Karta monety</span><h1>Moneta testowa</h1><p>Widok szczegółowy przygotowany pod dane z analizy AI i ręczne korekty.</p></section><section class="grid two"><div class="card"><h3>Awers</h3><div class="empty">Zdjęcie awersu</div></div><div class="card"><h3>Rewers</h3><div class="empty">Zdjęcie rewersu</div></div></section><div class="section-title"><h2>Dane</h2><span class="todo">DO UZUPEŁNIENIA</span></div><section class="grid two"><div class="card"><p><b>Władca:</b> —</p><p><b>Rok:</b> —</p><p><b>Nominał:</b> —</p><p><b>Mennica:</b> —</p></div><div class="card"><p><b>Stan:</b> —</p><p><b>Rzadkość:</b> —</p><p><b>Wycena:</b> —</p><p><b>Pewność AI:</b> —</p></div></section><div class="toolbar"><a class="btn primary" href="analyze.html">Analizuj ponownie</a><a class="btn secondary" href="album.html?id=do-opracowania">Dodaj do albumu</a><a class="btn secondary" href="watchlist.html">Obserwuj</a></div><section class="card"><h3>Notatki właściciela</h3><p class="muted">Tu będzie ręczna korekta, historia zakupu, cena zakupu, proweniencja i uwagi.</p></section></main><script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Karta monety • ApoMonet</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      [hidden] {
+        display: none !important;
+      }
+      .photo-card img {
+        display: block;
+        width: 100%;
+        max-height: 520px;
+        object-fit: contain;
+        border-radius: 14px;
+        background: #0b0b0c;
+      }
+      .facts {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .fact {
+        padding: 14px;
+        border: 1px solid #29292c;
+        border-radius: 14px;
+        background: #121214;
+      }
+      .fact span {
+        display: block;
+        margin-bottom: 5px;
+        color: #8f8f95;
+        font-size: 12px;
+      }
+      .accepted {
+        border-color: #5e441c;
+        color: #d7c29b;
+      }
+      @media (max-width: 560px) {
+        .facts {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="index.html">ApoMonet</a>
+      <nav class="nav">
+        <a href="collection.html">← Kolekcja</a>
+        <a href="analyze.html">Analiza</a>
+        <a href="albums.html">Albumy</a>
+      </nav>
+    </header>
+    <main class="shell narrow">
+      <section id="missing" class="card" hidden>
+        <h1>Nie znaleziono monety</h1>
+        <p class="muted">Wróć do kolekcji i wybierz istniejącą monetę.</p>
+        <a class="btn primary" href="collection.html">Wróć do kolekcji</a>
+      </section>
+
+      <div id="coinContent" class="coin-content" hidden>
+        <section class="hero compact">
+          <span class="eyebrow">Karta monety</span>
+          <h1 id="coinTitle">Moneta</h1>
+          <p id="coinSubtitle">Zapisane dane i zdjęcia.</p>
+          <div id="acceptedBadge" class="status accepted" hidden>
+            Dane zatwierdzone przez Ciebie. Pierwotny wynik AI jest zachowany w
+            historii rekordu.
+          </div>
+        </section>
+
+        <section class="grid two">
+          <div class="card photo-card">
+            <h2>Awers</h2>
+            <img id="obverseImage" alt="Zdjęcie awersu monety" hidden />
+            <div id="obverseEmpty" class="empty">Brak zdjęcia awersu.</div>
+          </div>
+          <div class="card photo-card">
+            <h2>Rewers</h2>
+            <img id="reverseImage" alt="Zdjęcie rewersu monety" hidden />
+            <div id="reverseEmpty" class="empty">Brak zdjęcia rewersu.</div>
+          </div>
+        </section>
+
+        <div class="section-title"><h2>Dane</h2></div>
+        <section id="facts" class="facts"></section>
+
+        <section id="descriptionCard" class="card" hidden>
+          <h2>Opis katalogowy</h2>
+          <p id="description"></p>
+        </section>
+        <section id="notesCard" class="card" hidden>
+          <h2>Notatki właściciela</h2>
+          <p id="notes"></p>
+        </section>
+        <section id="provenanceCard" class="card" hidden>
+          <h2>Proweniencja</h2>
+          <p id="provenance"></p>
+        </section>
+
+        <div class="toolbar">
+          <a id="editLink" class="btn primary" href="coin-edit.html"
+            >Edytuj i popraw</a
+          >
+          <a class="btn secondary" href="collection.html">Wróć do kolekcji</a>
+          <a class="btn secondary" href="analyze.html">Analizuj inną monetę</a>
+        </div>
+      </div>
+    </main>
+    <script src="app.js"></script>
+    <script>
+      (() => {
+        const id = new URLSearchParams(location.search).get("id");
+        const coin = id ? ApoMonet.getCoin(id) : null;
+        const missing = document.getElementById("missing");
+        const content = document.getElementById("coinContent");
+
+        if (!coin) {
+          missing.hidden = false;
+          return;
+        }
+
+        const value = (field) => {
+          const text = String(field ?? "").trim();
+          return text && text !== "Nie ustalono" ? text : "—";
+        };
+        const setPhoto = (imageId, emptyId, source) => {
+          const image = document.getElementById(imageId);
+          const empty = document.getElementById(emptyId);
+          if (!source) return;
+          image.src = source;
+          image.hidden = false;
+          empty.hidden = true;
+        };
+        const setSection = (cardId, textId, text) => {
+          if (!String(text || "").trim()) return;
+          document.getElementById(textId).textContent = text;
+          document.getElementById(cardId).hidden = false;
+        };
+
+        document.getElementById("coinTitle").textContent =
+          coin.title ||
+          [coin.nominal, coin.ruler, coin.year].filter(Boolean).join(" • ") ||
+          "Moneta bez nazwy";
+        document.getElementById("coinSubtitle").textContent = coin.userAccepted
+          ? "Pokazujemy dane zaakceptowane przez Ciebie oraz zapisane zdjęcia."
+          : "Pokazujemy zapisany wynik analizy oraz zdjęcia.";
+        document.getElementById("acceptedBadge").hidden = !coin.userAccepted;
+        document.getElementById("editLink").href =
+          "coin-edit.html?id=" + encodeURIComponent(coin.id);
+
+        setPhoto("obverseImage", "obverseEmpty", coin.obverseImage);
+        setPhoto("reverseImage", "reverseEmpty", coin.reverseImage);
+
+        const fields = [
+          ["Nominał", coin.nominal],
+          ["Władca / emitent", coin.ruler],
+          ["Rok", coin.year],
+          ["Mennica", coin.mint],
+          ["Metal", coin.metal],
+          ["Odmiana / typ", coin.variant],
+          ["Stan zachowania", coin.grade],
+          ["Rzadkość", coin.rarity],
+          ["Numer katalogowy", coin.catalog],
+          ["Pewność AI", coin.confidence ? coin.confidence + "%" : ""],
+        ];
+        document.getElementById("facts").replaceChildren(
+          ...fields.map(([label, field]) => {
+            const box = document.createElement("div");
+            box.className = "fact";
+            const name = document.createElement("span");
+            const strong = document.createElement("strong");
+            name.textContent = label;
+            strong.textContent = value(field);
+            box.append(name, strong);
+            return box;
+          }),
+        );
+
+        setSection(
+          "descriptionCard",
+          "description",
+          coin.description || coin.fullDescription,
+        );
+        setSection("notesCard", "notes", coin.notes);
+        setSection("provenanceCard", "provenance", coin.provenance);
+        content.hidden = false;
+      })();
+    </script>
+  </body>
+</html>
