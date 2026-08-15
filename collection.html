@@ -96,7 +96,7 @@
       <div class="collection-search"><input id="search" class="input" type="search" placeholder="Szukaj: władca, nominał, rok, mennica…" /></div>
       <div class="browsebar">
         <div class="browse-group"><button id="filterBtn" class="btn secondary" type="button" aria-expanded="false">Filtry</button><button id="sortBtn" class="btn secondary" type="button">Sortuj</button></div>
-        <div class="browse-group" aria-label="Sposób wyświetlania kolekcji"><button id="gridView" class="btn secondary" type="button" aria-pressed="true">Kafelki</button><button id="listView" class="btn secondary" type="button" aria-pressed="false">Lista</button><button id="selectionMode" class="btn secondary" type="button" aria-pressed="false">Zaznacz</button></div>
+        <div id="viewOptions" class="browse-group" aria-label="Sposób wyświetlania kolekcji"><button id="gridView" class="btn secondary" type="button" aria-pressed="true">Kafelki</button><button id="listView" class="btn secondary" type="button" aria-pressed="false">Lista</button><button id="selectionMode" class="btn secondary" type="button" aria-pressed="false">Zaznacz</button></div>
       </div>
       <div id="filters" class="filters" hidden>
         <select id="rulerFilter" class="input"><option value="">Wszyscy władcy / emitenci</option></select><select id="nominalFilter" class="input"><option value="">Wszystkie nominały</option></select><select id="mintFilter" class="input"><option value="">Wszystkie mennice</option></select><select id="metalFilter" class="input"><option value="">Wszystkie metale</option></select><button id="clearFilters" class="btn secondary" type="button">Wyczyść filtry</button>
@@ -135,6 +135,31 @@
       let sortMode = localStorage.getItem(SORT_KEY) || "added-desc";
       let selectionActive = false;
       let visibleLimit = PAGE_SIZE;
+      function tr(text) { return window.ApoI18n?.tr?.(text) || text; }
+      function message(key, ...values) {
+        const language = window.ApoI18n?.current?.() || "pl";
+        const messages = {
+          selected: {
+            pl: (count) => `Zaznaczono: ${count}`,
+            en: (count) => `Selected: ${count}`,
+            de: (count) => `Ausgewählt: ${count}`,
+            fr: (count) => `Sélection : ${count}`,
+          },
+          shown: {
+            pl: (visible, all) => `Pokazano ${visible} z ${all} monet`,
+            en: (visible, all) => `Showing ${visible} of ${all} coins`,
+            de: (visible, all) => `${visible} von ${all} Münzen angezeigt`,
+            fr: (visible, all) => `${visible} monnaie(s) sur ${all} affichée(s)`,
+          },
+          sortSelected: {
+            pl: (label) => `Sortuj. Wybrano: ${label}`,
+            en: (label) => `Sort. Selected: ${label}`,
+            de: (label) => `Sortieren. Ausgewählt: ${label}`,
+            fr: (label) => `Trier. Sélection : ${label}`,
+          },
+        };
+        return (messages[key]?.[language] || messages[key]?.pl)(...values);
+      }
       function esc(value) { return String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;"); }
       function money(value) { return new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN", maximumFractionDigits: 0 }).format(value || 0); }
       function coinValue(coin) {
@@ -158,11 +183,12 @@
         const list = state().coins.filter((coin) => [coin.title, coin.nominal, coin.ruler, coin.year, coin.mint, coin.metal, coin.variant, coin.rarity].join(" ").toLocaleLowerCase("pl-PL").includes(query) && (!ruler || coin.ruler === ruler) && (!nominal || coin.nominal === nominal) && (!mint || coin.mint === mint) && (!metal || coin.metal === metal));
         return window.ApoCollectionSort ? ApoCollectionSort.sortCoins(list, sortMode) : list;
       }
-      function updateSelected() { selectedInfo.textContent = "Zaznaczono: " + selected.size; }
+      function updateSelected() { selectedInfo.textContent = message("selected", selected.size); }
       function updateViewButtons() {
         const gridActive = view === "grid";
         gridView.classList.toggle("active", gridActive); listView.classList.toggle("active", !gridActive);
         gridView.setAttribute("aria-pressed", String(gridActive)); listView.setAttribute("aria-pressed", String(!gridActive));
+        viewOptions.setAttribute("aria-label", tr("Sposób wyświetlania kolekcji"));
       }
       function updateFilterButton() {
         const count = [...filters.querySelectorAll("select")].filter((element) => element.value).length;
@@ -170,16 +196,16 @@
         filterBtn.textContent = count ? `${label} (${count})` : label;
       }
       function cardMarkup(coin) {
-        const photo = albumPhoto(coin), title = coin.title || [coin.nominal, coin.year].filter(Boolean).join(" • ") || "Moneta bez nazwy";
-        const summary = [coin.nominal, coin.ruler].filter(Boolean).join(" • ") || "Dane do uzupełnienia";
+        const photo = albumPhoto(coin), title = coin.title || [coin.nominal, coin.year].filter(Boolean).join(" • ") || tr("Moneta bez nazwy");
+        const summary = [coin.nominal, coin.ruler].filter(Boolean).join(" • ") || tr("Dane do uzupełnienia");
         const secondary = [coin.mint, coin.metal, coin.rarity].filter(Boolean).join(" • "), value = coinValue(coin);
-        return `<article class="card collection-coin coin-card"><label class="pick"><input class="coin-pick" type="checkbox" data-id="${esc(coin.id)}" ${selected.has(coin.id) ? "checked" : ""}><span class="hidden">Zaznacz monetę</span></label><a class="coin-open" href="coin.html?id=${encodeURIComponent(coin.id)}" aria-label="Otwórz kartę: ${esc(title)}"><div class="coin-photo${photo ? "" : " empty"}">${photo ? `<img src="${esc(photo)}" alt="${esc(title)}" loading="lazy">` : "Brak zapisanego zdjęcia"}</div><div class="coin-copy"><span class="eyebrow">${esc(coin.year || "Rok nieustalony")}</span><h2>${esc(title)}</h2><p class="coin-summary">${esc(summary)}</p>${secondary ? `<p class="coin-secondary">${esc(secondary)}</p>` : ""}${value ? `<span class="coin-value">Szacunkowo: ${money(value)}</span>` : ""}</div><span class="coin-chevron" aria-hidden="true">›</span></a></article>`;
+        return `<article class="card collection-coin coin-card"><label class="pick"><input class="coin-pick" type="checkbox" data-id="${esc(coin.id)}" ${selected.has(coin.id) ? "checked" : ""}><span class="hidden">Zaznacz monetę</span></label><a class="coin-open" href="coin.html?id=${encodeURIComponent(coin.id)}" aria-label="Otwórz kartę: ${esc(title)}"><div class="coin-photo${photo ? "" : " empty"}">${photo ? `<img src="${esc(photo)}" alt="${esc(title)}" loading="lazy">` : tr("Brak zapisanego zdjęcia")}</div><div class="coin-copy"><span class="eyebrow">${esc(coin.year || tr("Rok nieustalony"))}</span><h2>${esc(title)}</h2><p class="coin-summary">${esc(summary)}</p>${secondary ? `<p class="coin-secondary">${esc(secondary)}</p>` : ""}${value ? `<span class="coin-value">${tr("Szacunkowo")}: ${money(value)}</span>` : ""}</div><span class="coin-chevron" aria-hidden="true">›</span></a></article>`;
       }
       function render() {
         const all = filtered(), visible = all.slice(0, visibleLimit);
         coins.className = `collection-grid ${view}-view${selectionActive ? " selecting" : ""}`;
-        coins.innerHTML = visible.length ? visible.map(cardMarkup).join("") : '<div class="empty">Kolekcja jest pusta albo filtry ukrywają wszystkie monety.</div>';
-        resultCount.textContent = `Pokazano ${visible.length} z ${all.length} monet`;
+        coins.innerHTML = visible.length ? visible.map(cardMarkup).join("") : `<div class="empty">${tr("Kolekcja jest pusta albo filtry ukrywają wszystkie monety.")}</div>`;
+        resultCount.textContent = message("shown", visible.length, all.length);
         loadMore.hidden = visible.length >= all.length;
         updateViewButtons(); updateFilterButton();
         document.querySelectorAll(".coin-pick").forEach((checkbox) => { checkbox.onchange = () => { checkbox.checked ? selected.add(checkbox.dataset.id) : selected.delete(checkbox.dataset.id); updateSelected(); }; });
@@ -198,7 +224,7 @@
       function closeSortDialog() { if (typeof sortDialog.close === "function" && sortDialog.open) sortDialog.close(); else sortDialog.removeAttribute("open"); }
       function refreshSortOptions() {
         document.querySelectorAll(".sort-option").forEach((button) => { const active = button.dataset.sort === sortMode; button.classList.toggle("active", active); button.setAttribute("aria-pressed", String(active)); });
-        const active = document.querySelector(`.sort-option[data-sort="${sortMode}"] span`); sortBtn.setAttribute("aria-label", "Sortuj. Wybrano: " + (active?.textContent || "Ostatnio dodane"));
+        const active = document.querySelector(`.sort-option[data-sort="${sortMode}"] span`); sortBtn.setAttribute("aria-label", message("sortSelected", tr(active?.textContent || "Ostatnio dodane")));
       }
       search.addEventListener("input", resetAndRender);
       filterIds.forEach((id) => document.getElementById(id).addEventListener("change", resetAndRender));
