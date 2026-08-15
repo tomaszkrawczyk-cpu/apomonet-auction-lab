@@ -1,4 +1,4 @@
-# APOMONET Knowledge Builder — polityka źródeł v2
+# APOMONET Knowledge Builder — polityka źródeł v3
 
 Cel: budować własną bazę wiedzy numizmatycznej i faktów rynkowych bez kopiowania cudzych zdjęć, opisów aukcyjnych, układu katalogów ani odtwarzania chronionych baz.
 
@@ -13,6 +13,22 @@ Publicznie widoczny fakt nie jest automatycznie „zakazany”, ale publiczny do
 Możemy przechowywać własny znormalizowany rekord faktograficzny, np.: kraj/emitent, władca, rok, nominał, mennica, metal, masa, średnica, wariant/odmiana, cechy odróżniające opisane własnymi słowami, znak menniczy, wariant legendy jako krótki fakt, typ rantu, numer katalogowy, rzadkość jeśli wiarygodna, data aukcji/sprzedaży, cena młotkowa, cena z opłatami jeśli publiczna, waluta, dom aukcyjny, numer aukcji/lotu oraz URL/identyfikator źródła jako provenance.
 
 Nie kopiujemy do naszej bazy: zdjęć źródłowych bez licencji/zgody, skanów, pełnych opisów katalogowych, autorskich komentarzy, marketingowych sformułowań ani struktury/układu cudzej bazy.
+
+## Literatura specjalistyczna — dozwolone tryby
+1. PUBLIC_DOMAIN/OPEN_LICENSE — import i wykorzystanie zgodnie z prawami konkretnego wydania/obiektu.
+2. REFERENCE_ONLY — bibliografia, numer katalogowy i wskazanie strony; bez kopiowania opisu, tabeli, zdjęcia ani układu katalogu.
+3. MANUAL_FACT_EXTRACTION — ekspert zapisuje pojedyncze fakty własnymi słowami z provenance; publikacja wymaga niezależnego potwierdzenia lub statusu expertVerified.
+4. TDM_EPHEMERAL — zautomatyzowana analiza legalnie dostępnego materiału tylko po sprawdzeniu zastrzeżenia TDM; kopia robocza nie trafia do produktu i jest przechowywana wyłącznie tak długo, jak to konieczne.
+5. LICENSED_IMPORT — szerszy import wyłącznie w granicach pisemnej licencji/zgody z osobno określonym tekstem, tabelami, numeracją, obrazami, AI/TDM, retencją i komercyjnym użyciem.
+6. USER_OR_EXPERT_CONTRIBUTION — własne zdjęcia i opracowania autora wkładu, z oświadczeniem o prawach i licencją dla APOMONET; prywatny album nie oznacza zgody na uczenie.
+
+Sam zakup książki daje własność egzemplarza, nie przenosi praw autorskich. Pojedyncza referencja katalogowa jest traktowana inaczej niż systematyczne odtworzenie pełnej mapy katalogu. Praktyka konkurencji jest dowodem modelu rynkowego, ale nie zastępuje naszej własnej podstawy prawnej.
+
+## Legalne ponowne wykorzystanie zasobów publicznych
+- POLONA: GREEN_ITEM_LEVEL dla obiektów oznaczonych jako domena publiczna lub z prawem do komercyjnego ponownego wykorzystania; status każdego obiektu zapisujemy osobno.
+- Publiczne muzea, biblioteki i archiwa: API/metadane lub formalny wniosek o ponowne wykorzystanie informacji sektora publicznego; zapisujemy warunki, opłatę, atrybucję i zakres komercyjny.
+- Muzeum Narodowe w Warszawie i podobne API: metadata może zasilać wyszukiwanie, ale odwzorowania cyfrowe podlegają kontroli pola praw każdego obiektu.
+- Brak oznaczenia praw nie jest zgodą. Rekord trafia do HOLD do czasu item-level review albo odpowiedzi instytucji.
 
 ## Poziomy dostępu
 ### GREEN — automatyzacja dozwolona
@@ -45,7 +61,7 @@ Dla wyceny APOMONET zapisuje własne obserwacje rynku: identyfikacja monety + da
 Pojedynczy rekord aukcyjny jest obserwacją, nie prawdą katalogową. Fakt o odmianie/identyfikacji staje się Verified Knowledge, gdy jest potwierdzony przez co najmniej dwa niezależne dopuszczone źródła albo eksperta. Korekta eksperta/użytkownika jest zapisywana oddzielnie od pierwotnego wyniku AI.
 
 ## Provenance i audyt
-Każdy rekord importowany automatycznie musi mieć: source, sourceUrl/sourceId, checkedAt/importedAt, accessMode (manual/api/feed/permission/tdm), rightsBasis/rightsStatement i opcjonalnie expertVerified. Dzięki temu możemy wyłączyć konkretne źródło bez utraty informacji o pochodzeniu rekordów.
+Każdy rekord importowany automatycznie musi mieć: source, sourceUrl/sourceId, publicationTitle/edition/ISBN i pageOrRecordId gdy dotyczy literatury, checkedAt/importedAt, accessMode (manual/api/feed/permission/tdm/publicSectorReuse), rightsHolder, rightsBasis/rightsStatement, commercialUse, allowedFields, attribution, expiry/reviewAt i opcjonalnie expertVerified. Dzięki temu możemy wyłączyć konkretne źródło bez utraty informacji o pochodzeniu rekordów.
 
 ## Zasady techniczne adapterów
 - respektujemy logowanie, paywall, CAPTCHA, rate limits i blokady techniczne;
