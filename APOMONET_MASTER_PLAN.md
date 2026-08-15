@@ -90,6 +90,18 @@ Legenda: ✅ działa / 🟡 częściowo / 🔴 brak / 🔵 etap PRO/LAB / ⚠️
 - LAB/PRO: stemple 1:1, ten sam egzemplarz, grading, wspomagana autentyczność.
 - 🔴 Egzekwowanie limitów i uprawnień w aplikacji.
 
+### I. Biblioteka ekspercka i legalna warstwa wiedzy
+- 🟡 Polityka źródeł i provenance istnieje; wymaga wdrożenia rejestru praw na poziomie publikacji/edycji/rekordu.
+- 🔴 Rejestr literatury specjalistycznej: Kopicki, monografie konkretnych emisji (w tym talary Jana Kazimierza), katalogi mennicze i opracowania odmian.
+- 🔴 Klasyfikacja każdej publikacji: domena publiczna / otwarta licencja / referencja punktowa / TDM / licencja autora lub wydawcy / brak zgody.
+- 🔴 Własny system identyfikatorów APOMONET z polem na maks. 10 zewnętrznych referencji katalogowych.
+- 🔴 Workflow ekspert/społeczność: źródło i strona → własny znormalizowany fakt → kontrola drugiego źródła lub eksperta → publikacja.
+- 🔴 Wnioski o komercyjne ponowne wykorzystanie danych do muzeów, bibliotek i archiwów publicznych.
+- 🔴 Partnerstwa/licencje z autorami, wydawcami i domami aukcyjnymi; materiały bezpośrednio przekazane mają pierwszeństwo przed pobieraniem stron.
+- 🔴 Osobne zgody na tekst, tabele, numerację, zdjęcia, OCR/TDM, przechowywanie i użycie w komercyjnej aplikacji/AI.
+- 🔴 Audyt praktyk konkurencji i rejestr dowodów licencyjnych; wynik bazowy: LEGAL_KNOWLEDGE_COMPETITION_AUDIT_2026-08-15.md.
+- 🔴 Warunki dla wkładu użytkownika: oświadczenie o prawach, licencja dla APOMONET, tryb prywatny domyślny i osobna zgoda na warstwę uczącą.
+
 ## Kolejność wdrażania — bez demolowania prototypu
 
 ### Etap 0 — stabilizacja przed nowymi funkcjami
@@ -115,13 +127,17 @@ Legenda: ✅ działa / 🟡 częściowo / 🔴 brak / 🔵 etap PRO/LAB / ⚠️
 5. Bezpieczne udostępnianie z wyborem danych.
 6. Dashboard wartości i ostatnich monet.
 
-### Etap 3 — aukcje i wycena
+### Etap 3 — aukcje, literatura i wycena
 1. Legalne źródła danych i warstwa źródeł.
-2. Dodaj z aukcji.
-3. Szukaj monety na aukcjach.
-4. Wycena porównawcza i zakres.
-5. Historia wartości/ROI.
-6. Powiadomienia o obserwowanych aukcjach/domach/monetach.
+2. Rejestr praw i dozwolonych pól dla każdej publikacji, API, muzeum i domu aukcyjnego.
+3. Biblioteka referencyjna literatury specjalistycznej z własnym identyfikatorem APOMONET i zewnętrznymi numerami katalogowymi.
+4. Pilotaż POLONA/MNW/informacja sektora publicznego z kontrolą praw na poziomie obiektu.
+5. Wzór zgody/licencji dla autora, wydawcy, eksperta i domu aukcyjnego.
+6. Dodaj z aukcji.
+7. Szukaj monety na aukcjach.
+8. Wycena porównawcza i zakres.
+9. Historia wartości/ROI.
+10. Powiadomienia o obserwowanych aukcjach/domach/monetach.
 
 ### Etap 4 — bezpieczeństwo natywne
 1. Flutter + lokalna baza SQLCipher.
