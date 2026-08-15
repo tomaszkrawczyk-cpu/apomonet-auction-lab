@@ -123,20 +123,6 @@
           return;
         }
 
-        let shown = coin;
-        let translationFailed = false;
-        const translator = window.ApoAnalysisI18n;
-        if (translator && translator.currentLanguage() !== "pl") {
-          document.getElementById("coinSubtitle").textContent =
-            translator.message("translating");
-          try {
-            shown = await translator.localize(coin);
-          } catch (error) {
-            console.error("[coin-translation]", error);
-            translationFailed = true;
-          }
-        }
-
         const value = (field) => {
           const text = String(field ?? "").trim();
           return text && text !== "Nie ustalono" ? text : "—";
@@ -155,55 +141,85 @@
           document.getElementById(cardId).hidden = false;
         };
 
-        document.getElementById("coinTitle").textContent =
-          shown.title ||
-          [shown.nominal, shown.ruler, shown.year].filter(Boolean).join(" • ") ||
-          "Moneta bez nazwy";
-        document.getElementById("coinSubtitle").textContent = translationFailed
-          ? translator.message("failed")
-          : coin.userAccepted
+        const standardSubtitle = () =>
+          coin.userAccepted
             ? "Pokazujemy dane zaakceptowane przez Ciebie oraz zapisane zdjęcia."
             : "Pokazujemy zapisany wynik analizy oraz zdjęcia.";
+        const renderText = (shown) => {
+          document.getElementById("coinTitle").textContent =
+            shown.title ||
+            [shown.nominal, shown.ruler, shown.year]
+              .filter(Boolean)
+              .join(" • ") ||
+            "Moneta bez nazwy";
+          document.getElementById("coinSubtitle").textContent =
+            standardSubtitle();
+
+          const fields = [
+            ["Nominał", shown.nominal],
+            ["Władca / emitent", shown.ruler],
+            ["Rok", shown.year],
+            ["Mennica", shown.mint],
+            ["Metal", shown.metal],
+            ["Odmiana / typ", shown.variant],
+            ["Stan zachowania", shown.grade],
+            ["Rzadkość", shown.rarity],
+            ["Numer katalogowy", coin.catalog],
+            ["Pewność AI", coin.confidence ? coin.confidence + "%" : ""],
+          ];
+          document.getElementById("facts").replaceChildren(
+            ...fields.map(([label, field]) => {
+              const box = document.createElement("div");
+              box.className = "fact";
+              const name = document.createElement("span");
+              const strong = document.createElement("strong");
+              name.textContent = label;
+              strong.textContent = value(field);
+              box.append(name, strong);
+              return box;
+            }),
+          );
+
+          setSection(
+            "descriptionCard",
+            "description",
+            shown.description || shown.fullDescription,
+          );
+          window.ApoI18n?.translate?.(content);
+        };
+
+        renderText(coin);
         document.getElementById("acceptedBadge").hidden = !coin.userAccepted;
         document.getElementById("editLink").href =
           "coin-edit.html?id=" + encodeURIComponent(coin.id);
 
-        setPhoto("obverseImage", "obverseEmpty", coin.obverseImage);
-        setPhoto("reverseImage", "reverseEmpty", coin.reverseImage);
-
-        const fields = [
-          ["Nominał", shown.nominal],
-          ["Władca / emitent", shown.ruler],
-          ["Rok", shown.year],
-          ["Mennica", shown.mint],
-          ["Metal", shown.metal],
-          ["Odmiana / typ", shown.variant],
-          ["Stan zachowania", shown.grade],
-          ["Rzadkość", shown.rarity],
-          ["Numer katalogowy", coin.catalog],
-          ["Pewność AI", coin.confidence ? coin.confidence + "%" : ""],
-        ];
-        document.getElementById("facts").replaceChildren(
-          ...fields.map(([label, field]) => {
-            const box = document.createElement("div");
-            box.className = "fact";
-            const name = document.createElement("span");
-            const strong = document.createElement("strong");
-            name.textContent = label;
-            strong.textContent = value(field);
-            box.append(name, strong);
-            return box;
-          }),
-        );
-
-        setSection(
-          "descriptionCard",
-          "description",
-          shown.description || shown.fullDescription,
-        );
+        const preparedObverse =
+          coin.albumPhotoMode === "cut" && coin.albumObverseImage
+            ? coin.albumObverseImage
+            : coin.obverseImage;
+        const preparedReverse =
+          coin.albumPhotoMode === "cut" && coin.albumReverseImage
+            ? coin.albumReverseImage
+            : coin.reverseImage;
+        setPhoto("obverseImage", "obverseEmpty", preparedObverse);
+        setPhoto("reverseImage", "reverseEmpty", preparedReverse);
         setSection("notesCard", "notes", coin.notes);
         setSection("provenanceCard", "provenance", coin.provenance);
         content.hidden = false;
+
+        const translator = window.ApoAnalysisI18n;
+        if (translator && translator.currentLanguage() !== "pl") {
+          document.getElementById("coinSubtitle").textContent =
+            translator.message("translating");
+          try {
+            const translated = await translator.localize(coin);
+            renderText(translated);
+          } catch (error) {
+            console.error("[coin-translation]", error);
+            document.getElementById("coinSubtitle").textContent =
+              translator.message("failed");
+          }
+        }
       })();
     </script>
   </body>

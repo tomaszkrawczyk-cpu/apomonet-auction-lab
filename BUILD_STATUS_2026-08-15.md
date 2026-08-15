@@ -48,6 +48,7 @@
 - Test ujawnił brak oczywistej drogi z ekranu analizy do zapisanej monety i albumów. Po zapisie dodano duże przyciski: „Otwórz kartę monety”, „Przejdź do kolekcji” i „Przejdź do albumów”, bez używania systemowego „Wstecz”.
 - Kolejny fizyczny test potwierdził: wzorzysty blat powodował błędny kadr, natomiast jednolite jasne tło dało poprawny wynik. Identyfikacja była dobra po korekcie nominału na półtalar, zapis do albumu i ponowne otwarcie z oboma zdjęciami zadziałały.
 - Ten sam test wykrył dwa błędy: dotychczasowe „Usuń tło” tylko nakładało okrągłe przycięcie oraz po zmianie języka treść analizy pozostawała po polsku. Oba przypadki mają teraz osobne poprawki i testy regresji.
+- Test poprawki na zapisanym półtalarze ujawnił jeszcze dwa problemy prezentacji: karta monety pokazywała oryginalne zdjęcia zamiast przygotowanych wersji albumowych, a przy zmianie języka cała karta pozostawała ukryta do zakończenia tłumaczenia. Karta korzysta teraz z przezroczystych zdjęć albumowych, gdy wybrano „Usuń tło”, i jest widoczna natychmiast podczas tłumaczenia.
 
 ## Korekta / zapis / eksport
 - Ręczna korekta zachowuje `rawAI`, zdjęcia, sesję i dane zaakceptowane przez użytkownika.

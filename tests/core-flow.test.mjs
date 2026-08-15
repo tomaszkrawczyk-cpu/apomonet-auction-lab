@@ -131,6 +131,9 @@ test('a saved coin reopens from the collection with both photos and accepted dat
   assert.match(coin,/ApoMonet\.getCoin\(id\)/);
   assert.match(coin,/coin\.obverseImage/);
   assert.match(coin,/coin\.reverseImage/);
+  assert.match(coin,/coin\.albumObverseImage/);
+  assert.match(coin,/coin\.albumReverseImage/);
+  assert.match(coin,/coin\.albumPhotoMode === "cut"/);
   assert.match(coin,/coin\.userAccepted/);
   assert.match(coin,/coin-edit\.html\?id=/);
   assert.match(coin,/\[hidden\]\s*\{\s*display:\s*none\s*!important/);
@@ -152,6 +155,11 @@ test('selected language translates analysis values without sending photos or own
   assert.match(analysis,/await localizeCurrent/);
   assert.match(analysis,/window\.__apoLocalizedAnalysis = translated/);
   assert.match(coin,/await translator\.localize\(coin\)/);
+  assert.ok(
+    coin.indexOf("content.hidden = false") <
+      coin.indexOf("await translator.localize(coin)"),
+    "the saved card must remain visible while its translation is loading",
+  );
 });
 
 test('background removal detects the coin and writes a transparent PNG only when reliable',()=>{
