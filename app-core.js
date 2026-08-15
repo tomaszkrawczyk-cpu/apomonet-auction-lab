@@ -103,7 +103,11 @@ const ApoI18n=(()=>{
     const box=document.createElement('div');box.id='apomonetLang';box.style.cssText='position:fixed;right:10px;top:10px;z-index:9999;background:#111;border:1px solid #3b3b3f;border-radius:12px;padding:5px 7px;box-shadow:0 4px 18px #0008';
     const s=document.createElement('select');s.style.cssText='background:#111;color:#fff;border:0;font-size:14px;padding:5px';s.setAttribute('aria-label','Language');
     Object.entries(langs).forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;s.appendChild(o)});s.value=current();
-    s.onchange=()=>{localStorage.setItem(KEY,s.value);location.reload()};box.appendChild(s);document.body.appendChild(box);
+    s.onchange=()=>{
+      localStorage.setItem(KEY,s.value);
+      window.dispatchEvent(new CustomEvent('apomonet:language-change',{detail:{language:s.value}}));
+      location.reload();
+    };box.appendChild(s);document.body.appendChild(box);
   }
   function init(){mount();translate()}
   return {current,tr,translate,mount,init};

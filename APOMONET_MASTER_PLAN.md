@@ -114,7 +114,7 @@ Legenda: ✅ działa / 🟡 częściowo / 🔴 brak / 🔵 etap PRO/LAB / ⚠️
 4. Audyt wielojęzyczności i brakujących tłumaczeń.
 5. Audyt wydajności zdjęć, list i startu aplikacji.
 
-Kamień milowy 2026-08-15: najważniejszy przepływ zdjęcia → analiza → korekta → zapis → ponowne otwarcie przeszedł automatyczny test E2E na wersji preview. Optymalizacja Etapu 2 jest przenoszona na produkcję; przed zamknięciem kryterium mobilnego pozostaje ponowny test fizycznego Androida.
+Kamień milowy 2026-08-15: najważniejszy przepływ zdjęcia → analiza → korekta → zapis → ponowne otwarcie przeszedł automatyczny test E2E na wersji preview. Fizyczny Android potwierdził zapis do albumu i prawidłowy wynik na jednolitym tle. Wdrożono następnie prawdziwe przezroczyste wycięcie tła z bezpieczną odmową przy niepewnym obrysie oraz tłumaczenie dynamicznych danych i opisów AI; oba elementy wymagają krótkiego testu potwierdzającego na telefonie.
 
 Aktualizacja testu fizycznego: Android potwierdził analizę i zachowanie ręcznej korekty na dwóch monetach. Do zamknięcia pozostają trafność identyfikacji na reprezentatywnym zestawie, analiza szczegółowa po optymalizacji oraz ponowny zapis/otwarcie wykonane przez testera na telefonie.
 

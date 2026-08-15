@@ -293,7 +293,8 @@
       let a = null,
         imgs = [null, null],
         analysisImgs = [null, null],
-        id = null;
+        id = null,
+        localizedA = null;
       const $ = (x) => document.getElementById(x);
       function preview(data, i, p) {
         $(i).src = data;
@@ -504,16 +505,21 @@
         }
         add("Pełny opis", detail.fullDescription);
       }
-      function render() {
+      function displayAnalysis() {
+        return localizedA || a;
+      }
+      function render({ scroll = true } = {}) {
+        const shown = displayAnalysis();
+        if (!shown) return;
         const rows = [
-          ["Kraj / emitent", a.country],
-          ["Władca", a.ruler],
-          ["Rok", a.year],
-          ["Nominał", a.nominal],
-          ["Metal", a.metal],
-          ["Mennica", a.mint],
-          ["Typ", a.variant],
-          ["Stan", a.grade],
+          ["Kraj / emitent", shown.country],
+          ["Władca", shown.ruler],
+          ["Rok", shown.year],
+          ["Nominał", shown.nominal],
+          ["Metal", shown.metal],
+          ["Mennica", shown.mint],
+          ["Typ", shown.variant],
+          ["Stan", shown.grade],
         ];
         $("facts").innerHTML = rows
           .map(
@@ -521,10 +527,36 @@
               `<div class="fact${i == 1 || i == 2 ? " highlight" : ""}"><span>${x[0]}</span><strong>${v(x[1])}</strong></div>`,
           )
           .join("");
-        $("conf").textContent = `Pewność ${a.confidence || 0}%`;
-        $("desc").textContent = v(a.fullDescription || a.description);
+        $("conf").textContent = `Pewność ${shown.confidence || 0}%`;
+        $("desc").textContent = v(shown.fullDescription || shown.description);
         $("panel").classList.remove("hidden");
-        $("panel").scrollIntoView({ behavior: "smooth" });
+        if (scroll) $("panel").scrollIntoView({ behavior: "smooth" });
+      }
+      async function localizeCurrent({ scroll = false, showDetail = false } = {}) {
+        const source = a;
+        const translator = window.ApoAnalysisI18n;
+        localizedA = null;
+        window.__apoLocalizedAnalysis = null;
+        if (!source || !translator || translator.currentLanguage() === "pl") {
+          return true;
+        }
+        $("status").textContent = translator.message("translating");
+        try {
+          const translated = await translator.localize(source);
+          if (a !== source) return;
+          localizedA = translated;
+          window.__apoLocalizedAnalysis = translated;
+          render({ scroll });
+          if (showDetail && translated?.detail) {
+            renderDetail(translated.detail);
+            $("deepPanel").classList.remove("hidden");
+          }
+          return true;
+        } catch (error) {
+          console.error("[analysis-translation]", error);
+          $("status").textContent = translator.message("failed");
+          return false;
+        }
       }
       function save() {
         if (!a) return null;
@@ -548,11 +580,15 @@
           message || "Moneta zapisana. Wybierz poniżej, dokąd chcesz przejść.";
         $("savedActions").scrollIntoView({ behavior: "smooth", block: "start" });
       }
-      function persistAnalysisSession() {
-        sessionStorage.setItem(
-          "apomonetAnalysisSession",
-          JSON.stringify({ id, a, imgs, analysisImgs, at: Date.now() }),
-        );
+      function persistAnalysisSession({ light = false } = {}) {
+        const session = { id, a, imgs, at: Date.now(), version: 4 };
+        if (!light) session.analysisImgs = analysisImgs;
+        try {
+          sessionStorage.setItem("apomonetAnalysisSession", JSON.stringify(session));
+        } catch (error) {
+          delete session.analysisImgs;
+          sessionStorage.setItem("apomonetAnalysisSession", JSON.stringify(session));
+        }
       }
       function restoreAnalysisSession() {
         try {
@@ -560,19 +596,22 @@
           if (!raw) return;
           const s = JSON.parse(raw),
             c = s?.id ? ApoMonet.getCoin(s.id) : null;
-          if (!c) return;
-          id = s.id;
-          imgs = s.imgs || [c.obverseImage, c.reverseImage];
+          if (!s?.a && !c) return;
+          id = s.id || c?.id || null;
+          imgs = s.imgs || [c?.obverseImage || null, c?.reverseImage || null];
           analysisImgs = s.analysisImgs || imgs;
           a = {
             ...(s.a || {}),
-            ...c,
-            fullDescription: c.description || s.a?.fullDescription,
+            ...(c || {}),
+            fullDescription:
+              c?.description || s.a?.fullDescription || s.a?.description,
           };
           if (imgs[0]) preview(imgs[0], "oi", "op");
           if (imgs[1]) preview(imgs[1], "ri", "rp");
           ready();
+          localizedA = null;
           render();
+          void localizeCurrent({ scroll: false, showDetail: !!a.detail });
           $("status").textContent =
             "Wróciłeś do analizy — korekta została naniesiona.";
           sessionStorage.removeItem("apomonetReturnToAnalysis");
@@ -621,8 +660,10 @@
           }
           if (!r.ok) throw Error(apiError(d, "Błąd serwera HTTP " + r.status));
           a = d.analysis;
+          localizedA = null;
           render();
-          $("status").textContent = "Etap 1 gotowy.";
+          const translated = await localizeCurrent({ scroll: false });
+          if (translated) $("status").textContent = "Etap 1 gotowy.";
         } catch (e) {
           console.error(e);
           $("status").textContent = "Błąd analizy: " + e.message;
@@ -663,10 +704,17 @@
           }
           if (!r.ok) throw Error(apiError(d, "Błąd serwera HTTP " + r.status));
           a = { ...a, ...d.detail, detail: d.detail };
+          localizedA = null;
           $("deepConf").textContent = `Pewność ${d.detail.confidence || 0}%`;
           renderDetail(d.detail);
           $("deepPanel").classList.remove("hidden");
-          $("status").textContent = "Analiza szczegółowa zakończona.";
+          const translated = await localizeCurrent({
+            scroll: false,
+            showDetail: true,
+          });
+          if (translated) {
+            $("status").textContent = "Analiza szczegółowa zakończona.";
+          }
         } catch (e) {
           console.error("[analyze-detail]", e);
           $("status").textContent =
@@ -708,6 +756,11 @@
         $("newAlbumName").value = "";
         showSavedActions(c, `Moneta dodana do nowego albumu „${al.name}”.`);
       };
+      addEventListener("apomonet:language-change", () => {
+        if (!a) return;
+        persistAnalysisSession();
+        sessionStorage.setItem("apomonetReturnToAnalysis", "1");
+      });
       if (
         new URLSearchParams(location.search).get("resume") === "1" ||
         sessionStorage.getItem("apomonetReturnToAnalysis") === "1"

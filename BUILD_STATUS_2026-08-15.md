@@ -16,6 +16,9 @@
 - Etap 2 nie przekazuje już zapisanych zdjęć i `rawAI` drugi raz wewnątrz tekstowego kontekstu. API otrzymuje tylko dozwolone pola po korekcie.
 - Etap 2 ma trzy czytelne komunikaty postępu, limit 55 s po stronie API i 62 s w UI oraz bezpieczny komunikat ponowienia bez utraty zdjęć/danych.
 - Błędy infrastruktury w formie obiektu są pokazywane czytelnie zamiast jako `[object Object]`.
+- Tłumaczenie PL/EN/DE/FR obejmuje teraz nie tylko etykiety interfejsu, lecz także wartości rozpoznania, opis katalogowy, stan, typ i ostrzeżenia AI. Do usługi tłumaczącej trafiają wyłącznie dozwolone pola tekstowe — bez zdjęć, notatek właściciela i proweniencji.
+- „Usuń tło” wykonuje teraz rzeczywiste wykrycie obrysu i zapisuje PNG z przezroczystością. Przy niepewnym obrysie nie zmienia zdjęcia i prosi o jednolite, kontrastowe tło.
+- Automatyczny kadr ma wyższy próg pewności: na wzorzystym tle częściej zachowuje całe zdjęcie, zamiast ryzykować ucięcie monety.
 
 ## Źródła i diagnostyka
 - Smithsonian: skonfigurowany i zweryfikowany na produkcji; health => valid=true.
@@ -34,7 +37,7 @@
 - Automatyczny test w chmurowym Chrome przeszedł cały przepływ: wybór awersu i rewersu razem → lokalne przygotowanie zdjęć → `/api/analyze` → korekta użytkownika → ponowny powrót z obiema miniaturami → zapis → kolekcja → otwarcie karty monety.
 - `/api/analyze` zwrócił HTTP 200; logi tej wersji nie zawierają odpowiedzi 4xx/5xx dla testowanego przepływu.
 - Po ponownym otwarciu potwierdzono: oba zdjęcia obecne, skorygowany nominał i emitent widoczne, `userAccepted` pokazany jako dane użytkownika, puste sekcje opcjonalne ukryte.
-- Testy regresji: 10/10 zaliczonych; kontrola składni wszystkich plików JavaScript i `git diff --check` bez błędów.
+- Testy regresji: 12/12 zaliczonych, w tym nowe granice prywatności tłumaczeń i rzeczywiste przezroczyste wycięcie tła; kontrola składni JavaScript i `git diff --check` bez błędów.
 
 ## Test fizycznego Androida i Etapu 2
 - Tester potwierdził, że na pierwszej realnej monecie analiza podstawowa pomyliła monetę, władcę i rok, ale korekta była możliwa i została przyjęta.
@@ -43,6 +46,8 @@
 - Optymalizacja Etapu 2 została wdrożona na produkcyjny `main`; deployment osiągnął stan `READY`.
 - Fizyczny test Androida po wdrożeniu potwierdził poprawną analizę realnej monety bez potrzeby korekty oraz skuteczny zapis.
 - Test ujawnił brak oczywistej drogi z ekranu analizy do zapisanej monety i albumów. Po zapisie dodano duże przyciski: „Otwórz kartę monety”, „Przejdź do kolekcji” i „Przejdź do albumów”, bez używania systemowego „Wstecz”.
+- Kolejny fizyczny test potwierdził: wzorzysty blat powodował błędny kadr, natomiast jednolite jasne tło dało poprawny wynik. Identyfikacja była dobra po korekcie nominału na półtalar, zapis do albumu i ponowne otwarcie z oboma zdjęciami zadziałały.
+- Ten sam test wykrył dwa błędy: dotychczasowe „Usuń tło” tylko nakładało okrągłe przycięcie oraz po zmianie języka treść analizy pozostawała po polsku. Oba przypadki mają teraz osobne poprawki i testy regresji.
 
 ## Korekta / zapis / eksport
 - Ręczna korekta zachowuje `rawAI`, zdjęcia, sesję i dane zaakceptowane przez użytkownika.
@@ -51,13 +56,13 @@
 - Udostępnianie pozostaje wywoływane świadomie przez użytkownika; kolekcja i dashboard są lokalne.
 
 ## Co wymaga teraz fizycznego testu Androida
-1. nowe przyciski po zapisie: karta monety → kolekcja → albumy,
-2. powtórzenie przepływu na słabszej sieci i większym zestawie monet,
-3. Etap 2 po podaniu wagi/średnicy/rantu,
-4. zapis do albumu i miniatury,
-5. PDF oraz XLSX na Androidzie,
-6. share przez WhatsApp/Messenger/e-mail,
-7. zmiana języka po dodaniu nowych elementów UI,
+1. ponowne użycie „Usuń tło” na zapisanym półtalarze sfotografowanym na jednolitym tle,
+2. zmiana języka na niemiecki i kontrola, czy przetłumaczone są również wartości, stan, typ, ostrzeżenia i pełny opis,
+3. kontrola, czy na wzorzystym tle aplikacja bezpiecznie zachowuje całe zdjęcie zamiast błędnego wycięcia,
+4. powtórzenie przepływu na słabszej sieci i większym zestawie monet,
+5. Etap 2 po podaniu wagi/średnicy/rantu,
+6. PDF oraz XLSX na Androidzie,
+7. share przez WhatsApp/Messenger/e-mail,
 8. backup/restore i `.ics`.
 
 ## Blokery zewnętrzne

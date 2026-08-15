@@ -56,6 +56,19 @@
     const radiusMax=Math.round(minSide*.45);
     const at=(x,y)=>gray[clamp(y|0,0,height-1)*width+clamp(x|0,0,width-1)];
     let best={score:-Infinity,cx:width/2,cy:height/2,r:minSide*.25};
+    let backgroundTexture=0;
+    let backgroundSamples=0;
+    for(let y=1;y<height;y++){
+      for(let x=1;x<width;x++){
+        const inOuterBand=x<width*.18||x>width*.82||y<height*.18||y>height*.82;
+        if(!inOuterBand) continue;
+        const index=y*width+x;
+        backgroundTexture+=Math.abs(gray[index]-gray[index-1]);
+        backgroundTexture+=Math.abs(gray[index]-gray[index-width]);
+        backgroundSamples+=2;
+      }
+    }
+    backgroundTexture=backgroundSamples?backgroundTexture/backgroundSamples:0;
 
     for(let cy=Math.round(height*.12);cy<=height*.88;cy+=step){
       for(let cx=Math.round(width*.12);cx<=width*.88;cx+=step){
@@ -90,13 +103,16 @@
       cy:best.cy*backScale,
       r:best.r*backScale,
       score:best.score,
-      confidence:Math.round(clamp((best.score-5)*6,0,100))
+      confidence:Math.round(clamp((best.score-5)*6,0,100)),
+      backgroundTexture:Math.round(backgroundTexture*10)/10
     };
   }
 
   function safeCrop(source,detection){
     const minSide=Math.min(source.width,source.height);
-    const reliable=Number.isFinite(detection.score)&&detection.score>=10&&detection.r>=minSide*.11;
+    const confidence=Number.isFinite(detection.confidence)?detection.confidence:100;
+    const backgroundTexture=Number.isFinite(detection.backgroundTexture)?detection.backgroundTexture:0;
+    const reliable=Number.isFinite(detection.score)&&detection.score>=12&&confidence>=50&&backgroundTexture<=10&&detection.r>=minSide*.11;
     if(!reliable) return {x:0,y:0,width:source.width,height:source.height,mode:'full'};
 
     // Duży margines chroni rant i monetę sfotografowaną pod kątem.

@@ -32,9 +32,11 @@ test('safe crop keeps a generous margin around a reliable coin edge',()=>{
 test('uncertain or edge-touching detection falls back to the full photo',()=>{
   const {safeCrop}=imagePipeline();
   const weak=safeCrop({width:800,height:600},{cx:400,cy:300,r:120,score:7});
+  const textured=safeCrop({width:800,height:600},{cx:400,cy:300,r:120,score:25,confidence:90,backgroundTexture:14});
   const edge=safeCrop({width:800,height:600},{cx:90,cy:300,r:100,score:25});
   assert.equal(weak.mode,'full');
   assert.deepEqual({...weak},{x:0,y:0,width:800,height:600,mode:'full'});
+  assert.equal(textured.mode,'full');
   assert.equal(edge.mode,'full');
 });
 
@@ -132,4 +134,34 @@ test('a saved coin reopens from the collection with both photos and accepted dat
   assert.match(coin,/coin\.userAccepted/);
   assert.match(coin,/coin-edit\.html\?id=/);
   assert.match(coin,/\[hidden\]\s*\{\s*display:\s*none\s*!important/);
+});
+
+test('selected language translates analysis values without sending photos or owner notes',()=>{
+  const app=read('app.js');
+  const client=read('analysis-content-i18n.js');
+  const api=read('api/translate-analysis.js');
+  const analysis=read('analyze.html');
+  const coin=read('coin.html');
+  assert.match(app,/analysis-content-i18n\.js/);
+  assert.match(client,/fetch\("\/api\/translate-analysis"/);
+  assert.match(client,/"fullDescription"/);
+  assert.match(client,/"warnings"/);
+  assert.doesNotMatch(client,/obverseImage|reverseImage|userAdditionalInfo|provenance/);
+  assert.doesNotMatch(api,/obverseImage|reverseImage|userAdditionalInfo|provenance/);
+  assert.match(api,/Preserve dates, numbers, catalog references, rarity codes, mint marks and transcribed coin legends exactly/);
+  assert.match(analysis,/await localizeCurrent/);
+  assert.match(analysis,/window\.__apoLocalizedAnalysis = translated/);
+  assert.match(coin,/await translator\.localize\(coin\)/);
+});
+
+test('background removal detects the coin and writes a transparent PNG only when reliable',()=>{
+  const prep=read('album-photo-prep.js');
+  assert.match(prep,/ApoImagePipeline\?\.detectCircle\?\.\(work\)/);
+  assert.match(prep,/detection\.confidence/);
+  assert.match(prep,/detection\.backgroundTexture/);
+  assert.match(prep,/context\.clearRect\(0, 0, size, size\)/);
+  assert.match(prep,/context\.arc\(size \/ 2, size \/ 2, maskRadius/);
+  assert.match(prep,/output\.toDataURL\("image\/png"\)/);
+  assert.match(prep,/removed: false, reason: "uncertain"/);
+  assert.match(prep,/Zdjęcie nie zostało zmienione/);
 });

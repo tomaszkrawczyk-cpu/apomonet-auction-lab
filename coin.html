@@ -112,7 +112,7 @@
     </main>
     <script src="app.js"></script>
     <script>
-      (() => {
+      (async () => {
         const id = new URLSearchParams(location.search).get("id");
         const coin = id ? ApoMonet.getCoin(id) : null;
         const missing = document.getElementById("missing");
@@ -121,6 +121,20 @@
         if (!coin) {
           missing.hidden = false;
           return;
+        }
+
+        let shown = coin;
+        let translationFailed = false;
+        const translator = window.ApoAnalysisI18n;
+        if (translator && translator.currentLanguage() !== "pl") {
+          document.getElementById("coinSubtitle").textContent =
+            translator.message("translating");
+          try {
+            shown = await translator.localize(coin);
+          } catch (error) {
+            console.error("[coin-translation]", error);
+            translationFailed = true;
+          }
         }
 
         const value = (field) => {
@@ -142,12 +156,14 @@
         };
 
         document.getElementById("coinTitle").textContent =
-          coin.title ||
-          [coin.nominal, coin.ruler, coin.year].filter(Boolean).join(" • ") ||
+          shown.title ||
+          [shown.nominal, shown.ruler, shown.year].filter(Boolean).join(" • ") ||
           "Moneta bez nazwy";
-        document.getElementById("coinSubtitle").textContent = coin.userAccepted
-          ? "Pokazujemy dane zaakceptowane przez Ciebie oraz zapisane zdjęcia."
-          : "Pokazujemy zapisany wynik analizy oraz zdjęcia.";
+        document.getElementById("coinSubtitle").textContent = translationFailed
+          ? translator.message("failed")
+          : coin.userAccepted
+            ? "Pokazujemy dane zaakceptowane przez Ciebie oraz zapisane zdjęcia."
+            : "Pokazujemy zapisany wynik analizy oraz zdjęcia.";
         document.getElementById("acceptedBadge").hidden = !coin.userAccepted;
         document.getElementById("editLink").href =
           "coin-edit.html?id=" + encodeURIComponent(coin.id);
@@ -156,14 +172,14 @@
         setPhoto("reverseImage", "reverseEmpty", coin.reverseImage);
 
         const fields = [
-          ["Nominał", coin.nominal],
-          ["Władca / emitent", coin.ruler],
-          ["Rok", coin.year],
-          ["Mennica", coin.mint],
-          ["Metal", coin.metal],
-          ["Odmiana / typ", coin.variant],
-          ["Stan zachowania", coin.grade],
-          ["Rzadkość", coin.rarity],
+          ["Nominał", shown.nominal],
+          ["Władca / emitent", shown.ruler],
+          ["Rok", shown.year],
+          ["Mennica", shown.mint],
+          ["Metal", shown.metal],
+          ["Odmiana / typ", shown.variant],
+          ["Stan zachowania", shown.grade],
+          ["Rzadkość", shown.rarity],
           ["Numer katalogowy", coin.catalog],
           ["Pewność AI", coin.confidence ? coin.confidence + "%" : ""],
         ];
@@ -183,7 +199,7 @@
         setSection(
           "descriptionCard",
           "description",
-          coin.description || coin.fullDescription,
+          shown.description || shown.fullDescription,
         );
         setSection("notesCard", "notes", coin.notes);
         setSection("provenanceCard", "provenance", coin.provenance);
