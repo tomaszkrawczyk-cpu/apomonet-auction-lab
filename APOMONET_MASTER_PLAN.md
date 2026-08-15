@@ -23,13 +23,15 @@ Legenda: ✅ działa / 🟡 częściowo / 🔴 brak / 🔵 etap PRO/LAB / ⚠️
 - 🔴 Docelowe aplikacje Flutter: Android, iOS, Windows, macOS, Linux.
 
 ### B. Zdjęcie i analiza
-- 🟡 Awers/rewers z aparatu i pliku — pełny przepływ zweryfikowany w wersji preview; pozostaje fizyczny test Androida.
-- 🟡 Automatyczne kadrowanie — bezpieczny margines i powrót do całego zdjęcia przy niepewnym wykryciu są wdrożone i przetestowane; pozostaje test realnych monet na Androidzie.
+- 🟡 Awers/rewers z aparatu i pliku — przepływ zweryfikowany w preview i na fizycznym Androidzie; pozostaje regresja na słabszej sieci i większym zestawie zdjęć.
+- 🟡 Automatyczne kadrowanie — bezpieczny margines i powrót do całego zdjęcia przy niepewnym wykryciu są wdrożone; test Androida potwierdził użyteczny kadr dwóch realnych monet, a szerszy zestaw pozostaje do benchmarku.
 - 🔴 Ocena jakości zdjęcia przed analizą.
 - 🔴 Obsługa wielu monet na jednym zdjęciu (PRO).
 - 🟡 Identyfikacja: nominał, władca/emitent, rok, mennica, metal — wymaga poprawy niezawodności.
 - 🟡 Poziom pewności dla pól identyfikacji — UI pokazuje osobno pewność władcy, roku i nominału; wymaga benchmarku na realnych monetach.
-- 🟡 Korekta po analizie — sesja, oba zdjęcia, `rawAI` i dane zaakceptowane przez użytkownika przeszły pełny test preview; pozostaje test Androida.
+- 🟡 Korekta po analizie — sesja, oba zdjęcia, `rawAI` i dane zaakceptowane przez użytkownika przeszły test preview; fizyczny Android potwierdził przyjęcie korekty, a zapis/ponowne otwarcie na telefonie pozostają do domknięcia.
+- 🟡 Fizyczny test Androida potwierdził wybór zdjęć, analizę podstawową oraz przyjęcie korekty. Trafność była nierówna: pierwsza moneta miała błędną tożsamość, władcę i rok; druga tylko błędny rok.
+- 🟡 Etap 2 działał po stronie serwera, lecz wynik po około 64 sekundach wyglądał jak zawieszenie. Gałąź testowa usuwa duplikowanie zdjęć w kontekście, dodaje komunikaty postępu oraz kontrolowany timeout; test runtime nowej wersji wymaga automatycznego bypass dla chronionego preview.
 - 🟡 Waga i średnica jako dane korygujące identyfikację — pola i przekazanie do dalszej analizy są wdrożone.
 - 🟡 „Czy mam już tę odmianę?” — działa ostrożne wykrycie możliwego duplikatu podstawowej tożsamości.
 - 🔵 Porównanie stempli 1:1.
@@ -101,6 +103,8 @@ Legenda: ✅ działa / 🟡 częściowo / 🔴 brak / 🔵 etap PRO/LAB / ⚠️
 5. Audyt wydajności zdjęć, list i startu aplikacji.
 
 Kamień milowy 2026-08-15: najważniejszy przepływ zdjęcia → analiza → korekta → zapis → ponowne otwarcie przeszedł automatyczny test E2E na wersji preview. Produkcja pozostała bez zmian. Przed uznaniem kryterium mobilnego za zamknięte pozostaje test fizycznego Androida z realnymi zdjęciami.
+
+Aktualizacja testu fizycznego: Android potwierdził analizę i zachowanie ręcznej korekty na dwóch monetach. Do zamknięcia pozostają trafność identyfikacji na reprezentatywnym zestawie, analiza szczegółowa po optymalizacji oraz ponowny zapis/otwarcie wykonane przez testera na telefonie.
 
 ### Etap 1 — najważniejszy przepływ monety
 1. Bezpieczne kadrowanie z marginesem całego rantu.
