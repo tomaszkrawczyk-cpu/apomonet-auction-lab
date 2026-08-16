@@ -7,185 +7,55 @@
     <link rel="stylesheet" href="style.css" />
     <style>
       [hidden] { display: none !important; }
-      .coin-photos {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-        align-items: start;
-      }
-      .photo-card { padding: 12px; min-width: 0; }
-      .photo-card h2 { margin: 0 0 9px; font-size: clamp(16px, 4vw, 22px); }
-      .photo-card img {
-        display: block;
-        width: 100%;
-        aspect-ratio: 1 / 1;
-        max-height: 300px;
-        object-fit: contain;
-        border-radius: 14px;
-        background: #0b0b0c;
-      }
-      .photo-card .empty { min-height: 120px; display: grid; place-items: center; text-align: center; }
-      .facts {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
-      }
-      .fact {
-        padding: 14px;
-        border: 1px solid #29292c;
-        border-radius: 14px;
-        background: #121214;
-      }
-      .fact span {
-        display: block;
-        margin-bottom: 5px;
-        color: #8f8f95;
-        font-size: 12px;
-      }
-      .accepted { border-color: #5e441c; color: #d7c29b; }
-      .btn.danger { border: 1px solid #74342f; background: #311714; color: #ffd8d3; }
-      @media (max-width: 560px) {
-        .coin-photos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-        .photo-card { padding: 8px; }
-        .photo-card img { border-radius: 10px; max-height: 220px; }
-        .facts { grid-template-columns: 1fr; }
-      }
+      .coin-photos { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start; }
+      .photo-card { padding:12px;min-width:0; }
+      .photo-card h2 { margin:0 0 9px;font-size:clamp(16px,4vw,22px); }
+      .photo-card img { display:block;width:100%;aspect-ratio:1/1;max-height:300px;object-fit:contain;border-radius:14px;background:#0b0b0c; }
+      .photo-card .empty { min-height:120px;display:grid;place-items:center;text-align:center; }
+      .facts { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px; }
+      .fact { padding:14px;border:1px solid #29292c;border-radius:14px;background:#121214; }
+      .fact span { display:block;margin-bottom:5px;color:#8f8f95;font-size:12px; }
+      .accepted { border-color:#5e441c;color:#d7c29b; }
+      .btn.danger { border:1px solid #74342f;background:#311714;color:#ffd8d3; }
+      @media(max-width:560px){.coin-photos{gap:8px}.photo-card{padding:8px}.photo-card img{border-radius:10px;max-height:220px}.facts{grid-template-columns:1fr}}
     </style>
   </head>
   <body>
-    <header class="topbar">
-      <a class="brand" href="index.html">ApoMonet</a>
-      <nav class="nav">
-        <a href="collection.html">← Kolekcja</a>
-        <a href="analyze.html">Analiza</a>
-        <a href="albums.html">Albumy</a>
-      </nav>
-    </header>
+    <header class="topbar"><a class="brand" href="index.html">ApoMonet</a><nav class="nav"><a href="collection.html">← Kolekcja</a><a href="analyze.html">Analiza</a><a href="albums.html">Albumy</a></nav></header>
     <main class="shell narrow">
-      <section id="missing" class="card" hidden>
-        <h1>Nie znaleziono monety</h1>
-        <p class="muted">Wróć do kolekcji i wybierz istniejącą monetę.</p>
-        <a class="btn primary" href="collection.html">Wróć do kolekcji</a>
-      </section>
-
+      <section id="missing" class="card" hidden><h1>Nie znaleziono monety</h1><p class="muted">Wróć do kolekcji i wybierz istniejącą monetę.</p><a class="btn primary" href="collection.html">Wróć do kolekcji</a></section>
       <div id="coinContent" class="coin-content" hidden>
-        <section class="hero compact">
-          <span class="eyebrow">Karta monety</span>
-          <h1 id="coinTitle">Moneta</h1>
-          <p id="coinSubtitle">Zapisane dane i zdjęcia.</p>
-          <div id="acceptedBadge" class="status accepted" hidden>
-            Dane zatwierdzone przez Ciebie. Pierwotny wynik AI jest zachowany w historii rekordu.
-          </div>
-        </section>
-
-        <section class="coin-photos">
-          <div class="card photo-card">
-            <h2>Awers</h2>
-            <img id="obverseImage" alt="Zdjęcie awersu monety" hidden />
-            <div id="obverseEmpty" class="empty">Brak zdjęcia awersu.</div>
-          </div>
-          <div class="card photo-card">
-            <h2>Rewers</h2>
-            <img id="reverseImage" alt="Zdjęcie rewersu monety" hidden />
-            <div id="reverseEmpty" class="empty">Brak zdjęcia rewersu.</div>
-          </div>
-        </section>
-
-        <div class="section-title"><h2>Dane</h2></div>
-        <section id="facts" class="facts"></section>
-
-        <section id="descriptionCard" class="card" hidden>
-          <h2>Opis katalogowy</h2>
-          <p id="description"></p>
-        </section>
-        <section id="notesCard" class="card" hidden>
-          <h2>Notatki właściciela</h2>
-          <p id="notes"></p>
-        </section>
-        <section id="provenanceCard" class="card" hidden>
-          <h2>Proweniencja</h2>
-          <p id="provenance"></p>
-        </section>
-
-        <div class="toolbar">
-          <a id="editLink" class="btn primary" href="coin-edit.html">Edytuj i popraw</a>
-          <a class="btn secondary" href="collection.html">Wróć do kolekcji</a>
-          <a class="btn secondary" href="analyze.html">Analizuj inną monetę</a>
-          <button id="deleteCoin" class="btn danger" type="button">Usuń monetę z kolekcji</button>
-        </div>
+        <section class="hero compact"><span class="eyebrow">Karta monety</span><h1 id="coinTitle">Moneta</h1><p id="coinSubtitle">Zapisane dane i zdjęcia.</p><div id="acceptedBadge" class="status accepted" hidden>Dane zatwierdzone przez Ciebie. Pierwotny wynik AI jest zachowany w historii rekordu.</div></section>
+        <section class="coin-photos"><div class="card photo-card"><h2>Awers</h2><img id="obverseImage" alt="Zdjęcie awersu monety" hidden /><div id="obverseEmpty" class="empty">Brak zdjęcia awersu.</div></div><div class="card photo-card"><h2>Rewers</h2><img id="reverseImage" alt="Zdjęcie rewersu monety" hidden /><div id="reverseEmpty" class="empty">Brak zdjęcia rewersu.</div></div></section>
+        <div class="section-title"><h2>Dane</h2></div><section id="facts" class="facts"></section>
+        <section id="descriptionCard" class="card" hidden><h2>Opis katalogowy</h2><p id="description"></p></section>
+        <section id="notesCard" class="card" hidden><h2>Notatki właściciela</h2><p id="notes"></p></section>
+        <section id="provenanceCard" class="card" hidden><h2>Proweniencja</h2><p id="provenance"></p></section>
+        <div class="toolbar"><a id="editLink" class="btn primary" href="coin-edit.html">Edytuj i popraw</a><a class="btn secondary" href="collection.html">Wróć do kolekcji</a><a class="btn secondary" href="analyze.html">Analizuj inną monetę</a><button id="deleteCoin" class="btn danger" type="button">Usuń monetę z kolekcji</button></div>
       </div>
     </main>
     <script src="app.js"></script>
     <script>
-      (async () => {
-        const id = new URLSearchParams(location.search).get("id");
-        const coin = id ? ApoMonet.getCoin(id) : null;
-        const missing = document.getElementById("missing");
-        const content = document.getElementById("coinContent");
-
-        if (!coin) { missing.hidden = false; return; }
-
-        const value = (field) => {
-          const text = String(field ?? "").trim();
-          return text && text !== "Nie ustalono" ? text : "—";
+      (async()=>{
+        const id=new URLSearchParams(location.search).get('id');
+        const coin=id?ApoMonet.getCoin(id):null,missing=document.getElementById('missing'),content=document.getElementById('coinContent');
+        if(!coin){missing.hidden=false;return;}
+        // A collection card is authoritative. Never let a stale analysis session from
+        // another record affect this card or a later return to the analysis screen.
+        try{const s=JSON.parse(sessionStorage.getItem('apomonetAnalysisSession')||'null');if(s?.id&&s.id!==coin.id){sessionStorage.removeItem('apomonetAnalysisSession');sessionStorage.removeItem('apomonetReturnToAnalysis');sessionStorage.removeItem('apomonetOpenAlbumAfterResume');}}catch{}
+        const lang=()=>window.ApoAnalysisI18n?.currentLanguage?.()||window.ApoI18n?.current?.()||'pl';
+        const ui={
+          subtitleAccepted:{pl:'Pokazujemy dane zaakceptowane przez Ciebie oraz zapisane zdjęcia.',en:'Showing the data you accepted and the saved photos.',de:'Angezeigt werden die von Ihnen bestätigten Daten und die gespeicherten Fotos.',fr:'Affichage des données que vous avez validées et des photos enregistrées.'},
+          subtitleSaved:{pl:'Pokazujemy zapisany wynik analizy oraz zdjęcia.',en:'Showing the saved analysis result and photos.',de:'Angezeigt werden das gespeicherte Analyseergebnis und die Fotos.',fr:'Affichage du résultat d’analyse enregistré et des photos.'},
+          labels:{pl:['Nominał','Władca / emitent','Rok','Mennica','Metal','Odmiana / typ','Stan zachowania','Rzadkość','Numer katalogowy','Pewność AI'],en:['Denomination','Ruler / issuer','Year','Mint','Metal','Variety / type','Condition','Rarity','Catalog number','AI confidence'],de:['Nominal','Herrscher / Emittent','Jahr','Münzstätte','Metall','Variante / Typ','Erhaltungszustand','Seltenheit','Katalognummer','KI-Sicherheit'],fr:['Valeur','Souverain / émetteur','Année','Atelier','Métal','Variété / type','État de conservation','Rareté','Numéro de catalogue','Confiance IA']}
         };
-        const setPhoto = (imageId, emptyId, source) => {
-          const image = document.getElementById(imageId);
-          const empty = document.getElementById(emptyId);
-          if (!source) return;
-          image.src = source;
-          image.hidden = false;
-          empty.hidden = true;
-        };
-        const setSection = (cardId, textId, text) => {
-          if (!String(text || "").trim()) return;
-          document.getElementById(textId).textContent = text;
-          document.getElementById(cardId).hidden = false;
-        };
-
-        const standardSubtitle = () => coin.userAccepted
-          ? "Pokazujemy dane zaakceptowane przez Ciebie oraz zapisane zdjęcia."
-          : "Pokazujemy zapisany wynik analizy oraz zdjęcia.";
-        const renderText = (shown) => {
-          document.getElementById("coinTitle").textContent = shown.title || [shown.nominal, shown.ruler, shown.year].filter(Boolean).join(" • ") || "Moneta bez nazwy";
-          document.getElementById("coinSubtitle").textContent = standardSubtitle();
-          const fields = [
-            ["Nominał", shown.nominal], ["Władca / emitent", shown.ruler], ["Rok", shown.year],
-            ["Mennica", shown.mint], ["Metal", shown.metal], ["Odmiana / typ", shown.variant],
-            ["Stan zachowania", shown.grade], ["Rzadkość", shown.rarity], ["Numer katalogowy", coin.catalog],
-            ["Pewność AI", coin.confidence ? coin.confidence + "%" : ""],
-          ];
-          document.getElementById("facts").replaceChildren(...fields.map(([label, field]) => {
-            const box = document.createElement("div"); box.className = "fact";
-            const name = document.createElement("span"); const strong = document.createElement("strong");
-            name.textContent = label; strong.textContent = value(field); box.append(name, strong); return box;
-          }));
-          setSection("descriptionCard", "description", shown.description || shown.fullDescription);
-          window.ApoI18n?.translate?.(content);
-        };
-
-        renderText(coin);
-        document.getElementById("acceptedBadge").hidden = !coin.userAccepted;
-        document.getElementById("editLink").href = "coin-edit.html?id=" + encodeURIComponent(coin.id);
-        document.getElementById("deleteCoin").onclick = () => {
-          if (!confirm("Usunąć „" + (coin.title || "tę monetę") + "” z całej kolekcji? Tej operacji nie można cofnąć.")) return;
-          ApoMonet.deleteCoin(coin.id); location.href = "collection.html";
-        };
-
-        const preparedObverse = window.ApoAlbumPhotos ? ApoAlbumPhotos.resolve(coin, "obverse") : coin.obverseImage;
-        const preparedReverse = window.ApoAlbumPhotos ? ApoAlbumPhotos.resolve(coin, "reverse") : coin.reverseImage;
-        setPhoto("obverseImage", "obverseEmpty", preparedObverse);
-        setPhoto("reverseImage", "reverseEmpty", preparedReverse);
-        setSection("notesCard", "notes", coin.notes);
-        setSection("provenanceCard", "provenance", coin.provenance);
-        content.hidden = false;
-
-        const translator = window.ApoAnalysisI18n;
-        if (translator && translator.currentLanguage() !== "pl") {
-          document.getElementById("coinSubtitle").textContent = translator.message("translating");
-          try { const translated = await translator.localize(coin); renderText(translated); }
-          catch (error) { console.error("[coin-translation]", error); document.getElementById("coinSubtitle").textContent = translator.message("failed"); }
-        }
+        const value=f=>{const t=String(f??'').trim();return t&&t!=='Nie ustalono'?t:'—'};
+        const setPhoto=(imageId,emptyId,source)=>{const image=document.getElementById(imageId),empty=document.getElementById(emptyId);if(!source)return;image.src=source;image.hidden=false;empty.hidden=true;};
+        const setSection=(cardId,textId,text)=>{const card=document.getElementById(cardId),el=document.getElementById(textId);if(!String(text||'').trim()){card.hidden=true;return;}el.textContent=text;card.hidden=false;};
+        const renderText=shown=>{const l=lang(),labels=ui.labels[l]||ui.labels.pl;document.getElementById('coinTitle').textContent=shown.title||[shown.nominal,shown.ruler,shown.year].filter(Boolean).join(' • ')||'Moneta bez nazwy';document.getElementById('coinSubtitle').textContent=(coin.userAccepted?ui.subtitleAccepted:ui.subtitleSaved)[l]||(coin.userAccepted?ui.subtitleAccepted.pl:ui.subtitleSaved.pl);const vals=[shown.nominal,shown.ruler,shown.year,shown.mint,shown.metal,shown.variant,shown.grade,shown.rarity,coin.catalog,coin.confidence?coin.confidence+'%':''];document.getElementById('facts').replaceChildren(...labels.map((label,i)=>{const box=document.createElement('div');box.className='fact';const name=document.createElement('span'),strong=document.createElement('strong');name.textContent=label;strong.textContent=value(vals[i]);box.append(name,strong);return box;}));setSection('descriptionCard','description',shown.description||shown.fullDescription);window.ApoI18n?.translate?.(content);};
+        renderText(coin);document.getElementById('acceptedBadge').hidden=!coin.userAccepted;document.getElementById('editLink').href='coin-edit.html?id='+encodeURIComponent(coin.id);document.getElementById('deleteCoin').onclick=()=>{if(!confirm('Usunąć „'+(coin.title||'tę monetę')+'” z całej kolekcji? Tej operacji nie można cofnąć.'))return;ApoMonet.deleteCoin(coin.id);location.href='collection.html';};
+        const ob=window.ApoAlbumPhotos?ApoAlbumPhotos.resolve(coin,'obverse'):coin.obverseImage,rev=window.ApoAlbumPhotos?ApoAlbumPhotos.resolve(coin,'reverse'):coin.reverseImage;setPhoto('obverseImage','obverseEmpty',ob);setPhoto('reverseImage','reverseEmpty',rev);setSection('notesCard','notes',coin.notes);setSection('provenanceCard','provenance',coin.provenance);content.hidden=false;
+        const translator=window.ApoAnalysisI18n;if(translator&&translator.currentLanguage()!=='pl'){document.getElementById('coinSubtitle').textContent=translator.message('translating');try{const translated=await translator.localize(coin);renderText(translated);}catch(error){console.error('[coin-translation]',error);document.getElementById('coinSubtitle').textContent=translator.message('failed');}}
       })();
     </script>
   </body>
