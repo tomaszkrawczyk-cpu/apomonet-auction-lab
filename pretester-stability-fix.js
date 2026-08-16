@@ -118,25 +118,27 @@
   function clearJob(){try{localStorage.removeItem(JOB_KEY)}catch{}}
   const jid=()=>`analysis_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
   async function basic(job){
-    activeJob=true;saveJob({...job,status:'running',attempts:(job.attempts||0)+1});
+    const running={...job,status:'running',attempts:Number(job.attempts||0)+1};
+    activeJob=true;saveJob(running);
     try{
-      $("go").disabled=true;$("status").textContent=job.resumed?msg('resume'):msg('background');
-      const r=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json','X-Apo-Job-Id':job.id},body:JSON.stringify({images:job.analysisImgs,mode:'basic',jobId:job.id})});
+      $("go").disabled=true;$("status").textContent=running.resumed?msg('resume'):msg('background');
+      const r=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json','X-Apo-Job-Id':running.id},body:JSON.stringify({images:running.analysisImgs,mode:'basic',jobId:running.id})});
       let d;try{d=await r.json()}catch{throw Error('Serwer nie zwrócił poprawnej odpowiedzi.')}
       if(!r.ok)throw Error(apiError(d,'Błąd serwera HTTP '+r.status));
       a=d.analysis;localizedA=null;render();const translated=await localizeCurrent({scroll:false});if(translated)$("status").textContent=msg('basicDone');clearJob();
-    }catch(e){console.error('[analysis-job]',e);saveJob({...job,status:'waiting',resumed:true,lastError:String(e?.message||e)});$("status").textContent=msg('retry')}
+    }catch(e){console.error('[analysis-job]',e);saveJob({...running,status:'waiting',resumed:true,lastError:String(e?.message||e)});$("status").textContent=msg('retry')}
     finally{activeJob=false;$("go").disabled=false}
   }
   async function deepJob(job){
-    activeJob=true;saveJob({...job,status:'running',attempts:(job.attempts||0)+1});
+    const running={...job,status:'running',attempts:Number(job.attempts||0)+1};
+    activeJob=true;saveJob(running);
     try{
-      $("deep").disabled=true;$("deep").setAttribute('aria-busy','true');$("status").textContent=job.resumed?msg('resume'):msg('background');
-      const r=await fetch('/api/analyze-detail',{method:'POST',headers:{'Content-Type':'application/json','X-Apo-Job-Id':job.id},body:JSON.stringify({images:job.analysisImgs,base:job.base,jobId:job.id})});
+      $("deep").disabled=true;$("deep").setAttribute('aria-busy','true');$("status").textContent=running.resumed?msg('resume'):msg('background');
+      const r=await fetch('/api/analyze-detail',{method:'POST',headers:{'Content-Type':'application/json','X-Apo-Job-Id':running.id},body:JSON.stringify({images:running.analysisImgs,base:running.base,jobId:running.id})});
       let d;try{d=await r.json()}catch{throw Error('Serwer nie zwrócił poprawnej odpowiedzi.')}
       if(!r.ok)throw Error(apiError(d,'Błąd serwera HTTP '+r.status));
-      a={...a,...d.detail,detail:d.detail};localizedA=null;$("deepConf").textContent=`Pewność ${d.detail.confidence||0}%`;renderDetail(d.detail);$("deepPanel").classList.remove('hidden');const translated=await localizeCurrent({scroll:false,showDetail:true});if(translated)$("status").textContent=msg('deepDone');clearJob();
-    }catch(e){console.error('[detail-job]',e);saveJob({...job,status:'waiting',resumed:true,lastError:String(e?.message||e)});$("status").textContent=msg('retry')}
+      a={...(a||running.base||{}),...d.detail,detail:d.detail};localizedA=null;$("deepConf").textContent=`Pewność ${d.detail.confidence||0}%`;renderDetail(d.detail);$("deepPanel").classList.remove('hidden');const translated=await localizeCurrent({scroll:false,showDetail:true});if(translated)$("status").textContent=msg('deepDone');clearJob();
+    }catch(e){console.error('[detail-job]',e);saveJob({...running,status:'waiting',resumed:true,lastError:String(e?.message||e)});$("status").textContent=msg('retry')}
     finally{activeJob=false;$("deep").disabled=false;$("deep").removeAttribute('aria-busy')}
   }
   function patchAnalysis(){
