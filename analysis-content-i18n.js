@@ -1,6 +1,6 @@
 (() => {
   const LANGUAGE_KEY = "apomonet_language_v2";
-  const CACHE_KEY = "apomonet_analysis_translation_cache_v1";
+  const CACHE_KEY = "apomonet_analysis_translation_cache_v2";
   const SUPPORTED = new Set(["en", "de", "fr"]);
   const STRING_FIELDS = [
     "title",
@@ -123,14 +123,20 @@
     return localized;
   }
 
-  async function localize(record, language = currentLanguage()) {
-    if (!record || language === "pl" || !SUPPORTED.has(language)) return record;
-    const items = flatten(record);
-    if (!items.length) return record;
-    const cacheKey = `${language}:${hash(JSON.stringify(items))}`;
-    const cache = loadCache();
-    if (cache[cacheKey]) return apply(record, cache[cacheKey], language);
+  function usefulTranslations(items, translations) {
+    const source = new Map(items.map((item) => [item.key, item.text]));
+    let translated = 0;
+    let changed = 0;
+    for (const [key, value] of Object.entries(translations || {})) {
+      const text = String(value || "").trim();
+      if (!source.has(key) || !text) continue;
+      translated++;
+      if (text !== String(source.get(key) || "").trim()) changed++;
+    }
+    return { translated, changed };
+  }
 
+  async function requestTranslation(items, language) {
     const response = await fetch("/api/translate-analysis", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -145,9 +151,32 @@
     if (!response.ok || !data?.ok) {
       throw new Error(data?.error || "Nie udało się przetłumaczyć analizy.");
     }
-    cache[cacheKey] = data.translations || {};
+    return data.translations || {};
+  }
+
+  async function localize(record, language = currentLanguage()) {
+    if (!record || language === "pl" || !SUPPORTED.has(language)) return record;
+    const items = flatten(record);
+    if (!items.length) return record;
+    const cacheKey = `${language}:${hash(JSON.stringify(items))}`;
+    const cache = loadCache();
+    if (cache[cacheKey]) {
+      const quality = usefulTranslations(items, cache[cacheKey]);
+      if (quality.translated && quality.changed) {
+        return apply(record, cache[cacheKey], language);
+      }
+      delete cache[cacheKey];
+      saveCache(cache);
+    }
+
+    const translations = await requestTranslation(items, language);
+    const quality = usefulTranslations(items, translations);
+    if (!quality.translated || !quality.changed) {
+      throw new Error("Tłumaczenie nie zmieniło treści analizy. Spróbuj ponownie.");
+    }
+    cache[cacheKey] = translations;
     saveCache(cache);
-    return apply(record, data.translations || {}, language);
+    return apply(record, translations, language);
   }
 
   function message(key, language = currentLanguage()) {
