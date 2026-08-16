@@ -86,7 +86,7 @@
     }
     if (
       changed.includes("nominal") &&
-      /nominal|nominalu|denomination|nominale/u.test(normalized) &&
+      /nominal|nominalu|denomination|nominale|dukat|talar|grosz|ort|szostak|trojak/u.test(normalized) &&
       !mentions(sentence, coin.nominal)
     ) {
       return true;
@@ -109,7 +109,8 @@
         coin.rawAI?.description,
     );
     const changedValuesArePresent = changed.every((field) => mentions(source, coin[field]));
-    if (changedValuesArePresent) {
+    const staleRawValuesPresent = changed.some((field) => mentions(source, coin.rawAI?.[field]));
+    if (changedValuesArePresent && !staleRawValuesPresent) {
       return {
         ...coin,
         descriptionConsistencyKey: key,
@@ -157,6 +158,15 @@
     return normalized;
   }
 
+  function installWriteGuard() {
+    if (!window.ApoMonet || ApoMonet.__correctionConsistencyGuard) return;
+    const original = ApoMonet.upsertCoin;
+    ApoMonet.upsertCoin = function (coin) {
+      return original.call(ApoMonet, normalizeCoin(coin));
+    };
+    ApoMonet.__correctionConsistencyGuard = true;
+  }
+
   function normalizeState() {
     if (!window.ApoMonet) return;
     const state = ApoMonet.load();
@@ -167,6 +177,30 @@
       return normalized;
     });
     if (changed) ApoMonet.save(state);
+  }
+
+  function syncAnalysisSession(coin) {
+    if (!coin) return;
+    let old = {};
+    try {
+      old = JSON.parse(sessionStorage.getItem("apomonetAnalysisSession") || "{}") || {};
+    } catch {}
+    const corrected = {
+      ...(old.a || {}),
+      ...coin,
+      description: coin.description || old.a?.description || "",
+      fullDescription: coin.fullDescription || coin.description || old.a?.fullDescription || old.a?.description || "",
+      userAccepted: true,
+      correctedAt: new Date().toISOString(),
+    };
+    try {
+      sessionStorage.setItem(
+        "apomonetAnalysisSession",
+        JSON.stringify({ id: coin.id, a: corrected, at: Date.now(), version: 3 }),
+      );
+    } catch (error) {
+      console.warn("Nie udało się zsynchronizować sesji po korekcie", error);
+    }
   }
 
   function repairExport() {
@@ -208,6 +242,7 @@
         const id = new URLSearchParams(location.search).get("id");
         const coin = id ? ApoMonet.getCoin(id) : null;
         if (coin) {
+          syncAnalysisSession(coin);
           const title = document.getElementById("title");
           const description = document.getElementById("description");
           if (title && coin.canonicalTitle) title.value = coin.canonicalTitle;
@@ -215,6 +250,15 @@
         }
       }, 0),
     );
+
+    document.addEventListener("click", (event) => {
+      const target = event.target?.closest?.("#backResult,#chooseAlbum,#openCard");
+      if (!target) return;
+      normalizeState();
+      const id = new URLSearchParams(location.search).get("id");
+      const coin = id ? ApoMonet.getCoin(id) : null;
+      if (coin) syncAnalysisSession(coin);
+    });
   }
 
   window.ApoCorrectionConsistency = Object.freeze({
@@ -222,9 +266,11 @@
     reconcileDescription,
     normalizeCoin,
     normalizeState,
+    syncAnalysisSession,
   });
 
   function init() {
+    installWriteGuard();
     normalizeState();
     afterSubmit();
     repairExport();
