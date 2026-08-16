@@ -19,7 +19,7 @@ function imagePipeline(){
   return sandbox.ApoImagePipeline;
 }
 
-function albumPhotoResolver(){
+function albumPhotoTools(){
   const sandbox={
     console,
     location:{pathname:'/tests'},
@@ -31,7 +31,23 @@ function albumPhotoResolver(){
   };
   sandbox.window=sandbox;
   vm.runInNewContext(read('album-photo-prep.js'),sandbox,{filename:'album-photo-prep.js'});
-  return sandbox.ApoAlbumPhotos.resolve;
+  return sandbox.ApoAlbumPhotos;
+}
+
+function albumPhotoResolver(){
+  return albumPhotoTools().resolve;
+}
+
+function correctionConsistency(){
+  const sandbox={
+    console,
+    location:{pathname:'/tests'},
+    document:{readyState:'loading',addEventListener(){}},
+    addEventListener(){},
+  };
+  sandbox.window=sandbox;
+  vm.runInNewContext(read('correction-consistency.js'),sandbox,{filename:'correction-consistency.js'});
+  return sandbox.ApoCorrectionConsistency;
 }
 
 function collectionI18n(){
@@ -142,8 +158,9 @@ test('critical UI flow still contains both photos, analysis, correction and save
   assert.match(page,/ApoMonet\.upsertCoin/);
   assert.match(page,/restoreAnalysisSession/);
   assert.match(correction,/rawAI/);
-  assert.match(correction,/userAccepted=true/);
-  assert.match(correction,/obverseImage:imgs\[0\],reverseImage:imgs\[1\]/);
+  assert.match(correction,/userAccepted\s*=\s*true/);
+  assert.match(correction,/obverseImage:\s*images\[0\]/);
+  assert.match(correction,/reverseImage:\s*images\[1\]/);
 });
 
 test('state loading protects every collection array and storage failure is explicit',()=>{
@@ -186,6 +203,36 @@ test('chronology guard is valid JavaScript and remains non-blocking',()=>{
   const guard=read('chronology-guard.js');
   assert.doesNotThrow(()=>new Function(guard));
   assert.match(guard,/if \(!chronologyWarning\) return/);
+});
+
+test('accepted identity corrections also remove stale facts from the description',()=>{
+  const {normalizeCoin}=correctionConsistency();
+  const raw={
+    nominal:'Talar',
+    ruler:'Stefan Batory',
+    year:'1586',
+    mint:'Wilno',
+    metal:'Srebro',
+    fullDescription:'Srebrny talar litewski Stefana Batorego z 1586 roku, przypisywany mennicy wileńskiej. Awers przedstawia ukoronowane popiersie króla. Rewers ma czteropolową tarczę.',
+  };
+  const corrected=normalizeCoin({
+    ...raw,
+    mint:'Nagybánya',
+    rawAI:raw,
+    userAccepted:true,
+    description:raw.fullDescription,
+    fullDescription:raw.fullDescription,
+  });
+  assert.match(corrected.description,/Mennica: Nagybánya\./);
+  assert.doesNotMatch(corrected.description,/wileńsk|Wilno/i);
+  assert.match(corrected.description,/Awers przedstawia/);
+  assert.match(corrected.description,/Rewers ma/);
+  assert.equal(corrected.fullDescription,corrected.description);
+  assert.equal(corrected.descriptionSource,'accepted-correction');
+  assert.deepEqual(normalizeCoin(corrected),corrected,'the repair must be idempotent');
+
+  const inline=read('analysis-inline-correction.js');
+  assert.match(inline,/ApoCorrectionConsistency\?\.normalizeCoin/);
 });
 
 test('a saved coin reopens from the collection with both photos and accepted data',()=>{
@@ -268,15 +315,39 @@ test('background removal detects the coin and writes a transparent PNG only when
   assert.match(prep,/ApoImagePipeline\?\.detectCircle\?\.\(work\)/);
   assert.match(prep,/detection\.confidence/);
   assert.match(prep,/detection\.backgroundTexture/);
+  assert.match(prep,/traceBoundary\(work, detection\)/);
+  assert.match(prep,/boundary\.reliable/);
   assert.match(prep,/context\.clearRect\(0, 0, size, size\)/);
-  assert.match(prep,/context\.arc\(size \/ 2, size \/ 2, maskRadius/);
+  assert.match(prep,/boundary\.scales\.forEach/);
+  assert.match(prep,/context\.lineTo\(outputX, outputY\)/);
   assert.match(prep,/output\.toDataURL\("image\/png"\)/);
   assert.match(prep,/removed: false, reason: "uncertain"/);
   assert.match(prep,/Zdjęcie nie zostało zmienione/);
+  assert.match(prep,/Czy krawędzie wyglądają dobrze/);
   assert.match(prep,/window\.ApoAlbumPhotos = Object\.freeze/);
   assert.match(prep,/albumObverseImage \|\| coin\.albumReverseImage/);
   assert.match(albumCovers,/ApoAlbumPhotos\.resolve\(coin, "obverse"\)/);
   assert.match(albumCovers,/coverPhotos\(coins\)/);
+});
+
+test('background removal follows the real rim instead of a circular shadow',()=>{
+  const {traceBoundaryPixels}=albumPhotoTools();
+  const width=240,height=240,rgba=new Uint8ClampedArray(width*height*4);
+  for(let y=0;y<height;y++){
+    for(let x=0;x<width;x++){
+      const index=(y*width+x)*4;
+      let shade=242;
+      if(Math.hypot(x-120,y-118)<=70) shade=170;
+      if(Math.hypot(x-120,y-110)<=70) shade=78;
+      rgba[index]=rgba[index+1]=rgba[index+2]=shade;
+      rgba[index+3]=255;
+    }
+  }
+  const traced=traceBoundaryPixels(width,height,rgba,{cx:120,cy:110,r:78});
+  assert.equal(traced.reliable,true);
+  assert.ok(traced.coverage>.9);
+  assert.ok(traced.scales[36]<.95,'bottom edge must stop at the coin, not at its shadow');
+  assert.ok(traced.spread<.12);
 });
 
 test('every album surface resolves the prepared transparent image consistently',()=>{
@@ -287,8 +358,9 @@ test('every album surface resolves the prepared transparent image consistently',
     albumObverseImage:'transparent-obverse',
     albumReverseImage:'transparent-reverse',
   };
-  assert.equal(resolve({...coin,albumPhotoMode:'cut'},'obverse'),'transparent-obverse');
-  assert.equal(resolve({...coin,albumPhotoMode:'cut'},'reverse'),'transparent-reverse');
+  assert.equal(resolve({...coin,albumPhotoMode:'cut',albumPhotoPrepVersion:2},'obverse'),'transparent-obverse');
+  assert.equal(resolve({...coin,albumPhotoMode:'cut',albumPhotoPrepVersion:2},'reverse'),'transparent-reverse');
+  assert.equal(resolve({...coin,albumPhotoMode:'cut'},'obverse'),'original-obverse');
   assert.equal(resolve({...coin,albumPhotoMode:'original'},'obverse'),'original-obverse');
   assert.equal(resolve({...coin,albumPhotoMode:'none'},'obverse'),'');
 });

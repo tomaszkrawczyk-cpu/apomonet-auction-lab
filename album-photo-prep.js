@@ -1,5 +1,6 @@
 (() => {
   const PENDING = "apomonetAlbumPhotoPrep";
+  const CUT_VERSION = 2;
   const parse = (key) => {
     try {
       return JSON.parse(sessionStorage.getItem(key) || "null");
@@ -34,10 +35,40 @@
       fr: "Le bord de la monnaie n’a pas été détecté avec certitude ; la photo n’a pas été modifiée. Utilisez un fond uni et contrasté, puis réessayez.",
     },
     success: {
-      pl: "Tło usunięte — zapisuję przezroczyste zdjęcie.",
-      en: "Background removed — saving the transparent image.",
-      de: "Hintergrund entfernt — das transparente Bild wird gespeichert.",
-      fr: "Arrière-plan supprimé — enregistrement de l’image transparente.",
+      pl: "Tło usunięte. Sprawdź jeszcze rant przed zapisaniem.",
+      en: "Background removed. Check the rim before saving.",
+      de: "Hintergrund entfernt. Prüfen Sie vor dem Speichern noch den Rand.",
+      fr: "Arrière-plan supprimé. Vérifiez le bord avant d’enregistrer.",
+    },
+    reviewTitle: {
+      pl: "Czy krawędzie wyglądają dobrze?",
+      en: "Do the edges look right?",
+      de: "Sehen die Ränder richtig aus?",
+      fr: "Les bords sont-ils corrects ?",
+    },
+    reviewHelp: {
+      pl: "Jeśli widzisz białe tło, cień albo ucięty rant, zostaw oryginalne zdjęcie.",
+      en: "If you see a white area, a shadow or a cropped rim, keep the original photo.",
+      de: "Wenn Sie eine weiße Fläche, einen Schatten oder einen abgeschnittenen Rand sehen, behalten Sie das Originalfoto.",
+      fr: "Si vous voyez une zone blanche, une ombre ou un bord coupé, conservez la photo originale.",
+    },
+    acceptCut: {
+      pl: "✓ Tak — zapisz wycięcie",
+      en: "✓ Yes — save the cutout",
+      de: "✓ Ja — Freistellung speichern",
+      fr: "✓ Oui — enregistrer le détourage",
+    },
+    keepOriginal: {
+      pl: "🖼️ Zostaw oryginalne zdjęcie",
+      en: "🖼️ Keep the original photo",
+      de: "🖼️ Originalfoto behalten",
+      fr: "🖼️ Conserver la photo originale",
+    },
+    reviewBack: {
+      pl: "Wróć",
+      en: "Back",
+      de: "Zurück",
+      fr: "Retour",
     },
   };
   const msg = (key) => messages[key]?.[language()] || messages[key]?.pl || "";
@@ -45,6 +76,134 @@
     const session = parse("apomonetAnalysisSession");
     return session?.id && window.ApoMonet ? ApoMonet.getCoin(session.id) : null;
   };
+
+  const clamp = (value, minimum, maximum) =>
+    Math.max(minimum, Math.min(maximum, value));
+
+  function median(values) {
+    const ordered = [...values].sort((a, b) => a - b);
+    return ordered[Math.floor(ordered.length / 2)] || 0;
+  }
+
+  function traceBoundaryPixels(width, height, rgba, detection) {
+    const count = 144;
+    const radius = Number(detection?.r || 0);
+    if (!width || !height || !rgba?.length || !radius) {
+      return { reliable: false, reason: "missing-pixels", scales: [] };
+    }
+
+    const sample = (x, y) => {
+      const centerX = clamp(Math.round(x), 0, width - 1);
+      const centerY = clamp(Math.round(y), 0, height - 1);
+      let red = 0;
+      let green = 0;
+      let blue = 0;
+      let samples = 0;
+      for (let dy = -1; dy <= 1; dy += 1) {
+        for (let dx = -1; dx <= 1; dx += 1) {
+          const px = clamp(centerX + dx, 0, width - 1);
+          const py = clamp(centerY + dy, 0, height - 1);
+          const index = (py * width + px) * 4;
+          red += rgba[index];
+          green += rgba[index + 1];
+          blue += rgba[index + 2];
+          samples += 1;
+        }
+      }
+      return [red / samples, green / samples, blue / samples];
+    };
+    const difference = (first, second) =>
+      Math.hypot(
+        first[0] - second[0],
+        first[1] - second[1],
+        first[2] - second[2],
+      ) / Math.sqrt(3);
+
+    const rawScales = [];
+    const strengths = [];
+    for (let index = 0; index < count; index += 1) {
+      const angle = (index * Math.PI * 2) / count;
+      const cosine = Math.cos(angle);
+      const sine = Math.sin(angle);
+      const atScale = (scale) =>
+        sample(
+          detection.cx + cosine * radius * scale,
+          detection.cy + sine * radius * scale,
+        );
+      const backgroundSamples = [1.075, 1.095, 1.11].map(atScale);
+      const background = [0, 1, 2].map(
+        (channel) =>
+          backgroundSamples.reduce((sum, color) => sum + color[channel], 0) /
+          backgroundSamples.length,
+      );
+
+      let previousDistance = difference(atScale(1.055), background);
+      let bestScale = 0.98;
+      let bestStrength = -Infinity;
+      for (let scale = 1.0475; scale >= 0.87; scale -= 0.0075) {
+        const distance = difference(atScale(scale), background);
+        const transition = distance - previousDistance;
+        const expectedEdgePenalty = Math.abs(scale - 0.98) * 5;
+        const strength = transition - expectedEdgePenalty;
+        if (strength > bestStrength) {
+          bestStrength = strength;
+          bestScale = scale + 0.00375;
+        }
+        previousDistance = distance;
+      }
+      rawScales.push(clamp(bestScale, 0.88, 1.035));
+      strengths.push(bestStrength);
+    }
+
+    const strong = strengths.map((strength) => strength >= 7.5);
+    const coverage = strong.filter(Boolean).length / count;
+    const globalMedian = median(rawScales.filter((_, index) => strong[index]));
+    const repaired = rawScales.map((scale, index) => {
+      if (strong[index]) return scale;
+      const nearby = [];
+      for (let offset = -7; offset <= 7; offset += 1) {
+        const candidate = (index + offset + count) % count;
+        if (strong[candidate]) nearby.push(rawScales[candidate]);
+      }
+      return nearby.length ? median(nearby) : globalMedian || 0.98;
+    });
+    const medianSmoothed = repaired.map((_, index) => {
+      const nearby = [];
+      for (let offset = -3; offset <= 3; offset += 1) {
+        nearby.push(repaired[(index + offset + count) % count]);
+      }
+      return median(nearby);
+    });
+    const scales = medianSmoothed.map((_, index) => {
+      let sum = 0;
+      for (let offset = -2; offset <= 2; offset += 1) {
+        sum += medianSmoothed[(index + offset + count) % count];
+      }
+      return clamp(sum / 5, 0.88, 1.035);
+    });
+    const ordered = [...scales].sort((a, b) => a - b);
+    const low = ordered[Math.floor(count * 0.1)];
+    const high = ordered[Math.floor(count * 0.9)];
+    const spread = high - low;
+    const average = scales.reduce((sum, scale) => sum + scale, 0) / count;
+    const reliable = coverage >= 0.68 && spread <= 0.16 && average >= 0.89;
+
+    return {
+      reliable,
+      reason: reliable ? "traced-edge" : "uncertain-trace",
+      scales,
+      strengths,
+      coverage,
+      spread,
+      average,
+    };
+  }
+
+  function traceBoundary(canvas, detection) {
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    return traceBoundaryPixels(canvas.width, canvas.height, pixels, detection);
+  }
 
   function circleCut(data) {
     return new Promise((resolve) => {
@@ -87,18 +246,30 @@
             return resolve({ data, removed: false, reason: "edge" });
           }
 
+          const boundary = traceBoundary(work, detection);
+          if (!boundary.reliable) {
+            return resolve({ data, removed: false, reason: boundary.reason });
+          }
+
           const size = Math.max(320, Math.min(720, Math.round(half * 2)));
           const output = document.createElement("canvas");
           output.width = output.height = size;
           const context = output.getContext("2d");
-          const maskRadius = Math.min(
-            size * 0.47,
-            (detection.r / (half * 2)) * size * 1.03,
-          );
           context.clearRect(0, 0, size, size);
           context.save();
           context.beginPath();
-          context.arc(size / 2, size / 2, maskRadius, 0, Math.PI * 2);
+          boundary.scales.forEach((scale, index) => {
+            const angle = (index * Math.PI * 2) / boundary.scales.length;
+            const sourceX =
+              detection.cx + Math.cos(angle) * detection.r * scale * 0.992;
+            const sourceY =
+              detection.cy + Math.sin(angle) * detection.r * scale * 0.992;
+            const outputX = ((sourceX - left) / (half * 2)) * size;
+            const outputY = ((sourceY - top) / (half * 2)) * size;
+            if (index === 0) context.moveTo(outputX, outputY);
+            else context.lineTo(outputX, outputY);
+          });
+          context.closePath();
           context.clip();
           context.drawImage(
             work,
@@ -116,6 +287,8 @@
             data: output.toDataURL("image/png"),
             removed: true,
             confidence: detection.confidence,
+            edgeCoverage: boundary.coverage,
+            cutVersion: CUT_VERSION,
           });
         } catch (error) {
           console.error("[album-background-removal]", error);
@@ -159,6 +332,34 @@
     };
   }
 
+  function reviewCut(obverse, reverse) {
+    return new Promise((resolve) => {
+      const background = document.createElement("div");
+      background.style.cssText =
+        "position:fixed;inset:0;background:#000e;z-index:12010;display:grid;place-items:center;padding:18px";
+      const box = document.createElement("div");
+      box.style.cssText =
+        "width:min(520px,100%);max-height:92vh;overflow:auto;background:#111113;border:1px solid #4a361b;border-radius:22px;padding:20px";
+      box.innerHTML = `<span class="eyebrow">Zdjęcie do albumu</span><h2 style="margin:8px 0 6px">${msg("reviewTitle")}</h2><p style="color:#aaa;line-height:1.5">${msg("reviewHelp")}</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0"><figure style="margin:0"><div style="aspect-ratio:1;background:#080809;border:1px solid #303034;border-radius:16px;display:grid;place-items:center;overflow:hidden"><img src="${obverse.data}" alt="Awers po usunięciu tła" style="width:94%;height:94%;object-fit:contain"></div><figcaption style="text-align:center;color:#aaa;margin-top:6px">Awers</figcaption></figure><figure style="margin:0"><div style="aspect-ratio:1;background:#080809;border:1px solid #303034;border-radius:16px;display:grid;place-items:center;overflow:hidden"><img src="${reverse.data}" alt="Rewers po usunięciu tła" style="width:94%;height:94%;object-fit:contain"></div><figcaption style="text-align:center;color:#aaa;margin-top:6px">Rewers</figcaption></figure></div>`;
+      const make = (text, kind, result) => {
+        const button = document.createElement("button");
+        button.className = `btn ${kind} full`;
+        button.style.marginTop = "9px";
+        button.textContent = text;
+        button.onclick = () => {
+          background.remove();
+          resolve(result);
+        };
+        box.appendChild(button);
+      };
+      make(msg("acceptCut"), "primary", "accept");
+      make(msg("keepOriginal"), "secondary", "original");
+      make(msg("reviewBack"), "secondary", "back");
+      background.appendChild(box);
+      document.body.appendChild(background);
+    });
+  }
+
   const setPending = (value) => {
     try {
       sessionStorage.setItem(PENDING, JSON.stringify(value));
@@ -183,6 +384,7 @@
           patch.albumObverseImage = pending.obverse || null;
           patch.albumReverseImage = pending.reverse || null;
           patch.albumPhotoRemovalConfidence = pending.confidence || null;
+          patch.albumPhotoPrepVersion = pending.cutVersion || CUT_VERSION;
         } else {
           patch.albumObverseImage = null;
           patch.albumReverseImage = null;
@@ -244,11 +446,24 @@
           return;
         }
         dialog.status.textContent = msg("success");
+        const choice = await reviewCut(obverse, reverse);
+        if (choice === "back") {
+          dialog.cut.disabled = false;
+          dialog.cut.textContent = "✂️ Tak — usuń tło";
+          dialog.status.textContent = "";
+          return;
+        }
+        if (choice === "original") {
+          setPending({ mode: "original", coinId });
+          finish();
+          return;
+        }
         setPending({
           mode: "cut",
           coinId,
           obverse: obverse.data,
           reverse: reverse.data,
+          cutVersion: CUT_VERSION,
           confidence: Math.min(
             obverse.confidence || 100,
             reverse.confidence || 100,
@@ -262,7 +477,10 @@
   function albumPhoto(coin, side = "obverse") {
     if (!coin) return "";
     if (coin.albumPhotoMode === "none") return "";
-    if (coin.albumPhotoMode === "cut") {
+    if (
+      coin.albumPhotoMode === "cut" &&
+      Number(coin.albumPhotoPrepVersion || 0) >= CUT_VERSION
+    ) {
       return side === "obverse"
         ? coin.albumObverseImage || coin.albumReverseImage || ""
         : coin.albumReverseImage || coin.albumObverseImage || "";
@@ -274,7 +492,11 @@
 
   // Jedno źródło prawdy dla karty, albumów, okładek i eksportu.
   // Oryginały pozostają w rekordzie, a tryb albumowy steruje prezentacją.
-  window.ApoAlbumPhotos = Object.freeze({ resolve: albumPhoto });
+  window.ApoAlbumPhotos = Object.freeze({
+    resolve: albumPhoto,
+    cutVersion: CUT_VERSION,
+    traceBoundaryPixels,
+  });
 
   function applyAlbumPhoto(card, coin) {
     const box = card.querySelector(".coin-photo");
@@ -333,11 +555,30 @@
             status.textContent = msg("failed");
             return;
           }
+          status.textContent = msg("success");
+          const choice = await reviewCut(obverse, reverse);
+          if (choice === "back") {
+            control.disabled = false;
+            status.textContent = "";
+            return;
+          }
+          if (choice === "original") {
+            ApoMonet.upsertCoin({
+              id: coin.id,
+              albumPhotoMode: "original",
+              albumObverseImage: null,
+              albumReverseImage: null,
+              albumPhotoPreparedAt: new Date().toISOString(),
+            });
+            location.reload();
+            return;
+          }
           ApoMonet.upsertCoin({
             id: coin.id,
             albumPhotoMode: "cut",
             albumObverseImage: obverse.data,
             albumReverseImage: reverse.data,
+            albumPhotoPrepVersion: CUT_VERSION,
             albumPhotoRemovalConfidence: Math.min(
               obverse.confidence || 100,
               reverse.confidence || 100,
