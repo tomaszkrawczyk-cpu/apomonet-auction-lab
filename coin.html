@@ -6,17 +6,25 @@
     <title>Karta monety • ApoMonet</title>
     <link rel="stylesheet" href="style.css" />
     <style>
-      [hidden] {
-        display: none !important;
+      [hidden] { display: none !important; }
+      .coin-photos {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        align-items: start;
       }
+      .photo-card { padding: 12px; min-width: 0; }
+      .photo-card h2 { margin: 0 0 9px; font-size: clamp(16px, 4vw, 22px); }
       .photo-card img {
         display: block;
         width: 100%;
-        max-height: 520px;
+        aspect-ratio: 1 / 1;
+        max-height: 300px;
         object-fit: contain;
         border-radius: 14px;
         background: #0b0b0c;
       }
+      .photo-card .empty { min-height: 120px; display: grid; place-items: center; text-align: center; }
       .facts {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -34,19 +42,13 @@
         color: #8f8f95;
         font-size: 12px;
       }
-      .accepted {
-        border-color: #5e441c;
-        color: #d7c29b;
-      }
-      .btn.danger {
-        border: 1px solid #74342f;
-        background: #311714;
-        color: #ffd8d3;
-      }
+      .accepted { border-color: #5e441c; color: #d7c29b; }
+      .btn.danger { border: 1px solid #74342f; background: #311714; color: #ffd8d3; }
       @media (max-width: 560px) {
-        .facts {
-          grid-template-columns: 1fr;
-        }
+        .coin-photos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+        .photo-card { padding: 8px; }
+        .photo-card img { border-radius: 10px; max-height: 220px; }
+        .facts { grid-template-columns: 1fr; }
       }
     </style>
   </head>
@@ -72,12 +74,11 @@
           <h1 id="coinTitle">Moneta</h1>
           <p id="coinSubtitle">Zapisane dane i zdjęcia.</p>
           <div id="acceptedBadge" class="status accepted" hidden>
-            Dane zatwierdzone przez Ciebie. Pierwotny wynik AI jest zachowany w
-            historii rekordu.
+            Dane zatwierdzone przez Ciebie. Pierwotny wynik AI jest zachowany w historii rekordu.
           </div>
         </section>
 
-        <section class="grid two">
+        <section class="coin-photos">
           <div class="card photo-card">
             <h2>Awers</h2>
             <img id="obverseImage" alt="Zdjęcie awersu monety" hidden />
@@ -107,14 +108,10 @@
         </section>
 
         <div class="toolbar">
-          <a id="editLink" class="btn primary" href="coin-edit.html"
-            >Edytuj i popraw</a
-          >
+          <a id="editLink" class="btn primary" href="coin-edit.html">Edytuj i popraw</a>
           <a class="btn secondary" href="collection.html">Wróć do kolekcji</a>
           <a class="btn secondary" href="analyze.html">Analizuj inną monetę</a>
-          <button id="deleteCoin" class="btn danger" type="button">
-            Usuń monetę z kolekcji
-          </button>
+          <button id="deleteCoin" class="btn danger" type="button">Usuń monetę z kolekcji</button>
         </div>
       </div>
     </main>
@@ -126,10 +123,7 @@
         const missing = document.getElementById("missing");
         const content = document.getElementById("coinContent");
 
-        if (!coin) {
-          missing.hidden = false;
-          return;
-        }
+        if (!coin) { missing.hidden = false; return; }
 
         const value = (field) => {
           const text = String(field ?? "").trim();
@@ -149,76 +143,37 @@
           document.getElementById(cardId).hidden = false;
         };
 
-        const standardSubtitle = () =>
-          coin.userAccepted
-            ? "Pokazujemy dane zaakceptowane przez Ciebie oraz zapisane zdjęcia."
-            : "Pokazujemy zapisany wynik analizy oraz zdjęcia.";
+        const standardSubtitle = () => coin.userAccepted
+          ? "Pokazujemy dane zaakceptowane przez Ciebie oraz zapisane zdjęcia."
+          : "Pokazujemy zapisany wynik analizy oraz zdjęcia.";
         const renderText = (shown) => {
-          document.getElementById("coinTitle").textContent =
-            shown.title ||
-            [shown.nominal, shown.ruler, shown.year]
-              .filter(Boolean)
-              .join(" • ") ||
-            "Moneta bez nazwy";
-          document.getElementById("coinSubtitle").textContent =
-            standardSubtitle();
-
+          document.getElementById("coinTitle").textContent = shown.title || [shown.nominal, shown.ruler, shown.year].filter(Boolean).join(" • ") || "Moneta bez nazwy";
+          document.getElementById("coinSubtitle").textContent = standardSubtitle();
           const fields = [
-            ["Nominał", shown.nominal],
-            ["Władca / emitent", shown.ruler],
-            ["Rok", shown.year],
-            ["Mennica", shown.mint],
-            ["Metal", shown.metal],
-            ["Odmiana / typ", shown.variant],
-            ["Stan zachowania", shown.grade],
-            ["Rzadkość", shown.rarity],
-            ["Numer katalogowy", coin.catalog],
+            ["Nominał", shown.nominal], ["Władca / emitent", shown.ruler], ["Rok", shown.year],
+            ["Mennica", shown.mint], ["Metal", shown.metal], ["Odmiana / typ", shown.variant],
+            ["Stan zachowania", shown.grade], ["Rzadkość", shown.rarity], ["Numer katalogowy", coin.catalog],
             ["Pewność AI", coin.confidence ? coin.confidence + "%" : ""],
           ];
-          document.getElementById("facts").replaceChildren(
-            ...fields.map(([label, field]) => {
-              const box = document.createElement("div");
-              box.className = "fact";
-              const name = document.createElement("span");
-              const strong = document.createElement("strong");
-              name.textContent = label;
-              strong.textContent = value(field);
-              box.append(name, strong);
-              return box;
-            }),
-          );
-
-          setSection(
-            "descriptionCard",
-            "description",
-            shown.description || shown.fullDescription,
-          );
+          document.getElementById("facts").replaceChildren(...fields.map(([label, field]) => {
+            const box = document.createElement("div"); box.className = "fact";
+            const name = document.createElement("span"); const strong = document.createElement("strong");
+            name.textContent = label; strong.textContent = value(field); box.append(name, strong); return box;
+          }));
+          setSection("descriptionCard", "description", shown.description || shown.fullDescription);
           window.ApoI18n?.translate?.(content);
         };
 
         renderText(coin);
         document.getElementById("acceptedBadge").hidden = !coin.userAccepted;
-        document.getElementById("editLink").href =
-          "coin-edit.html?id=" + encodeURIComponent(coin.id);
+        document.getElementById("editLink").href = "coin-edit.html?id=" + encodeURIComponent(coin.id);
         document.getElementById("deleteCoin").onclick = () => {
-          if (
-            !confirm(
-              "Usunąć „" +
-                (coin.title || "tę monetę") +
-                "” z całej kolekcji? Tej operacji nie można cofnąć.",
-            )
-          )
-            return;
-          ApoMonet.deleteCoin(coin.id);
-          location.href = "collection.html";
+          if (!confirm("Usunąć „" + (coin.title || "tę monetę") + "” z całej kolekcji? Tej operacji nie można cofnąć.")) return;
+          ApoMonet.deleteCoin(coin.id); location.href = "collection.html";
         };
 
-        const preparedObverse = window.ApoAlbumPhotos
-          ? ApoAlbumPhotos.resolve(coin, "obverse")
-          : coin.obverseImage;
-        const preparedReverse = window.ApoAlbumPhotos
-          ? ApoAlbumPhotos.resolve(coin, "reverse")
-          : coin.reverseImage;
+        const preparedObverse = window.ApoAlbumPhotos ? ApoAlbumPhotos.resolve(coin, "obverse") : coin.obverseImage;
+        const preparedReverse = window.ApoAlbumPhotos ? ApoAlbumPhotos.resolve(coin, "reverse") : coin.reverseImage;
         setPhoto("obverseImage", "obverseEmpty", preparedObverse);
         setPhoto("reverseImage", "reverseEmpty", preparedReverse);
         setSection("notesCard", "notes", coin.notes);
@@ -227,16 +182,9 @@
 
         const translator = window.ApoAnalysisI18n;
         if (translator && translator.currentLanguage() !== "pl") {
-          document.getElementById("coinSubtitle").textContent =
-            translator.message("translating");
-          try {
-            const translated = await translator.localize(coin);
-            renderText(translated);
-          } catch (error) {
-            console.error("[coin-translation]", error);
-            document.getElementById("coinSubtitle").textContent =
-              translator.message("failed");
-          }
+          document.getElementById("coinSubtitle").textContent = translator.message("translating");
+          try { const translated = await translator.localize(coin); renderText(translated); }
+          catch (error) { console.error("[coin-translation]", error); document.getElementById("coinSubtitle").textContent = translator.message("failed"); }
         }
       })();
     </script>
