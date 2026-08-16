@@ -2,7 +2,10 @@ document.write('<script src="app-core.js"><\/script><script src="default-albums-
 document.write('<script src="analysis-image-pipeline.js"><\/script>');
 document.write('<script src="collection-content-i18n.js"><\/script>');
 document.write('<script src="album-demo-i18n.js"><\/script>');
+document.write('<script src="album-navigation-hotfix.js"><\/script>');
+document.write('<script src="auction-house-live.js"><\/script>');
+document.write('<script src="calendar-target-hotfix.js"><\/script>');
 addEventListener('DOMContentLoaded',()=>{if(!location.pathname.endsWith('coin-edit.html'))return;let s;try{s=JSON.parse(sessionStorage.getItem('apomonetAnalysisSession')||'null')}catch{}const q=new URLSearchParams(location.search),coinId=q.get('id');if(!s?.a||!s?.id||!coinId||s.id!==coinId)return;for(const k of ['title','nominal','ruler','year','metal','mint','variant','grade','rarity']){const e=document.getElementById(k);if(e&&!e.value&&s.a[k]!=null)e.value=s.a[k]}});
 addEventListener('DOMContentLoaded',()=>{let answers=[];try{answers=JSON.parse(sessionStorage.getItem('apomonetOwnerAnswers')||'[]')}catch{}if(window.ApoMonet&&answers.length){const old=window.ApoMonet.upsertCoin;window.ApoMonet.upsertCoin=c=>old({...c,userAdditionalInfo:c.userAdditionalInfo||answers})}});
 addEventListener('DOMContentLoaded',()=>{if(!location.pathname.endsWith('analyze.html')||sessionStorage.getItem('apomonetOpenAlbumAfterResume')!=='1')return;sessionStorage.removeItem('apomonetOpenAlbumAfterResume');let tries=0;const t=setInterval(()=>{tries++;const b=document.getElementById('album'),panel=document.getElementById('panel');if(b&&panel&&!panel.classList.contains('hidden')){clearInterval(t);b.click()}else if(tries>20)clearInterval(t)},100)});
-// deployment-sync: quality + measurements + dashboard + filters + inline correction + translations + demo album i18n
+// deployment-sync: quality + measurements + dashboard + filters + inline correction + translations + demo album navigation + auction links
