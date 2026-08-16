@@ -14,8 +14,9 @@ function storage(){
 
 test('auction count uses only valid comparable market facts from the last 10 years',()=>{
   const localStorage=storage();
-  const window={localStorage,ApoNumis:{normalize:s=>String(s||'').toLowerCase().trim()}};
-  const context={window,localStorage,Date,Map,Number,String,Math,JSON};
+  const ApoNumis={normalize:s=>String(s||'').toLowerCase().trim()};
+  const window={localStorage,ApoNumis};
+  const context={window,localStorage,ApoNumis,Date,Map,Number,String,Math,JSON};
   vm.createContext(context);
   vm.runInContext(fs.readFileSync('auction-archive-core.js','utf8'),context);
   const archive=window.ApoArchive;
