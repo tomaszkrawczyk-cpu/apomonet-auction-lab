@@ -23,7 +23,33 @@ test('analysis recovery persists a job and resumes after visibility or network r
   assert.match(source,/visibilitychange/);
   assert.match(source,/addEventListener\('online'/);
   assert.match(source,/X-Apo-Job-Id/);
-  assert.doesNotMatch(source,/AbortController/);
+  assert.match(source,/AbortController/);
+  assert.match(source,/BASIC_CLIENT_TIMEOUT_MS=48_000/);
+  assert.match(source,/DETAIL_CLIENT_TIMEOUT_MS=58_000/);
+  assert.match(source,/MAX_ATTEMPTS=2/);
+  assert.match(source,/requestStartedAt/);
+});
+
+test('active two-stage UI recommends detail from evidence, not confidence alone',()=>{
+  assert.match(source,/function detailSignals\(/);
+  assert.match(source,/imageQualityNote/);
+  assert.match(source,/rulerConfidence/);
+  assert.match(source,/yearConfidence/);
+  assert.match(source,/nominalConfidence/);
+  assert.match(source,/reference-conflict/);
+  assert.match(source,/needsDetailedAnalysis/);
+  assert.match(source,/Analiza szczegółowa/);
+});
+
+test('analysis timing keeps a bounded local history for p50 and p90 measurements',()=>{
+  assert.match(source,/apomonet_analysis_performance_v1/);
+  assert.match(source,/ApoAnalysisPerformance/);
+  assert.match(source,/rows\.slice\(-60\)/);
+  assert.match(source,/p50Ms:pick\(\.5\)/);
+  assert.match(source,/p90Ms:pick\(\.9\)/);
+  assert.match(source,/recordPerf\('basic'/);
+  assert.match(source,/recordPerf\('detail'/);
+  assert.match(source,/doneWithTime/);
 });
 
 test('late i18n covers previously untranslated tester actions',()=>{

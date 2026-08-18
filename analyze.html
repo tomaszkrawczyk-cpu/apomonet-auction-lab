@@ -55,6 +55,59 @@
         border-color: #6b4814;
         background: #241806;
       }
+      .action-card.recommended {
+        border-color: #d18a20;
+        background: linear-gradient(145deg, #2a1b08, #1c1409);
+        box-shadow: 0 0 0 1px #d18a2033;
+      }
+      .action-card:disabled {
+        cursor: wait;
+        opacity: 0.72;
+      }
+      .stage-recommendation {
+        margin: 18px 0 4px;
+        padding: 14px 16px;
+        border: 1px solid #31533d;
+        border-radius: 15px;
+        background: #101a14;
+        color: #b8d9c3;
+        line-height: 1.5;
+      }
+      .stage-recommendation.attention {
+        border-color: #6b4814;
+        background: #1d160b;
+        color: #efc379;
+      }
+      .stage-recommendation strong {
+        display: block;
+        margin-bottom: 4px;
+        color: #fff;
+      }
+      .recommendation-badge {
+        display: inline-flex;
+        margin-bottom: 8px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: #9b5f00;
+        color: #fff !important;
+        font-size: 11px !important;
+        font-weight: 900;
+      }
+      .timing-summary {
+        width: fit-content;
+        max-width: 100%;
+        margin: 4px auto 16px;
+        color: #7f7f85;
+        font-size: 12px;
+      }
+      .timing-summary summary {
+        cursor: pointer;
+        text-align: center;
+      }
+      .timing-summary p {
+        margin: 7px 0 0;
+        text-align: center;
+      }
       .saved-next {
         margin-top: 18px;
         padding-top: 4px;
@@ -188,7 +241,8 @@
         <span class="eyebrow">AI Coin Lab</span>
         <h1>Analiza monety</h1>
         <p>
-          Dotknij całego kafla awersu lub rewersu, zrób zdjęcie i zatwierdź.
+          Najpierw szybka identyfikacja. Dokładne badanie odmiany uruchomisz
+          tylko wtedy, gdy będzie potrzebne.
         </p>
       </section>
       <div class="coin-grid">
@@ -232,24 +286,29 @@
       <div id="photoQuality" class="photo-quality hidden" role="status"></div>
       <button id="swap" class="btn secondary full hidden">
         Zamień awers ↔ rewers</button
-      ><button id="go" class="btn primary full" disabled>Szybka analiza</button>
+      ><button id="go" class="btn primary full" disabled>Analizuj monetę</button>
       <div id="status" class="status">Dodaj awers i rewers.</div>
+      <details id="analysisTiming" class="timing-summary hidden">
+        <summary>Czas analizy</summary>
+        <p id="analysisTimingText"></p>
+      </details>
       <section id="panel" class="analysis-panel hidden">
         <div class="section-title">
-          <h2>Etap 1 — identyfikacja podstawowa</h2>
+          <h2>Etap 1 — szybka analiza</h2>
           <span id="conf" class="todo"></span>
         </div>
         <div id="facts" class="facts"></div>
         <div class="detail">
-          <b>Opis podstawowy</b>
+          <b>Wstępne podsumowanie</b>
           <p id="desc"></p>
         </div>
+        <div id="deepRecommendation" class="stage-recommendation hidden" role="status"></div>
         <div class="section-title"><h2>Co dalej?</h2></div>
         <div class="actions-grid">
           <button id="deep" class="action-card primary">
             <strong>🔬 Analiza szczegółowa</strong
             ><span
-              >Interpunkcja, pióra, skrzydła, znaki, odmiana i katalog.</span
+              >Legendy, data, znaki, odmiana, stempel i katalog.</span
             ></button
           ><button id="edit" class="action-card">
             <strong>✏️ Najpierw popraw dane</strong
@@ -524,6 +583,8 @@
         return fallback;
       }
       const detailBaseFields = [
+        "title",
+        "objectKind",
         "country",
         "ruler",
         "year",
@@ -536,6 +597,9 @@
         "description",
         "fullDescription",
         "confidence",
+        "weight",
+        "diameter",
+        "edgeDescription",
         "userAccepted",
         "userAdditionalInfo",
       ];
@@ -556,6 +620,14 @@
           paragraph.textContent = v(value);
           container.append(heading, paragraph);
         };
+        const digitReading = Array.isArray(detail.dateDigits)
+          ? detail.dateDigits
+              .map((digit, index) => {
+                const confidence = Number(detail.dateDigitConfidence?.[index] || 0);
+                return `${digit || "?"} (${confidence}%)`;
+              })
+              .join(" · ")
+          : detail.visibleDateReading;
         add("Odmiana", detail.variant);
         add(
           "Katalog Kopickiego",
@@ -563,11 +635,25 @@
             .filter((item) => item && String(item).trim())
             .join(" • "),
         );
+        add("Data — odczyt cyfr", digitReading);
+        add("Legenda awersu", detail.obverseLegend);
+        add("Legenda rewersu", detail.reverseLegend);
+        add("Mincerz / znak urzędnika", detail.mintmaster);
         add("Interpunkcja legendy", detail.legendPunctuation);
         add("Awers — obserwacje", detail.obverseDetails);
         add("Rewers — obserwacje", detail.reverseDetails);
+        add("Stan — ocena ostrożna", detail.gradeAssessment);
         if (detail.diagnosticFeatures?.length) {
           add("Cechy diagnostyczne", detail.diagnosticFeatures.join("; "));
+        }
+        if (detail.authenticitySignals?.length) {
+          add(
+            "Autentyczność — obserwacje, nie certyfikat",
+            detail.authenticitySignals.join(" "),
+          );
+        }
+        if (detail.recommendedChecks?.length) {
+          add("Co może rozstrzygnąć wynik", detail.recommendedChecks.join(" "));
         }
         if (detail.warnings?.length) {
           add("Uwagi i ograniczenia", detail.warnings.join(" "));
@@ -590,12 +676,18 @@
           ["Typ", shown.variant],
           ["Stan", shown.grade],
         ];
-        $("facts").innerHTML = rows
-          .map(
-            (x, i) =>
-              `<div class="fact${i == 1 || i == 2 ? " highlight" : ""}"><span>${x[0]}</span><strong>${v(x[1])}</strong></div>`,
-          )
-          .join("");
+        const facts = $("facts");
+        facts.replaceChildren();
+        rows.forEach((row, index) => {
+          const fact = document.createElement("div");
+          fact.className = `fact${index === 1 || index === 2 ? " highlight" : ""}`;
+          const label = document.createElement("span");
+          const value = document.createElement("strong");
+          label.textContent = row[0];
+          value.textContent = v(row[1]);
+          fact.append(label, value);
+          facts.appendChild(fact);
+        });
         $("conf").textContent = `Pewność ${shown.confidence || 0}%`;
         $("desc").textContent = v(shown.fullDescription || shown.description);
         $("panel").classList.remove("hidden");

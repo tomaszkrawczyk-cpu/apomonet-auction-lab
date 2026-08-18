@@ -1,6 +1,13 @@
 const DETAIL_TIMEOUT_MS = 55_000;
+const JOB_TTL_MS = 10 * 60_000;
+
+const detailJobs =
+  globalThis.__apomonetDetailJobs ||
+  (globalThis.__apomonetDetailJobs = new Map());
 
 const BASE_FIELDS = [
+  "title",
+  "objectKind",
   "country",
   "ruler",
   "year",
@@ -13,6 +20,9 @@ const BASE_FIELDS = [
   "description",
   "fullDescription",
   "confidence",
+  "weight",
+  "diameter",
+  "edgeDescription",
   "userAccepted",
   "userAdditionalInfo",
 ];
@@ -48,6 +58,18 @@ function responseText(data) {
   return text;
 }
 
+function safeJobId(req, body) {
+  const raw = String(req.headers["x-apo-job-id"] || body?.jobId || "").trim();
+  return /^[a-zA-Z0-9_-]{12,100}$/.test(raw) ? raw : "";
+}
+
+function pruneJobs() {
+  const cutoff = Date.now() - JOB_TTL_MS;
+  for (const [key, entry] of detailJobs) {
+    if (Number(entry?.createdAt || 0) < cutoff) detailJobs.delete(key);
+  }
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Dozwolona jest tylko metoda POST." });
@@ -66,6 +88,7 @@ export default async function handler(req, res) {
     }
 
     const body = req.body || {};
+    const jobId = safeJobId(req, body);
     const images = Array.isArray(body.images)
       ? body.images.filter(
           (image) => typeof image === "string" && image.startsWith("data:image/"),
@@ -84,6 +107,7 @@ export default async function handler(req, res) {
     const base = safeBase(body.base);
     console.log("[analyze-detail] start", {
       requestId,
+      jobId: jobId || null,
       imageChars: images.map((image) => image.length),
       baseChars: JSON.stringify(base).length,
       userAccepted: base.userAccepted === true,
@@ -96,9 +120,9 @@ export default async function handler(req, res) {
 
 Dane bazowe po korekcie: ${JSON.stringify(base)}
 
-Najpierw sprawdź zgodność obrazu z ruler/year/nominal/mint/metal. Jeśli widzisz jednoznaczną sprzeczność, NIE nadpisuj tych pól po cichu — dodaj ostrzeżenie. Następnie analizuj odmianę i stempel: interpunkcję, rozstaw daty, położenie daty, początek/koniec legendy w układzie zegarowym, formy liter i cyfr, orientację i proporcje portretu, koronę, herb/tarczę, monogramy, znaki mennicze, pióra/skrzydła/ogon orła oraz rant, jeśli jest widoczny.
+Najpierw sprawdź zgodność obrazu z ruler/year/nominal/mint/metal. Jeśli widzisz jednoznaczną sprzeczność, NIE nadpisuj tych pól po cichu — dodaj ostrzeżenie. Odczytaj osobno pełną widoczną legendę awersu i rewersu oraz każdą cyfrę daty. Nieczytelną cyfrę oznacz znakiem ?. Następnie analizuj odmianę i stempel: interpunkcję, rozstaw daty, położenie daty, początek/koniec legendy w układzie zegarowym, formy liter i cyfr, orientację i proporcje portretu, koronę, herb/tarczę, monogramy, znaki mennicze, mincerza, pióra/skrzydła/ogon orła oraz rant, jeśli jest widoczny.
 
-Zbuduj fingerprint geometryczno-diagnostyczny. Każda cecha fingerprintu ma wartość tekstową, confidence 0-100 i method. Gdy cechy nie da się wiarygodnie zobaczyć, ustaw value na pusty tekst i confidence=0. NIE zgaduj mikroszczegółów. Pełny opis napisz od nowa zgodnie z poprawionymi danymi bazowymi. Kopicki i rzadkość podawaj WYŁĄCZNIE przy wiarygodnych podstawach. Confidence całej analizy nigdy nie może wynosić 100%. Odpowiadaj zwięźle po polsku.`,
+Zbuduj fingerprint geometryczno-diagnostyczny. Każda cecha fingerprintu ma wartość tekstową, confidence 0-100 i method. Gdy cechy nie da się wiarygodnie zobaczyć, ustaw value na pusty tekst i confidence=0. NIE zgaduj mikroszczegółów. Oddziel obserwacje wizualne od przypuszczeń o autentyczności. Jeśli masa, średnica, rant, magnes albo makro konkretnego detalu mogą rozstrzygnąć wynik, dodaj je do recommendedChecks. Pełny opis napisz od nowa zgodnie z poprawionymi danymi bazowymi. Kopicki i rzadkość podawaj WYŁĄCZNIE przy wiarygodnych podstawach. Confidence całej analizy nigdy nie może wynosić 100%. Odpowiadaj zwięźle po polsku.`,
       },
       { type: "input_image", image_url: images[0], detail: "high" },
       { type: "input_image", image_url: images[1], detail: "high" },
@@ -154,8 +178,31 @@ Zbuduj fingerprint geometryczno-diagnostyczny. Każda cecha fingerprintu ma wart
         kopickiRarity: { type: "string" },
         obverseDetails: { type: "string" },
         reverseDetails: { type: "string" },
+        obverseLegend: { type: "string" },
+        reverseLegend: { type: "string" },
+        visibleDateReading: { type: "string" },
+        dateDigits: {
+          type: "array",
+          items: { type: "string" },
+          minItems: 4,
+          maxItems: 4,
+        },
+        dateDigitConfidence: {
+          type: "array",
+          items: { type: "integer", minimum: 0, maximum: 100 },
+          minItems: 4,
+          maxItems: 4,
+        },
+        mintmaster: { type: "string" },
         legendPunctuation: { type: "string" },
         diagnosticFeatures: { type: "array", items: { type: "string" } },
+        authenticitySignals: { type: "array", items: { type: "string" } },
+        recommendedChecks: {
+          type: "array",
+          maxItems: 5,
+          items: { type: "string" },
+        },
+        gradeAssessment: { type: "string" },
         fingerprint: {
           type: "object",
           additionalProperties: false,
@@ -183,8 +230,17 @@ Zbuduj fingerprint geometryczno-diagnostyczny. Każda cecha fingerprintu ma wart
         "kopickiRarity",
         "obverseDetails",
         "reverseDetails",
+        "obverseLegend",
+        "reverseLegend",
+        "visibleDateReading",
+        "dateDigits",
+        "dateDigitConfidence",
+        "mintmaster",
         "legendPunctuation",
         "diagnosticFeatures",
+        "authenticitySignals",
+        "recommendedChecks",
+        "gradeAssessment",
         "fingerprint",
         "fullDescription",
         "confidence",
@@ -192,44 +248,65 @@ Zbuduj fingerprint geometryczno-diagnostyczny. Każda cecha fingerprintu ma wart
       ],
     };
 
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), DETAIL_TIMEOUT_MS);
-    let openAIResponse;
-    try {
-      openAIResponse = await fetch("https://api.openai.com/v1/responses", {
-        method: "POST",
-        signal: controller.signal,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model: "gpt-5.6",
-          reasoning: { effort: "low" },
-          input: [{ role: "user", content }],
-          text: {
-            format: {
-              type: "json_schema",
-              name: "coin_detail_v4_fast",
-              strict: true,
-              schema,
-            },
+    const performRequest = async () => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), DETAIL_TIMEOUT_MS);
+      try {
+        const response = await fetch("https://api.openai.com/v1/responses", {
+          method: "POST",
+          signal: controller.signal,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
           },
-        }),
-      });
-    } finally {
-      clearTimeout(timeout);
-    }
+          body: JSON.stringify({
+            model: "gpt-5.6",
+            reasoning: { effort: "low" },
+            input: [{ role: "user", content }],
+            text: {
+              format: {
+                type: "json_schema",
+                name: "coin_detail_v5_two_stage",
+                strict: true,
+                schema,
+              },
+            },
+          }),
+        });
+        return {
+          ok: response.ok,
+          status: response.status,
+          data: await response.json(),
+        };
+      } finally {
+        clearTimeout(timeout);
+      }
+    };
 
-    const data = await openAIResponse.json();
-    if (!openAIResponse.ok) {
+    pruneJobs();
+    let entry = jobId ? detailJobs.get(jobId) : null;
+    const deduplicated = Boolean(entry);
+    if (!entry) {
+      const promise = performRequest().catch((error) => {
+        if (jobId) detailJobs.delete(jobId);
+        throw error;
+      });
+      entry = { createdAt: Date.now(), promise };
+      if (jobId) detailJobs.set(jobId, entry);
+    }
+    const outcome = await entry.promise;
+    const data = outcome.data;
+    if (!outcome.ok) {
+      if (jobId) detailJobs.delete(jobId);
       console.error("[analyze-detail] OpenAI failed", {
         requestId,
-        status: openAIResponse.status,
+        jobId: jobId || null,
+        status: outcome.status,
         elapsedMs: Date.now() - startedAt,
       });
-      return res.status(openAIResponse.status).json({
+      return res.status(outcome.status).json({
         error: data?.error?.message || "Błąd analizy szczegółowej.",
+        retryable: outcome.status === 408 || outcome.status === 429 || outcome.status >= 500,
       });
     }
     if (data.status === "incomplete") {
@@ -254,12 +331,21 @@ Zbuduj fingerprint geometryczno-diagnostyczny. Każda cecha fingerprintu ma wart
 
     console.log("[analyze-detail] success", {
       requestId,
+      jobId: jobId || null,
+      deduplicated,
       elapsedMs: Date.now() - startedAt,
       inputTokens: data.usage?.input_tokens,
       outputTokens: data.usage?.output_tokens,
       reasoningTokens: data.usage?.output_tokens_details?.reasoning_tokens,
     });
-    return res.status(200).json({ success: true, detail });
+    const elapsedMs = Date.now() - startedAt;
+    res.setHeader("Server-Timing", `apomonet-detail;dur=${elapsedMs}`);
+    res.setHeader("X-Apo-Deduplicated", deduplicated ? "1" : "0");
+    return res.status(200).json({
+      success: true,
+      detail,
+      meta: { stage: "detail", elapsedMs, deduplicated },
+    });
   } catch (error) {
     const timedOut = error?.name === "AbortError";
     console.error("[analyze-detail] failed", {
@@ -272,6 +358,7 @@ Zbuduj fingerprint geometryczno-diagnostyczny. Każda cecha fingerprintu ma wart
       error: timedOut
         ? "Analiza szczegółowa trwała zbyt długo. Zdjęcia i poprawione dane są bezpieczne — spróbuj ponownie."
         : error?.message || "Błąd analizy szczegółowej.",
+      retryable: true,
     });
   }
 }

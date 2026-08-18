@@ -1,38 +1,406 @@
-export default async function handler(req,res){
- if(req.method!=="POST")return res.status(405).json({error:"Dozwolona jest tylko metoda POST."});
- res.setHeader('Cache-Control','no-store, max-age=0');
- try{
-  const key=process.env.OPENAI_API_KEY?.trim();if(!key)return res.status(500).json({error:"Brak OPENAI_API_KEY na aktywnym deploymentcie."});
-  const b=req.body||{},im=Array.isArray(b.images)?b.images.filter(Boolean):[];
-  if(im.length<2)return res.status(400).json({error:"Potrzebne są dwa zdjęcia."});
-  if(im.some(x=>typeof x!=='string'||x.length>1800000))return res.status(413).json({error:"Zdjęcia są zbyt duże do stabilnej analizy. Wczytaj je ponownie — APOMONET zmniejszy je automatycznie."});
-  const prompt=`ETAP 1 — SZYBKA identyfikacja numizmatyczna. Najpierw oceń, czy OBA zdjęcia nadają się do wiarygodnej identyfikacji. Ustaw imageUsable=false, jeśli moneta jest mocno rozmazana, poważnie ucięta, zbyt mała, prześwietlona, zasłonięta, oba zdjęcia pokazują tę samą stronę albo szczegóły są zbyt słabe do podstawowej identyfikacji.\n\nZANIM nazwiesz nominał i władcę, ustal czy obiekt jest regularną monetą obiegową, emisją próbną/wzorcową (pattern/proba/essai), medalem, żetonem, naśladownictwem lub współczesną kopią. Emisji próbnej NIE wciskaj na siłę w zwykły typ obiegowy tylko dlatego, że przypomina talara lub dwutalara. Szukaj napisów PRÓBA/PROBA/ESSAI/PATTERN, nietypowych legend, sygnatur projektanta/medaliera, dat niepasujących do regularnego typu, odmiennych herbów/portretów i cech wskazujących projekt lub próbę. Jeśli widoczne są nazwisko lub sygnatura twórcy (np. medaliera/projektanta), uwzględnij je w variant/title, ale tylko gdy dają się odczytać z obrazu. Dla emisji próbnej nominal ma zawierać określenie typu, np. „talar próbny”, zamiast błędnie klasyfikować ją jako zwykły dwutalar.\n\nRozpoznawaj NIEZALEŻNIE: (1) widoczną datę cyfra po cyfrze, (2) legendę awersu, (3) legendę rewersu, (4) władcę/emitenta wynikającego z portretu i legendy, (5) nominał wynikający z całego typu monety. Nie pozwól, aby jedna z tych rzeczy wymusiła pozostałe.\n\nDATA: dateDigits ma mieć 4 znaki; jeśli cyfry nie widzisz pewnie, wpisz ?. dateDigitConfidence to pewność każdej cyfry wyłącznie z obrazu. Nie rekonstruuj brakującej cyfry z historii.\n\nWŁADCA: portraitRuler i portraitConfidence dotyczą samego portretu/heraldyki, ruler jest oceną łączną z legendą. Przepisz czytelne fragmenty legend. Nie utożsamiaj Zygmunta I Starego, Zygmunta II Augusta i Zygmunta III Wazy. Jeśli portret, legenda i data są sprzeczne, NIE naprawiaj wyniku wiedzą historyczną — zgłoś konflikt. W obiektach próbnych lub medalowych pole ruler może być emitentem/podmiotem przedstawionym, ale nie wolno z samego portretu wnioskować, że jest to regularna emisja tego władcy.\n\nNOMINAŁ: nominalConfidence i denominationEvidence mają wyjaśniać wybór. Dla półtalara/talara/dwutalara nie zgaduj po rozmiarze fotografii. Jeśli typ nie rozstrzyga, wpisz np. "talar / dwutalar — do potwierdzenia" i poproś o wagę oraz średnicę. Jeśli cechy wskazują emisję próbną, zaznacz to w nominal/variant zamiast podawać zwykły nominał obiegowy.\n\nNie wykonuj analizy odmianowej. Ustal kraj/emitenta, władcę, rok, nominał, metal, mennicę jeśli czytelna, ogólny typ i orientacyjny stan. Jeśli nie wiesz, wpisz Nie ustalono. Podaj ostrożny przedział wartości tylko przy wystarczająco pewnej identyfikacji. followUpQuestions maksymalnie 4. Confidence nigdy nie może wynosić 100%. Odpowiadaj po polsku.`;
-  const content=[{type:"input_text",text:prompt},{type:"input_image",image_url:im[0],detail:"high"},{type:"input_image",image_url:im[1],detail:"high"}];
-  const schema={type:"object",additionalProperties:false,properties:{imageUsable:{type:"boolean"},imageQualityNote:{type:"string"},title:{type:"string"},country:{type:"string"},ruler:{type:"string"},portraitRuler:{type:"string"},portraitConfidence:{type:"integer",minimum:0,maximum:100},obverseLegend:{type:"string"},reverseLegend:{type:"string"},year:{type:"string"},nominal:{type:"string"},nominalConfidence:{type:"integer",minimum:0,maximum:100},denominationEvidence:{type:"string"},metal:{type:"string"},mint:{type:"string"},variant:{type:"string"},grade:{type:"string"},visibleDateReading:{type:"string"},dateDigits:{type:"array",items:{type:"string"},minItems:4,maxItems:4},dateDigitConfidence:{type:"array",items:{type:"integer",minimum:0,maximum:100},minItems:4,maxItems:4},confidence:{type:"integer",minimum:0,maximum:95},rulerConfidence:{type:"integer",minimum:0,maximum:100},yearConfidence:{type:"integer",minimum:0,maximum:100},estimateLow:{type:"number",minimum:0},estimateHigh:{type:"number",minimum:0},valuationCurrency:{type:"string"},valuationNote:{type:"string"},followUpQuestions:{type:"array",maxItems:4,items:{type:"string"}},fullDescription:{type:"string"},warnings:{type:"array",items:{type:"string"}}},required:["imageUsable","imageQualityNote","title","country","ruler","portraitRuler","portraitConfidence","obverseLegend","reverseLegend","year","nominal","nominalConfidence","denominationEvidence","metal","mint","variant","grade","visibleDateReading","dateDigits","dateDigitConfidence","confidence","rulerConfidence","yearConfidence","estimateLow","estimateHigh","valuationCurrency","valuationNote","followUpQuestions","fullDescription","warnings"]};
-  const r=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${key}`},body:JSON.stringify({model:"gpt-5.6",input:[{role:"user",content}],text:{format:{type:"json_schema",name:"coin_basic_v3",strict:true,schema}}})});
-  const d=await r.json();if(!r.ok)return res.status(r.status).json({error:d?.error?.message||"Błąd analizy."});
-  let t=d.output_text||"";if(!t&&Array.isArray(d.output))for(const i of d.output)if(i.type==="message")for(const p of i.content||[])if(p.type==="output_text")t+=p.text||"";
-  let a=JSON.parse(t);if(a.imageUsable===false)return res.status(422).json({error:a.imageQualityNote||"Zdjęcia są zbyt słabe do wiarygodnej analizy."});
-  a.warnings=Array.isArray(a.warnings)?a.warnings:[];a.followUpQuestions=Array.isArray(a.followUpQuestions)?a.followUpQuestions:[];
-  a.confidence=Math.min(95,Number(a.confidence||0));
-  const ds=(a.dateDigits||[]).map(x=>String(x||'?').trim()),cs=a.dateDigitConfidence||[];
-  const allDigits=ds.length===4&&ds.every(x=>/^\d$/.test(x)),veryStrong=allDigits&&cs.length===4&&cs.every(x=>Number(x)>=90);
-  const visual=ds.length===4?ds.map((x,i)=>/^\d$/.test(x)&&Number(cs[i]||0)>=90?x:'?').join(''):'????';a.visibleDateReading=visual;
-  if(veryStrong){a.year=ds.join('');a.yearConfidence=Math.min(100,Math.round(cs.reduce((s,x)=>s+Number(x||0),0)/4))}else{a.year=visual==='????'?'Nie ustalono':visual;a.yearConfidence=Math.min(Number(a.yearConfidence||0),69);a.confidence=Math.min(a.confidence,74);a.estimateLow=0;a.estimateHigh=0;a.valuationNote='Wycena wstrzymana: data nie została odczytana z wystarczającą pewnością wizualną.';a.warnings.push('Niepewnych cyfr daty nie uzupełniono z wiedzy historycznej.');if(!a.followUpQuestions.some(q=>/rok|data/i.test(q)))a.followUpQuestions.unshift('Potwierdź rok monety lub dodaj zbliżenie daty.')}
-  const reigns=[['Zygmunt I Stary',1506,1548],['Zygmunt II August',1548,1572],['Henryk Walezy',1573,1575],['Anna Jagiellonka',1575,1596],['Stefan Batory',1576,1586],['Zygmunt III Waza',1587,1632],['Władysław IV Waza',1632,1648],['Jan II Kazimierz',1648,1668],['Michał Korybut Wiśniowiecki',1669,1673],['Jan III Sobieski',1674,1696],['August II Mocny',1697,1706],['Stanisław Leszczyński',1704,1709],['August II Mocny',1709,1733],['Stanisław Leszczyński',1733,1736],['August III Sas',1733,1763],['Stanisław August Poniatowski',1764,1795]];
-  const n=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ł/g,'l');
-  const y=veryStrong?Number(ds.join('')):null;
-  if(y&&a.ruler&&n(a.ruler)!=='nie ustalono'){
-    const possible=reigns.filter(x=>y>=x[1]&&y<=x[2]);
-    if(possible.length&&!possible.some(x=>n(a.ruler).includes(n(x[0]))||n(x[0]).includes(n(a.ruler)))){
-      a.warnings.push(`Konflikt chronologiczny: rok ${y} nie pasuje do rozpoznania „${a.ruler}”. APOMONET nie zmienił władcy automatycznie — sprawdź portret i legendę.`);
-      a.confidence=Math.min(a.confidence,72);a.rulerConfidence=Math.min(Number(a.rulerConfidence||0),72);a.estimateLow=0;a.estimateHigh=0;a.valuationNote='Wycena wstrzymana: konflikt rok–władca wymaga ręcznej kontroli.';
-      if(!a.followUpQuestions.some(q=>/wład|wlad|portret|legend/i.test(q)))a.followUpQuestions.unshift('Potwierdź władcę na podstawie portretu lub czytelnego fragmentu legendy.')
+const BASIC_TIMEOUT_MS = 45_000;
+const JOB_TTL_MS = 10 * 60_000;
+
+const basicJobs =
+  globalThis.__apomonetBasicJobs ||
+  (globalThis.__apomonetBasicJobs = new Map());
+
+function clean(value) {
+  return String(value ?? "").trim();
+}
+
+function normalized(value) {
+  return clean(value)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/ł/g, "l");
+}
+
+function responseText(data) {
+  let text = data?.output_text || "";
+  if (!text && Array.isArray(data?.output)) {
+    for (const item of data.output) {
+      if (item.type !== "message") continue;
+      for (const part of item.content || []) {
+        if (part.type === "output_text") text += part.text || "";
+      }
     }
   }
-  const talarFamily=/talar/i.test(String(a.nominal||''));if(talarFamily&&Number(a.nominalConfidence||0)<90){a.confidence=Math.min(a.confidence,82);if(!a.followUpQuestions.some(q=>/wag|śred|sred/i.test(q)))a.followUpQuestions.unshift('Podaj wagę i średnicę monety — są potrzebne do pewnego rozróżnienia półtalara, talara i dwutalara.');a.estimateLow=0;a.estimateHigh=0;a.valuationNote='Wycena wstrzymana: nominał z rodziny talarowej wymaga potwierdzenia wagą/średnicą lub cechami typu.'}
-  if(Number(a.portraitConfidence||0)<75&&Number(a.rulerConfidence||0)>85)a.rulerConfidence=85;if(Number(a.nominalConfidence||0)<75)a.confidence=Math.min(a.confidence,80);
-  a.followUpQuestions=a.followUpQuestions.slice(0,4);if(!a.valuationCurrency)a.valuationCurrency='PLN';if(Number(a.estimateHigh)<Number(a.estimateLow)){const x=a.estimateLow;a.estimateLow=a.estimateHigh;a.estimateHigh=x}
-  return res.status(200).json({success:true,analysis:a});
- }catch(e){console.error(e);return res.status(500).json({error:e?.message||"Wewnętrzny błąd APOMONET."})}
+  return text;
+}
+
+function safeJobId(req, body) {
+  const raw = clean(req.headers["x-apo-job-id"] || body.jobId);
+  return /^[a-zA-Z0-9_-]{12,100}$/.test(raw) ? raw : "";
+}
+
+function pruneJobs() {
+  const cutoff = Date.now() - JOB_TTL_MS;
+  for (const [key, entry] of basicJobs) {
+    if (Number(entry?.createdAt || 0) < cutoff) basicJobs.delete(key);
+  }
+}
+
+function chronologyGuard(analysis) {
+  const year = /^\d{4}$/.test(clean(analysis.year))
+    ? Number(analysis.year)
+    : null;
+  if (!year || !analysis.ruler || normalized(analysis.ruler) === "nie ustalono") {
+    return;
+  }
+  const reigns = [
+    ["Zygmunt I Stary", 1506, 1548],
+    ["Zygmunt II August", 1548, 1572],
+    ["Henryk Walezy", 1573, 1575],
+    ["Anna Jagiellonka", 1575, 1596],
+    ["Stefan Batory", 1576, 1586],
+    ["Zygmunt III Waza", 1587, 1632],
+    ["Władysław IV Waza", 1632, 1648],
+    ["Jan II Kazimierz", 1648, 1668],
+    ["Michał Korybut Wiśniowiecki", 1669, 1673],
+    ["Jan III Sobieski", 1674, 1696],
+    ["August II Mocny", 1697, 1706],
+    ["Stanisław Leszczyński", 1704, 1709],
+    ["August II Mocny", 1709, 1733],
+    ["Stanisław Leszczyński", 1733, 1736],
+    ["August III Sas", 1733, 1763],
+    ["Stanisław August Poniatowski", 1764, 1795],
+  ];
+  const possible = reigns.filter((item) => year >= item[1] && year <= item[2]);
+  const ruler = normalized(analysis.ruler);
+  if (
+    possible.length &&
+    !possible.some((item) => {
+      const expected = normalized(item[0]);
+      return ruler.includes(expected) || expected.includes(ruler);
+    })
+  ) {
+    const reason = `Konflikt chronologiczny: rok ${year} nie pasuje do rozpoznania „${analysis.ruler}”.`;
+    analysis.warnings.push(`${reason} APOMONET nie zmienił danych automatycznie.`);
+    analysis.uncertaintyReasons.push(reason);
+    analysis.needsDetailedAnalysis = true;
+    analysis.confidence = Math.min(analysis.confidence, 72);
+    analysis.rulerConfidence = Math.min(analysis.rulerConfidence, 72);
+    analysis.estimateLow = 0;
+    analysis.estimateHigh = 0;
+    analysis.valuationNote =
+      "Wycena wstrzymana: konflikt rok–władca wymaga kontroli legendy i portretu.";
+  }
+}
+
+function normalizeAnalysis(raw) {
+  const analysis = { ...raw };
+  analysis.warnings = Array.isArray(analysis.warnings)
+    ? analysis.warnings.filter(Boolean).slice(0, 4)
+    : [];
+  analysis.uncertaintyReasons = Array.isArray(analysis.uncertaintyReasons)
+    ? analysis.uncertaintyReasons.filter(Boolean).slice(0, 4)
+    : [];
+  analysis.followUpQuestions = Array.isArray(analysis.followUpQuestions)
+    ? analysis.followUpQuestions.filter(Boolean).slice(0, 3)
+    : [];
+  analysis.confidence = Math.min(95, Math.max(0, Number(analysis.confidence) || 0));
+  analysis.rulerConfidence = Math.min(
+    100,
+    Math.max(0, Number(analysis.rulerConfidence) || 0),
+  );
+  analysis.yearConfidence = Math.min(
+    100,
+    Math.max(0, Number(analysis.yearConfidence) || 0),
+  );
+  analysis.nominalConfidence = Math.min(
+    100,
+    Math.max(0, Number(analysis.nominalConfidence) || 0),
+  );
+  if (!analysis.valuationCurrency) analysis.valuationCurrency = "PLN";
+  if (Number(analysis.estimateHigh) < Number(analysis.estimateLow)) {
+    [analysis.estimateLow, analysis.estimateHigh] = [
+      analysis.estimateHigh,
+      analysis.estimateLow,
+    ];
+  }
+
+  const critical = ["country", "ruler", "year", "nominal"];
+  const missing = critical.filter((key) => {
+    const value = normalized(analysis[key]);
+    return !value || value === "nie ustalono" || value.includes("do potwierdzenia");
+  });
+  if (missing.length) {
+    analysis.needsDetailedAnalysis = true;
+    analysis.uncertaintyReasons.push(
+      `Brakuje pewnego pola: ${missing.join(", ")}.`,
+    );
+  }
+  if (
+    analysis.confidence < 85 ||
+    analysis.rulerConfidence < 80 ||
+    analysis.yearConfidence < 80 ||
+    analysis.nominalConfidence < 80
+  ) {
+    analysis.needsDetailedAnalysis = true;
+    analysis.uncertaintyReasons.push(
+      "Jedno z kluczowych pól ma obniżoną pewność.",
+    );
+  }
+  if (analysis.warnings.length) analysis.needsDetailedAnalysis = true;
+
+  chronologyGuard(analysis);
+
+  analysis.uncertaintyReasons = [...new Set(analysis.uncertaintyReasons)].slice(0, 4);
+  analysis.needsDetailedAnalysis = Boolean(analysis.needsDetailedAnalysis);
+  analysis.detailRecommended = analysis.needsDetailedAnalysis;
+  analysis.description = clean(analysis.summary);
+  analysis.fullDescription = clean(analysis.summary);
+  analysis.analysisLevel = "basic";
+  analysis.analysisVersion = "two-stage-v2";
+
+  // Pola zgodności ze starszym interfejsem; Etap 1 celowo ich nie analizuje.
+  analysis.portraitRuler = analysis.ruler;
+  analysis.portraitConfidence = analysis.rulerConfidence;
+  analysis.obverseLegend = "";
+  analysis.reverseLegend = "";
+  analysis.visibleDateReading = analysis.year;
+  analysis.dateDigits = /^\d{4}$/.test(clean(analysis.year))
+    ? clean(analysis.year).split("")
+    : ["?", "?", "?", "?"];
+  analysis.dateDigitConfidence = analysis.dateDigits.map((digit) =>
+    digit === "?" ? 0 : analysis.yearConfidence,
+  );
+  analysis.denominationEvidence =
+    "Analiza wstępna — cechy rozstrzygające sprawdza Etap 2.";
+  return analysis;
+}
+
+const schema = {
+  type: "object",
+  additionalProperties: false,
+  properties: {
+    imageUsable: { type: "boolean" },
+    imageQualityNote: { type: "string" },
+    title: { type: "string" },
+    objectKind: {
+      type: "string",
+      enum: ["coin", "pattern", "medal", "token", "copy", "uncertain"],
+    },
+    country: { type: "string" },
+    ruler: { type: "string" },
+    year: { type: "string" },
+    nominal: { type: "string" },
+    metal: { type: "string" },
+    mint: { type: "string" },
+    variant: { type: "string" },
+    grade: { type: "string" },
+    confidence: { type: "integer", minimum: 0, maximum: 95 },
+    rulerConfidence: { type: "integer", minimum: 0, maximum: 100 },
+    yearConfidence: { type: "integer", minimum: 0, maximum: 100 },
+    nominalConfidence: { type: "integer", minimum: 0, maximum: 100 },
+    summary: { type: "string" },
+    needsDetailedAnalysis: { type: "boolean" },
+    uncertaintyReasons: {
+      type: "array",
+      maxItems: 4,
+      items: { type: "string" },
+    },
+    estimateLow: { type: "number", minimum: 0 },
+    estimateHigh: { type: "number", minimum: 0 },
+    valuationCurrency: { type: "string" },
+    valuationNote: { type: "string" },
+    followUpQuestions: {
+      type: "array",
+      maxItems: 3,
+      items: { type: "string" },
+    },
+    warnings: { type: "array", maxItems: 4, items: { type: "string" } },
+  },
+  required: [
+    "imageUsable",
+    "imageQualityNote",
+    "title",
+    "objectKind",
+    "country",
+    "ruler",
+    "year",
+    "nominal",
+    "metal",
+    "mint",
+    "variant",
+    "grade",
+    "confidence",
+    "rulerConfidence",
+    "yearConfidence",
+    "nominalConfidence",
+    "summary",
+    "needsDetailedAnalysis",
+    "uncertaintyReasons",
+    "estimateLow",
+    "estimateHigh",
+    "valuationCurrency",
+    "valuationNote",
+    "followUpQuestions",
+    "warnings",
+  ],
+};
+
+async function runAnalysis(apiKey, images) {
+  const prompt = `ETAP 1 APOMONET — szybka i ostrożna identyfikacja podstawowa z dwóch zdjęć.
+
+Najpierw oceń, czy oba zdjęcia nadają się do identyfikacji i czy pokazują dwie strony tego samego obiektu. Rozpoznaj rodzaj obiektu: regularna moneta obiegowa, emisja próbna/wzorcowa (PRÓBA/PROBA/ESSAI/PATTERN), medal, żeton, możliwa kopia albo obiekt niepewny. Uwzględnij widoczny napis „PRÓBA”, nietypowy metal, talar próbny oraz sygnatur projektanta/medaliera, ale niczego nie zgaduj. Następnie podaj tylko podstawową kartę: kraj/emitent, władca, rok, nominał, metal, mennica, ogólny typ i szeroką klasę stanu zachowania. Nie podawaj gradingu liczbowego.
+
+To nie jest analiza odmianowa. Nie odczytuj pełnych legend, nie buduj fingerprintu stempla i nie zgaduj mikroszczegółów — zrobi to opcjonalny Etap 2. Jeśli pole nie jest czytelne, wpisz „Nie ustalono”. Nie potwierdzaj autentyczności wyłącznie ze zdjęć. Przy emisji próbnej nie wciskaj obiektu w zwykły typ obiegowy.
+
+needsDetailedAnalysis ustaw na true, gdy zdjęcie jest słabsze, istnieje więcej niż jedna wiarygodna identyfikacja, brakuje ważnego pola, pola są ze sobą sprzeczne albo do rozstrzygnięcia potrzebna jest legenda, rant, masa, średnica lub detal stempla. uncertaintyReasons mają być krótkie i konkretne. summary: maksymalnie 3 krótkie zdania, bez powtarzania tabeli. Wycena wyłącznie jako bardzo ostrożny przedział przy spójnej identyfikacji; w przeciwnym razie zera i wyjaśnienie. Odpowiadaj po polsku.`;
+  const content = [
+    { type: "input_text", text: prompt },
+    { type: "input_image", image_url: images[0], detail: "high" },
+    { type: "input_image", image_url: images[1], detail: "high" },
+  ];
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), BASIC_TIMEOUT_MS);
+  try {
+    const response = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
+      signal: controller.signal,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-5.6",
+        reasoning: { effort: "low" },
+        input: [{ role: "user", content }],
+        text: {
+          format: {
+            type: "json_schema",
+            name: "coin_basic_v4_two_stage",
+            strict: true,
+            schema,
+          },
+        },
+      }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      return {
+        status: response.status,
+        body: { error: data?.error?.message || "Błąd analizy." },
+      };
+    }
+    if (data.status === "incomplete") {
+      throw new Error("Analiza wstępna nie zwróciła kompletnego wyniku.");
+    }
+    const text = responseText(data);
+    if (!text) throw new Error("Analiza wstępna zwróciła pusty wynik.");
+    const analysis = normalizeAnalysis(JSON.parse(text));
+    if (analysis.imageUsable === false) {
+      return {
+        status: 422,
+        body: {
+          error:
+            analysis.imageQualityNote ||
+            "Zdjęcia są zbyt słabe do wiarygodnej identyfikacji.",
+          code: "IMAGE_NOT_USABLE",
+          retryable: false,
+        },
+      };
+    }
+    return {
+      status: 200,
+      body: {
+        success: true,
+        analysis,
+        usage: {
+          inputTokens: data.usage?.input_tokens || 0,
+          outputTokens: data.usage?.output_tokens || 0,
+        },
+      },
+    };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Dozwolona jest tylko metoda POST." });
+  }
+  res.setHeader("Cache-Control", "no-store, max-age=0");
+  const startedAt = Date.now();
+  const requestId = req.headers["x-vercel-id"] || `basic-${startedAt}`;
+  try {
+    const apiKey = process.env.OPENAI_API_KEY?.trim();
+    if (!apiKey) {
+      return res
+        .status(500)
+        .json({ error: "Brak OPENAI_API_KEY na aktywnym deploymentcie." });
+    }
+    const body = req.body || {};
+    const images = Array.isArray(body.images)
+      ? body.images.filter(Boolean)
+      : [];
+    if (images.length < 2) {
+      return res.status(400).json({ error: "Potrzebne są dwa zdjęcia." });
+    }
+    if (
+      images.some(
+        (image) =>
+          typeof image !== "string" ||
+          !image.startsWith("data:image/") ||
+          image.length > 1_800_000,
+      )
+    ) {
+      return res.status(413).json({
+        error:
+          "Zdjęcia są zbyt duże do stabilnej analizy. Wczytaj je ponownie — APOMONET zmniejszy je automatycznie.",
+      });
+    }
+
+    pruneJobs();
+    const jobId = safeJobId(req, body);
+    let entry = jobId ? basicJobs.get(jobId) : null;
+    const deduplicated = Boolean(entry);
+    if (!entry) {
+      const promise = runAnalysis(apiKey, images).catch((error) => {
+        if (jobId) basicJobs.delete(jobId);
+        throw error;
+      });
+      entry = {
+        createdAt: Date.now(),
+        promise,
+      };
+      if (jobId) basicJobs.set(jobId, entry);
+    }
+    const result = await entry.promise;
+    if (result.status >= 500 && jobId) basicJobs.delete(jobId);
+    const elapsedMs = Date.now() - startedAt;
+    res.setHeader("Server-Timing", `apomonet-basic;dur=${elapsedMs}`);
+    res.setHeader("X-Apo-Deduplicated", deduplicated ? "1" : "0");
+    console.log("[analyze-basic] complete", {
+      requestId,
+      jobId: jobId || null,
+      deduplicated,
+      status: result.status,
+      elapsedMs,
+      imageChars: images.map((image) => image.length),
+    });
+    return res.status(result.status).json({
+      ...result.body,
+      meta: { stage: "basic", elapsedMs, deduplicated },
+    });
+  } catch (error) {
+    const timedOut = error?.name === "AbortError";
+    const elapsedMs = Date.now() - startedAt;
+    console.error("[analyze-basic] failed", {
+      requestId,
+      elapsedMs,
+      name: error?.name,
+      message: error?.message,
+    });
+    return res.status(timedOut ? 504 : 500).json({
+      error: timedOut
+        ? "Analiza wstępna trwała zbyt długo. Zdjęcia są bezpieczne — spróbuj ponownie."
+        : error?.message || "Wewnętrzny błąd APOMONET.",
+      retryable: true,
+    });
+  }
 }

@@ -3,24 +3,40 @@ function norm(v){return text(v).toLowerCase().normalize('NFD').replace(/[\u0300-
 function countryForm(v){const x=norm(v);if(/polsk|poland|polonia/.test(x))return'Poland';return text(v)||'Poland'}
 function nominalForms(v){const x=norm(v);if(/dwutalar|2 talar/.test(x))return['2 taler','2 talar','dwutalar'];if(/talar/.test(x))return['taler','thaler','talar'];if(/dukat/.test(x))return['ducat','dukat'];if(/zlot/.test(x))return['zloty','zlote','zlotych'];if(/grosz|grosh/.test(x))return['grosz','grosh','groszy'];return x?[x]:[]}
 function rulerForms(v){const x=norm(v),m=[['zygmunt i stary',['sigismund i','zygmunt i']],['zygmunt ii august',['sigismund ii','zygmunt ii']],['zygmunt iii waza',['sigismund iii','zygmunt iii']],['stefan batory',['stephen bathory','stefan batory']],['wladyslaw iv waza',['ladislaus iv','wladyslaw iv']],['jan ii kazimierz',['john ii casimir','jan ii kazimierz']],['jan iii sobieski',['john iii sobieski','jan iii sobieski']],['august ii',['augustus ii','august ii']],['august iii',['augustus iii','august iii']],['stanislaw august poniatowski',['stanislaus august poniatowski','stanislaw august poniatowski']]];for(const [k,a] of m)if(x.includes(k))return a;return x?[x]:[]}
+async function numistaCandidates(key,a){
+ if(!key)return{configured:false,source:'Numista',attribution:'Source: Numista',items:[]};
+ const year=text(a.year),q=[text(a.ruler),text(a.nominal),countryForm(a.country)].filter(Boolean).join(' ');
+ if(!q)return{configured:true,source:'Numista',attribution:'Source: Numista',items:[]};
+ try{
+  const params=new URLSearchParams({lang:'en',category:'coin',q,page:'1'});if(/^\d{4}$/.test(year))params.set('year',year);
+  const response=await fetch('https://api.numista.com/v3/types?'+params,{headers:{'Numista-API-Key':key,Accept:'application/json'}});
+  if(!response.ok)throw Error('Numista '+response.status);
+  const data=await response.json(),items=(data?.types||[]).slice(0,5).map(x=>({id:'N#'+String(x.id||''),typeId:Number(x.id)||null,title:text(x.title),issuer:text(x.issuer?.name),url:'https://en.numista.com/catalogue/pieces'+encodeURIComponent(String(x.id||''))+'.html'})).filter(x=>x.typeId&&x.title);
+  return{configured:true,source:'Numista',attribution:'Source: Numista',count:Number(data?.count)||items.length,items};
+ }catch{return{configured:true,source:'Numista',attribution:'Source: Numista',error:'runtime_lookup_failed',items:[]}}
+}
+async function smithsonianReference(key,a){
+ if(!key)return{ok:true,status:'neutral',reason:'not_configured',items:[],source:'Smithsonian National Numismatic Collection'};
+ const year=text(a.year),nominal=text(a.nominal),ruler=text(a.ruler),country=countryForm(a.country);
+ if(!/^\d{4}$/.test(year)||!nominal)return{ok:true,status:'neutral',reason:'insufficient_identity',items:[],source:'Smithsonian National Numismatic Collection'};
+ const q=[country,nominalForms(nominal)[0]||nominal,year].filter(Boolean).join(' ');
+ try{
+  const url='https://api.si.edu/openaccess/api/v1.0/search?q='+encodeURIComponent(q)+'&rows=60&api_key='+encodeURIComponent(key);
+  const response=await fetch(url);if(!response.ok)throw Error('Smithsonian '+response.status);const data=await response.json();
+  const rows=(data?.response?.rows||[]).filter(x=>String(x?.unitCode||'').toUpperCase()==='NMAH').map(x=>({id:String(x.id||''),label:String(x.title||''),uri:text(x?.content?.descriptiveNonRepeating?.record_link)})).filter(x=>/coin|ducat|taler|thaler|zlot|gros|medal|token/i.test(x.label)&&!/catalog|catalogue|book|guide/i.test(x.label));
+  const nfs=nominalForms(nominal),rfs=rulerForms(ruler),ranked=rows.map(x=>{const z=norm(x.label);let score=0;if(z.includes(year))score+=4;if(nfs.some(t=>z.includes(norm(t))))score+=4;if(rfs.some(t=>z.includes(norm(t))))score+=3;if(z.includes('poland'))score+=2;return{...x,score}}).filter(x=>x.score>=6).sort((x,y)=>y.score-x.score).slice(0,5);
+  if(!ranked.length)return{ok:true,status:'neutral',reason:'no_reference_match',query:q,items:[],source:'Smithsonian National Numismatic Collection'};
+  const best=ranked[0],z=norm(best.label),yearSupported=z.includes(year),nominalSupported=nfs.some(t=>z.includes(norm(t))),rulerSupported=rfs.length?rfs.some(t=>z.includes(norm(t))):false;
+  const status=yearSupported&&nominalSupported&&rulerSupported?'supported':yearSupported&&nominalSupported&&rfs.length&&!rulerSupported?'possible_conflict':'neutral';
+  return{ok:true,status,query:q,best,items:ranked,checks:{yearSupported,nominalSupported,rulerSupported},source:'Smithsonian National Numismatic Collection'};
+ }catch{return{ok:true,status:'neutral',reason:'reference_error',items:[],source:'Smithsonian National Numismatic Collection'}}
+}
 module.exports=async function handler(req,res){
-  const key=process.env.SMITHSONIAN_API_KEY?.trim();
-  if(String(req.query?.health||'')==='1') return res.status(200).json({ok:true,source:'Smithsonian reference validator',keyConfigured:!!key,mode:'support_or_warn_only'});
-  if(!['GET','POST'].includes(req.method)) return res.status(405).json({ok:false,error:'GET/POST only'});
-  if(!key) return res.status(503).json({ok:false,error:'Reference source unavailable'});
-  const a=req.method==='POST'?(req.body?.analysis||{}):req.query||{};
-  const year=text(a.year), nominal=text(a.nominal), ruler=text(a.ruler), country=countryForm(a.country);
-  if(!/^\d{4}$/.test(year)||!nominal) return res.status(200).json({ok:true,status:'neutral',reason:'insufficient_identity',items:[]});
-  const q=[country,nominalForms(nominal)[0]||nominal,year].filter(Boolean).join(' ');
-  try{
-    const url='https://api.si.edu/openaccess/api/v1.0/search?q='+encodeURIComponent(q)+'&rows=60&api_key='+encodeURIComponent(key);
-    const response=await fetch(url);if(!response.ok)throw Error('Smithsonian '+response.status);const data=await response.json();
-    const rows=(data?.response?.rows||[]).filter(x=>String(x?.unitCode||'').toUpperCase()==='NMAH').map(x=>({id:String(x.id||''),label:String(x.title||'')})).filter(x=>/coin|ducat|taler|thaler|zlot|gros|medal|token/i.test(x.label)&&!/catalog|catalogue|book|guide/i.test(x.label));
-    const nfs=nominalForms(nominal),rfs=rulerForms(ruler);
-    const ranked=rows.map(x=>{const z=norm(x.label);let score=0;if(z.includes(year))score+=4;if(nfs.some(t=>z.includes(norm(t))))score+=4;if(rfs.some(t=>z.includes(norm(t))))score+=3;if(z.includes('poland'))score+=2;return{...x,score}}).filter(x=>x.score>=6).sort((a,b)=>b.score-a.score).slice(0,5);
-    if(!ranked.length)return res.status(200).json({ok:true,status:'neutral',reason:'no_reference_match',query:q,items:[]});
-    const best=ranked[0],z=norm(best.label),yearSupported=z.includes(year),nominalSupported=nfs.some(t=>z.includes(norm(t))),rulerSupported=rfs.length?rfs.some(t=>z.includes(norm(t))):false;
-    const status=yearSupported&&nominalSupported&&rulerSupported?'supported':yearSupported&&nominalSupported&&rfs.length&&!rulerSupported?'possible_conflict':'neutral';
-    return res.status(200).json({ok:true,status,query:q,best,items:ranked,checks:{yearSupported,nominalSupported,rulerSupported},source:'Smithsonian National Numismatic Collection'});
-  }catch(e){return res.status(200).json({ok:true,status:'neutral',reason:'reference_error',items:[]})}
+ const smithsonianKey=process.env.SMITHSONIAN_API_KEY?.trim(),numistaKey=process.env.NUMISTA_API_KEY?.trim();
+ if(String(req.query?.health||'')==='1')return res.status(200).json({ok:true,source:'Reference validators',smithsonianConfigured:!!smithsonianKey,numistaConfigured:!!numistaKey,mode:'support_warn_and_candidates_only'});
+ if(!['GET','POST'].includes(req.method))return res.status(405).json({ok:false,error:'GET/POST only'});
+ if(!smithsonianKey&&!numistaKey)return res.status(503).json({ok:false,error:'Reference sources unavailable'});
+ const a=req.method==='POST'?(req.body?.analysis||{}):req.query||{};
+ const [smithsonian,numista]=await Promise.all([smithsonianReference(smithsonianKey,a),numistaCandidates(numistaKey,a)]);
+ return res.status(200).json({...smithsonian,numista});
 }

@@ -125,6 +125,8 @@
         return;
       }
       const merged = { ...corrected, ...coin, rawAI };
+      const previousSession =
+        safeParse(sessionStorage.getItem("apomonetAnalysisSession"), {}) || {};
       sessionStorage.setItem(LAST, JSON.stringify(merged));
       sessionStorage.setItem(
         "apomonetAnalysisSession",
@@ -132,7 +134,8 @@
           id: coin.id,
           a: merged,
           imgs: images,
-          analysisImgs: images,
+          analysisImgs: previousSession.analysisImgs || images,
+          photoDiagnostics: previousSession.photoDiagnostics || [null, null],
           at: Date.now(),
           version: 4,
         }),

@@ -1,4 +1,4 @@
-# APOMONET Knowledge Builder — polityka źródeł v3
+# APOMONET Knowledge Builder — polityka źródeł v4
 
 Cel: budować własną bazę wiedzy numizmatycznej i faktów rynkowych bez kopiowania cudzych zdjęć, opisów aukcyjnych, układu katalogów ani odtwarzania chronionych baz.
 
@@ -59,6 +59,14 @@ Dla wyceny APOMONET zapisuje własne obserwacje rynku: identyfikacja monety + da
 
 ## Konsensus wiedzy numizmatycznej
 Pojedynczy rekord aukcyjny jest obserwacją, nie prawdą katalogową. Fakt o odmianie/identyfikacji staje się Verified Knowledge, gdy jest potwierdzony przez co najmniej dwa niezależne dopuszczone źródła albo eksperta. Korekta eksperta/użytkownika jest zapisywana oddzielnie od pierwotnego wyniku AI.
+
+## Warstwa hipotez społecznościowych
+Publiczne fora, portale i blogi specjalistyczne są wartościowe jako mechanizm odkrywania. APOMONET może zapisać własne krótkie podsumowanie hipotezy, bezpośredni URL i checklistę diagnostyczną bez kopiowania zdjęć oraz pełnych wypowiedzi.
+
+Taki rekord ma zawsze status `candidate`. Może wskazać alternatywną identyfikację, cechę stempla, pomiar, test materiału lub potrzebę ekspertyzy. Nie może sam zmienić pól analizy, podnieść confidence, ustalić rzadkości, potwierdzić autentyczności ani uruchomić wyceny. Promocja wymaga niezależnego źródła dopuszczonego do Knowledge Builder albo eksperta.
+
+## Referencje wykonywane w czasie analizy
+API z warunkami ograniczającymi retencję może służyć do bieżącego porównania bez trwałego kopiowania katalogu. Przykładowo Numista zwraca kandydatów z widocznym N# i atrybucją, ale APOMONET nie zapisuje ich metadanych w Verified Knowledge ani nie pobiera miniatur. Kandydat z runtime reference nie podnosi confidence i nie jest potwierdzeniem odmiany.
 
 ## Provenance i audyt
 Każdy rekord importowany automatycznie musi mieć: source, sourceUrl/sourceId, publicationTitle/edition/ISBN i pageOrRecordId gdy dotyczy literatury, checkedAt/importedAt, accessMode (manual/api/feed/permission/tdm/publicSectorReuse), rightsHolder, rightsBasis/rightsStatement, commercialUse, allowedFields, attribution, expiry/reviewAt i opcjonalnie expertVerified. Dzięki temu możemy wyłączyć konkretne źródło bez utraty informacji o pochodzeniu rekordów.

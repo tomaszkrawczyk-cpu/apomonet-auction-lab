@@ -161,6 +161,8 @@ test('critical UI flow still contains both photos, analysis, correction and save
   assert.match(correction,/userAccepted\s*=\s*true/);
   assert.match(correction,/obverseImage:\s*images\[0\]/);
   assert.match(correction,/reverseImage:\s*images\[1\]/);
+  assert.match(page,/facts\.replaceChildren\(\)/);
+  assert.match(page,/value\.textContent = v\(row\[1\]\)/);
 });
 
 test('state loading protects every collection array and storage failure is explicit',()=>{
@@ -174,16 +176,21 @@ test('state loading protects every collection array and storage failure is expli
 
 test('Stage 1 API requires two bounded images and returns a structured analysis',()=>{
   const api=read('api/analyze.js');
-  assert.match(api,/im\.length<2/);
-  assert.match(api,/x\.length>1800000/);
+  assert.match(api,/images\.length < 2/);
+  assert.match(api,/image\.length > 1_800_000/);
   assert.match(api,/imageUsable/);
-  assert.match(api,/confidence:\{type:"integer",minimum:0,maximum:95\}/);
-  assert.match(api,/analysis:a/);
+  assert.match(api,/confidence: \{ type: "integer", minimum: 0, maximum: 95 \}/);
+  assert.match(api,/needsDetailedAnalysis/);
+  assert.match(api,/BASIC_TIMEOUT_MS = 45_000/);
+  assert.match(api,/reasoning: \{ effort: "low" \}/);
+  assert.match(api,/nie buduj fingerprintu stempla/);
+  assert.match(api,/analysis,/);
 });
 
 test('Stage 2 strips saved photos, reports progress and has bounded latency',()=>{
   const api=read('api/analyze-detail.js');
   const page=read('analyze.html');
+  const active=read('pretester-stability-fix.js');
   assert.match(api,/const BASE_FIELDS = \[/);
   assert.doesNotMatch(api,/BASE_FIELDS = \[[\s\S]*?obverseImage/);
   assert.doesNotMatch(api,/BASE_FIELDS = \[[\s\S]*?reverseImage/);
@@ -197,6 +204,11 @@ test('Stage 2 strips saved photos, reports progress and has bounded latency',()=
   assert.match(page,/controller\.abort\(\), 62_000/);
   assert.match(page,/typeof error\?\.message === "string"/);
   assert.doesNotMatch(page,/throw Error\(d\.error \|\|/);
+  assert.match(active,/fetchWithTimeout\('\/api\/analyze'/);
+  assert.match(active,/fetchWithTimeout\('\/api\/analyze-detail'/);
+  assert.match(active,/BASIC_CLIENT_TIMEOUT_MS=48_000/);
+  assert.match(active,/DETAIL_CLIENT_TIMEOUT_MS=58_000/);
+  assert.match(active,/MAX_ATTEMPTS=2/);
 });
 
 test('chronology guard is valid JavaScript and remains non-blocking',()=>{

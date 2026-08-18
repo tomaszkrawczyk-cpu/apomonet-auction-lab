@@ -31,7 +31,7 @@ test('saved detailed analysis is visible on the coin card', async()=>{
 
 test('basic recognition explicitly considers trial and pattern issues', async()=>{
   const source=await text('api/analyze.js');
-  assert.match(source,/emisją próbną\/wzorcową/);
+  assert.match(source,/emisja próbna\/wzorcowa/);
   assert.match(source,/talar próbny/);
   assert.match(source,/sygnatur projektanta\/medaliera/);
 });
