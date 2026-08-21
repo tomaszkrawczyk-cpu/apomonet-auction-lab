@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 
-const source=readFileSync(new URL('../api/model-router.js',import.meta.url),'utf8');
+const source=readFileSync(new URL('../lib/model-router.js',import.meta.url),'utf8');
 
 test('quality-first router defaults to the strong model',()=>{
   assert.match(source,/APOMONET_ENABLE_FAST_MODEL==='1'/);
