@@ -72,6 +72,24 @@ test('variant correction is identity-significant because it can change Kopicki m
   assert.deepEqual([...changed],['variant']);
 });
 
+test('Stage 2 cannot silently overwrite an accepted variant',()=>{
+  const {protectAcceptedDetail}=helper();
+  const accepted={userAccepted:true,variant:'odmiana B'};
+  const detail={variant:'odmiana A',warnings:[],fullDescription:'Opis obserwacji stempla'};
+  const guarded=protectAcceptedDetail(detail,accepted);
+  assert.equal(guarded.variant,'odmiana B');
+  assert.equal(guarded.variantCandidate,'odmiana A');
+  assert.match(guarded.warnings.at(-1),/zachowano odmianę zaakceptowaną przez użytkownika/i);
+});
+
+test('Stage 2 variant remains unchanged when it agrees with the accepted variant',()=>{
+  const {protectAcceptedDetail}=helper();
+  const detail={variant:'odmiana B',warnings:[]};
+  const guarded=protectAcceptedDetail(detail,{userAccepted:true,variant:'odmiana B'});
+  assert.equal(guarded.variant,'odmiana B');
+  assert.equal(guarded.variantCandidate,undefined);
+});
+
 test('unchanged accepted identity leaves valid Stage 2 untouched',()=>{
   const {invalidate}=helper();
   const rawAI={nominal:'ort',ruler:'Zygmunt III Waza',year:'1623',mint:'Bydgoszcz',metal:'srebro',variant:'odmiana A'};
