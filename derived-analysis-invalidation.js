@@ -15,6 +15,8 @@
     "estimateHigh",
     "estimatedPrice",
   ];
+  const CATALOG_MIN_CONFIDENCE = 80;
+  const CATALOG_MIN_DIAGNOSTICS = 2;
 
   function clean(value) {
     return String(value ?? "").trim();
@@ -108,6 +110,48 @@
     return output;
   }
 
+  function gateCatalogEvidence(detail) {
+    if (!detail) return detail;
+    const output = { ...detail };
+    const reference = clean(output.kopickiReference);
+    const rarity = clean(output.kopickiRarity).toUpperCase().replace(/\s+/g, "");
+    const variant = clean(output.variant);
+    const confidence = Number(output.confidence || 0);
+    const diagnostics = Array.isArray(output.diagnosticFeatures)
+      ? output.diagnosticFeatures.map(clean).filter(Boolean)
+      : [];
+    const rarityValid = !rarity || /^(?:R|R[1-8])$/.test(rarity);
+    const strongVariantEvidence =
+      variant &&
+      !/^(?:nie ustalono|nieokreślona|nieokreslona|brak)$/i.test(variant) &&
+      confidence >= CATALOG_MIN_CONFIDENCE &&
+      diagnostics.length >= CATALOG_MIN_DIAGNOSTICS;
+    const catalogAccepted = Boolean(reference && rarityValid && strongVariantEvidence);
+
+    if (catalogAccepted) {
+      output.kopickiRarity = rarity;
+      output.catalogEvidenceStatus = "supported-by-stage2-variant-evidence";
+      return output;
+    }
+
+    if (reference || rarity) {
+      output.catalogCandidate = {
+        reference,
+        rarity,
+        confidence,
+        diagnosticFeatureCount: diagnostics.length,
+      };
+      output.warnings = [
+        ...(Array.isArray(output.warnings) ? output.warnings : []),
+        "Numeru Kopickiego i stopnia rzadkości nie pokazano jako potwierdzonych: Stage 2 nie dostarczył wystarczająco mocnych podstaw wariantowych.",
+      ];
+    }
+    output.kopickiReference = "";
+    output.kopickiRarity = "";
+    output.catalogEvidenceStatus = "unconfirmed";
+    return output;
+  }
+
   function installStage2ResponseGuard() {
     const original = window.fetch?.bind(window);
     if (!original || window.__apoAcceptedStage2Guard) return;
@@ -116,19 +160,18 @@
       const response = await original(input, init);
       if (!String(input || "").includes("/api/analyze-detail") || !response.ok) return response;
       try {
-        const accepted = acceptedSessionAnalysis();
-        if (!accepted) return response;
         const payload = await response.clone().json();
         if (!payload?.detail) return response;
-        const guarded = protectAcceptedDetail(payload.detail, accepted);
-        if (guarded === payload.detail) return response;
+        const accepted = acceptedSessionAnalysis();
+        let guarded = protectAcceptedDetail(payload.detail, accepted);
+        guarded = gateCatalogEvidence(guarded);
         return new Response(JSON.stringify({ ...payload, detail: guarded }), {
           status: response.status,
           statusText: response.statusText,
           headers: response.headers,
         });
       } catch (error) {
-        console.warn("Nie udało się zastosować ochrony zaakceptowanej odmiany Stage 2", error);
+        console.warn("Nie udało się zastosować ochrony danych Stage 2", error);
         return response;
       }
     };
@@ -159,6 +202,7 @@
     changedIdentityFields,
     invalidate,
     protectAcceptedDetail,
+    gateCatalogEvidence,
   });
 
   function init() {
