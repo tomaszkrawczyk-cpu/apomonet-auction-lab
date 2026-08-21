@@ -31,7 +31,15 @@
     }
     const detail=current.detail;const trust=window.ApoKnowledgeTrust?.level?.(current)||{label:current.userAccepted?'Korekta użytkownika':'Sugestia AI',rank:current.userAccepted?30:10};
     const card=document.createElement('section');card.className='card apo-detail-card';const h=document.createElement('div');h.className='section-title';const title=document.createElement('h2');title.textContent=detail?'Analiza szczegółowa':'Status rekordu';const badge=document.createElement('span');badge.className='apo-trust';badge.dataset.rank=String(trust.rank||10);badge.textContent=trust.label||'Sugestia AI';h.append(title,badge);card.appendChild(h);const grid=document.createElement('div');grid.className='apo-detail-grid';
-    if(detail){addTo(grid,'Odmiana / wariant',detail.variant||current.variant);const catalog=[detail.kopickiReference,detail.kopickiRarity].filter(Boolean).join(' • ');addTo(grid,'Kopicki / rzadkość',catalog||'Niepotwierdzone',{warning:!catalog});addTo(grid,'Awers — obserwacje',detail.obverseDetails,{wide:true});addTo(grid,'Rewers — obserwacje',detail.reverseDetails,{wide:true});addTo(grid,'Legenda awersu',detail.obverseLegend,{wide:true});addTo(grid,'Legenda rewersu',detail.reverseLegend,{wide:true});addTo(grid,'Cechy diagnostyczne',Array.isArray(detail.diagnosticFeatures)?detail.diagnosticFeatures.join('; '):detail.diagnosticFeatures,{wide:true});addTo(grid,'Stan — ocena ostrożna',detail.gradeAssessment,{wide:true});addTo(grid,'Co może rozstrzygnąć wynik',Array.isArray(detail.recommendedChecks)?detail.recommendedChecks.join(' '):detail.recommendedChecks,{wide:true});addTo(grid,'Uwagi i ograniczenia',Array.isArray(detail.warnings)?detail.warnings.join(' '):detail.warnings,{wide:true,warning:true})}
+    if(detail){
+      addTo(grid,'Odmiana / wariant',detail.variant||current.variant);
+      const catalog=[detail.kopickiReference,detail.kopickiRarity].filter(Boolean).join(' • ');
+      const candidate=detail.catalogCandidate||{};
+      const candidateText=[candidate.reference,candidate.rarity].filter(Boolean).join(' • ');
+      if(catalog)addTo(grid,'Kopicki / rzadkość',catalog);
+      else if(candidateText)addTo(grid,'Kandydat Kopicki — wymaga potwierdzenia',candidateText,{warning:true});
+      else addTo(grid,'Kopicki / rzadkość','Nie ustalono',{warning:true});
+      addTo(grid,'Awers — obserwacje',detail.obverseDetails,{wide:true});addTo(grid,'Rewers — obserwacje',detail.reverseDetails,{wide:true});addTo(grid,'Legenda awersu',detail.obverseLegend,{wide:true});addTo(grid,'Legenda rewersu',detail.reverseLegend,{wide:true});addTo(grid,'Cechy diagnostyczne',Array.isArray(detail.diagnosticFeatures)?detail.diagnosticFeatures.join('; '):detail.diagnosticFeatures,{wide:true});addTo(grid,'Stan — ocena ostrożna',detail.gradeAssessment,{wide:true});addTo(grid,'Co może rozstrzygnąć wynik',Array.isArray(detail.recommendedChecks)?detail.recommendedChecks.join(' '):detail.recommendedChecks,{wide:true});addTo(grid,'Uwagi i ograniczenia',Array.isArray(detail.warnings)?detail.warnings.join(' '):detail.warnings,{wide:true,warning:true})}
     card.appendChild(grid);const toolbar=content.querySelector('.toolbar');if(toolbar)content.insertBefore(card,toolbar);else content.appendChild(card);
   });
 })();
