@@ -90,6 +90,41 @@ test('Stage 2 variant remains unchanged when it agrees with the accepted variant
   assert.equal(guarded.variantCandidate,undefined);
 });
 
+test('Kopicki and rarity stay hidden when Stage 2 variant evidence is weak',()=>{
+  const {gateCatalogEvidence}=helper();
+  const detail={
+    variant:'odmiana z kropką za łapą niedźwiedzia',
+    kopickiReference:'Kopicki 7483',
+    kopickiRarity:'R4',
+    confidence:72,
+    diagnosticFeatures:['kropka za łapą niedźwiedzia'],
+    warnings:[],
+  };
+  const guarded=gateCatalogEvidence(detail);
+  assert.equal(guarded.kopickiReference,'');
+  assert.equal(guarded.kopickiRarity,'');
+  assert.equal(guarded.catalogEvidenceStatus,'unconfirmed');
+  assert.equal(guarded.catalogCandidate.reference,'Kopicki 7483');
+  assert.match(guarded.warnings.at(-1),/nie pokazano jako potwierdzonych/i);
+});
+
+test('Kopicki and rarity pass only with concrete variant evidence',()=>{
+  const {gateCatalogEvidence}=helper();
+  const detail={
+    variant:'odmiana z kropką za łapą niedźwiedzia',
+    kopickiReference:'Kopicki 7483',
+    kopickiRarity:'R4',
+    confidence:86,
+    diagnosticFeatures:['kropka za łapą niedźwiedzia','układ końcówki legendy PR'],
+    warnings:[],
+  };
+  const guarded=gateCatalogEvidence(detail);
+  assert.equal(guarded.kopickiReference,'Kopicki 7483');
+  assert.equal(guarded.kopickiRarity,'R4');
+  assert.equal(guarded.catalogEvidenceStatus,'supported-by-stage2-variant-evidence');
+  assert.equal(guarded.catalogCandidate,undefined);
+});
+
 test('unchanged accepted identity leaves valid Stage 2 untouched',()=>{
   const {invalidate}=helper();
   const rawAI={nominal:'ort',ruler:'Zygmunt III Waza',year:'1623',mint:'Bydgoszcz',metal:'srebro',variant:'odmiana A'};
