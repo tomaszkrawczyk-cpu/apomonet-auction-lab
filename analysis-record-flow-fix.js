@@ -1,7 +1,5 @@
 (()=>{
   const onAnalyze=()=>location.pathname.endsWith('analyze.html');
-  const onCoin=()=>location.pathname.endsWith('coin.html');
-  const safeText=v=>String(v??'').trim();
 
   function clearAnalysisForFreshPhotos(){
     if(!onAnalyze())return;
@@ -63,44 +61,11 @@
     });
   }
 
-  function showDetailedAnalysisOnCard(){
-    if(!onCoin()||!window.ApoMonet)return;
-    const coinId=new URLSearchParams(location.search).get('id');
-    const coin=coinId?ApoMonet.getCoin(coinId):null;
-    const detail=coin?.detail;
-    if(!coin||!detail||document.getElementById('savedDetailAnalysis'))return;
-    const anchor=document.getElementById('descriptionCard')||document.getElementById('facts');
-    if(!anchor)return;
-    const card=document.createElement('section');
-    card.id='savedDetailAnalysis';
-    card.className='card';
-    const title=document.createElement('h2');
-    title.textContent='Analiza szczegółowa';
-    card.appendChild(title);
-    const rows=[
-      ['Odmiana / typ',detail.variant||coin.variant],
-      ['Katalog Kopickiego',[detail.kopickiReference,detail.kopickiRarity].filter(Boolean).join(' • ')],
-      ['Interpunkcja legendy',detail.legendPunctuation],
-      ['Awers — obserwacje',detail.obverseDetails],
-      ['Rewers — obserwacje',detail.reverseDetails],
-      ['Cechy diagnostyczne',Array.isArray(detail.diagnosticFeatures)?detail.diagnosticFeatures.join('; '):''],
-      ['Uwagi',Array.isArray(detail.warnings)?detail.warnings.join(' '):''],
-      ['Pewność analizy',detail.confidence!=null?`${detail.confidence}%`:''],
-    ].filter(([,value])=>safeText(value));
-    for(const [label,value] of rows){
-      const block=document.createElement('div');
-      block.className='detail';
-      const b=document.createElement('b');b.textContent=label;
-      const p=document.createElement('p');p.textContent=value;
-      block.append(b,p);card.appendChild(block);
-    }
-    anchor.insertAdjacentElement('afterend',card);
-  }
-
+  // Rendering the saved Stage 2 card lives in coin-card-finish.js.
+  // Keeping only one renderer prevents duplicated "Analiza szczegółowa" sections.
   addEventListener('DOMContentLoaded',()=>{
     protectNewRecordIdentity();
     captureAlbumAssignment();
     navigateAfterAlbumSave();
-    setTimeout(showDetailedAnalysisOnCard,80);
   });
 })();
