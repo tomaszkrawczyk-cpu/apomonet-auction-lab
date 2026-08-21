@@ -78,6 +78,62 @@
     return output;
   }
 
+  function acceptedSessionAnalysis() {
+    try {
+      const session = JSON.parse(sessionStorage.getItem("apomonetAnalysisSession") || "null");
+      return session?.a?.userAccepted ? session.a : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function protectAcceptedDetail(detail, accepted) {
+    if (!detail || !accepted?.userAccepted) return detail;
+    const output = { ...detail };
+    const acceptedVariant = clean(accepted.variant);
+    const proposedVariant = clean(detail.variant);
+    if (
+      acceptedVariant &&
+      acceptedVariant !== "Nie ustalono" &&
+      proposedVariant &&
+      comparable(acceptedVariant) !== comparable(proposedVariant)
+    ) {
+      output.variantCandidate = proposedVariant;
+      output.variant = acceptedVariant;
+      output.warnings = [
+        ...(Array.isArray(detail.warnings) ? detail.warnings : []),
+        `Stage 2 wskazał inną odmianę („${proposedVariant}”), ale zachowano odmianę zaakceptowaną przez użytkownika („${acceptedVariant}”).`,
+      ];
+    }
+    return output;
+  }
+
+  function installStage2ResponseGuard() {
+    const original = window.fetch?.bind(window);
+    if (!original || window.__apoAcceptedStage2Guard) return;
+    window.__apoAcceptedStage2Guard = true;
+    window.fetch = async (input, init) => {
+      const response = await original(input, init);
+      if (!String(input || "").includes("/api/analyze-detail") || !response.ok) return response;
+      try {
+        const accepted = acceptedSessionAnalysis();
+        if (!accepted) return response;
+        const payload = await response.clone().json();
+        if (!payload?.detail) return response;
+        const guarded = protectAcceptedDetail(payload.detail, accepted);
+        if (guarded === payload.detail) return response;
+        return new Response(JSON.stringify({ ...payload, detail: guarded }), {
+          status: response.status,
+          statusText: response.statusText,
+          headers: response.headers,
+        });
+      } catch (error) {
+        console.warn("Nie udało się zastosować ochrony zaakceptowanej odmiany Stage 2", error);
+        return response;
+      }
+    };
+  }
+
   function installWriteGuard() {
     if (!window.ApoMonet || ApoMonet.__derivedInvalidationGuard) return;
     const original = ApoMonet.upsertCoin;
@@ -99,9 +155,14 @@
     if (changed) ApoMonet.save(state);
   }
 
-  window.ApoDerivedInvalidation = Object.freeze({ changedIdentityFields, invalidate });
+  window.ApoDerivedInvalidation = Object.freeze({
+    changedIdentityFields,
+    invalidate,
+    protectAcceptedDetail,
+  });
 
   function init() {
+    installStage2ResponseGuard();
     installWriteGuard();
     normalizeExistingState();
   }
