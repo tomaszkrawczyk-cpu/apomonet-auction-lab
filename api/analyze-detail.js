@@ -122,7 +122,13 @@ Dane bazowe po korekcie: ${JSON.stringify(base)}
 
 Najpierw sprawdź zgodność obrazu z ruler/year/nominal/mint/metal. Jeśli widzisz jednoznaczną sprzeczność, NIE nadpisuj tych pól po cichu — dodaj ostrzeżenie. Odczytaj osobno pełną widoczną legendę awersu i rewersu oraz każdą cyfrę daty. Nieczytelną cyfrę oznacz znakiem ?. Następnie analizuj odmianę i stempel: interpunkcję, rozstaw daty, położenie daty, początek/koniec legendy w układzie zegarowym, formy liter i cyfr, orientację i proporcje portretu, koronę, herb/tarczę, monogramy, znaki mennicze, mincerza, pióra/skrzydła/ogon orła oraz rant, jeśli jest widoczny.
 
-Zbuduj fingerprint geometryczno-diagnostyczny. Każda cecha fingerprintu ma wartość tekstową, confidence 0-100 i method. Gdy cechy nie da się wiarygodnie zobaczyć, ustaw value na pusty tekst i confidence=0. NIE zgaduj mikroszczegółów. Oddziel obserwacje wizualne od przypuszczeń o autentyczności. Jeśli masa, średnica, rant, magnes albo makro konkretnego detalu mogą rozstrzygnąć wynik, dodaj je do recommendedChecks. Pełny opis napisz od nowa zgodnie z poprawionymi danymi bazowymi. Kopicki i rzadkość podawaj WYŁĄCZNIE przy wiarygodnych podstawach. Confidence całej analizy nigdy nie może wynosić 100%. Odpowiadaj zwięźle po polsku.`,
+STANDARD OPISU PROFESJONALNEGO: pracuj jak numizmatyk przygotowujący kartę do domu aukcyjnego, ale NIE kopiuj cudzych opisów i nie naśladuj konkretnego katalogu zdanie po zdaniu. W fullDescription zachowaj logiczną kolejność: (1) emitent/władca, nominał, rok, mennica i metal wynikające z danych bazowych; (2) konkretna odmiana tylko jeśli da się ją obronić; (3) awers — co rzeczywiście widać; (4) rewers — co rzeczywiście widać; (5) cechy diagnostyczne odróżniające wariant; (6) ostrożna ocena stanu. NIE umieszczaj w fullDescription ceny, liczby notowań, mediany rynku ani niepotwierdzonych numerów katalogowych. Katalog i rzadkość mają pozostać osobnymi polami. Nie używaj pustych ozdobników typu „interesujący egzemplarz” albo „rzadka moneta”, jeżeli nie wynika to z danych.
+
+KOPICKI: kopickiReference i kopickiRarity podawaj WYŁĄCZNIE wtedy, gdy rozpoznanie konkretnego wariantu ma wiarygodną podstawę w cechach diagnostycznych. Sam władca + rok + nominał nie wystarczają. Jeśli nie masz podstawy, pozostaw oba pola puste. Rzadkość nie może być wnioskowana z wyglądu monety ani z przewidywanej ceny.
+
+STAN: gradeAssessment ma być konserwatywną oceną widocznego zużycia i jakości bicia. Nie przypisuj precyzyjnych stopni slabowych typu AU55/MS63 na podstawie dwóch zwykłych zdjęć. Jeżeli potrzebne są dodatkowe kąty, waga, średnica, rant, magnes albo makro konkretnego detalu, dodaj je do recommendedChecks.
+
+Zbuduj fingerprint geometryczno-diagnostyczny. Każda cecha fingerprintu ma wartość tekstową, confidence 0-100 i method. Gdy cechy nie da się wiarygodnie zobaczyć, ustaw value na pusty tekst i confidence=0. NIE zgaduj mikroszczegółów. Oddziel obserwacje wizualne od przypuszczeń o autentyczności. Confidence całej analizy nigdy nie może wynosić 100%. Odpowiadaj zwięźle po polsku.`,
       },
       { type: "input_image", image_url: images[0], detail: "high" },
       { type: "input_image", image_url: images[1], detail: "high" },
@@ -266,7 +272,7 @@ Zbuduj fingerprint geometryczno-diagnostyczny. Każda cecha fingerprintu ma wart
             text: {
               format: {
                 type: "json_schema",
-                name: "coin_detail_v5_two_stage",
+                name: "coin_detail_v6_professional",
                 strict: true,
                 schema,
               },
@@ -317,6 +323,7 @@ Zbuduj fingerprint geometryczno-diagnostyczny. Każda cecha fingerprintu ma wart
     if (!text) throw new Error("Analiza szczegółowa zwróciła pusty wynik.");
     const detail = JSON.parse(text);
     detail.confidence = Math.min(95, Number(detail.confidence) || 0);
+    detail.descriptionStandard = "professional_auction_structured_v1";
     detail.fingerprint = {
       ...detail.fingerprint,
       rights: "owner_photo",
