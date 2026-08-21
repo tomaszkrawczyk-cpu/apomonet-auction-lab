@@ -189,15 +189,33 @@
       ...(old.a || {}),
       ...coin,
       description: coin.description || old.a?.description || "",
-      fullDescription: coin.fullDescription || coin.description || old.a?.fullDescription || old.a?.description || "",
+      fullDescription:
+        coin.fullDescription ||
+        coin.description ||
+        old.a?.fullDescription ||
+        old.a?.description ||
+        "",
       userAccepted: true,
       correctedAt: new Date().toISOString(),
     };
+    const session = {
+      ...old,
+      id: coin.id,
+      a: corrected,
+      imgs: Array.isArray(old.imgs)
+        ? old.imgs
+        : [coin.obverseImage || null, coin.reverseImage || null],
+      analysisImgs: Array.isArray(old.analysisImgs)
+        ? old.analysisImgs
+        : [coin.obverseImage || null, coin.reverseImage || null],
+      photoDiagnostics: Array.isArray(old.photoDiagnostics)
+        ? old.photoDiagnostics
+        : [null, null],
+      at: Date.now(),
+      version: Math.max(Number(old.version) || 0, 5),
+    };
     try {
-      sessionStorage.setItem(
-        "apomonetAnalysisSession",
-        JSON.stringify({ id: coin.id, a: corrected, at: Date.now(), version: 3 }),
-      );
+      sessionStorage.setItem("apomonetAnalysisSession", JSON.stringify(session));
     } catch (error) {
       console.warn("Nie udało się zsynchronizować sesji po korekcie", error);
     }
