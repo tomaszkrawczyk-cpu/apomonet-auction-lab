@@ -13,15 +13,21 @@
     const confirmedRarity=confirmed?clean(coin.kopickiRarity||detail.kopickiRarity):'';
     const candidateReference=!confirmed?clean(candidate.reference||coin.kopickiReference||detail.kopickiReference):'';
     const candidateRarity=!confirmed?clean(candidate.rarity||coin.kopickiRarity||detail.kopickiRarity):'';
+    const candidateConfidence=!confirmed?(Number(candidate.confidence||0)||0):0;
     return {
       ...coin,
       variant:coin.variant||detail.variant||'',
       kopickiReference:confirmedReference,
       kopickiRarity:confirmedRarity,
       catalogEvidenceStatus:status||'unconfirmed',
+      // Canonical export schema used by PDF and XLSX.
+      kopickiCandidate:candidateReference,
+      kopickiCandidateRarity:candidateRarity,
+      kopickiCandidateConfidence:candidateConfidence,
+      // Backward-compatible aliases for older export consumers/tests.
       catalogCandidateReference:candidateReference,
       catalogCandidateRarity:candidateRarity,
-      catalogCandidateConfidence:Number(candidate.confidence||0)||0,
+      catalogCandidateConfidence:candidateConfidence,
       fullDescription:coin.fullDescription||coin.description||detail.fullDescription||detail.description||'',
     };
   };
