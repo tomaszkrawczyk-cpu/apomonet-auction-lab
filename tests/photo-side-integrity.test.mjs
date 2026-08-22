@@ -14,6 +14,13 @@ test('photo processing is serialized independently for obverse and reverse',()=>
   assert.ok(app.indexOf('analysis-image-pipeline.js')<app.indexOf('analysis-photo-side-queue.js'));
 });
 
+test('photo side swap is disabled once Stage 1 result is visible',()=>{
+  assert.match(queue,/analysisVisible/);
+  assert.match(queue,/stopImmediatePropagation/);
+  assert.match(queue,/swap\.classList\.add\('hidden'\)/);
+  assert.match(queue,/swap\.disabled=true/);
+});
+
 test('coin card never substitutes the opposite side for a missing photo',()=>{
   assert.match(card,/side==='obverse'\?coin\.obverseImage:coin\.reverseImage/);
   assert.doesNotMatch(card,/coin\.obverseImage\s*\|\|\s*coin\.reverseImage/);
