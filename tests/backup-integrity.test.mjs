@@ -29,8 +29,9 @@ test('restore validates JSON-bearing sections and core APOMONET state before wri
   assert.match(backup,/apomonet_state_v2/);
 });
 
-test('restore rolls back partial writes',()=>{
-  assert.match(backup,/snapshot\(keys\)/);
+test('restore snapshots every touched key including transient cleanup before any write',()=>{
+  assert.match(backup,/touched=\[\.\.\.new Set\(\[\.\.\.writeKeys,\.\.\.TRANSIENT\]\)\]/);
+  assert.match(backup,/before=snapshot\(touched\)/);
   assert.match(backup,/rollback\(before\)/);
 });
 
