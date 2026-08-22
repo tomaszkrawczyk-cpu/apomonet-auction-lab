@@ -3,16 +3,22 @@
   const readSession=()=>{try{return JSON.parse(sessionStorage.getItem('apomonetAnalysisSession')||'null')}catch{return null}};
   const comparable=value=>String(value??'').trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pl-PL');
   const correctionIdentityKey=coin=>['nominal','ruler','year','mint','metal','variant'].map(key=>comparable(coin?.[key])).join('|');
+  const currencyFor=coin=>{
+    const state=window.ApoMonet?.load?.()||{};
+    return String(coin?.marketCurrency||coin?.valuationCurrency||state?.settings?.currency||'PLN').trim().toUpperCase()||'PLN';
+  };
   function refresh(){
     const s=readSession(),coin=s?.id&&window.ApoMonet?ApoMonet.getCoin(s.id):null;
     if(!coin?.userAccepted||!coin?.needsReanalysis||!window.ApoArchive?.valuation)return;
     const identityKey=correctionIdentityKey(coin);
     if(!coin.detailReanalysisCompletedAt||coin.detailReanalysisIdentityKey!==identityKey)return;
-    const v=ApoArchive.valuation(coin,10,'PLN');
-    const patch={id:coin.id,auctionRecords10y:v.count||0,auctionStrictMatches10y:v.strictCount||0,marketMedian:v.count?v.median:null,marketCurrency:v.currency||'PLN',valuationCurrency:v.currency||'PLN',priceRange:v.canEstimate?v.priceRange:'',valuationConfidence:v.quality||'none',valuationNote:v.note||'Brak wystarczających porównywalnych notowań dla poprawionej identyfikacji.',valuationUpdatedAt:new Date().toISOString(),auctionMarketIdentityKey:identityKey,correctionReanalysisIdentityKey:identityKey,needsReanalysis:false,derivedDataStale:false,derivedDataStaleReason:'',marketReanalysisCompletedAt:new Date().toISOString()};
+    const preferredCurrency=currencyFor(coin),v=ApoArchive.valuation(coin,10,preferredCurrency);
+    const resolvedCurrency=String(v.currency||preferredCurrency).toUpperCase();
+    const patch={id:coin.id,auctionRecords10y:v.count||0,auctionStrictMatches10y:v.strictCount||0,marketMedian:v.count?v.median:null,marketCurrency:resolvedCurrency,valuationCurrency:resolvedCurrency,priceRange:v.canEstimate?v.priceRange:'',valuationConfidence:v.quality||'none',valuationNote:v.note||'Brak wystarczających porównywalnych notowań dla poprawionej identyfikacji.',valuationUpdatedAt:new Date().toISOString(),auctionMarketIdentityKey:identityKey,correctionReanalysisIdentityKey:identityKey,needsReanalysis:false,derivedDataStale:false,derivedDataStaleReason:'',marketReanalysisCompletedAt:new Date().toISOString()};
     ApoMonet.upsertCoin(patch);
-    window.dispatchEvent(new CustomEvent('apomonet:market-refreshed',{detail:{coinId:coin.id,count:v.count||0}}));
+    window.dispatchEvent(new CustomEvent('apomonet:market-refreshed',{detail:{coinId:coin.id,count:v.count||0,currency:resolvedCurrency}}));
   }
   addEventListener('apomonet:detail-complete',()=>setTimeout(refresh,50));
   addEventListener('apo-stage2-detail',()=>setTimeout(refresh,80));
+  window.ApoMarketReanalysisRefresh=Object.freeze({currencyFor,correctionIdentityKey,refresh});
 })();
