@@ -4,14 +4,18 @@
   const loadProfessionalUi=()=>{if(document.querySelector('script[data-apo-stage2-professional-ui]'))return;const s=document.createElement('script');s.src='stage2-professional-description-ui.js';s.dataset.apoStage2ProfessionalUi='1';document.head.appendChild(s)};
   loadUi();loadProfessionalUi();
   const nativeFetch=window.fetch.bind(window);
+  const norm=v=>String(v??'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ł/g,'l');
+  const unknownPatterns=[/^nie\s+ustalono$/,/^nieokreslona?$/,/^brak$/,/^do\s+potwierdzenia$/,/^not\s+determined$/,/^undetermined$/,/^unknown$/,/^to\s+be\s+confirmed$/,/^nicht\s+bestimmt$/,/^unbekannt$/,/^zu\s+bestatigen$/,/^non\s+determinee?$/,/^inconnu(?:e)?$/,/^a\s+confirmer$/];
+  const canonical=v=>{const n=norm(v);return !n||unknownPatterns.some(r=>r.test(n))?'Nie ustalono':v};
+  const canonicalBase=input=>{const base={...(input||{})};for(const k of ['country','ruler','year','nominal','mint','metal','variant'])if(k in base)base[k]=canonical(base[k]);return base};
   window.fetch=async function(input,init={}){
     const url=typeof input==='string'?input:String(input?.url||'');
     if(url!=='/api/analyze-detail')return nativeFetch(input,init);
     let body={};
     try{body=JSON.parse(init?.body||'{}')}catch{}
-    const base=body?.base||{};
+    const base=canonicalBase(body?.base||{});
     const policy=window.ApoCatalogLiteraturePolicy?.select?.(base)||null;
-    const next={...body,literaturePolicy:policy,stage2Explicit:true};
+    const next={...body,base,literaturePolicy:policy,stage2Explicit:true};
     const response=await nativeFetch(input,{...init,body:JSON.stringify(next)});
     try{
       const data=await response.clone().json();
