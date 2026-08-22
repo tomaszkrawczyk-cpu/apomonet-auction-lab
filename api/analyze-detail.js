@@ -45,6 +45,27 @@ function safeBase(input) {
   return output;
 }
 
+function safeLiteraturePolicy(input) {
+  const source = input && typeof input === "object" ? input : {};
+  const allowedIds = new Set(["kopicki", "tyszkiewicz", "parchimowicz"]);
+  const references = Array.isArray(source.references)
+    ? source.references
+        .filter((item) => item && typeof item === "object")
+        .map((item) => ({
+          id: String(item.id || "").toLowerCase().trim(),
+          role: String(item.role || "").slice(0, 80),
+          reason: String(item.reason || "").slice(0, 500),
+        }))
+        .filter((item) => allowedIds.has(item.id))
+        .slice(0, 6)
+    : [];
+  return {
+    method: "evidence-based",
+    references,
+    note: String(source.note || "").slice(0, 800),
+  };
+}
+
 function responseText(data) {
   let text = data?.output_text || "";
   if (!text && Array.isArray(data?.output)) {
@@ -105,12 +126,17 @@ export default async function handler(req, res) {
     }
 
     const base = safeBase(body.base);
+    const literaturePolicy = safeLiteraturePolicy(body.literaturePolicy);
+    const allowedLiterature = new Set(
+      literaturePolicy.references.map((item) => item.id),
+    );
     console.log("[analyze-detail] start", {
       requestId,
       jobId: jobId || null,
       imageChars: images.map((image) => image.length),
       baseChars: JSON.stringify(base).length,
       userAccepted: base.userAccepted === true,
+      literature: [...allowedLiterature],
     });
 
     const content = [
@@ -120,11 +146,14 @@ export default async function handler(req, res) {
 
 Dane bazowe po korekcie: ${JSON.stringify(base)}
 
+POLITYKA LITERATURY SPECJALISTYCZNEJ: ${JSON.stringify(literaturePolicy)}
+Wolno rozważać i zwracać wyłącznie pozycje obecne w references tej polityki. Jeśli danego id nie ma na liście, odpowiadające mu pole pozostaw puste. Sama zgodność rocznika, władcy lub nominału NIE wystarcza do przypisania literatury. Tyszkiewicz: jeżeli jest dopuszczony i potwierdzony dla konkretnej emisji, zachowaj oryginalną historyczną wartość katalogową jako tyszkiewiczValue; NIE przeliczaj jej na PLN i NIE przedstawiaj jako współczesnej ceny rynkowej. Parchimowicz: podawaj wyłącznie po potwierdzeniu zastosowania do konkretnej emisji/opracowania. Kopicki podlega dodatkowym rygorom wariantowym opisanym niżej.
+
 Najpierw sprawdź zgodność obrazu z ruler/year/nominal/mint/metal. Jeśli widzisz jednoznaczną sprzeczność, NIE nadpisuj tych pól po cichu — dodaj ostrzeżenie. Odczytaj osobno pełną widoczną legendę awersu i rewersu oraz każdą cyfrę daty. Nieczytelną cyfrę oznacz znakiem ?. Następnie analizuj odmianę i stempel: interpunkcję, rozstaw daty, położenie daty, początek/koniec legendy w układzie zegarowym, formy liter i cyfr, orientację i proporcje portretu, koronę, herb/tarczę, monogramy, znaki mennicze, mincerza, pióra/skrzydła/ogon orła oraz rant, jeśli jest widoczny.
 
 STANDARD OPISU PROFESJONALNEGO: pracuj jak numizmatyk przygotowujący kartę do domu aukcyjnego, ale NIE kopiuj cudzych opisów i nie naśladuj konkretnego katalogu zdanie po zdaniu. W fullDescription zachowaj logiczną kolejność: (1) emitent/władca, nominał, rok, mennica i metal wynikające z danych bazowych; (2) konkretna odmiana tylko jeśli da się ją obronić; (3) awers — co rzeczywiście widać; (4) rewers — co rzeczywiście widać; (5) cechy diagnostyczne odróżniające wariant; (6) ostrożna ocena stanu. NIE umieszczaj w fullDescription ceny, liczby notowań, mediany rynku ani niepotwierdzonych numerów katalogowych. Katalog i rzadkość mają pozostać osobnymi polami. Nie używaj pustych ozdobników typu „interesujący egzemplarz” albo „rzadka moneta”, jeżeli nie wynika to z danych.
 
-KOPICKI: kopickiReference i kopickiRarity podawaj WYŁĄCZNIE wtedy, gdy rozpoznanie konkretnego wariantu ma wiarygodną podstawę w cechach diagnostycznych. Sam władca + rok + nominał nie wystarczają. Jeśli nie masz podstawy, pozostaw oba pola puste. Rzadkość nie może być wnioskowana z wyglądu monety ani z przewidywanej ceny.
+KOPICKI: kopickiReference i kopickiRarity podawaj WYŁĄCZNIE wtedy, gdy rozpoznanie konkretnego wariantu ma wiarygodną podstawę w cechach diagnostycznych oraz polityka literatury dopuszcza id „kopicki”. Sam władca + rok + nominał nie wystarczają. Jeśli nie masz podstawy, pozostaw oba pola puste. Rzadkość nie może być wnioskowana z wyglądu monety ani z przewidywanej ceny.
 
 STAN: gradeAssessment ma być konserwatywną oceną widocznego zużycia i jakości bicia. Nie przypisuj precyzyjnych stopni slabowych typu AU55/MS63 na podstawie dwóch zwykłych zdjęć. Jeżeli potrzebne są dodatkowe kąty, waga, średnica, rant, magnes albo makro konkretnego detalu, dodaj je do recommendedChecks.
 
@@ -182,6 +211,9 @@ Zbuduj fingerprint geometryczno-diagnostyczny. Każda cecha fingerprintu ma wart
         variant: { type: "string" },
         kopickiReference: { type: "string" },
         kopickiRarity: { type: "string" },
+        tyszkiewiczReference: { type: "string" },
+        tyszkiewiczValue: { type: "string" },
+        parchimowiczReference: { type: "string" },
         obverseDetails: { type: "string" },
         reverseDetails: { type: "string" },
         obverseLegend: { type: "string" },
@@ -234,6 +266,9 @@ Zbuduj fingerprint geometryczno-diagnostyczny. Każda cecha fingerprintu ma wart
         "variant",
         "kopickiReference",
         "kopickiRarity",
+        "tyszkiewiczReference",
+        "tyszkiewiczValue",
+        "parchimowiczReference",
         "obverseDetails",
         "reverseDetails",
         "obverseLegend",
@@ -272,7 +307,7 @@ Zbuduj fingerprint geometryczno-diagnostyczny. Każda cecha fingerprintu ma wart
             text: {
               format: {
                 type: "json_schema",
-                name: "coin_detail_v6_professional",
+                name: "coin_detail_v7_literature_policy",
                 strict: true,
                 schema,
               },
@@ -324,11 +359,23 @@ Zbuduj fingerprint geometryczno-diagnostyczny. Każda cecha fingerprintu ma wart
     const detail = JSON.parse(text);
     detail.confidence = Math.min(95, Number(detail.confidence) || 0);
     detail.descriptionStandard = "professional_auction_structured_v1";
+    detail.literaturePolicyMethod = literaturePolicy.method;
     detail.fingerprint = {
       ...detail.fingerprint,
       rights: "owner_photo",
       createdAt: new Date().toISOString(),
     };
+    if (!allowedLiterature.has("kopicki")) {
+      detail.kopickiReference = "";
+      detail.kopickiRarity = "";
+    }
+    if (!allowedLiterature.has("tyszkiewicz")) {
+      detail.tyszkiewiczReference = "";
+      detail.tyszkiewiczValue = "";
+    }
+    if (!allowedLiterature.has("parchimowicz")) {
+      detail.parchimowiczReference = "";
+    }
     if (base.userAccepted === true) {
       detail.warnings = [
         ...(detail.warnings || []),
