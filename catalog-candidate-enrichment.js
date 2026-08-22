@@ -5,7 +5,7 @@
   const sessionId=()=>{try{return JSON.parse(sessionStorage.getItem('apomonetAnalysisSession')||'null')?.id||''}catch{return''}};
   const persistCandidate=candidate=>{
     const id=sessionId();if(!id||!window.ApoMonet?.getCoin||!window.ApoMonet?.upsertCoin)return false;
-    const coin=ApoMonet.getCoin(id);if(!coin||coin.derivedDataStale||coin.needsReanalysis)return false;
+    const coin=ApoMonet.getCoin(id);if(!coin)return false;
     const identityKey=window.ApoCorrectionReanalysisResolution?.identityKey?.(coin)||window.ApoStage2Persist?.identityKey?.(coin)||'';
     if(!identityKey||coin.detailReanalysisIdentityKey!==identityKey||!coin.detailReanalysisCompletedAt)return false;
     const detail=coin.detail&&typeof coin.detail==='object'?coin.detail:{};
