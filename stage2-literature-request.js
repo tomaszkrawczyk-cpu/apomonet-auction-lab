@@ -17,12 +17,13 @@
       const data=await response.clone().json();
       const d=data?.detail||{};
       const refs=[];
-      const add=(id,label,value,extra={})=>{if(value!==undefined&&value!==null&&String(value).trim()!=='')refs.push({id,label,value:String(value).trim(),...extra})};
+      const allowed=new Set((policy?.references||[]).map(r=>String(r?.id||'').toLowerCase()).filter(Boolean));
+      const add=(id,label,value,extra={})=>{const key=String(id||'').toLowerCase();if(!allowed.has(key))return;if(value!==undefined&&value!==null&&String(value).trim()!=='')refs.push({id:key,label,value:String(value).trim(),...extra})};
       add('kopicki','Kopicki',d.kopickiReference||d.kopicki||d.catalogReference,d.kopickiRarity?{rarity:d.kopickiRarity}:{});
-      add('tyszkiewicz','Tyszkiewicz',d.tyszkiewiczReference||d.tyszkiewiczValue,d.tyszkiewiczValue?{historicalValue:String(d.tyszkiewiczValue)}:{});
+      add('tyszkiewicz','Tyszkiewicz',d.tyszkiewiczReference||d.tyszkiewiczValue,d.tyszkiewiczValue?{historicalValue:String(d.tyszkiewiczValue),historicalValueOnly:true}:{});
       add('parchimowicz','Parchimowicz',d.parchimowiczReference||d.parchimowicz);
-      for(const r of d.specialistReferences||[])if(r?.label&&r?.value)refs.push({id:r.id||String(r.label).toLowerCase(),label:String(r.label),value:String(r.value),source:r.source||''});
-      window.__apoConfirmedStage2Literature={references:refs,receivedAt:new Date().toISOString()};
+      for(const r of d.specialistReferences||[]){const key=String(r?.id||r?.label||'').toLowerCase();if(allowed.has(key)&&r?.label&&r?.value)refs.push({id:key,label:String(r.label),value:String(r.value),source:r.source||''})}
+      window.__apoConfirmedStage2Literature={references:refs,receivedAt:new Date().toISOString(),policyMethod:policy?.method||'evidence-based'};
       window.__apoStage2Detail=d;
       window.__apoStage2Base=base;
       window.dispatchEvent(new CustomEvent('apo-stage2-literature',{detail:window.__apoConfirmedStage2Literature}));
