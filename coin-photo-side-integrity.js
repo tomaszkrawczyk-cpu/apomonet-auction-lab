@@ -3,10 +3,9 @@
   const persistent=src=>typeof src==='string'&&(src.startsWith('data:image/')||src.startsWith('http://')||src.startsWith('https://'));
   function strictSource(coin,side){
     if(!coin)return'';
-    if(coin.albumPhotoMode==='none')return'';
     if(coin.albumPhotoMode==='cut'&&Number(coin.albumPhotoPrepVersion||0)>=2){
       const cut=side==='obverse'?coin.albumObverseImage:coin.albumReverseImage;
-      return persistent(cut)?cut:'';
+      if(persistent(cut))return cut;
     }
     const raw=side==='obverse'?coin.obverseImage:coin.reverseImage;
     return persistent(raw)?raw:'';
