@@ -10,7 +10,7 @@
     document.querySelectorAll('#list .export-card').forEach((card,index)=>{
       const coin=coins[index];if(!coin)return;
       const cells=card.querySelectorAll('.market-grid > div');
-      if(cells[0]){const span=cells[0].querySelector('span'),value=coin.estimatedPrice??coin.marketMedian;cells[0].textContent='';if(span)cells[0].append(span);const text=money(value,currencyOf(coin))||coin.valuationNote||'—';cells[0].append(document.createTextNode(text));}
+      if(cells[0]){const span=cells[0].querySelector('span'),value=coin.marketMedian??coin.estimatedPrice;cells[0].textContent='';if(span)cells[0].append(span);const text=money(value,currencyOf(coin))||coin.valuationNote||'—';cells[0].append(document.createTextNode(text));}
       if(cells[1]){const span=cells[1].querySelector('span');cells[1].textContent='';if(span)cells[1].append(span);cells[1].append(document.createTextNode(range(coin)||'—'));}
     });
   }
