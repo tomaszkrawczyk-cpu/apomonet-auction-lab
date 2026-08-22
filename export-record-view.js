@@ -4,7 +4,7 @@
   const originalLoad=window.ApoMonet.load.bind(window.ApoMonet);
   const clean=v=>String(v??'').trim();
   const CONFIRMED=new Set(['supported-by-stage2-variant-evidence','verified-curated','confirmed','verified']);
-  const STALE_MARKET_FIELDS=['estimatedPrice','marketMedian','priceRange','estimateLow','estimateHigh','estimatedValue','valuation','marketValue'];
+  const STALE_MARKET_FIELDS=['estimatedPrice','marketMedian','priceRange','estimateLow','estimateHigh','estimatedValue','valuation','marketValue','priceEstimate','estimate','marketCurrency','valuationCurrency','valuationConfidence','valuationUpdatedAt','auctionRecords10y','auctionRecordCount10y','auctionMarketSnapshot','auctionStrictMatches10y','auctionMarketIdentityKey','marketReanalysisCompletedAt'];
   const STALE_LITERATURE_FIELDS=['tyszkiewiczReference','tyszkiewiczRarity','tyszkiewiczValue','tyszkiewiczValuation','tyszkiewiczEstimate','tyszkiewiczNote','tyszkiewiczEvidence','tyszkiewiczSource','parchimowiczReference','parchimowiczRarity','parchimowiczValuation','parchimowiczEstimate','parchimowiczNote','parchimowiczEvidence','parchimowiczSource','specialistReferences','literatureReferences','literatureValuation','literatureEvidence','literatureNotes'];
   const exportPhoto=(coin,side)=>{
     if(coin?.albumPhotoMode==='none')return'';
