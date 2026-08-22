@@ -13,9 +13,15 @@ test('backup includes newer learning and auction-cost layers',()=>{
   for(const key of ['apomonetCommunityEvidenceV1','apomonet_auction_fee_rules_v1','apomonetCoinFingerprintsV1','apomonetHardNegativesV1','apomonetMultiSourceKnowledgeV1'])assert.ok(backup.includes(key),key);
 });
 
-test('restore validates JSON-bearing sections before writing and rolls back partial writes',()=>{
+test('restore validates JSON-bearing sections and core APOMONET state before writing',()=>{
   assert.match(backup,/JSON_KEYS/);
   assert.match(backup,/JSON\.parse\(v\)/);
+  assert.match(backup,/validateCoreState/);
+  for(const key of ['coins','albums','watchlist','events','history'])assert.ok(backup.includes(`'${key}'`),key);
+  assert.match(backup,/apomonet_state_v2/);
+});
+
+test('restore rolls back partial writes',()=>{
   assert.match(backup,/snapshot\(keys\)/);
   assert.match(backup,/rollback\(before\)/);
 });
