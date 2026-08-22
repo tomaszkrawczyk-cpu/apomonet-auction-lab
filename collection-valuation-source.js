@@ -27,6 +27,10 @@
   };
   const copy=()=>COPY[lang()]||COPY.en;
   function money(amount,code){try{return new Intl.NumberFormat(lang()==='pl'?'pl-PL':lang()==='de'?'de-DE':lang()==='fr'?'fr-FR':'en-GB',{style:'currency',currency:code||'PLN',maximumFractionDigits:0}).format(amount||0)}catch{return `${Math.round(amount||0)} ${code||'PLN'}`}}
+  function makeLegacyPageUseCanonicalResolvers(){
+    if(!location.pathname.endsWith('collection.html'))return;
+    try{window.coinValue=value;window.money=(amount,code)=>money(amount,code||'PLN')}catch{}
+  }
   function patchCollectionCards(){
     if(!location.pathname.endsWith('collection.html')||!window.ApoMonet?.load)return;
     const byId=new Map((ApoMonet.load().coins||[]).map(c=>[String(c.id),c]));
@@ -51,7 +55,7 @@
       box.innerHTML=`<span class="eyebrow">${c.title}</span><div class="value-total">${totals}</div><div class="value-grid"><div class="value-stat"><small>${c.coins}</small><strong>${coins.length}</strong></div><div class="value-stat"><small>${c.valued}</small><strong>${s.valuedCount}</strong></div><div class="value-stat"><small>${c.missing}</small><strong>${coins.length-s.valuedCount}</strong></div></div>${s.currencies.length>1?`<div class="value-note">${c.mixed}</div>`:''}${s.staleCount?`<div class="value-note">${c.stale(s.staleCount)}</div>`:''}<div class="value-note">${c.note}</div>`;
     };
   }
-  function installCollectionUi(){if(!location.pathname.endsWith('collection.html'))return;patchCollectionCards();installCollectionSummary();const coins=document.getElementById('coins');if(coins)new MutationObserver(()=>patchCollectionCards()).observe(coins,{childList:true,subtree:true});['languagechange','apo-language-changed','apomonet:language-change'].forEach(e=>addEventListener(e,()=>setTimeout(patchCollectionCards,0)))}
-  window.ApoCollectionValuation=Object.freeze({value,currency,summary,patchCollectionCards,installCollectionSummary});
+  function installCollectionUi(){if(!location.pathname.endsWith('collection.html'))return;makeLegacyPageUseCanonicalResolvers();patchCollectionCards();installCollectionSummary();const coins=document.getElementById('coins');if(coins)new MutationObserver(()=>patchCollectionCards()).observe(coins,{childList:true,subtree:true});['languagechange','apo-language-changed','apomonet:language-change'].forEach(e=>addEventListener(e,()=>setTimeout(()=>{makeLegacyPageUseCanonicalResolvers();patchCollectionCards()},0)))}
+  window.ApoCollectionValuation=Object.freeze({value,currency,summary,money,makeLegacyPageUseCanonicalResolvers,patchCollectionCards,installCollectionSummary});
   document.readyState==='loading'?addEventListener('DOMContentLoaded',installCollectionUi):installCollectionUi();
 })();
