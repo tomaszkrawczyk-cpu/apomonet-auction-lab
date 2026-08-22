@@ -29,4 +29,5 @@
   };
   ApoMonet.__recordDeletionIntegrity=true;
   window.ApoRecordDeletionIntegrity=Object.freeze({cleanupSession,cleanupLinkedWatchlist});
+  if(location.pathname.endsWith('coin.html')&&!document.querySelector('script[data-apo-coin-delete-i18n]')){const s=document.createElement('script');s.src='coin-delete-i18n.js';s.dataset.apoCoinDeleteI18n='1';document.head.appendChild(s)}
 })();
