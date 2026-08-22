@@ -30,9 +30,9 @@
       const coin=coinById(id),text=evidenceText(coin);let row=card.querySelector('.apo-album-catalog-evidence');
       if(!text){row?.remove();return}
       if(!row){row=document.createElement('p');row.className='muted apo-album-catalog-evidence';const actions=card.querySelector('.actions');actions?card.insertBefore(row,actions):card.appendChild(row)}
-      row.textContent=text;
+      if(row.textContent!==text)row.textContent=text;
     });
   }
-  function init(){refresh();const root=document.getElementById('list');if(root)new MutationObserver(refresh).observe(root,{childList:true,subtree:true});['languagechange','apo-language-changed','apomonet:language-change'].forEach(e=>addEventListener(e,refresh));}
+  function init(){refresh();const root=document.getElementById('list');if(root)new MutationObserver(refresh).observe(root,{childList:true});['languagechange','apo-language-changed','apomonet:language-change'].forEach(e=>addEventListener(e,refresh));}
   document.readyState==='loading'?addEventListener('DOMContentLoaded',init):init();
 })();
