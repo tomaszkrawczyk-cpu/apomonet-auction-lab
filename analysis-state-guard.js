@@ -8,13 +8,14 @@
     sessionStorage.removeItem('apomonetOpenAlbumAfterResume');
     sessionStorage.removeItem('apomonetAlbumPhotoPrep');
     sessionStorage.removeItem('apomonetOwnerAnswers');
+    try{const key='apomonetAnalysisResilienceV1',state=JSON.parse(localStorage.getItem(key)||'{}');if(state&&typeof state==='object'){delete state.pending;delete state.recoveryCache;localStorage.setItem(key,JSON.stringify(state))}}catch{}
   };
   addEventListener('DOMContentLoaded',()=>{
     if(isAnalyze()){
       const qs=new URLSearchParams(location.search),resuming=qs.get('resume')==='1'||sessionStorage.getItem('apomonetReturnToAnalysis')==='1';
       if(!resuming){
         clearPrevious();
-        // A fresh pair of photos must always create a fresh analysis record and fresh owner follow-up context.
+        // A fresh pair of photos must always create a fresh analysis record and fresh owner/recovery context.
         const inputs=[document.getElementById('obverseInput'),document.getElementById('reverseInput')].filter(Boolean);
         inputs.forEach(input=>input.addEventListener('change',()=>{
           clearPrevious();
