@@ -1,6 +1,7 @@
 (()=>{
   if(!location.pathname.endsWith('analyze.html'))return;
   const PENDING='apomonetAlbumPhotoPrep';
+  const SESSION='apomonetAnalysisSession';
   const safeParse=(raw)=>{try{return JSON.parse(raw||'null')}catch{return null}};
   const persistentImage=(src)=>typeof src==='string'&&(src.startsWith('data:image/')||src.startsWith('http://')||src.startsWith('https://'));
   const previewSource=(id)=>{const src=document.getElementById(id)?.src||'';return persistentImage(src)?src:''};
@@ -35,6 +36,33 @@
       return ApoMonet.getCoin(coinId)||result;
     };
     ApoMonet.__albumIdentityFix=true;
+  }
+
+  function syncRetakeSession(){
+    const sides=[['obverseInput','oi',0,'obverseImage'],['reverseInput','ri',1,'reverseImage']];
+    for(const [inputId,previewId,index,field] of sides){
+      const input=document.getElementById(inputId);if(!input||input.dataset.apoRetakeSessionSync==='1')continue;
+      input.dataset.apoRetakeSessionSync='1';
+      input.addEventListener('change',()=>{
+        if(!document.getElementById('albumPhotoPrep')||!input.files?.length)return;
+        const before=previewSource(previewId),started=Date.now();
+        const timer=setInterval(()=>{
+          const src=previewSource(previewId);
+          if(Date.now()-started>8000){clearInterval(timer);return}
+          if(!src||src===before)return;
+          clearInterval(timer);
+          const session=safeParse(sessionStorage.getItem(SESSION));
+          if(!session?.id)return;
+          const imgs=Array.isArray(session.imgs)?[...session.imgs]:[null,null];imgs[index]=src;
+          const diagnostics=Array.isArray(session.photoDiagnostics)?[...session.photoDiagnostics]:[null,null];diagnostics[index]=null;
+          const next={...session,imgs,photoDiagnostics:diagnostics,at:Date.now(),retakenSide:index===0?'obverse':'reverse',retakenAt:new Date().toISOString()};
+          delete next.analysisImgs;
+          try{sessionStorage.setItem(SESSION,JSON.stringify(next))}catch(error){console.warn('[retake-session-sync]',error)}
+          const coin=window.ApoMonet?.getCoin?.(session.id);
+          if(coin)try{ApoMonet.upsertCoin({id:session.id,[field]:src})}catch(error){console.warn('[retake-record-sync]',error)}
+        },80);
+      },{capture:true});
+    }
   }
 
   function addRetakeControls(modal){
@@ -79,6 +107,7 @@
 
   addEventListener('DOMContentLoaded',()=>{
     hardenAlbumAssignment();
+    syncRetakeSession();
     observePhotoPrep();
   });
 })();
