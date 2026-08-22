@@ -15,10 +15,12 @@ test('deleting the active coin clears only its resume and follow-up context',()=
   for(const key of ['apomonetAnalysisSession','apomonetReturnToAnalysis','apomonetOpenAlbumAfterResume','apomonetAlbumPhotoPrep','apomonetOwnerAnswers'])assert.ok(src.includes(key),key);
 });
 
-test('deleted coin is removed from export selection and linked watchlist entries',()=>{
+test('deleted coin is removed from export selection and modern or legacy linked watchlist entries',()=>{
   assert.match(src,/apomonet_export_ids/);
   assert.match(src,/apomonet_demo_export_coins/);
-  assert.match(src,/coinId/);
+  assert.match(src,/x\?\.coinId/);
+  assert.match(src,/legacyCoinTarget/);
+  assert.match(src,/String\(x\?\.id\|\|''\)===sid/);
   assert.match(src,/cleanupLinkedWatchlist/);
 });
 
