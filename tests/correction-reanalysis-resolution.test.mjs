@@ -9,11 +9,15 @@ const app=fs.readFileSync('app.js','utf8');
 test('market refresh stores correction identity completion key',()=>{
   assert.match(market,/correctionReanalysisIdentityKey/);
   assert.match(market,/marketReanalysisCompletedAt/);
+  assert.match(market,/detailReanalysisCompletedAt/);
+  assert.match(market,/detailReanalysisIdentityKey!==identityKey/);
   assert.match(market,/needsReanalysis:false/);
 });
 
-test('resolved corrected identity is not forced back into reanalysis on later page loads',()=>{
-  assert.match(resolution,/correctionReanalysisIdentityKey===identityKey\(coin\)/);
+test('resolved corrected identity requires matching Stage 2 and market completion',()=>{
+  assert.match(resolution,/detailReanalysisCompletedAt/);
+  assert.match(resolution,/detailReanalysisIdentityKey===current/);
+  assert.match(resolution,/marketReanalysisCompletedAt/);
   assert.match(resolution,/needsReanalysis:false/);
   assert.match(resolution,/derivedDataStale:false/);
   assert.match(resolution,/repairState/);
