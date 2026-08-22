@@ -10,7 +10,7 @@
       if(clean(detail.kopickiReference)||clean(detail.catalogCandidate?.reference))return response;
       let req={};try{req=JSON.parse(init?.body||'{}')}catch{}
       const base=req.base||{};if(!eligibleCountry(base))return response;
-      const r=await original('/api/catalog-candidate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({images:req.images||[],base,detail})});
+      const r=await original('/api/health',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'catalog-candidate',images:req.images||[],base,detail})});
       if(!r.ok)return response;const data=await r.json();const candidate=data?.candidate;if(!candidate?.applicable)return response;
       const reference=clean(candidate.candidateReference),rarity=clean(candidate.candidateRarity);
       const enriched={...detail,catalogCandidate:{reference,rarity,confidence:Number(candidate.confidence)||0,basis:clean(candidate.basis),source:'focused-catalog-pass'}};
