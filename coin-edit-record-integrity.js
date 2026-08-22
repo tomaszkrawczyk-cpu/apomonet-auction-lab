@@ -17,6 +17,13 @@
     return id?ApoMonet.getCoin(id):null;
   }
 
+  function syncPurchaseCurrencyControl(){
+    const fresh=latestCoin(),control=document.getElementById('currency');
+    if(!fresh||!control)return;
+    const canonical=String(fresh.purchaseCurrency||fresh.currency||'').trim().toUpperCase();
+    if(canonical&&[...control.options].some(o=>o.value===canonical||o.textContent===canonical))control.value=canonical;
+  }
+
   function writeFreshAnalysisSession(){
     const fresh=latestCoin();
     if(!fresh)return false;
@@ -44,6 +51,7 @@
 
   function mount(){
     if(!onEdit()||typeof window.saveCorrection!=='function'||!window.ApoMonet)return;
+    syncPurchaseCurrencyControl();
     const original=window.saveCorrection;
     if(original.__apoRecordIntegrity)return;
 
@@ -63,6 +71,8 @@
         const el=document.getElementById(key);
         if(el)patch[key]=String(el.value??'').trim();
       }
+      const purchaseCurrency=String(document.getElementById('currency')?.value||saved.purchaseCurrency||saved.currency||'').trim().toUpperCase();
+      if(purchaseCurrency)patch.purchaseCurrency=purchaseCurrency;
       saved=ApoMonet.upsertCoin(patch)||ApoMonet.getCoin(saved.id)||saved;
       writeFreshAnalysisSession();
       return saved;
@@ -91,6 +101,6 @@
     }
   }
 
-  window.ApoCoinEditRecordIntegrity=Object.freeze({writeFreshAnalysisSession});
+  window.ApoCoinEditRecordIntegrity=Object.freeze({writeFreshAnalysisSession,syncPurchaseCurrencyControl});
   document.readyState==='loading'?addEventListener('DOMContentLoaded',mount):setTimeout(mount,0);
 })();
