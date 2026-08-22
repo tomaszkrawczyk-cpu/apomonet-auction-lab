@@ -59,7 +59,11 @@
           delete next.analysisImgs;
           try{sessionStorage.setItem(SESSION,JSON.stringify(next))}catch(error){console.warn('[retake-session-sync]',error)}
           const coin=window.ApoMonet?.getCoin?.(session.id);
-          if(coin)try{ApoMonet.upsertCoin({id:session.id,[field]:src})}catch(error){console.warn('[retake-record-sync]',error)}
+          if(coin)try{
+            const patch={id:session.id,[field]:src};
+            if(coin.albumPhotoMode==='cut')Object.assign(patch,{albumPhotoMode:'original',albumObverseImage:null,albumReverseImage:null,albumPhotoPrepVersion:null,albumPhotoPreparedAt:null,albumPhotoRemovalConfidence:null,albumPhotoInvalidatedByRetake:true,albumPhotoInvalidatedAt:new Date().toISOString()});
+            ApoMonet.upsertCoin(patch);
+          }catch(error){console.warn('[retake-record-sync]',error)}
         },80);
       },{capture:true});
     }
