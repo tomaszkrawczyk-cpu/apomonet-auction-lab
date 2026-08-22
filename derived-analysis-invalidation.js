@@ -9,6 +9,8 @@
   ];
   const CATALOG_MIN_CONFIDENCE = 80;
   const CATALOG_MIN_DIAGNOSTICS = 2;
+  const CATALOG_MIN_FINGERPRINT_FEATURES = 3;
+  const CATALOG_MIN_FINGERPRINT_CONFIDENCE = 70;
 
   function clean(value) { return String(value ?? "").trim(); }
   function comparable(value) { return clean(value).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("pl-PL"); }
@@ -59,15 +61,20 @@
     }
     return output;
   }
+  function strongFingerprintCount(detail){
+    const features=detail?.fingerprint?.features;if(!features||typeof features!=="object")return 0;
+    return Object.values(features).filter(f=>f&&clean(f.value)&&!isUnknown(f.value)&&Number(f.confidence||0)>=CATALOG_MIN_FINGERPRINT_CONFIDENCE&&f.method!=="not_observable").length;
+  }
   function gateCatalogEvidence(detail) {
     if (!detail) return detail;
-    const output={...detail}, reference=clean(output.kopickiReference), rarity=clean(output.kopickiRarity).toUpperCase().replace(/\s+/g,""), variant=clean(output.variant), confidence=Number(output.confidence||0), diagnostics=Array.isArray(output.diagnosticFeatures)?output.diagnosticFeatures.map(clean).filter(Boolean):[];
+    const output={...detail}, reference=clean(output.kopickiReference), rarity=clean(output.kopickiRarity).toUpperCase().replace(/\s+/g,""), variant=clean(output.variant), confidence=Number(output.confidence||0), diagnostics=Array.isArray(output.diagnosticFeatures)?output.diagnosticFeatures.map(clean).filter(v=>v&&!isUnknown(v)):[],fingerprintCount=strongFingerprintCount(output);
     const rarityValid=!rarity||/^(?:R|R[1-8])$/.test(rarity);
-    const strongVariantEvidence=variant&&!isUnknown(variant)&&confidence>=CATALOG_MIN_CONFIDENCE&&diagnostics.length>=CATALOG_MIN_DIAGNOSTICS;
-    const catalogAccepted=Boolean(reference&&rarityValid&&strongVariantEvidence);
+    const diagnosticSupport=diagnostics.length>=CATALOG_MIN_DIAGNOSTICS||fingerprintCount>=CATALOG_MIN_FINGERPRINT_FEATURES;
+    const strongVariantEvidence=variant&&!isUnknown(variant)&&confidence>=CATALOG_MIN_CONFIDENCE&&diagnosticSupport;
+    const catalogAccepted=Boolean(reference&&!isUnknown(reference)&&rarityValid&&strongVariantEvidence);
     if (catalogAccepted) { output.kopickiRarity=rarity; output.catalogEvidenceStatus="supported-by-stage2-variant-evidence"; return output; }
-    if (reference||rarity) {
-      output.catalogCandidate={reference,rarity,confidence,diagnosticFeatureCount:diagnostics.length};
+    if ((reference&&!isUnknown(reference))||rarity) {
+      output.catalogCandidate={reference:isUnknown(reference)?"":reference,rarity,confidence,diagnosticFeatureCount:diagnostics.length,strongFingerprintFeatureCount:fingerprintCount};
       output.warnings=[...(Array.isArray(output.warnings)?output.warnings:[]),"Numeru Kopickiego i stopnia rzadkości nie pokazano jako potwierdzonych: Stage 2 nie dostarczył wystarczająco mocnych podstaw wariantowych."];
     }
     output.kopickiReference=""; output.kopickiRarity=""; output.catalogEvidenceStatus="unconfirmed"; return output;
@@ -78,7 +85,7 @@
   }
   function installWriteGuard(){if(!window.ApoMonet||ApoMonet.__derivedInvalidationGuard)return;const original=ApoMonet.upsertCoin;ApoMonet.upsertCoin=function(coin){return original.call(ApoMonet,invalidate(coin));};ApoMonet.__derivedInvalidationGuard=true;}
   function normalizeExistingState(){if(!window.ApoMonet)return;const state=ApoMonet.load();let changed=false;state.coins=(state.coins||[]).map((coin)=>{const next=invalidate(coin);if(JSON.stringify(next)!==JSON.stringify(coin))changed=true;return next;});if(changed)ApoMonet.save(state);}
-  window.ApoDerivedInvalidation=Object.freeze({changedIdentityFields,invalidate,protectAcceptedDetail,gateCatalogEvidence,isUnknown});
+  window.ApoDerivedInvalidation=Object.freeze({changedIdentityFields,invalidate,protectAcceptedDetail,gateCatalogEvidence,strongFingerprintCount,isUnknown});
   function init(){installStage2ResponseGuard();installWriteGuard();normalizeExistingState();}
   document.readyState==="loading"?document.addEventListener("DOMContentLoaded",init):init();
 })();
