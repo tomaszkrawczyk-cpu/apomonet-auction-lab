@@ -20,3 +20,8 @@ test('candidate rarity is explicitly marked uncertain',()=>{
 test('collection catalog evidence UI is wired into runtime',()=>{
   assert.match(app,/collection-catalog-evidence-ui\.js/);
 });
+
+test('collection evidence observer only watches direct collection rerenders',()=>{
+  assert.match(ui,/observe\(root,\{childList:true\}\)/);
+  assert.doesNotMatch(ui,/subtree:true/);
+});
