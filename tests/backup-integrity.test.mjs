@@ -26,7 +26,15 @@ test('restore rolls back partial writes',()=>{
   assert.match(backup,/rollback\(before\)/);
 });
 
-test('backup version 5 still accepts supported older backups',()=>{
-  assert.match(backup,/version:5/);
-  assert.match(backup,/\[1,2,3,4,5\]\.includes/);
+test('backup version 6 accepts supported older backups',()=>{
+  assert.match(backup,/version:6/);
+  assert.match(backup,/\[1,2,3,4,5,6\]\.includes/);
+});
+
+test('demo album moves and analysis recovery cache are transient, not portable backup data',()=>{
+  assert.match(backup,/const TRANSIENT=/);
+  for(const key of ['apomonet_demo_album_moves_v1','apomonetAnalysisResilienceV1'])assert.ok(backup.includes(key),key);
+  assert.match(backup,/durableItems/);
+  assert.match(backup,/!TRANSIENT\.includes\(k\)/);
+  assert.match(backup,/for\(const key of TRANSIENT\)localStorage\.removeItem\(key\)/);
 });
