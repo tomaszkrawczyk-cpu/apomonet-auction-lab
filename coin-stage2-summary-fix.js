@@ -1,23 +1,7 @@
 (()=>{
-  if(!location.pathname.endsWith('coin.html'))return;
-  addEventListener('DOMContentLoaded',()=>{
-    const id=new URLSearchParams(location.search).get('id');
-    const coin=id&&window.ApoMonet?ApoMonet.getCoin(id):null;
-    const facts=document.getElementById('facts');
-    if(!coin||!facts)return;
-    const detail=coin.detail&&typeof coin.detail==='object'?coin.detail:{};
-    const candidate=detail.catalogCandidate&&typeof detail.catalogCandidate==='object'?detail.catalogCandidate:{};
-    const rarity=detail.kopickiRarity||candidate.rarity||coin.rarity||'';
-    const catalog=detail.kopickiReference||candidate.reference||coin.catalog||'';
-    const variant=detail.variant||coin.variant||'';
-    const boxes=[...facts.querySelectorAll('.fact')];
-    const set=(index,value)=>{const strong=boxes[index]?.querySelector('strong');if(strong&&String(value||'').trim())strong.textContent=String(value).trim();};
-    set(5,variant);
-    set(7,rarity);
-    set(8,catalog);
-    if(!detail.kopickiReference&&candidate.reference){
-      const strong=boxes[8]?.querySelector('strong');
-      if(strong){strong.textContent=`${candidate.reference} — kandydat`;strong.title='Wymaga potwierdzenia katalogowego';}
-    }
-  });
+ if(!location.pathname.endsWith('coin.html'))return;
+ const L={pl:{candidate:'kandydat',title:'Wymaga potwierdzenia katalogowego'},en:{candidate:'candidate',title:'Requires catalog confirmation'},de:{candidate:'Kandidat',title:'Katalogbestätigung erforderlich'},fr:{candidate:'candidat',title:'Confirmation dans le catalogue requise'}};
+ const lang=()=>window.ApoLanguageRegistry?.current?.()||window.ApoI18n?.current?.()||localStorage.getItem('apomonet_language_v2')||'pl',t=k=>L[lang()]?.[k]||L.en[k]||L.pl[k]||k;
+ function render(){const id=new URLSearchParams(location.search).get('id'),coin=id&&window.ApoMonet?ApoMonet.getCoin(id):null,facts=document.getElementById('facts');if(!coin||!facts)return;const detail=coin.detail&&typeof coin.detail==='object'?coin.detail:{},candidate=detail.catalogCandidate&&typeof detail.catalogCandidate==='object'?detail.catalogCandidate:{},rarity=detail.kopickiRarity||candidate.rarity||coin.rarity||'',catalog=detail.kopickiReference||candidate.reference||coin.catalog||'',variant=detail.variant||coin.variant||'',boxes=[...facts.querySelectorAll('.fact')],set=(index,value)=>{const strong=boxes[index]?.querySelector('strong');if(strong&&String(value||'').trim())strong.textContent=String(value).trim()};set(5,variant);set(7,rarity);set(8,catalog);if(!detail.kopickiReference&&candidate.reference){const strong=boxes[8]?.querySelector('strong');if(strong){strong.textContent=`${candidate.reference} — ${t('candidate')}`;strong.title=t('title')}}}
+ addEventListener('DOMContentLoaded',render);['languagechange','apo-language-changed','apomonet:language-change'].forEach(e=>addEventListener(e,render));
 })();
