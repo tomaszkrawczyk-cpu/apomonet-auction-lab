@@ -2,8 +2,16 @@
   if(!location.pathname.endsWith('analyze.html'))return;
   const PENDING='apomonetAlbumPhotoPrep';
   const safeParse=(raw)=>{try{return JSON.parse(raw||'null')}catch{return null}};
-  const validImage=(src)=>typeof src==='string'&&(src.startsWith('data:image/')||src.startsWith('blob:')||src.startsWith('http'));
-  const previewSource=(id)=>{const src=document.getElementById(id)?.src||'';return validImage(src)?src:''};
+  const persistentImage=(src)=>typeof src==='string'&&(src.startsWith('data:image/')||src.startsWith('http://')||src.startsWith('https://'));
+  const previewSource=(id)=>{const src=document.getElementById(id)?.src||'';return persistentImage(src)?src:''};
+  const lang=()=>window.ApoLanguageRegistry?.current?.()||window.ApoI18n?.current?.()||localStorage.getItem('apomonet_language_v2')||'pl';
+  const COPY={
+    pl:{note:'Wynik analizy zostaje zachowany. Możesz poprawić tylko zdjęcie i ponowić usuwanie tła.',obverse:'📷 Zrób nowe zdjęcie awersu',reverse:'📷 Zrób nowe zdjęcie rewersu'},
+    en:{note:'The analysis result will be preserved. You can replace only the photo and retry background removal.',obverse:'📷 Take a new obverse photo',reverse:'📷 Take a new reverse photo'},
+    de:{note:'Das Analyseergebnis bleibt erhalten. Sie können nur das Foto ersetzen und die Hintergrundentfernung erneut versuchen.',obverse:'📷 Neues Foto der Vorderseite',reverse:'📷 Neues Foto der Rückseite'},
+    fr:{note:'Le résultat de l’analyse est conservé. Vous pouvez remplacer uniquement la photo et relancer la suppression de l’arrière-plan.',obverse:'📷 Reprendre la photo de l’avers',reverse:'📷 Reprendre la photo du revers'}
+  };
+  const c=()=>COPY[lang()]||COPY.en||COPY.pl;
 
   function syncPendingCoinId(coinId){
     const pending=safeParse(sessionStorage.getItem(PENDING));
@@ -15,19 +23,12 @@
     if(!window.ApoMonet||ApoMonet.__albumIdentityFix)return;
     const previous=ApoMonet.assignCoinToAlbum;
     ApoMonet.assignCoinToAlbum=function(coinId,albumId){
-      // Najważniejsze: tryb przygotowania zdjęcia zawsze przypisujemy do monety,
-      // która WŁAŚNIE jest dodawana do albumu, nigdy do starej sesji analizy.
       syncPendingCoinId(coinId);
-
       const coin=ApoMonet.getCoin(coinId);
-      const obverse=previewSource('oi')||coin?.obverseImage||'';
-      const reverse=previewSource('ri')||coin?.reverseImage||'';
-      if(coin&&(obverse||reverse)){
-        ApoMonet.upsertCoin({id:coinId,obverseImage:obverse||null,reverseImage:reverse||null});
-      }
+      const obverse=previewSource('oi')||(persistentImage(coin?.obverseImage)?coin.obverseImage:'');
+      const reverse=previewSource('ri')||(persistentImage(coin?.reverseImage)?coin.reverseImage:'');
+      if(coin&&(obverse||reverse))ApoMonet.upsertCoin({id:coinId,obverseImage:obverse||null,reverseImage:reverse||null});
       const result=previous.call(ApoMonet,coinId,albumId);
-
-      // Po zapisie weryfikujemy, że dokładnie ten rekord ma zdjęcia.
       const saved=ApoMonet.getCoin(coinId);
       if(saved&&!saved.obverseImage&&obverse)ApoMonet.upsertCoin({id:coinId,obverseImage:obverse});
       if(saved&&!saved.reverseImage&&reverse)ApoMonet.upsertCoin({id:coinId,reverseImage:reverse});
@@ -44,27 +45,29 @@
     controls.dataset.apoRetakeControls='1';
     controls.style.cssText='display:none;margin-top:12px;padding-top:12px;border-top:1px solid #303034';
     const note=document.createElement('p');
+    note.dataset.apoRetakeNote='1';
     note.style.cssText='color:#ddd;line-height:1.45;margin:0 0 8px';
-    note.textContent='Wynik analizy zostaje zachowany. Możesz poprawić tylko zdjęcie i ponowić usuwanie tła.';
-    const make=(text,inputId)=>{
+    const make=(key,inputId)=>{
       const button=document.createElement('button');
       button.type='button';
       button.className='btn secondary full';
+      button.dataset.apoRetakeKey=key;
       button.style.marginTop='8px';
-      button.textContent=text;
       button.onclick=()=>document.getElementById(inputId)?.click();
       controls.appendChild(button);
     };
     controls.appendChild(note);
-    make('📷 Zrób nowe zdjęcie awersu','obverseInput');
-    make('📷 Zrób nowe zdjęcie rewersu','reverseInput');
+    make('obverse','obverseInput');
+    make('reverse','reverseInput');
     modal.querySelector('div')?.appendChild(controls);
-
+    const translate=()=>{const copy=c();note.textContent=copy.note;controls.querySelectorAll('[data-apo-retake-key]').forEach(b=>b.textContent=copy[b.dataset.apoRetakeKey])};
+    translate();
     const refresh=()=>{
-      const text=(status.textContent||'').toLowerCase();
-      controls.style.display=text.includes('nie udało')||text.includes('could not')||text.includes('nicht sicher')||text.includes("n’a pas")?'block':'none';
+      const failed=modal.dataset.apoPhotoPrepFailed==='1'||status.dataset.state==='error'||status.getAttribute('aria-invalid')==='true'||/nie udało|could not|failed|nicht|erreur|échec|n[’']a pas/i.test(status.textContent||'');
+      controls.style.display=failed?'block':'none';
     };
-    new MutationObserver(refresh).observe(status,{childList:true,subtree:true,characterData:true});
+    new MutationObserver(refresh).observe(status,{childList:true,subtree:true,characterData:true,attributes:true});
+    ['languagechange','apo-language-changed','apomonet:language-change'].forEach(e=>addEventListener(e,translate));
     refresh();
   }
 
