@@ -3,11 +3,7 @@
   const persistent=src=>typeof src==='string'&&(src.startsWith('data:image/')||src.startsWith('http://')||src.startsWith('https://'));
   function strictSource(coin,side){
     if(!coin)return'';
-    if(coin.albumPhotoMode==='cut'&&Number(coin.albumPhotoPrepVersion||0)>=2){
-      const cut=side==='obverse'?coin.albumObverseImage:coin.albumReverseImage;
-      if(persistent(cut))return cut;
-    }
-    const raw=side==='obverse'?coin.obverseImage:coin.reverseImage;
+    const raw=side==='obverse'?(coin.obverseImage||coin.image||coin.img):coin.reverseImage;
     return persistent(raw)?raw:'';
   }
   function apply(){
