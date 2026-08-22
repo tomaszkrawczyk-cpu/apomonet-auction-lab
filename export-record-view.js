@@ -3,15 +3,24 @@
   if(!window.ApoMonet?.load)return;
   const originalLoad=window.ApoMonet.load.bind(window.ApoMonet);
   const clean=v=>String(v??'').trim();
+  const lang=()=>window.ApoLanguageRegistry?.current?.()||window.ApoI18n?.current?.()||localStorage.getItem('apomonet_language_v2')||'pl';
+  const STALE_NOTE={
+    pl:'Wycena, literatura i dane katalogowe wymagają ponownej analizy po korekcie identyfikacji.',
+    en:'Valuation, literature and catalog data require re-analysis after the identification correction.',
+    de:'Bewertung, Literatur- und Katalogdaten müssen nach der Identifikationskorrektur erneut analysiert werden.',
+    fr:'L’estimation, la littérature et les données de catalogue doivent être réanalysées après la correction de l’identification.'
+  };
   const CONFIRMED=new Set(['supported-by-stage2-variant-evidence','verified-curated','confirmed','verified']);
   const STALE_MARKET_FIELDS=['estimatedPrice','marketMedian','priceRange','estimateLow','estimateHigh','estimatedValue','valuation','marketValue','priceEstimate','estimate','marketCurrency','valuationCurrency','valuationConfidence','valuationUpdatedAt','auctionRecords10y','auctionRecordCount10y','auctionMarketSnapshot','auctionStrictMatches10y','auctionMarketIdentityKey','marketReanalysisCompletedAt'];
   const STALE_LITERATURE_FIELDS=['tyszkiewiczReference','tyszkiewiczRarity','tyszkiewiczValue','tyszkiewiczValuation','tyszkiewiczEstimate','tyszkiewiczNote','tyszkiewiczEvidence','tyszkiewiczSource','parchimowiczReference','parchimowiczRarity','parchimowiczValuation','parchimowiczEstimate','parchimowiczNote','parchimowiczEvidence','parchimowiczSource','specialistReferences','literatureReferences','literatureValuation','literatureEvidence','literatureNotes'];
+  const originalPhoto=(coin,side)=>side==='obverse'?clean(coin?.obverseImage||coin?.image||coin?.img):clean(coin?.reverseImage);
   const exportPhoto=(coin,side)=>{
     if(coin?.albumPhotoMode==='none')return'';
     if(coin?.albumPhotoMode==='cut'&&Number(coin.albumPhotoPrepVersion||0)>=2){
-      return side==='obverse'?clean(coin.albumObverseImage):clean(coin.albumReverseImage);
+      const cut=side==='obverse'?clean(coin.albumObverseImage):clean(coin.albumReverseImage);
+      return cut||originalPhoto(coin,side);
     }
-    return side==='obverse'?clean(coin?.obverseImage||coin?.image||coin?.img):clean(coin?.reverseImage);
+    return originalPhoto(coin,side);
   };
   const normalize=coin=>{
     if(!coin||typeof coin!=='object')return coin;
@@ -45,7 +54,7 @@
       for(const key of [...STALE_MARKET_FIELDS,...STALE_LITERATURE_FIELDS])delete output[key];
       output.valuationSuppressedBecauseStale=true;
       output.literatureSuppressedBecauseStale=true;
-      output.valuationNote=clean(coin.derivedDataStaleReason)||'Wycena, literatura i dane katalogowe wymagają ponownej analizy po korekcie identyfikacji.';
+      output.valuationNote=clean(coin.derivedDataStaleReason)||(STALE_NOTE[lang()]||STALE_NOTE.en||STALE_NOTE.pl);
     }
     return output;
   };
