@@ -32,3 +32,8 @@ test('market refresh remains gated by fresh Stage 2 identity marker',()=>{
   assert.match(market,/coin\.detailReanalysisIdentityKey!==identityKey/);
   assert.match(market,/!coin\.detailReanalysisCompletedAt/);
 });
+
+test('legacy export repair targets market valuation semantically, never by a global cell index',()=>{
+  assert.match(correction,/\.market-grid > div:first-child/);
+  assert.doesNotMatch(correction,/cells\[10\]/);
+});
