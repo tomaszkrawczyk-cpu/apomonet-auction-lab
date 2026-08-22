@@ -7,13 +7,14 @@
     sessionStorage.removeItem('apomonetReturnToAnalysis');
     sessionStorage.removeItem('apomonetOpenAlbumAfterResume');
     sessionStorage.removeItem('apomonetAlbumPhotoPrep');
+    sessionStorage.removeItem('apomonetOwnerAnswers');
   };
   addEventListener('DOMContentLoaded',()=>{
     if(isAnalyze()){
       const qs=new URLSearchParams(location.search),resuming=qs.get('resume')==='1'||sessionStorage.getItem('apomonetReturnToAnalysis')==='1';
       if(!resuming){
         clearPrevious();
-        // A fresh pair of photos must always create a fresh analysis record.
+        // A fresh pair of photos must always create a fresh analysis record and fresh owner follow-up context.
         const inputs=[document.getElementById('obverseInput'),document.getElementById('reverseInput')].filter(Boolean);
         inputs.forEach(input=>input.addEventListener('change',()=>{
           clearPrevious();
@@ -35,6 +36,7 @@
         sessionStorage.removeItem('apomonetAnalysisSession');
         sessionStorage.removeItem('apomonetReturnToAnalysis');
         sessionStorage.removeItem('apomonetAlbumPhotoPrep');
+        sessionStorage.removeItem('apomonetOwnerAnswers');
       }
     }
   });
