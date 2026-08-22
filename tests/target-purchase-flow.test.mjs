@@ -4,6 +4,7 @@ import test from 'node:test';
 
 const flow=readFileSync(new URL('../target-purchase-flow.js',import.meta.url),'utf8');
 const ui=readFileSync(new URL('../archive-alert-ui.js',import.meta.url),'utf8');
+const card=readFileSync(new URL('../coin-card-finish.js',import.meta.url),'utf8');
 const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
 
 test('purchase flow operates on the existing coin id',()=>{
@@ -22,17 +23,22 @@ test('goal and dream assignments are removed when purchase completes',()=>{
   assert.match(flow,/a\.kind==='dreams'/);
 });
 
-test('purchase metadata is attached to the same saved record',()=>{
-  for(const field of ['purchasedAt','purchaseSource','purchaseUrl','purchasePrice','purchaseCurrency']) assert.match(flow,new RegExp(field));
+test('purchase metadata uses the same provenance fields rendered by the coin card',()=>{
+  for(const field of ['purchasedAt','purchaseSource','purchaseSourceUrl','purchasePrice','purchaseCurrency'])assert.match(flow,new RegExp(field));
+  assert.match(flow,/purchaseUrl:purchaseSourceUrl/);
+  assert.match(card,/current\.purchaseSourceUrl/);
+  assert.match(card,/current\.purchasePrice/);
+  assert.match(card,/current\.purchaseCurrency/);
   assert.match(flow,/ApoMonet\.upsertCoin\(patch\)/);
 });
 
 test('archive alert exposes explicit purchase action only for saved goals and dreams',()=>{
-  assert.match(ui,/Kupiona — przenieś do kolekcji/);
+  assert.match(ui,/Purchased — move to collection|Kupiona — przenieś do kolekcji/);
   assert.match(ui,/\['goals-album','dreams-album'\]\.includes\(m\.targetSource\)/);
   assert.match(ui,/ApoTargetPurchase\.completePurchase\(m\.coinId,m\.lot\|\|\{\}\)/);
 });
 
 test('runtime loads purchase flow before archive alert UI',()=>{
-  assert.ok(app.indexOf('target-purchase-flow.js') < app.indexOf('archive-alert-ui.js'));
+  assert.ok(app.indexOf('target-purchase-flow.js')>=0);
+  assert.ok(app.indexOf('target-purchase-flow.js')<app.indexOf('archive-alert-ui.js'));
 });
