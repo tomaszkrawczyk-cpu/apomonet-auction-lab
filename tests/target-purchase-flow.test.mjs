@@ -32,6 +32,12 @@ test('purchase metadata uses the same provenance fields rendered by the coin car
   assert.match(flow,/ApoMonet\.upsertCoin\(patch\)/);
 });
 
+test('purchase retires both modern coinId targets and legacy id-only watchlist targets',()=>{
+  assert.match(flow,/retireWatchlistTarget/);
+  assert.match(flow,/x\?\.coinId/);
+  assert.match(flow,/String\(x\?\.id\|\|''\)===sid/);
+});
+
 test('archive alert exposes explicit purchase action only for saved goals and dreams',()=>{
   assert.match(ui,/Purchased — move to collection|Kupiona — przenieś do kolekcji/);
   assert.match(ui,/\['goals-album','dreams-album'\]\.includes\(m\.targetSource\)/);
