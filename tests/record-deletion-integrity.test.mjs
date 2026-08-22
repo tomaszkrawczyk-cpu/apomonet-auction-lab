@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 const src=fs.readFileSync('record-deletion-integrity.js','utf8');
 const app=fs.readFileSync('app.js','utf8');
+const i18n=fs.readFileSync('coin-delete-i18n.js','utf8');
 
 test('record deletion integrity loads immediately after app core',()=>{
   const core=app.indexOf('app-core.js'),guard=app.indexOf('record-deletion-integrity.js');
@@ -24,4 +25,11 @@ test('deleted coin is removed from export selection and linked watchlist entries
 test('shared fingerprint and learning stores are deliberately not erased by record deletion',()=>{
   assert.doesNotMatch(src,/apomonetCoinFingerprintsV1/);
   assert.doesNotMatch(src,/apomonetHardNegativesV1/);
+});
+
+test('coin card destructive confirmation is localized and loaded only on coin cards',()=>{
+  assert.match(src,/coin\.html/);
+  assert.match(src,/coin-delete-i18n\.js/);
+  for(const l of ['pl','en','de','fr'])assert.match(i18n,new RegExp(`${l}:\\{confirm:`));
+  assert.match(i18n,/ApoMonet\.deleteCoin\(id\)!==false/);
 });
