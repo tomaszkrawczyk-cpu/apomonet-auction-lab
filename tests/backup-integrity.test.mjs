@@ -9,8 +9,14 @@ test('backup runtime uses the integrity module instead of inline legacy restore'
   assert.doesNotMatch(html,/for\(const \[k,v\] of Object\.entries\(x\.items\)\)/);
 });
 
-test('backup includes newer learning and auction-cost layers',()=>{
-  for(const key of ['apomonetCommunityEvidenceV1','apomonet_auction_fee_rules_v1','apomonetCoinFingerprintsV1','apomonetHardNegativesV1','apomonetMultiSourceKnowledgeV1'])assert.ok(backup.includes(key),key);
+test('backup includes newer learning, auction-cost and collection preference layers',()=>{
+  for(const key of ['apomonetCommunityEvidenceV1','apomonet_auction_fee_rules_v1','apomonetCoinFingerprintsV1','apomonetHardNegativesV1','apomonetMultiSourceKnowledgeV1','apomonet_collection_view_v1','apomonet_collection_sort_v1'])assert.ok(backup.includes(key),key);
+});
+
+test('text preferences are not forced through JSON parsing',()=>{
+  assert.match(backup,/TEXT_KEYS/);
+  for(const key of ['apomonet_language_v2','apomonet_album_view','apomonet_collection_view_v1','apomonet_collection_sort_v1'])assert.ok(backup.includes(key),key);
+  assert.match(backup,/JSON_KEYS=new Set\(KEYS\.filter\(k=>!TEXT_KEYS\.has\(k\)\)\)/);
 });
 
 test('restore validates JSON-bearing sections and core APOMONET state before writing',()=>{
@@ -26,9 +32,9 @@ test('restore rolls back partial writes',()=>{
   assert.match(backup,/rollback\(before\)/);
 });
 
-test('backup version 6 accepts supported older backups',()=>{
-  assert.match(backup,/version:6/);
-  assert.match(backup,/\[1,2,3,4,5,6\]\.includes/);
+test('backup version 7 accepts supported older backups',()=>{
+  assert.match(backup,/version:7/);
+  assert.match(backup,/\[1,2,3,4,5,6,7\]\.includes/);
 });
 
 test('demo album moves and analysis recovery cache are transient, not portable backup data',()=>{
