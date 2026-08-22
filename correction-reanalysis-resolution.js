@@ -7,7 +7,8 @@
     const key=coin.correctionReanalysisIdentityKey,current=identityKey(coin),legacy=legacyIdentityKey(coin);
     const identityMatches=key===current||(key===legacy&&comparable(coin.variant)===comparable(coin.rawAI?.variant));
     const detailMatches=Boolean(coin.detailReanalysisCompletedAt&&coin.detailReanalysisIdentityKey===current);
-    return identityMatches&&detailMatches&&Boolean(coin.marketReanalysisCompletedAt);
+    const marketMatches=Boolean(coin.marketReanalysisCompletedAt&&coin.auctionMarketIdentityKey===current);
+    return identityMatches&&detailMatches&&marketMatches;
   }
   function repair(coin){
     if(!resolved(coin))return coin;
