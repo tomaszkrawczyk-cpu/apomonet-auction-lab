@@ -1,9 +1,12 @@
 (()=>{
   const comparable=value=>String(value??'').trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pl-PL');
-  const identityKey=coin=>['nominal','ruler','year','mint','metal'].map(key=>comparable(coin?.[key])).join('|');
+  const identityKey=coin=>['nominal','ruler','year','mint','metal','variant'].map(key=>comparable(coin?.[key])).join('|');
+  const legacyIdentityKey=coin=>['nominal','ruler','year','mint','metal'].map(key=>comparable(coin?.[key])).join('|');
   function resolved(coin){
     if(!coin?.userAccepted||!coin?.correctionReanalysisIdentityKey)return false;
-    return coin.correctionReanalysisIdentityKey===identityKey(coin)&&Boolean(coin.marketReanalysisCompletedAt);
+    const key=coin.correctionReanalysisIdentityKey,current=identityKey(coin),legacy=legacyIdentityKey(coin);
+    const identityMatches=key===current||(key===legacy&&comparable(coin.variant)===comparable(coin.rawAI?.variant));
+    return identityMatches&&Boolean(coin.marketReanalysisCompletedAt);
   }
   function repair(coin){
     if(!resolved(coin))return coin;
@@ -23,7 +26,7 @@
     ApoMonet.upsertCoin=function(coin){return original.call(ApoMonet,repair(coin))};
     ApoMonet.__correctionReanalysisResolutionGuard=true;
   }
-  window.ApoCorrectionReanalysisResolution=Object.freeze({identityKey,resolved,repair,repairState});
+  window.ApoCorrectionReanalysisResolution=Object.freeze({identityKey,legacyIdentityKey,resolved,repair,repairState});
   function init(){installWriteGuard();repairState()}
   document.readyState==='loading'?addEventListener('DOMContentLoaded',init):init();
 })();
