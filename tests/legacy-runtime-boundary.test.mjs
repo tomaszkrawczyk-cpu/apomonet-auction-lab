@@ -11,10 +11,13 @@ const removedLegacy=[
   'coin-stage2-summary-fix.js',
   'collection-stale-valuation-guard.js',
   'analysis-canonical-sentinels.js',
-  'analysis-followups.js'
+  'analysis-followups.js',
+  'analysis-ui.js',
+  'collection-value-core.js',
+  '_noop'
 ];
 
-test('obsolete all-in-one and duplicate hotfix layers are physically removed and stay out of runtime',()=>{
+test('obsolete all-in-one, duplicate and marker files are physically removed and stay out of runtime',()=>{
   for(const name of removedLegacy){
     assert.equal(fs.existsSync(name),false,name);
     assert.ok(!app.includes(name),name);

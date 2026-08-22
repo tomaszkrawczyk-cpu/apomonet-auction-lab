@@ -14,4 +14,4 @@ jobs:
         with:
           node-version: '24'
       - name: Run regression suite
-        run: node --test tests/*.test.mjs tests/*.test.js *.test.mjs
+        run: node --test tests/*.test.mjs tests/*.test.js *.test.mjs *.test.js test-*.mjs
