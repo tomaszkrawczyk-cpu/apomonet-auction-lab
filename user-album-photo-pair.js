@@ -1,10 +1,28 @@
 (()=>{
  if(!location.pathname.endsWith('user-album.html'))return;
  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- const L={pl:{obv:'Awers',rev:'Rewers',open:'Otwórz kartę',missing:'Brak zdjęcia'},en:{obv:'Obverse',rev:'Reverse',open:'Open coin card',missing:'No image'},de:{obv:'Vorderseite',rev:'Rückseite',open:'Münzkarte öffnen',missing:'Kein Bild'},fr:{obv:'Avers',rev:'Revers',open:'Ouvrir la fiche',missing:'Pas d’image'}};
+ const L={pl:{obv:'Awers',rev:'Rewers',missing:'Brak zdjęcia'},en:{obv:'Obverse',rev:'Reverse',missing:'No image'},de:{obv:'Vorderseite',rev:'Rückseite',missing:'Kein Bild'},fr:{obv:'Avers',rev:'Revers',missing:'Pas d’image'}};
  const lang=()=>window.ApoLanguageRegistry?.current?.()||window.ApoI18n?.current?.()||localStorage.getItem('apomonet_language_v2')||'pl',t=k=>L[lang()]?.[k]||L.en[k]||L.pl[k]||k;
  function coinMap(){try{return new Map((window.ApoMonet?.load?.().coins||[]).map(c=>[String(c.id),c]))}catch{return new Map()}}
- function draw(){const map=coinMap();document.querySelectorAll('#list .coin-card').forEach(card=>{const id=card.querySelector('.coin-pick')?.dataset.id;if(!id)return;const c=map.get(String(id));if(!c)return;const old=card.querySelector('.coin-photo');if(!old)return;let pair=card.querySelector('.apo-photo-pair');if(!pair){pair=document.createElement('div');pair.className='apo-photo-pair';pair.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px';old.replaceWith(pair)}const cell=(src,label)=>`<div style="min-width:0"><div style="height:150px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 45%,#272729,#111 72%);border-radius:14px;overflow:hidden">${src?`<img src="${esc(src)}" alt="${esc(label)}" loading="lazy" style="max-width:96%;max-height:142px;object-fit:contain;filter:drop-shadow(0 5px 8px #000)">`:`<span style="color:#777;font-size:12px">${esc(t('missing'))}</span>`}</div><small style="display:block;text-align:center;color:#888;margin-top:4px">${esc(label)}</small></div>`;pair.innerHTML=cell(c.obverseImage||'',t('obv'))+cell(c.reverseImage||'',t('rev'));pair.onclick=()=>location.href='coin.html?id='+encodeURIComponent(c.id);pair.style.cursor='pointer';pair.setAttribute('role','link');pair.setAttribute('tabindex','0');pair.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();location.href='coin.html?id='+encodeURIComponent(c.id)}};let actions=card.querySelector('.actions');if(actions&&!actions.querySelector('.apo-open-card')){const a=document.createElement('a');a.className='btn primary apo-open-card';a.href='coin.html?id='+encodeURIComponent(c.id);actions.prepend(a)}const a=actions?.querySelector('.apo-open-card');if(a){a.textContent=t('open');a.setAttribute('aria-label',`${t('open')}: ${c.title||''}`)}})}
+ function source(c,side){
+   if(window.ApoAlbumPhotos?.resolve)return ApoAlbumPhotos.resolve(c,side)||'';
+   if(c?.albumPhotoMode==='none')return'';
+   if(c?.albumPhotoMode==='cut'&&Number(c.albumPhotoPrepVersion||0)>=2)return side==='obverse'?(c.albumObverseImage||''):(c.albumReverseImage||'');
+   return side==='obverse'?(c?.obverseImage||''):(c?.reverseImage||'');
+ }
+ function draw(){
+   const map=coinMap();
+   document.querySelectorAll('#list .coin-card').forEach(card=>{
+     const id=card.querySelector('.coin-pick')?.dataset.id;if(!id)return;const c=map.get(String(id));if(!c)return;
+     const old=card.querySelector('.coin-photo'),existing=card.querySelector('.apo-photo-pair');if(!old&&!existing)return;
+     let pair=existing;if(!pair){pair=document.createElement('div');pair.className='apo-photo-pair';pair.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px';old.replaceWith(pair)}
+     const cell=(src,label)=>`<div style="min-width:0"><div style="height:150px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 45%,#272729,#111 72%);border-radius:14px;overflow:hidden">${src?`<img src="${esc(src)}" alt="${esc(label)}" loading="lazy" style="max-width:96%;max-height:142px;object-fit:contain;filter:drop-shadow(0 5px 8px #000)">`:`<span style="color:#777;font-size:12px">${esc(t('missing'))}</span>`}</div><small style="display:block;text-align:center;color:#888;margin-top:4px">${esc(label)}</small></div>`;
+     pair.innerHTML=cell(source(c,'obverse'),t('obv'))+cell(source(c,'reverse'),t('rev'));
+     pair.onclick=()=>location.href='coin.html?id='+encodeURIComponent(c.id);pair.style.cursor='pointer';pair.setAttribute('role','link');pair.setAttribute('tabindex','0');
+     pair.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();location.href='coin.html?id='+encodeURIComponent(c.id)}};
+   })
+ }
  function init(){draw();const list=document.getElementById('list');if(list)new MutationObserver(draw).observe(list,{childList:true,subtree:true});['languagechange','apo-language-changed','apomonet:language-change'].forEach(e=>addEventListener(e,draw))}
  document.readyState==='loading'?addEventListener('DOMContentLoaded',init):init();
+ window.ApoUserAlbumPhotoPair=Object.freeze({source,draw});
 })();
