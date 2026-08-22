@@ -12,10 +12,13 @@
       const base=req.base||{};if(!eligibleCountry(base))return response;
       const r=await original('/api/health',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'catalog-candidate',images:req.images||[],base,detail})});
       if(!r.ok)return response;const data=await r.json();const candidate=data?.candidate;if(!candidate?.applicable)return response;
-      const reference=clean(candidate.candidateReference),rarity=clean(candidate.candidateRarity);
-      const enriched={...detail,catalogCandidate:{reference,rarity,confidence:Number(candidate.confidence)||0,basis:clean(candidate.basis),source:'focused-catalog-pass'}};
-      if(reference&&Number(candidate.confidence)>=88){enriched.kopickiReference=reference;if(/^(?:R|R[1-8])$/i.test(rarity))enriched.kopickiRarity=rarity.toUpperCase();enriched.catalogEvidenceStatus='focused-catalog-high-confidence';}
-      else if(reference){enriched.warnings=[...(Array.isArray(detail.warnings)?detail.warnings:[]),`Kandydat katalogowy: ${reference}${rarity?` • ${rarity}`:''}. Wymaga potwierdzenia.`];}
+      const reference=clean(candidate.candidateReference),rarity=clean(candidate.candidateRarity),confidence=Number(candidate.confidence)||0;
+      const enriched={...detail,catalogCandidate:{reference,rarity:/^(?:R|R[1-8])$/i.test(rarity)?rarity.toUpperCase():'',confidence,basis:clean(candidate.basis),source:'focused-catalog-pass'}};
+      if(reference){
+        enriched.warnings=[...(Array.isArray(detail.warnings)?detail.warnings:[]),`Kandydat katalogowy z dodatkowego przebiegu: ${reference}${rarity?` • ${rarity}`:''} (${confidence}%). Wymaga potwierdzenia przez cechy wariantowe Stage 2.`];
+      }
+      // The focused pass may discover a candidate, but it must never self-promote it to confirmed literature.
+      // Confirmation is owned by the deterministic Stage 2 evidence gate.
       return new Response(JSON.stringify({...payload,detail:enriched}),{status:response.status,statusText:response.statusText,headers:response.headers});
     }catch(error){console.warn('[catalog-candidate-enrichment]',error);return response;}
   };
