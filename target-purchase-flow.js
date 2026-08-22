@@ -2,6 +2,15 @@
   const n=s=>String(s||'').toLowerCase().trim();
   function collectionAlbum(state){return (state.albums||[]).find(a=>a.id==='my-album'||a.kind==='collection'||n(a.name)==='mój album'||n(a.name)==='moj album')||null}
   function goalOrDreamAlbums(state,coin){const ids=new Set(coin?.albumIds||[]);return (state.albums||[]).filter(a=>ids.has(a.id)&&(a.id==='goals'||a.id==='dreams'||a.kind==='targets'||a.kind==='dreams'||['moje cele','marzenia'].includes(n(a.name))))}
+  function retireWatchlistTarget(state,coinId){
+    const before=Array.isArray(state.watchlist)?state.watchlist:[],sid=String(coinId);
+    state.watchlist=before.filter(x=>{
+      const linked=String(x?.coinId||'')===sid;
+      const legacyCoinTarget=!x?.coinId&&String(x?.id||'')===sid&&(x?.type==='coin'||x?.ruler||x?.nominal);
+      return !(linked||legacyCoinTarget);
+    });
+    return state.watchlist.length!==before.length;
+  }
   function completePurchase(coinId,lot={}){
     if(!window.ApoMonet||!coinId)return null;
     const state=ApoMonet.load(),coin=(state.coins||[]).find(c=>c.id===coinId);if(!coin)return null;
@@ -17,7 +26,8 @@
     const purchaseCurrency=String(lot.currency||coin.purchaseCurrency||coin.currency||'PLN').trim().toUpperCase()||'PLN';
     const patch={id:coinId,purchaseStatus:'purchased',purchasedAt:new Date().toISOString(),purchaseSource,purchaseSourceUrl,purchaseUrl:purchaseSourceUrl,purchasePrice,purchaseCurrency};
     current=ApoMonet.upsertCoin(patch);
+    try{const refreshed=ApoMonet.load();if(retireWatchlistTarget(refreshed,coinId))ApoMonet.save(refreshed)}catch(error){console.warn('[target-purchase-watchlist-retire]',error)}
     return {ok:true,coin:current,collectionAlbumId:collection.id,removedFrom:fromIds};
   }
-  window.ApoTargetPurchase={collectionAlbum,goalOrDreamAlbums,completePurchase};
+  window.ApoTargetPurchase={collectionAlbum,goalOrDreamAlbums,retireWatchlistTarget,completePurchase};
 })();
