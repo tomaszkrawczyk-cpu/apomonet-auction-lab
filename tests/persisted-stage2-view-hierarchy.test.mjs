@@ -34,5 +34,8 @@ test('PDF and Excel consume normalized persisted detail without a raw AI fallbac
   assert.match(exportActions,/export-record-view\.js/);
   assert.doesNotMatch(page,/rawAI/);
   assert.doesNotMatch(sheet,/rawAI/);
-  assert.match(sheet,/c\.detail\?\.|const detail|detail\./);
+  assert.match(sheet,/const d=c\.detail&&typeof c\.detail==='object'\?c\.detail:\{\}/);
+  assert.match(sheet,/d\.fullDescription/);
+  assert.match(sheet,/d\.kopickiReference/);
+  assert.match(sheet,/d\.kopickiRarity/);
 });
