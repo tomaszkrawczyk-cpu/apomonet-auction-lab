@@ -28,6 +28,12 @@ test('focused catalog candidate persists only onto a completed current Stage 2 i
   assert.match(candidate,/catalogEvidenceStatus:detail\.catalogEvidenceStatus==='supported-by-stage2-variant-evidence'\?detail\.catalogEvidenceStatus:'unconfirmed'/);
 });
 
+test('focused catalog pass runs only for the exact Stage 2 endpoint',()=>{
+  assert.match(candidate,/requestPath/);
+  assert.match(candidate,/requestPath\(input\)!=='\/api\/analyze-detail'/);
+  assert.doesNotMatch(candidate,/String\(input\|\|''\)\.includes\('\/api\/analyze-detail'\)/);
+});
+
 test('candidate persistence may occur while market refresh is still pending',()=>{
   assert.ok(!/coin\.derivedDataStale\|\|coin\.needsReanalysis/.test(candidate));
 });
