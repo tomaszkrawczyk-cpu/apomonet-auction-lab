@@ -19,10 +19,13 @@ test('saved owner answers are passed into Stage 2 base userAdditionalInfo',()=>{
   assert.match(ui,/question.*answer/);
 });
 
-test('owner answers are cleared when starting a genuinely new coin but preserved while resuming the same coin',()=>{
+test('owner answers and recovery cache are cleared for a genuinely new coin but preserved while resuming the same coin',()=>{
   const guard=read('analysis-state-guard.js');
   assert.match(guard,/clearPrevious/);
   assert.match(guard,/removeItem\('apomonetOwnerAnswers'\)/);
+  assert.match(guard,/apomonetAnalysisResilienceV1/);
+  assert.match(guard,/delete state\.pending/);
+  assert.match(guard,/delete state\.recoveryCache/);
   assert.match(guard,/if\(!resuming\)/);
   assert.match(guard,/s\.id!==coinId/);
 });
