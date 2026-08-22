@@ -15,6 +15,12 @@ test('Stage 2 persistence event is built from accepted-identity and catalog guar
   assert.ok(guarded>=0&&event>guarded);
 });
 
+test('the same guarded Stage 2 detail is returned to the main analysis UI',()=>{
+  assert.match(stage2,/responseWithDetail/);
+  assert.match(stage2,/return responseWithDetail\(response,data,d\)/);
+  assert.match(stage2,/JSON\.stringify\(\{\.\.\.data,detail\}\)/);
+});
+
 test('focused catalog candidate persists only onto a completed current Stage 2 identity',()=>{
   assert.match(candidate,/detailReanalysisIdentityKey!==identityKey/);
   assert.match(candidate,/detailReanalysisCompletedAt/);
