@@ -35,8 +35,9 @@ test('follow-up copy is localized for the current supported UI languages',()=>{
   for(const l of ['pl','en','de','fr']) assert.match(ui,new RegExp(`${l}:\\{title:`));
 });
 
-test('legacy follow-up wrapper remains disconnected to avoid competing fetch interception',()=>{
+test('legacy follow-up wrapper is removed so it cannot compete for fetch interception',()=>{
   const app=read('app.js');
+  assert.equal(fs.existsSync('analysis-followups.js'),false);
   assert.doesNotMatch(app,/analysis-followups\.js/);
   assert.match(app,/analysis-ai-translation-ui\.js/);
 });
