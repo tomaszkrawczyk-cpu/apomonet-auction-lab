@@ -9,6 +9,19 @@
     const base=body?.base||{};
     const policy=window.ApoCatalogLiteraturePolicy?.select?.(base)||null;
     const next={...body,literaturePolicy:policy,stage2Explicit:true};
-    return nativeFetch(input,{...init,body:JSON.stringify(next)});
+    const response=await nativeFetch(input,{...init,body:JSON.stringify(next)});
+    try{
+      const data=await response.clone().json();
+      const d=data?.detail||{};
+      const refs=[];
+      const add=(id,label,value,extra={})=>{if(value!==undefined&&value!==null&&String(value).trim()!=='')refs.push({id,label,value:String(value).trim(),...extra})};
+      add('kopicki','Kopicki',d.kopickiReference||d.kopicki||d.catalogReference,d.kopickiRarity?{rarity:d.kopickiRarity}:{});
+      add('tyszkiewicz','Tyszkiewicz',d.tyszkiewiczReference||d.tyszkiewiczValue,d.tyszkiewiczValue?{historicalValue:String(d.tyszkiewiczValue)}:{});
+      add('parchimowicz','Parchimowicz',d.parchimowiczReference||d.parchimowicz);
+      for(const r of d.specialistReferences||[])if(r?.label&&r?.value)refs.push({id:r.id||String(r.label).toLowerCase(),label:String(r.label),value:String(r.value),source:r.source||''});
+      window.__apoConfirmedStage2Literature={references:refs,receivedAt:new Date().toISOString()};
+      window.dispatchEvent(new CustomEvent('apo-stage2-literature',{detail:window.__apoConfirmedStage2Literature}));
+    }catch{}
+    return response;
   };
 })();
