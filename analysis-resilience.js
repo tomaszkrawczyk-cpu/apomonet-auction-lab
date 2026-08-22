@@ -28,6 +28,13 @@
   function parseBody(options) {
     try { return typeof options?.body === 'string' ? JSON.parse(options.body) : null; } catch { return null; }
   }
+  function imageKey(image) {
+    const value = String(image || '');
+    return `${value.length}:${value.slice(0, 48)}:${value.slice(-48)}`;
+  }
+  function requestKey(body) {
+    return Array.isArray(body?.images) ? body.images.map(imageKey).join('|') : '';
+  }
   function responseFromCache(cached) {
     const status = Number(cached?.status || 0);
     if (!cached?.text || status < 200 || status >= 300) return null;
@@ -44,10 +51,15 @@
     const stage = stageFor(input);
     const body = parseBody(options);
     const state = loadState();
+    const key = requestKey(body);
 
-    if (stage === 'stage1' && state.recoveryCache?.stage1?.requestBody && body && JSON.stringify(body.images || []) === JSON.stringify(state.recoveryCache.stage1.requestBody.images || [])) {
-      const cached = responseFromCache(state.recoveryCache.stage1);
-      if (cached) return cached;
+    if (stage === 'stage1' && body) {
+      const cachedEntry = state.recoveryCache?.stage1;
+      const cachedKey = cachedEntry?.requestKey || requestKey(cachedEntry?.requestBody);
+      if (key && cachedKey === key) {
+        const cached = responseFromCache(cachedEntry);
+        if (cached) return cached;
+      }
     }
 
     const pending = { stage, requestBody: body, startedAt: Date.now(), attempts: 0 };
@@ -65,7 +77,7 @@
           const next = loadState();
           if (response.ok) {
             next.recoveryCache = next.recoveryCache || {};
-            next.recoveryCache[stage] = { requestBody: body, text, status: response.status, completedAt: Date.now() };
+            next.recoveryCache[stage] = { requestKey: key, text, status: response.status, completedAt: Date.now() };
           }
           delete next.pending;
           saveState(next);
