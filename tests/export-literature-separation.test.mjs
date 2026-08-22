@@ -43,3 +43,15 @@ test('historical Tyszkiewicz value is never used as a market valuation fallback'
   assert.doesNotMatch(page,/estimatedPrice\|\|c\.tyszkiewiczValue|marketMedian\|\|c\.tyszkiewiczValue/);
   assert.doesNotMatch(sheet,/estimatedPrice\|\|c\.tyszkiewiczValue|marketMedian\|\|c\.tyszkiewiczValue/);
 });
+
+test('exports use the accepted saved record and never fall back to raw AI or private owner notes',()=>{
+  const page=read('export.html');
+  const sheet=read('xlsx-sheet.js');
+  const actions=read('export-actions-i18n.js');
+  for(const source of [page,sheet,actions]){
+    assert.doesNotMatch(source,/rawAI/);
+    assert.doesNotMatch(source,/userAdditionalInfo|ownerNotes|privateNotes/);
+  }
+  assert.match(page,/c\.fullDescription\|\|c\.description/);
+  assert.match(sheet,/c\.fullDescription\|\|c\.description/);
+});
