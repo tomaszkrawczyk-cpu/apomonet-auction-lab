@@ -3,11 +3,12 @@
   if(!window.ApoMonet?.load)return;
   const originalLoad=window.ApoMonet.load.bind(window.ApoMonet);
   const clean=v=>String(v??'').trim();
+  const CONFIRMED=new Set(['supported-by-stage2-variant-evidence','verified-curated','confirmed','verified']);
   const normalize=coin=>{
     if(!coin||typeof coin!=='object')return coin;
     const detail=coin.detail&&typeof coin.detail==='object'?coin.detail:{};
-    const status=clean(detail.catalogEvidenceStatus||coin.catalogEvidenceStatus);
-    const confirmed=status==='supported-by-stage2-variant-evidence';
+    const status=clean(detail.catalogEvidenceStatus||detail.catalogVerification||coin.catalogEvidenceStatus).toLowerCase();
+    const confirmed=detail.kopickiConfirmed===true||CONFIRMED.has(status);
     const candidate=detail.catalogCandidate&&typeof detail.catalogCandidate==='object'?detail.catalogCandidate:{};
     const confirmedReference=confirmed?clean(coin.kopickiReference||detail.kopickiReference):'';
     const confirmedRarity=confirmed?clean(coin.kopickiRarity||detail.kopickiRarity):'';
@@ -19,12 +20,10 @@
       variant:coin.variant||detail.variant||'',
       kopickiReference:confirmedReference,
       kopickiRarity:confirmedRarity,
-      catalogEvidenceStatus:status||'unconfirmed',
-      // Canonical export schema used by PDF and XLSX.
+      catalogEvidenceStatus:confirmed?(status||'confirmed'):(status||'unconfirmed'),
       kopickiCandidate:candidateReference,
       kopickiCandidateRarity:candidateRarity,
       kopickiCandidateConfidence:candidateConfidence,
-      // Backward-compatible aliases for older export consumers/tests.
       catalogCandidateReference:candidateReference,
       catalogCandidateRarity:candidateRarity,
       catalogCandidateConfidence:candidateConfidence,
