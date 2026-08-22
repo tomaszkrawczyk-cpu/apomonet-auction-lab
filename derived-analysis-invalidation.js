@@ -5,6 +5,8 @@
     "kopickiReference",
     "kopickiRarity",
     "auctionRecords10y",
+    "auctionRecordCount10y",
+    "auctionMarketSnapshot",
     "auctionStrictMatches10y",
     "marketMedian",
     "marketCurrency",
