@@ -1,6 +1,6 @@
 (()=>{
   if(!window.ApoMonet?.load||!window.ApoMonet?.save)return;
-  const VERSION=3;
+  const VERSION=4;
   const clean=v=>String(v??'').trim();
   const comparable=v=>clean(v).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pl-PL');
   const fields=['nominal','ruler','year','mint','metal','variant'];
@@ -12,7 +12,9 @@
   const reanalysisResolved=c=>{
     const current=identityKey(c),key=clean(c?.correctionReanalysisIdentityKey),legacy=legacyKey(c);
     const identityMatches=key===current||(key===legacy&&comparable(c?.variant)===comparable(c?.rawAI?.variant));
-    return Boolean(identityMatches&&c?.marketReanalysisCompletedAt&&c?.detailReanalysisCompletedAt&&c?.detailReanalysisIdentityKey===current);
+    const detailMatches=Boolean(c?.detailReanalysisCompletedAt&&c?.detailReanalysisIdentityKey===current);
+    const marketMatches=Boolean(c?.marketReanalysisCompletedAt&&c?.auctionMarketIdentityKey===current);
+    return Boolean(identityMatches&&detailMatches&&marketMatches);
   };
   const forceInvalidate=c=>{
     const seed={...c};delete seed.derivedStateIdentityKey;
