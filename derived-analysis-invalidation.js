@@ -1,10 +1,10 @@
 (() => {
   const IDENTITY_FIELDS = ["nominal", "ruler", "year", "mint", "metal", "variant"];
   const DERIVED_FIELDS = [
-    "detail","kopickiReference","kopickiRarity",
-    "tyszkiewiczReference","tyszkiewiczRarity","tyszkiewiczValuation","tyszkiewiczEstimate","tyszkiewiczNote","tyszkiewiczEvidence","tyszkiewiczSource",
+    "detail","kopickiReference","kopickiRarity","catalogEvidenceStatus","catalogVerification","catalogCandidate","catalogCandidateReference","catalogCandidateRarity","catalogCandidateConfidence","kopickiCandidate","kopickiCandidateRarity","kopickiCandidateConfidence",
+    "tyszkiewiczReference","tyszkiewiczRarity","tyszkiewiczValue","tyszkiewiczValuation","tyszkiewiczEstimate","tyszkiewiczNote","tyszkiewiczEvidence","tyszkiewiczSource",
     "parchimowiczReference","parchimowiczRarity","parchimowiczValuation","parchimowiczEstimate","parchimowiczNote","parchimowiczEvidence","parchimowiczSource",
-    "literatureReferences","literatureValuation","literatureEvidence","literatureNotes",
+    "specialistReferences","literatureReferences","literatureValuation","literatureEvidence","literatureNotes",
     "auctionRecords10y","auctionRecordCount10y","auctionMarketSnapshot","auctionStrictMatches10y","marketMedian","marketCurrency","priceRange","valuationConfidence","valuationUpdatedAt","estimateLow","estimateHigh","estimatedPrice",
   ];
   const CATALOG_MIN_CONFIDENCE = 80;
