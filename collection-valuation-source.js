@@ -18,5 +18,40 @@
     const currencies=Object.keys(groups);
     return{groups,currencies,staleCount,unvaluedCount,valuedCount:(coins||[]).length-staleCount-unvaluedCount,canShowSingleTotal:currencies.length===1,total:currencies.length===1?groups[currencies[0]]:null,currency:currencies.length===1?currencies[0]:''};
   }
-  window.ApoCollectionValuation=Object.freeze({value,currency,summary});
+  function lang(){return window.ApoLanguageRegistry?.current?.()||window.ApoI18n?.current?.()||localStorage.getItem('apomonet_language_v2')||'pl'}
+  const COPY={
+    pl:{estimate:'Szacunkowo',title:'Szacunkowa wartość',coins:'Monety w kolekcji',valued:'Ze świeżą wyceną',missing:'Bez świeżej wyceny',stale:n=>`${n} ${n===1?'rekord pominięto':'rekordów pominięto'}, ponieważ ${n===1?'wymaga':'wymagają'} ponownej analizy.`,mixed:'Wartości w różnych walutach pokazujemy osobno — nie są sumowane bez przeliczenia.',note:'To suma świeżych zapisanych wycen, a nie gwarantowana cena sprzedaży.',empty:'Najpierw dodaj monety do kolekcji.',none:n=>`Masz ${n} monet, ale żadna nie ma jeszcze świeżej zapisanej wyceny.`},
+    en:{estimate:'Estimated',title:'Estimated value',coins:'Coins in collection',valued:'With fresh valuation',missing:'Without fresh valuation',stale:n=>`${n} ${n===1?'record was':'records were'} excluded because ${n===1?'it requires':'they require'} reanalysis.`,mixed:'Values in different currencies are shown separately and are not added without conversion.',note:'This is the sum of fresh stored valuations, not a guaranteed sale price.',empty:'Add coins to the collection first.',none:n=>`You have ${n} coins, but none has a fresh stored valuation yet.`},
+    de:{estimate:'Geschätzt',title:'Geschätzter Wert',coins:'Münzen in der Sammlung',valued:'Mit aktueller Bewertung',missing:'Ohne aktuelle Bewertung',stale:n=>`${n} ${n===1?'Datensatz wurde':'Datensätze wurden'} wegen erforderlicher Neuanalyse nicht eingerechnet.`,mixed:'Werte in verschiedenen Währungen werden getrennt angezeigt und nicht ohne Umrechnung addiert.',note:'Dies ist die Summe aktueller gespeicherter Bewertungen, kein garantierter Verkaufspreis.',empty:'Fügen Sie zuerst Münzen zur Sammlung hinzu.',none:n=>`Sie haben ${n} Münzen, aber noch keine mit aktueller gespeicherter Bewertung.`},
+    fr:{estimate:'Estimation',title:'Valeur estimée',coins:'Monnaies dans la collection',valued:'Avec estimation à jour',missing:'Sans estimation à jour',stale:n=>`${n} ${n===1?'fiche a été exclue':'fiches ont été exclues'} car une nouvelle analyse est nécessaire.`,mixed:'Les valeurs dans différentes devises sont affichées séparément et ne sont pas additionnées sans conversion.',note:'Il s’agit de la somme des estimations enregistrées à jour, et non d’un prix de vente garanti.',empty:'Ajoutez d’abord des monnaies à la collection.',none:n=>`Vous avez ${n} monnaies, mais aucune n’a encore d’estimation enregistrée à jour.`}
+  };
+  const copy=()=>COPY[lang()]||COPY.en;
+  function money(amount,code){try{return new Intl.NumberFormat(lang()==='pl'?'pl-PL':lang()==='de'?'de-DE':lang()==='fr'?'fr-FR':'en-GB',{style:'currency',currency:code||'PLN',maximumFractionDigits:0}).format(amount||0)}catch{return `${Math.round(amount||0)} ${code||'PLN'}`}}
+  function patchCollectionCards(){
+    if(!location.pathname.endsWith('collection.html')||!window.ApoMonet?.load)return;
+    const byId=new Map((ApoMonet.load().coins||[]).map(c=>[String(c.id),c]));
+    document.querySelectorAll('#coins .collection-coin').forEach(card=>{
+      const href=card.querySelector('a.coin-open')?.getAttribute('href')||'';let id='';try{id=new URL(href,location.href).searchParams.get('id')||''}catch{}
+      const coin=byId.get(id);if(!coin)return;const copyNow=copy(),v=value(coin),cur=currency(coin),holder=card.querySelector('.coin-copy');if(!holder)return;
+      let node=holder.querySelector('.coin-value');
+      if(!v){node?.remove();return}
+      const text=`${copyNow.estimate}: ${money(v,cur)}`;
+      if(!node){node=document.createElement('span');node.className='coin-value';holder.appendChild(node)}
+      if(node.textContent!==text)node.textContent=text;
+    });
+  }
+  function installCollectionSummary(){
+    if(!location.pathname.endsWith('collection.html')||!window.ApoMonet?.load)return;
+    const button=document.getElementById('valueBtn'),box=document.getElementById('valueBox');if(!button||!box)return;
+    button.onclick=()=>{
+      const coins=ApoMonet.load().coins||[],s=summary(coins),c=copy();box.hidden=false;
+      if(!coins.length){box.innerHTML=`<h2>${c.title}</h2><p>${c.empty}</p>`;return}
+      if(!s.valuedCount){box.innerHTML=`<h2>${c.title}</h2><p>${c.none(coins.length)}</p>${s.staleCount?`<p>${c.stale(s.staleCount)}</p>`:''}`;return}
+      const totals=s.currencies.map(code=>money(s.groups[code],code)).join(' + ');
+      box.innerHTML=`<span class="eyebrow">${c.title}</span><div class="value-total">${totals}</div><div class="value-grid"><div class="value-stat"><small>${c.coins}</small><strong>${coins.length}</strong></div><div class="value-stat"><small>${c.valued}</small><strong>${s.valuedCount}</strong></div><div class="value-stat"><small>${c.missing}</small><strong>${coins.length-s.valuedCount}</strong></div></div>${s.currencies.length>1?`<div class="value-note">${c.mixed}</div>`:''}${s.staleCount?`<div class="value-note">${c.stale(s.staleCount)}</div>`:''}<div class="value-note">${c.note}</div>`;
+    };
+  }
+  function installCollectionUi(){if(!location.pathname.endsWith('collection.html'))return;patchCollectionCards();installCollectionSummary();const coins=document.getElementById('coins');if(coins)new MutationObserver(()=>patchCollectionCards()).observe(coins,{childList:true,subtree:true});['languagechange','apo-language-changed','apomonet:language-change'].forEach(e=>addEventListener(e,()=>setTimeout(patchCollectionCards,0)))}
+  window.ApoCollectionValuation=Object.freeze({value,currency,summary,patchCollectionCards,installCollectionSummary});
+  document.readyState==='loading'?addEventListener('DOMContentLoaded',installCollectionUi):installCollectionUi();
 })();
