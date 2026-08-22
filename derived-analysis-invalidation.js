@@ -6,6 +6,7 @@
     "parchimowiczReference","parchimowiczRarity","parchimowiczValuation","parchimowiczEstimate","parchimowiczNote","parchimowiczEvidence","parchimowiczSource",
     "specialistReferences","literatureReferences","literatureValuation","literatureEvidence","literatureNotes",
     "auctionRecords10y","auctionRecordCount10y","auctionMarketSnapshot","auctionStrictMatches10y","marketMedian","marketCurrency","priceRange","valuationConfidence","valuationUpdatedAt","estimateLow","estimateHigh","estimatedPrice",
+    "auctionMarketIdentityKey","correctionReanalysisIdentityKey","marketReanalysisCompletedAt"
   ];
   const CATALOG_MIN_CONFIDENCE = 80;
   const CATALOG_MIN_DIAGNOSTICS = 2;
