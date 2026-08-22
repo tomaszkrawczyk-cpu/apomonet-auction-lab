@@ -45,11 +45,11 @@
           d.warnings=[...(Array.isArray(d.warnings)?d.warnings:[]),`Numer Kopickiego pozostawiono jako niepotwierdzony kandydat: brakuje wystarczających cech diagnostycznych wariantu (diagnostyczne ${evidence.diagnosticCount}, fingerprint ≥70: ${evidence.fingerprintStrong}, pewność ${evidence.confidence}%).`];
         }
       }
-      const add=(id,label,value,extra={})=>{const key=String(id||'').toLowerCase();if(!allowed.has(key))return;if(!meaningful(value))return;refs.push({id:key,label,value:String(value).trim(),...extra})};
+      const add=(id,label,value,extra={})=>{const key=String(id||'').toLowerCase();if(!allowed.has(key))return;if(!meaningful(value))return;if(key==='kopicki'&&d.catalogEvidenceStatus!=='supported-by-stage2-variant-evidence')return;refs.push({id:key,label,value:String(value).trim(),...extra})};
       if(d.catalogEvidenceStatus==='supported-by-stage2-variant-evidence')add('kopicki','Kopicki',d.kopickiReference||d.kopicki||d.catalogReference,d.kopickiRarity?{rarity:d.kopickiRarity}:{});
       add('tyszkiewicz','Tyszkiewicz',d.tyszkiewiczReference||d.tyszkiewiczValue,d.tyszkiewiczValue?{historicalValue:String(d.tyszkiewiczValue),historicalValueOnly:true}:{});
       add('parchimowicz','Parchimowicz',d.parchimowiczReference||d.parchimowicz);
-      for(const r of d.specialistReferences||[]){const key=String(r?.id||r?.label||'').toLowerCase();if(allowed.has(key)&&r?.label&&meaningful(r?.value))refs.push({id:key,label:String(r.label),value:String(r.value).trim(),source:r.source||''})}
+      for(const r of d.specialistReferences||[]){const key=String(r?.id||r?.label||'').toLowerCase();if(key==='kopicki'&&d.catalogEvidenceStatus!=='supported-by-stage2-variant-evidence')continue;if(allowed.has(key)&&r?.label&&meaningful(r?.value))refs.push({id:key,label:String(r.label),value:String(r.value).trim(),source:r.source||''})}
       window.__apoConfirmedStage2Literature={references:refs,receivedAt:new Date().toISOString(),policyMethod:policy?.method||'evidence-based'};
       window.__apoStage2Detail=d;
       window.__apoStage2Base=base;
