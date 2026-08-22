@@ -4,7 +4,6 @@ import fs from 'node:fs';
 
 const app=fs.readFileSync('app.js','utf8');
 const progress=fs.readFileSync('analysis-progress-i18n.js','utf8');
-const legacyAlbum=fs.readFileSync('album-navigation-hotfix.js','utf8');
 
 test('dynamic analysis progress translations are wired into runtime',()=>{
   assert.match(app,/analysis-progress-i18n\.js/);
@@ -13,9 +12,11 @@ test('dynamic analysis progress translations are wired into runtime',()=>{
   assert.match(progress,/apomonet:language-change/);
 });
 
-test('legacy album navigation hotfix stays out of runtime while it targets demo coin route',()=>{
-  assert.match(legacyAlbum,/demo-coin\.html/);
+test('legacy album navigation hotfix is removed while canonical album navigation remains active',()=>{
+  assert.equal(fs.existsSync('album-navigation-hotfix.js'),false);
   assert.doesNotMatch(app,/album-navigation-hotfix\.js/);
+  assert.match(app,/user-album-card-navigation\.js/);
+  assert.match(app,/user-album-auction-context\.js/);
 });
 
 test('export runtime helpers remain wired after module-list edits',()=>{
