@@ -18,8 +18,11 @@ test('mixed currencies are rendered separately in collection summary',()=>{
   assert.match(source,/Wartości w różnych walutach pokazujemy osobno/);
 });
 
-test('legacy inline collection value helper remains overridden by canonical bridge after DOM load',()=>{
+test('legacy inline collection helpers are explicitly replaced by canonical resolvers after DOM load',()=>{
   assert.match(html,/function coinValue\(coin\)/);
+  assert.match(source,/makeLegacyPageUseCanonicalResolvers/);
+  assert.match(source,/window\.coinValue=value/);
+  assert.match(source,/window\.money=/);
   assert.match(source,/DOMContentLoaded/);
   assert.match(source,/button\.onclick=/);
   assert.match(source,/MutationObserver/);
