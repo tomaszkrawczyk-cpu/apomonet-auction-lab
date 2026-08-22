@@ -10,7 +10,7 @@ test('export view suppresses stale market catalog and literature data after iden
   assert.match(source,/valuationSuppressedBecauseStale=true/);
   assert.match(source,/literatureSuppressedBecauseStale=true/);
   assert.match(source,/stale-after-identity-correction/);
-  for(const token of ['estimatedPrice','marketMedian','priceRange','estimateLow','estimateHigh','tyszkiewiczReference','tyszkiewiczValue','parchimowiczReference'])assert.ok(source.includes(`'${token}'`),token);
+  for(const token of ['estimatedPrice','marketMedian','priceRange','estimateLow','estimateHigh','estimatedValue','valuation','marketValue','priceEstimate','estimate','marketCurrency','valuationCurrency','auctionRecords10y','auctionMarketIdentityKey','marketReanalysisCompletedAt','tyszkiewiczReference','tyszkiewiczValue','parchimowiczReference'])assert.ok(source.includes(`'${token}'`),token);
 });
 
 test('XLSX export never publishes stale derived market or catalog evidence',()=>{
