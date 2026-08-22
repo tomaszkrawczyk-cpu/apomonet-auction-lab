@@ -4,7 +4,7 @@
   const supported=new Set(['en','de','fr']);
   const nativeFetch=window.fetch.bind(window);
   const originals=new WeakMap();
-  let maps=new Map(),basicPayload=null,detailPayload=null,seq=0;
+  let maps=new Map(),basicPayload=null,detailPayload=null;
   const lang=()=>window.ApoLanguageRegistry?.current?.()||window.ApoI18n?.current?.()||localStorage.getItem(LANG_KEY)||'pl';
   const clean=v=>String(v??'').trim();
   const add=(items,key,value)=>{const text=clean(value);if(text)items.push({key,text})};
@@ -37,16 +37,16 @@
     }
   }
   async function translate(kind,payload){
-    const l=lang();if(!supported.has(l)||!payload)return;
+    const requestedLanguage=lang();if(!supported.has(requestedLanguage)||!payload)return;
     const items=itemsFrom(kind,payload);if(!items.length)return;
-    const token=++seq;
     try{
-      const r=await nativeFetch('/api/translate-analysis',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({language:l,items})});
-      if(!r.ok||token!==seq&&kind==='analysis')return;
-      const out=await r.json(),byKey=out?.translations||{};
+      const r=await nativeFetch('/api/translate-analysis',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({language:requestedLanguage,items})});
+      if(!r.ok||lang()!==requestedLanguage)return;
+      const out=await r.json();if(lang()!==requestedLanguage)return;
+      const byKey=out?.translations||{};
       for(const item of items){const translated=clean(byKey[item.key]);if(translated)maps.set(item.text,translated)}
       apply();
-      window.dispatchEvent(new CustomEvent('apo:analysis-ai-translated',{detail:{language:l,kind}}));
+      window.dispatchEvent(new CustomEvent('apo:analysis-ai-translated',{detail:{language:requestedLanguage,kind}}));
     }catch{}
   }
   window.fetch=async function(input,init){
