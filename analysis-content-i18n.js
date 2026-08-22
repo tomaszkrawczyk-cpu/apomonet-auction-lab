@@ -1,14 +1,14 @@
 (() => {
   const LANGUAGE_KEY = "apomonet_language_v2";
-  const CACHE_KEY = "apomonet_analysis_translation_cache_v3";
+  const CACHE_KEY = "apomonet_analysis_translation_cache_v4";
   const STRING_FIELDS = ["title","country","ruler","nominal","metal","mint","variant","grade","rarity","imageQualityNote","denominationEvidence","valuationNote","description","fullDescription"];
-  const ARRAY_FIELDS = ["warnings","followUpQuestions"];
+  const ARRAY_FIELDS = ["warnings","uncertaintyReasons","followUpQuestions"];
   const DETAIL_STRING_FIELDS = ["variant","kopickiRarity","obverseDetails","reverseDetails","legendPunctuation","fullDescription","visibleDateReading","obverseLegend","reverseLegend","mintmaster","gradeAssessment","edgeDescription"];
   const DETAIL_ARRAY_FIELDS = ["warnings","diagnosticFeatures","authenticitySignals","recommendedChecks"];
   const clone=value=>{try{return JSON.parse(JSON.stringify(value))}catch{return value&&typeof value==='object'?{...value}:value}};
-  function currentLanguage(){return localStorage.getItem(LANGUAGE_KEY)||'pl'}
+  function currentLanguage(){return window.ApoLanguageRegistry?.current?.()||window.ApoI18n?.current?.()||localStorage.getItem(LANGUAGE_KEY)||'pl'}
   function canTranslate(language){if(language==='pl')return false;const registry=window.ApoLanguageRegistry;if(registry?.isEnabled)return registry.isEnabled(language);return /^[a-z]{2,3}(?:-[A-Za-z0-9]+)?$/.test(String(language||''))}
-  function flatten(record){const items=[],add=(key,value)=>{const text=String(value??'').trim();if(text)items.push({key,text})};for(const key of STRING_FIELDS)add(key,record?.[key]);for(const key of ARRAY_FIELDS)(Array.isArray(record?.[key])?record[key]:[]).forEach((text,index)=>add(`${key}.${index}`,text));for(const key of DETAIL_STRING_FIELDS)add(`detail.${key}`,record?.detail?.[key]);for(const key of DETAIL_ARRAY_FIELDS)(Array.isArray(record?.detail?.[key])?record.detail[key]:[]).forEach((text,index)=>add(`detail.${key}.${index}`,text));return items.slice(0,90)}
+  function flatten(record){const items=[],add=(key,value)=>{const text=String(value??'').trim();if(text)items.push({key,text})};for(const key of STRING_FIELDS)add(key,record?.[key]);for(const key of ARRAY_FIELDS)(Array.isArray(record?.[key])?record[key]:[]).forEach((text,index)=>add(`${key}.${index}`,text));for(const key of DETAIL_STRING_FIELDS)add(`detail.${key}`,record?.detail?.[key]);for(const key of DETAIL_ARRAY_FIELDS)(Array.isArray(record?.detail?.[key])?record.detail[key]:[]).forEach((text,index)=>add(`detail.${key}.${index}`,text));return items.slice(0,96)}
   function hash(value){let result=2166136261;for(let i=0;i<value.length;i++){result^=value.charCodeAt(i);result=Math.imul(result,16777619)}return(result>>>0).toString(36)}
   function loadCache(){try{const value=JSON.parse(localStorage.getItem(CACHE_KEY)||'{}');return value&&typeof value==='object'?value:{}}catch{return{}}}
   function saveCache(cache){try{const entries=Object.entries(cache).slice(-30);localStorage.setItem(CACHE_KEY,JSON.stringify(Object.fromEntries(entries)))}catch{}}
