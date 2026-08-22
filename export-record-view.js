@@ -6,6 +6,13 @@
   const CONFIRMED=new Set(['supported-by-stage2-variant-evidence','verified-curated','confirmed','verified']);
   const STALE_MARKET_FIELDS=['estimatedPrice','marketMedian','priceRange','estimateLow','estimateHigh','estimatedValue','valuation','marketValue'];
   const STALE_LITERATURE_FIELDS=['tyszkiewiczReference','tyszkiewiczRarity','tyszkiewiczValue','tyszkiewiczValuation','tyszkiewiczEstimate','tyszkiewiczNote','tyszkiewiczEvidence','tyszkiewiczSource','parchimowiczReference','parchimowiczRarity','parchimowiczValuation','parchimowiczEstimate','parchimowiczNote','parchimowiczEvidence','parchimowiczSource','specialistReferences','literatureReferences','literatureValuation','literatureEvidence','literatureNotes'];
+  const exportPhoto=(coin,side)=>{
+    if(coin?.albumPhotoMode==='none')return'';
+    if(coin?.albumPhotoMode==='cut'&&Number(coin.albumPhotoPrepVersion||0)>=2){
+      return side==='obverse'?clean(coin.albumObverseImage):clean(coin.albumReverseImage);
+    }
+    return side==='obverse'?clean(coin?.obverseImage||coin?.image||coin?.img):clean(coin?.reverseImage);
+  };
   const normalize=coin=>{
     if(!coin||typeof coin!=='object')return coin;
     const detail=coin.detail&&typeof coin.detail==='object'?coin.detail:{};
@@ -20,6 +27,8 @@
     const candidateConfidence=!stale&&!confirmed?(Number(candidate.confidence||0)||0):0;
     const output={
       ...coin,
+      obverseImage:exportPhoto(coin,'obverse'),
+      reverseImage:exportPhoto(coin,'reverse'),
       variant:coin.variant||detail.variant||'',
       kopickiReference:confirmedReference,
       kopickiRarity:confirmedRarity,
@@ -45,5 +54,5 @@
     if(!state||!Array.isArray(state.coins))return state;
     return {...state,coins:state.coins.map(normalize)};
   };
-  window.ApoExportRecordView={normalize};
+  window.ApoExportRecordView={normalize,exportPhoto};
 })();
