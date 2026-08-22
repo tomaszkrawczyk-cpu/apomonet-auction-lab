@@ -1,7 +1,11 @@
 (() => {
   const IDENTITY_FIELDS = ["nominal", "ruler", "year", "mint", "metal", "variant"];
   const DERIVED_FIELDS = [
-    "detail","kopickiReference","kopickiRarity","auctionRecords10y","auctionRecordCount10y","auctionMarketSnapshot","auctionStrictMatches10y","marketMedian","marketCurrency","priceRange","valuationConfidence","valuationUpdatedAt","estimateLow","estimateHigh","estimatedPrice",
+    "detail","kopickiReference","kopickiRarity",
+    "tyszkiewiczReference","tyszkiewiczRarity","tyszkiewiczValuation","tyszkiewiczEstimate","tyszkiewiczNote","tyszkiewiczEvidence","tyszkiewiczSource",
+    "parchimowiczReference","parchimowiczRarity","parchimowiczValuation","parchimowiczEstimate","parchimowiczNote","parchimowiczEvidence","parchimowiczSource",
+    "literatureReferences","literatureValuation","literatureEvidence","literatureNotes",
+    "auctionRecords10y","auctionRecordCount10y","auctionMarketSnapshot","auctionStrictMatches10y","marketMedian","marketCurrency","priceRange","valuationConfidence","valuationUpdatedAt","estimateLow","estimateHigh","estimatedPrice",
   ];
   const CATALOG_MIN_CONFIDENCE = 80;
   const CATALOG_MIN_DIAGNOSTICS = 2;
@@ -37,7 +41,7 @@
     output.needsDetailedAnalysis = true;
     output.derivedDataStale = true;
     output.derivedDataStaleReason = "Dane pochodne unieważniono po korekcie identyfikacji zaakceptowanej przez użytkownika.";
-    output.valuationNote = "Wycena i notowania wymagają ponownego dopasowania po korekcie identyfikacji.";
+    output.valuationNote = "Wycena, literatura i notowania wymagają ponownego dopasowania po korekcie identyfikacji.";
     output.derivedStateIdentityKey = changed.map((key) => `${key}:${comparable(output[key])}`).join("|");
     output.derivedStateInvalidatedAt = new Date().toISOString();
     return output;
