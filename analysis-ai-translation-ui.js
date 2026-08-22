@@ -1,11 +1,11 @@
 (()=>{
   if(!location.pathname.endsWith('analyze.html'))return;
   const LANG_KEY='apomonet_language_v2',OWNER_KEY='apomonetOwnerAnswers';
-  const supported=new Set(['en','de','fr']);
   const nativeFetch=window.fetch.bind(window);
   const originals=new WeakMap();
   let maps=new Map(),basicPayload=null,detailPayload=null,seq=0;
   const lang=()=>window.ApoLanguageRegistry?.current?.()||window.ApoI18n?.current?.()||localStorage.getItem(LANG_KEY)||'pl';
+  const canTranslate=l=>l!=='pl'&&(window.ApoLanguageRegistry?.isEnabled?.(l)??/^[a-z]{2,3}(?:-[A-Za-z0-9]+)?$/.test(String(l||'')));
   const clean=v=>String(v??'').trim();
   const add=(items,key,value)=>{const text=clean(value);if(text)items.push({key,text})};
   const copy={
@@ -14,7 +14,7 @@
     de:{title:'Zusätzliche Angaben benötigt',hint:'Diese Antworten können helfen, Bestimmung oder Variante in Stufe 2 zu klären.',save:'Antworten speichern',saved:'Zusätzliche Angaben gespeichert.',empty:'Keine zusätzlichen Angaben eingegeben.'},
     fr:{title:'Informations complémentaires nécessaires',hint:'Ces réponses peuvent aider à préciser l’identification ou la variante à l’étape 2.',save:'Enregistrer les réponses',saved:'Informations complémentaires enregistrées.',empty:'Aucune information complémentaire saisie.'}
   };
-  const ui=k=>copy[lang()]?.[k]||copy.pl[k];
+  const ui=k=>copy[lang()]?.[k]||copy.en[k]||copy.pl[k];
   function itemsFrom(kind,data){
     const items=[];
     if(kind==='analysis'){
@@ -46,7 +46,7 @@
     renderFollowups();
   }
   async function translate(kind,payload){
-    const requestedLang=lang();if(!supported.has(requestedLang)||!payload)return;
+    const requestedLang=lang();if(!canTranslate(requestedLang)||!payload)return;
     const items=itemsFrom(kind,payload);if(!items.length)return;
     const token=++seq;
     try{
@@ -99,5 +99,5 @@
   const mount=()=>{new MutationObserver(schedule).observe(document.body,{subtree:true,childList:true,characterData:true});renderFollowups()};
   document.readyState==='loading'?addEventListener('DOMContentLoaded',mount):mount();
   ['languagechange','apo-language-changed','apomonet:language-change'].forEach(e=>addEventListener(e,()=>setTimeout(retranslate,0)));
-  window.ApoAnalysisAITranslation={refresh:retranslate,apply,renderFollowups};
+  window.ApoAnalysisAITranslation={refresh:retranslate,apply,renderFollowups,canTranslate};
 })();
