@@ -50,7 +50,16 @@
   function build(){const data={format:'APOMONET_BACKUP',version:8,createdAt:new Date().toISOString(),items:{}};for(const k of KEYS){const v=localStorage.getItem(k);if(v!==null)data.items[k]=v}return data}
   function snapshot(keys){const out={};for(const k of keys)out[k]=localStorage.getItem(k);return out}
   function rollback(before){for(const [k,v] of Object.entries(before)){if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}}
-  function transactionalRestore(items){const clean=durableItems(items),keys=Object.keys(clean),before=snapshot(keys);try{for(const [k,v] of Object.entries(clean))localStorage.setItem(k,v);for(const key of TRANSIENT)localStorage.removeItem(key)}catch(error){try{rollback(before)}catch{}throw error}}
+  function transactionalRestore(items){
+    const clean=durableItems(items),writeKeys=Object.keys(clean),touched=[...new Set([...writeKeys,...TRANSIENT])],before=snapshot(touched);
+    try{
+      for(const [k,v] of Object.entries(clean))localStorage.setItem(k,v);
+      for(const key of TRANSIENT)localStorage.removeItem(key);
+    }catch(error){
+      try{rollback(before)}catch{}
+      throw error;
+    }
+  }
   function mount(){
     const download=document.getElementById('download'),restore=document.getElementById('restore'),file=document.getElementById('file'),status=document.getElementById('status');if(!download||!restore||!file||!status)return;
     download.onclick=()=>{const blob=new Blob([JSON.stringify(build(),null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='APOMONET-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200)};
