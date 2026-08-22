@@ -16,7 +16,12 @@
   function cleanupLinkedWatchlist(id){
     const state=ApoMonet.load();
     const before=Array.isArray(state.watchlist)?state.watchlist:[];
-    const after=before.filter(x=>String(x?.coinId||'')!==String(id));
+    const sid=String(id);
+    const after=before.filter(x=>{
+      const linked=String(x?.coinId||'')===sid;
+      const legacyCoinTarget=!x?.coinId&&String(x?.id||'')===sid&&(x?.type==='coin'||x?.ruler||x?.nominal);
+      return !(linked||legacyCoinTarget);
+    });
     if(after.length!==before.length){state.watchlist=after;ApoMonet.save(state)}
   }
   ApoMonet.deleteCoin=function(id){
