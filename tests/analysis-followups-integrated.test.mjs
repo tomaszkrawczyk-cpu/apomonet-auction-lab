@@ -30,9 +30,11 @@ test('owner answers and recovery cache are cleared for a genuinely new coin but 
   assert.match(guard,/s\.id!==coinId/);
 });
 
-test('follow-up copy is localized for the current supported UI languages',()=>{
+test('follow-up copy is localized for the current supported UI languages and translation eligibility is registry-driven',()=>{
   const ui=read('analysis-ai-translation-ui.js');
   for(const l of ['pl','en','de','fr']) assert.match(ui,new RegExp(`${l}:\\{title:`));
+  assert.match(ui,/ApoLanguageRegistry\?\.isEnabled/);
+  assert.doesNotMatch(ui,/new Set\(\['en','de','fr'\]\)/);
 });
 
 test('legacy follow-up wrapper is removed so it cannot compete for fetch interception',()=>{
