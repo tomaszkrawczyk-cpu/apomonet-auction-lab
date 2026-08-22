@@ -1,0 +1,27 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+
+const market=fs.readFileSync('market-reanalysis-refresh.js','utf8');
+const resolution=fs.readFileSync('correction-reanalysis-resolution.js','utf8');
+const app=fs.readFileSync('app.js','utf8');
+
+test('market refresh stores correction identity completion key',()=>{
+  assert.match(market,/correctionReanalysisIdentityKey/);
+  assert.match(market,/marketReanalysisCompletedAt/);
+  assert.match(market,/needsReanalysis:false/);
+});
+
+test('resolved corrected identity is not forced back into reanalysis on later page loads',()=>{
+  assert.match(resolution,/correctionReanalysisIdentityKey===identityKey\(coin\)/);
+  assert.match(resolution,/needsReanalysis:false/);
+  assert.match(resolution,/derivedDataStale:false/);
+  assert.match(resolution,/repairState/);
+});
+
+test('resolution guard loads after correction and derived invalidation layers',()=>{
+  const correction=app.indexOf('correction-consistency.js');
+  const invalidation=app.indexOf('derived-analysis-invalidation.js');
+  const resolutionIndex=app.indexOf('correction-reanalysis-resolution.js');
+  assert.ok(correction>=0&&invalidation>correction&&resolutionIndex>invalidation);
+});
