@@ -10,7 +10,12 @@
     let current=coin;
     for(const fromId of fromIds)current=ApoMonet.moveCoinBetweenAlbums(coinId,fromId,collection.id)||current;
     if(!fromIds.length)current=ApoMonet.assignCoinToAlbum(coinId,collection.id)||current;
-    const patch={id:coinId,purchaseStatus:'purchased',purchasedAt:new Date().toISOString(),purchaseSource:lot.sourceLabel||lot.source||coin.purchaseSource||'',purchaseUrl:lot.sourceUrl||lot.url||coin.purchaseUrl||'',purchasePrice:Number(lot.hammerPrice||lot.realizedPrice||lot.price)||coin.purchasePrice||'',purchaseCurrency:lot.currency||coin.purchaseCurrency||coin.currency||'PLN'};
+    const purchaseSource=lot.sourceLabel||lot.source||coin.purchaseSource||coin.auctionSource||'';
+    const purchaseSourceUrl=lot.sourceUrl||lot.url||coin.purchaseSourceUrl||coin.purchaseUrl||coin.auctionUrl||'';
+    const price=Number(lot.hammerPrice??lot.realizedPrice??lot.price);
+    const purchasePrice=Number.isFinite(price)&&price>0?price:(coin.purchasePrice||'');
+    const purchaseCurrency=String(lot.currency||coin.purchaseCurrency||coin.currency||'PLN').trim().toUpperCase()||'PLN';
+    const patch={id:coinId,purchaseStatus:'purchased',purchasedAt:new Date().toISOString(),purchaseSource,purchaseSourceUrl,purchaseUrl:purchaseSourceUrl,purchasePrice,purchaseCurrency};
     current=ApoMonet.upsertCoin(patch);
     return {ok:true,coin:current,collectionAlbumId:collection.id,removedFrom:fromIds};
   }
