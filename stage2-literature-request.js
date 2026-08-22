@@ -20,6 +20,14 @@
     const supported=meaningful(reference)&&meaningful(variant)&&confidence>=80&&(diagnostics.length>=2||fingerprintStrong>=3);
     return{supported,reference,variant,diagnosticCount:diagnostics.length,fingerprintStrong,confidence};
   };
+  const acceptedSessionAnalysis=()=>{try{return JSON.parse(sessionStorage.getItem('apomonetAnalysisSession')||'null')?.a||null}catch{return null}};
+  const guardDetail=detail=>{
+    let guarded=detail&&typeof detail==='object'?{...detail}:{};
+    const accepted=acceptedSessionAnalysis();
+    if(accepted?.userAccepted&&window.ApoDerivedInvalidation?.protectAcceptedDetail)guarded=ApoDerivedInvalidation.protectAcceptedDetail(guarded,accepted);
+    if(window.ApoDerivedInvalidation?.gateCatalogEvidence)guarded=ApoDerivedInvalidation.gateCatalogEvidence(guarded);
+    return guarded;
+  };
   window.fetch=async function(input,init={}){
     const url=typeof input==='string'?input:String(input?.url||'');
     if(url!=='/api/analyze-detail')return nativeFetch(input,init);
@@ -31,7 +39,7 @@
     const response=await nativeFetch(input,{...init,body:JSON.stringify(next)});
     try{
       const data=await response.clone().json();
-      const d=data?.detail||{};
+      const d=guardDetail(data?.detail||{});
       const refs=[];
       const allowed=new Set((policy?.references||[]).map(r=>String(r?.id||'').toLowerCase()).filter(Boolean));
       const evidence=catalogEvidence(d);
@@ -58,4 +66,5 @@
     }catch{}
     return response;
   };
+  window.ApoStage2LiteratureRequest=Object.freeze({canonicalBase,catalogEvidence,guardDetail,acceptedSessionAnalysis});
 })();
