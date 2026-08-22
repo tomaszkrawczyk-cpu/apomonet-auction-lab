@@ -29,8 +29,9 @@
     try { return typeof options?.body === 'string' ? JSON.parse(options.body) : null; } catch { return null; }
   }
   function responseFromCache(cached) {
-    if (!cached?.text) return null;
-    return new Response(cached.text, { status: cached.status || 200, headers: { 'Content-Type': 'application/json' } });
+    const status = Number(cached?.status || 0);
+    if (!cached?.text || status < 200 || status >= 300) return null;
+    return new Response(cached.text, { status, headers: { 'Content-Type': 'application/json' } });
   }
   function sleep(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
 
@@ -62,8 +63,10 @@
           const response = await originalFetch(input, options);
           const text = await response.clone().text();
           const next = loadState();
-          next.recoveryCache = next.recoveryCache || {};
-          next.recoveryCache[stage] = { requestBody: body, text, status: response.status, completedAt: Date.now() };
+          if (response.ok) {
+            next.recoveryCache = next.recoveryCache || {};
+            next.recoveryCache[stage] = { requestBody: body, text, status: response.status, completedAt: Date.now() };
+          }
           delete next.pending;
           saveState(next);
           return response;
@@ -134,7 +137,7 @@
     }
 
     const cache = loadState().recoveryCache?.stage1;
-    if (!cache) { message('Zdjęcia zostały przywrócone. Uruchom Etap 1, a następnie analizę szczegółową.'); return; }
+    if (!responseFromCache(cache)) { message('Zdjęcia zostały przywrócone. Uruchom Etap 1, a następnie analizę szczegółową.'); return; }
     message('Odtwarzam Etap 1 przed wznowieniem analizy szczegółowej…');
     document.getElementById('go')?.click();
     const ready = await waitFor(() => !document.getElementById('panel')?.classList.contains('hidden'), 20000);
