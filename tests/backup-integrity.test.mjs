@@ -13,9 +13,11 @@ test('backup includes newer learning, auction-cost and collection preference lay
   for(const key of ['apomonetCommunityEvidenceV1','apomonet_auction_fee_rules_v1','apomonetCoinFingerprintsV1','apomonetHardNegativesV1','apomonetMultiSourceKnowledgeV1','apomonet_collection_view_v1','apomonet_collection_sort_v1'])assert.ok(backup.includes(key),key);
 });
 
-test('text preferences are not forced through JSON parsing',()=>{
+test('text preferences are validated as supported enums, not merely accepted as arbitrary strings',()=>{
   assert.match(backup,/TEXT_KEYS/);
-  for(const key of ['apomonet_language_v2','apomonet_album_view','apomonet_collection_view_v1','apomonet_collection_sort_v1'])assert.ok(backup.includes(key),key);
+  assert.match(backup,/ALLOWED_TEXT/);
+  for(const token of ["new Set(['pl','en','de','fr'])","new Set(['grid','list'])","'added-desc','year-asc','year-desc','nominal-desc','nominal-asc'"])assert.ok(backup.includes(token),token);
+  assert.match(backup,/if\(choices&&!choices\.has\(v\)\)/);
   assert.match(backup,/JSON_KEYS=new Set\(KEYS\.filter\(k=>!TEXT_KEYS\.has\(k\)\)\)/);
 });
 
@@ -32,9 +34,9 @@ test('restore rolls back partial writes',()=>{
   assert.match(backup,/rollback\(before\)/);
 });
 
-test('backup version 7 accepts supported older backups',()=>{
-  assert.match(backup,/version:7/);
-  assert.match(backup,/\[1,2,3,4,5,6,7\]\.includes/);
+test('backup version 8 accepts supported older backups',()=>{
+  assert.match(backup,/version:8/);
+  assert.match(backup,/\[1,2,3,4,5,6,7,8\]\.includes/);
 });
 
 test('demo album moves and analysis recovery cache are transient, not portable backup data',()=>{
