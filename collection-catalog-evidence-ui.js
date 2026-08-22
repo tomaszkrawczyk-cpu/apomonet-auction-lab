@@ -1,18 +1,20 @@
 (()=>{
   if(!location.pathname.endsWith('collection.html'))return;
   const L={
-    pl:{general:'Rzadkość ogólna',confirmed:'Kopicki potwierdzony',candidate:'Kandydat Kopicki'},
-    en:{general:'General rarity',confirmed:'Confirmed Kopicki',candidate:'Kopicki candidate'},
-    de:{general:'Allgemeine Seltenheit',confirmed:'Kopicki bestätigt',candidate:'Kopicki-Kandidat'},
-    fr:{general:'Rareté générale',confirmed:'Kopicki confirmé',candidate:'Candidat Kopicki'}
+    pl:{general:'Rzadkość ogólna',confirmed:'Kopicki potwierdzony',candidate:'Kandydat Kopicki',stale:'Katalog wymaga ponownej analizy'},
+    en:{general:'General rarity',confirmed:'Confirmed Kopicki',candidate:'Kopicki candidate',stale:'Catalog requires reanalysis'},
+    de:{general:'Allgemeine Seltenheit',confirmed:'Kopicki bestätigt',candidate:'Kopicki-Kandidat',stale:'Katalog muss neu analysiert werden'},
+    fr:{general:'Rareté générale',confirmed:'Kopicki confirmé',candidate:'Candidat Kopicki',stale:'Le catalogue nécessite une nouvelle analyse'}
   };
   const lang=()=>window.ApoLanguageRegistry?.current?.()||window.ApoI18n?.current?.()||localStorage.getItem('apomonet_language_v2')||'pl';
   const t=k=>L[lang()]?.[k]||L.en[k]||L.pl[k]||k;
   const clean=v=>String(v??'').trim();
   const CONFIRMED=new Set(['supported-by-stage2-variant-evidence','verified-curated','confirmed','verified']);
-  const isConfirmed=(detail,coin)=>detail?.kopickiConfirmed===true||CONFIRMED.has(clean(detail?.catalogEvidenceStatus||detail?.catalogVerification||coin?.catalogEvidenceStatus).toLowerCase());
+  const stale=coin=>Boolean(coin?.derivedDataStale||coin?.needsReanalysis);
+  const isConfirmed=(detail,coin)=>!stale(coin)&&(detail?.kopickiConfirmed===true||CONFIRMED.has(clean(detail?.catalogEvidenceStatus||detail?.catalogVerification||coin?.catalogEvidenceStatus).toLowerCase()));
   function coinForCard(card){const id=card.querySelector('.coin-pick')?.dataset?.id||new URL(card.querySelector('.coin-open')?.href||location.href).searchParams.get('id');return id&&window.ApoMonet?.getCoin?ApoMonet.getCoin(id):null}
   function rarityLabel(coin){
+    if(stale(coin))return t('stale');
     const detail=coin?.detail&&typeof coin.detail==='object'?coin.detail:{};
     const confirmed=isConfirmed(detail,coin);
     const confirmedRarity=confirmed?clean(coin?.kopickiRarity||detail.kopickiRarity):'';
