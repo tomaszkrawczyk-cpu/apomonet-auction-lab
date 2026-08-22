@@ -14,6 +14,13 @@ test('analysis recovery cache accepts successful HTTP responses only', () => {
   );
 });
 
+test('recovery cache stores a compact image fingerprint instead of duplicating full photos', () => {
+  assert.match(source, /function requestKey\(body\)/);
+  assert.match(source, /requestKey: key/);
+  assert.doesNotMatch(source, /next\.recoveryCache\[stage\]\s*=\s*\{\s*requestBody:/);
+  assert.match(source, /cachedEntry\?\.requestKey \|\| requestKey\(cachedEntry\?\.requestBody\)/);
+});
+
 test('analysis recovery keeps retry count bounded and only retries suspension failures', () => {
   assert.match(source, /const MAX_RETRIES = 1/);
   assert.match(source, /hiddenDuringActiveRequest \|\| document\.visibilityState === 'hidden'/);
