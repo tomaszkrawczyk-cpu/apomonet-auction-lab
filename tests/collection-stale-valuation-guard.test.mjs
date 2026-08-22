@@ -2,24 +2,26 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
-const guard=fs.readFileSync('collection-stale-valuation-guard.js','utf8');
+const valuation=fs.readFileSync('collection-valuation-source.js','utf8');
+const invalidation=fs.readFileSync('derived-analysis-invalidation.js','utf8');
 const app=fs.readFileSync('app.js','utf8');
 
-test('collection runtime loads stale valuation guard',()=>{
-  assert.match(app,/collection-stale-valuation-guard\.js/);
+test('obsolete collection stale override is intentionally not loaded',()=>{
+  assert.doesNotMatch(app,/collection-stale-valuation-guard\.js/);
+  assert.match(app,/collection-valuation-source\.js/);
 });
 
-test('stale derived records are excluded from collection valuation fields',()=>{
-  assert.match(guard,/derivedDataStale/);
-  assert.match(guard,/needsReanalysis/);
-  assert.match(guard,/valuationSuppressedBecauseStale:true/);
-  for(const field of ['value','estimatedValue','estimate','valuation','priceEstimate','marketValue','marketMedian','estimateLow','estimateHigh','estimatedPrice','priceRange']){
-    assert.match(guard,new RegExp(`['\"]${field}['\"]`));
+test('canonical valuation source excludes stale derived records',()=>{
+  assert.match(valuation,/derivedDataStale/);
+  assert.match(valuation,/needsReanalysis/);
+  assert.match(valuation,/valuationSuppressedBecauseStale/);
+  assert.match(valuation,/return 0/);
+});
+
+test('identity invalidation clears persisted market-derived fields before a fresh valuation',()=>{
+  for(const field of ['estimatedValue','estimate','valuation','priceEstimate','marketValue','marketMedian','estimateLow','estimateHigh','estimatedPrice','priceRange']){
+    assert.ok(invalidation.includes(field),field);
   }
-});
-
-test('guard changes only collection view data and does not erase persisted history',()=>{
-  assert.match(guard,/location\.pathname\.endsWith\('collection\.html'\)/);
-  assert.doesNotMatch(guard,/ApoMonet\.save/);
-  assert.doesNotMatch(guard,/localStorage\.setItem/);
+  assert.match(invalidation,/needsReanalysis:true/);
+  assert.match(invalidation,/derivedDataStale:true/);
 });
