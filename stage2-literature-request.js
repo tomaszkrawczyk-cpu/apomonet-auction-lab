@@ -1,5 +1,7 @@
 (()=>{
   if(!location.pathname.endsWith('analyze.html'))return;
+  const loadUi=()=>{if(document.querySelector('script[data-apo-stage2-literature-ui]'))return;const s=document.createElement('script');s.src='stage2-literature-ui.js';s.dataset.apoStage2LiteratureUi='1';document.head.appendChild(s)};
+  loadUi();
   const nativeFetch=window.fetch.bind(window);
   window.fetch=async function(input,init={}){
     const url=typeof input==='string'?input:String(input?.url||'');
