@@ -28,6 +28,10 @@
     if(window.ApoDerivedInvalidation?.gateCatalogEvidence)guarded=ApoDerivedInvalidation.gateCatalogEvidence(guarded);
     return guarded;
   };
+  const responseWithDetail=(response,data,detail)=>{
+    const headers=new Headers(response.headers);headers.set('content-type','application/json; charset=utf-8');
+    return new Response(JSON.stringify({...data,detail}),{status:response.status,statusText:response.statusText,headers});
+  };
   window.fetch=async function(input,init={}){
     const url=typeof input==='string'?input:String(input?.url||'');
     if(url!=='/api/analyze-detail')return nativeFetch(input,init);
@@ -63,8 +67,8 @@
       window.__apoStage2Base=base;
       window.dispatchEvent(new CustomEvent('apo-stage2-literature',{detail:window.__apoConfirmedStage2Literature}));
       window.dispatchEvent(new CustomEvent('apo-stage2-detail',{detail:{base,detail:d,literature:window.__apoConfirmedStage2Literature}}));
-    }catch{}
-    return response;
+      return responseWithDetail(response,data,d);
+    }catch{return response}
   };
-  window.ApoStage2LiteratureRequest=Object.freeze({canonicalBase,catalogEvidence,guardDetail,acceptedSessionAnalysis});
+  window.ApoStage2LiteratureRequest=Object.freeze({canonicalBase,catalogEvidence,guardDetail,acceptedSessionAnalysis,responseWithDetail});
 })();
