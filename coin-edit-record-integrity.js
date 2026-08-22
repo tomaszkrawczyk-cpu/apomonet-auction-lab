@@ -10,6 +10,7 @@
   const lang=()=>window.ApoLanguageRegistry?.current?.()||window.ApoI18n?.current?.()||localStorage.getItem('apomonet_language_v2')||'pl';
   const text=k=>L[lang()]?.[k]||L.en[k]||L.pl[k];
   const currentId=()=>new URLSearchParams(location.search).get('id');
+  const persistent=src=>typeof src==='string'&&(src.startsWith('data:image/')||src.startsWith('http://')||src.startsWith('https://'));
 
   function latestCoin(){
     const id=currentId();
@@ -21,16 +22,21 @@
     if(!fresh)return false;
     let old={};
     try{old=JSON.parse(sessionStorage.getItem('apomonetAnalysisSession')||'{}')||{}}catch{}
+    const oldImgs=Array.isArray(old.imgs)?[...old.imgs]:[null,null];
+    const imgs=[persistent(fresh.obverseImage)?fresh.obverseImage:oldImgs[0]||null,persistent(fresh.reverseImage)?fresh.reverseImage:oldImgs[1]||null];
+    const oldAnalysis=Array.isArray(old.analysisImgs)?[...old.analysisImgs]:[null,null];
+    const analysisImgs=[oldAnalysis[0]||imgs[0],oldAnalysis[1]||imgs[1]];
+    const diagnostics=Array.isArray(old.photoDiagnostics)?[...old.photoDiagnostics]:[null,null];
     const corrected={
       ...(old.a||{}),
       ...fresh,
-      description:fresh.description||'',
-      fullDescription:fresh.description||'',
+      description:fresh.description||old.a?.description||'',
+      fullDescription:fresh.fullDescription||fresh.description||old.a?.fullDescription||old.a?.description||'',
       userAccepted:true,
       correctedAt:new Date().toISOString()
     };
     try{
-      sessionStorage.setItem('apomonetAnalysisSession',JSON.stringify({id:fresh.id,a:corrected,at:Date.now(),version:2}));
+      sessionStorage.setItem('apomonetAnalysisSession',JSON.stringify({...old,id:fresh.id,a:corrected,imgs,analysisImgs,photoDiagnostics:diagnostics,at:Date.now(),version:Math.max(Number(old.version)||0,5)}));
       sessionStorage.setItem('apomonetReturnToAnalysis','1');
       return true;
     }catch{return false}
@@ -85,5 +91,6 @@
     }
   }
 
+  window.ApoCoinEditRecordIntegrity=Object.freeze({writeFreshAnalysisSession});
   document.readyState==='loading'?addEventListener('DOMContentLoaded',mount):setTimeout(mount,0);
 })();
