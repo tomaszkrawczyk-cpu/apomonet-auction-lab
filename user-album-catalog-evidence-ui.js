@@ -9,11 +9,12 @@
   const lang=()=>window.ApoLanguageRegistry?.current?.()||window.ApoI18n?.current?.()||localStorage.getItem('apomonet_language_v2')||'pl';
   const t=k=>L[lang()]?.[k]||L.en[k]||L.pl[k]||k;
   const clean=v=>String(v??'').trim();
+  const CONFIRMED=new Set(['supported-by-stage2-variant-evidence','verified-curated','confirmed','verified']);
+  const isConfirmed=(detail,coin)=>detail?.kopickiConfirmed===true||CONFIRMED.has(clean(detail?.catalogEvidenceStatus||detail?.catalogVerification||coin?.catalogEvidenceStatus).toLowerCase());
   const coinById=id=>id&&window.ApoMonet?.getCoin?ApoMonet.getCoin(id):null;
   function evidenceText(coin){
     const detail=coin?.detail&&typeof coin.detail==='object'?coin.detail:{};
-    const status=clean(detail.catalogEvidenceStatus||coin?.catalogEvidenceStatus);
-    const confirmed=status==='supported-by-stage2-variant-evidence';
+    const confirmed=isConfirmed(detail,coin);
     const confirmedRef=confirmed?clean(coin?.kopickiReference||detail.kopickiReference):'';
     const confirmedRarity=confirmed?clean(coin?.kopickiRarity||detail.kopickiRarity):'';
     const candidate=detail.catalogCandidate&&typeof detail.catalogCandidate==='object'?detail.catalogCandidate:{};
