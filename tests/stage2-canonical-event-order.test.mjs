@@ -4,6 +4,7 @@ import fs from 'node:fs';
 
 const stage2=fs.readFileSync('stage2-literature-request.js','utf8');
 const candidate=fs.readFileSync('catalog-candidate-enrichment.js','utf8');
+const invalidation=fs.readFileSync('derived-analysis-invalidation.js','utf8');
 const app=fs.readFileSync('app.js','utf8');
 
 test('Stage 2 persistence event is built from accepted-identity and catalog guarded detail',()=>{
@@ -32,6 +33,13 @@ test('focused catalog pass runs only for the exact Stage 2 endpoint',()=>{
   assert.match(candidate,/requestPath/);
   assert.match(candidate,/requestPath\(input\)!=='\/api\/analyze-detail'/);
   assert.doesNotMatch(candidate,/String\(input\|\|''\)\.includes\('\/api\/analyze-detail'\)/);
+});
+
+test('accepted-identity invalidation guard also runs only for the exact Stage 2 endpoint',()=>{
+  assert.match(invalidation,/function endpoint\(input\)/);
+  assert.match(invalidation,/endpoint\(input\)!=="\/api\/analyze-detail"/);
+  assert.match(invalidation,/input\?\.url/);
+  assert.doesNotMatch(invalidation,/includes\("\/api\/analyze-detail"\)/);
 });
 
 test('candidate persistence may occur while market refresh is still pending',()=>{
