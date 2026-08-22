@@ -1,0 +1,13 @@
+(()=>{
+  const dict={pl:{working:'Działam…',done:'Gotowe'},en:{working:'Working…',done:'Done'},de:{working:'Wird ausgeführt…',done:'Fertig'}};
+  const lang=()=>((document.documentElement.lang||localStorage.getItem('lang')||'pl').slice(0,2));
+  const t=k=>(dict[lang()]||dict.pl)[k]||dict.pl[k];
+  function ensureToast(){let e=document.getElementById('apoActionFeedback');if(e)return e;e=document.createElement('div');e.id='apoActionFeedback';e.setAttribute('role','status');e.setAttribute('aria-live','polite');Object.assign(e.style,{position:'fixed',left:'50%',bottom:'max(18px, env(safe-area-inset-bottom))',transform:'translateX(-50%) translateY(12px)',zIndex:'9999',padding:'10px 14px',borderRadius:'14px',background:'rgba(20,20,22,.92)',color:'#fff',fontSize:'14px',lineHeight:'1.2',opacity:'0',pointerEvents:'none',transition:'opacity .16s ease, transform .16s ease',maxWidth:'min(88vw,420px)',textAlign:'center',boxShadow:'0 8px 28px rgba(0,0,0,.22)'});document.body.appendChild(e);return e}
+  let hideTimer;
+  function flash(msg,duration=900){const e=ensureToast();clearTimeout(hideTimer);e.textContent=msg;e.style.opacity='1';e.style.transform='translateX(-50%) translateY(0)';hideTimer=setTimeout(()=>{e.style.opacity='0';e.style.transform='translateX(-50%) translateY(12px)'},duration)}
+  function targetOf(ev){return ev.target?.closest?.('button,a[href],[role="button"],input[type="button"],input[type="submit"]')||null}
+  document.addEventListener('pointerdown',ev=>{const el=targetOf(ev);if(!el||el.matches(':disabled,[aria-disabled="true"]'))return;el.dataset.apoPressed='1';const old=el.style.transform;el.dataset.apoOldTransform=old||'';el.style.transform=(old?old+' ':'')+'scale(.985)';setTimeout(()=>{if(el.dataset.apoPressed){el.style.transform=el.dataset.apoOldTransform||'';delete el.dataset.apoPressed}},180)},{passive:true});
+  document.addEventListener('pointerup',ev=>{const el=targetOf(ev);if(!el)return;el.style.transform=el.dataset.apoOldTransform||'';delete el.dataset.apoPressed},{passive:true});
+  document.addEventListener('click',ev=>{const el=targetOf(ev);if(!el||el.matches(':disabled,[aria-disabled="true"]'))return;if(el.dataset.noFeedback==='1')return;const custom=el.dataset.feedback;flash(custom||t('working'));el.setAttribute('data-apo-clicked','1');setTimeout(()=>el.removeAttribute('data-apo-clicked'),1200)},true);
+  window.ApoActionFeedback={flash,working:(m)=>flash(m||t('working')),done:(m)=>flash(m||t('done'))};
+})();
