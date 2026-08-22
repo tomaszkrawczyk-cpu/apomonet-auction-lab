@@ -14,10 +14,10 @@ test('Stage 2 persistence loads before market refresh',()=>{
 });
 
 test('Stage 2 writes a fresh identity marker before market can unlock the record',()=>{
-  assert.match(persist,/stage2IdentityKey/);
-  assert.match(persist,/stage2CompletedAt/);
-  assert.match(market,/stage2IdentityKey!==identityKey/);
-  assert.match(market,/stage2CompletedAt/);
+  assert.match(persist,/detailReanalysisIdentityKey/);
+  assert.match(persist,/detailReanalysisCompletedAt/);
+  assert.match(market,/detailReanalysisIdentityKey!==identityKey/);
+  assert.match(market,/detailReanalysisCompletedAt/);
 });
 
 test('retake invalidates prepared cutout images stored by album photo preparation',()=>{
