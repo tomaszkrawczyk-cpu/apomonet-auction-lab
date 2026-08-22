@@ -1,39 +1,7 @@
 (()=>{
-  if(!location.pathname.endsWith('analyze.html'))return;
-  const validImage=src=>typeof src==='string'&&(src.startsWith('data:image/')||src.startsWith('blob:')||src.startsWith('http'));
-  const preview=id=>{const src=document.getElementById(id)?.src||'';return validImage(src)?src:''};
-  addEventListener('DOMContentLoaded',()=>{
-    const save=document.getElementById('save');
-    if(!save||save.dataset.apoOpenCard==='1')return;
-    save.dataset.apoOpenCard='1';
-    save.addEventListener('click',()=>{
-      setTimeout(()=>{
-        const link=document.getElementById('savedCoinLink');
-        const href=link?.getAttribute('href')||'';
-        const match=href.match(/^coin\.html\?id=(.+)$/);
-        if(!match)return;
-        const coinId=decodeURIComponent(match[1]);
-        const obverse=preview('oi'),reverse=preview('ri');
-        try{
-          const saved=window.ApoMonet?.getCoin?.(coinId);
-          if(saved){
-            const patch={id:coinId};let changed=false;
-            if(!saved.obverseImage&&obverse){patch.obverseImage=obverse;changed=true;}
-            if(!saved.reverseImage&&reverse){patch.reverseImage=reverse;changed=true;}
-            if(changed)window.ApoMonet.upsertCoin(patch);
-            const verified=window.ApoMonet.getCoin(coinId);
-            if((obverse&&!verified?.obverseImage)||(reverse&&!verified?.reverseImage)){
-              const status=document.getElementById('status');
-              if(status)status.textContent='Moneta została zapisana, ale nie udało się potwierdzić zapisu obu zdjęć. Nie otwieram jeszcze karty, żeby nie pokazać pustych pól.';
-              return;
-            }
-          }
-        }catch(error){
-          console.error('[saved-card-photo-verification]',error);
-          const status=document.getElementById('status');if(status)status.textContent=error?.message||'Nie udało się potwierdzić zapisu zdjęć.';return;
-        }
-        location.href=href;
-      },100);
-    });
-  });
+ if(!location.pathname.endsWith('analyze.html'))return;
+ const L={pl:{checking:'Sprawdzam zapis monety i zdjęć…',photo:'Moneta została zapisana, ale nie udało się potwierdzić zapisu obu zdjęć. Nie otwieram jeszcze karty, żeby nie pokazać pustych pól.',error:'Nie udało się potwierdzić zapisu zdjęć.',opening:'Zapis potwierdzony. Otwieram kartę monety…'},en:{checking:'Checking the saved coin and photos…',photo:'The coin was saved, but both photos could not be confirmed. The card will not open yet, to avoid showing empty image fields.',error:'The saved photos could not be verified.',opening:'Save confirmed. Opening the coin card…'},de:{checking:'Gespeicherte Münze und Fotos werden geprüft…',photo:'Die Münze wurde gespeichert, aber beide Fotos konnten nicht bestätigt werden. Die Münzkarte wird noch nicht geöffnet, damit keine leeren Bildfelder erscheinen.',error:'Die gespeicherten Fotos konnten nicht bestätigt werden.',opening:'Speicherung bestätigt. Münzkarte wird geöffnet…'},fr:{checking:'Vérification de la monnaie et des photos enregistrées…',photo:'La monnaie a été enregistrée, mais les deux photos n’ont pas pu être confirmées. La fiche ne s’ouvre pas encore afin d’éviter des emplacements d’image vides.',error:'Impossible de vérifier les photos enregistrées.',opening:'Enregistrement confirmé. Ouverture de la fiche…'}};
+ const lang=()=>window.ApoLanguageRegistry?.current?.()||window.ApoI18n?.current?.()||localStorage.getItem('apomonet_language_v2')||'pl',t=k=>L[lang()]?.[k]||L.en[k]||L.pl[k]||k;
+ const validImage=src=>typeof src==='string'&&(src.startsWith('data:image/')||src.startsWith('blob:')||src.startsWith('http')),preview=id=>{const src=document.getElementById(id)?.src||'';return validImage(src)?src:''},status=m=>{const e=document.getElementById('status');if(e)e.textContent=m;window.ApoActionFeedback?.flash?.(m,1300)};
+ addEventListener('DOMContentLoaded',()=>{const save=document.getElementById('save');if(!save||save.dataset.apoOpenCard==='1')return;save.dataset.apoOpenCard='1';save.addEventListener('click',()=>{status(t('checking'));setTimeout(()=>{const link=document.getElementById('savedCoinLink'),href=link?.getAttribute('href')||'',match=href.match(/^coin\.html\?id=(.+)$/);if(!match)return;const coinId=decodeURIComponent(match[1]),obverse=preview('oi'),reverse=preview('ri');try{const saved=window.ApoMonet?.getCoin?.(coinId);if(saved){const patch={id:coinId};let changed=false;if(!saved.obverseImage&&obverse){patch.obverseImage=obverse;changed=true}if(!saved.reverseImage&&reverse){patch.reverseImage=reverse;changed=true}if(changed)window.ApoMonet.upsertCoin(patch);const verified=window.ApoMonet.getCoin(coinId);if((obverse&&!verified?.obverseImage)||(reverse&&!verified?.reverseImage)){status(t('photo'));return}}}catch(error){console.error('[saved-card-photo-verification]',error);status(error?.message||t('error'));return}status(t('opening'));setTimeout(()=>{location.href=href},180)},100)})});
 })();
