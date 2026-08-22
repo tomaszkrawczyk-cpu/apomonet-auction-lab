@@ -2,7 +2,7 @@
   function currency(coin){return String(coin?.marketCurrency||coin?.valuationCurrency||'PLN').trim().toUpperCase()||'PLN'}
   function value(coin){
     if(!coin||coin.derivedDataStale||coin.needsReanalysis||coin.valuationSuppressedBecauseStale)return 0;
-    const direct=[coin.marketMedian,coin.estimatedPrice,coin.estimatedValue,coin.marketValue,coin.valuation,coin.priceEstimate,coin.estimate,coin.value]
+    const direct=[coin.marketMedian,coin.estimatedPrice,coin.estimatedValue,coin.marketValue,coin.valuation,coin.priceEstimate,coin.estimate]
       .map(Number).find(v=>Number.isFinite(v)&&v>0);
     if(direct)return direct;
     const low=Number(coin.estimateLow),high=Number(coin.estimateHigh);
