@@ -16,8 +16,11 @@
      const id=card.querySelector('.coin-pick')?.dataset.id;if(!id)return;const c=map.get(String(id));if(!c)return;
      const old=card.querySelector('.coin-photo'),existing=card.querySelector('.apo-photo-pair');if(!old&&!existing)return;
      let pair=existing;if(!pair){pair=document.createElement('div');pair.className='apo-photo-pair';pair.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px';old.replaceWith(pair)}
-     const cell=(src,label)=>`<div style="min-width:0"><div style="height:150px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 45%,#272729,#111 72%);border-radius:14px;overflow:hidden">${src?`<img src="${esc(src)}" alt="${esc(label)}" loading="lazy" style="max-width:96%;max-height:142px;object-fit:contain;filter:drop-shadow(0 5px 8px #000)">`:`<span style="color:#777;font-size:12px">${esc(t('missing'))}</span>`}</div><small style="display:block;text-align:center;color:#888;margin-top:4px">${esc(label)}</small></div>`;
-     pair.innerHTML=cell(source(c,'obverse'),t('obv'))+cell(source(c,'reverse'),t('rev'));
+     const obv=source(c,'obverse'),rev=source(c,'reverse'),signature=[lang(),obv,rev].join('|');
+     if(pair.dataset.apoSignature!==signature){
+       const cell=(src,label)=>`<div style="min-width:0"><div style="height:150px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 45%,#272729,#111 72%);border-radius:14px;overflow:hidden">${src?`<img src="${esc(src)}" alt="${esc(label)}" loading="lazy" style="max-width:96%;max-height:142px;object-fit:contain;filter:drop-shadow(0 5px 8px #000)">`:`<span style="color:#777;font-size:12px">${esc(t('missing'))}</span>`}</div><small style="display:block;text-align:center;color:#888;margin-top:4px">${esc(label)}</small></div>`;
+       pair.dataset.apoSignature=signature;pair.innerHTML=cell(obv,t('obv'))+cell(rev,t('rev'));
+     }
      pair.onclick=()=>location.href='coin.html?id='+encodeURIComponent(c.id);pair.style.cursor='pointer';pair.setAttribute('role','link');pair.setAttribute('tabindex','0');
      pair.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();location.href='coin.html?id='+encodeURIComponent(c.id)}};
    })
