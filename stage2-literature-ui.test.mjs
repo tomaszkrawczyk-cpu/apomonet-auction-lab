@@ -1,0 +1,10 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';
+const ui=fs.readFileSync(new URL('./stage2-literature-ui.js',import.meta.url),'utf8');
+const req=fs.readFileSync(new URL('./stage2-literature-request.js',import.meta.url),'utf8');
+assert.match(ui,/Brak potwierdzonego odniesienia katalogowego/,'UI must explicitly say when no literature is confirmed');
+assert.match(ui,/nie dopisuje katalogu na podstawie samego rocznika/,'UI must reject year-only catalog guessing');
+assert.match(ui,/Historyczna wartość katalogowa/,'Tyszkiewicz value must be labeled historical');
+assert.match(ui,/nie jest to współczesna wycena PLN/,'historical catalog values must not masquerade as current valuation');
+assert.match(req,/url!==['"]\/api\/analyze-detail['"]/,'request hook must only enrich Stage 2');
+assert.doesNotMatch(req,/\/api\/analyze['"][,)]/,'request hook must not target Stage 1 endpoint');
+console.log('stage2-literature-ui: ok');
