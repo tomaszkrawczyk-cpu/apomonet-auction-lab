@@ -7,6 +7,8 @@
   };
   const lang=()=>window.ApoLanguageRegistry?.current?.()||window.ApoI18n?.current?.()||localStorage.getItem('apomonet_language_v2')||'pl';
   const t=k=>L[lang()]?.[k]||L.en[k]||L.pl[k]||k;
+  const endpoint=input=>{try{const raw=typeof input==='string'?input:String(input?.url||'');return new URL(raw,location.href).pathname}catch{return''}};
+  const isAnalysisEndpoint=input=>['/api/analyze','/api/analyze-detail'].includes(endpoint(input));
   function ready(fn){document.readyState==='loading'?document.addEventListener('DOMContentLoaded',fn):fn()}
   ready(()=>{
     if(!location.pathname.endsWith('analyze.html'))return;
@@ -27,8 +29,9 @@
     }
     let transportFailed=false;
     const oldFetch=window.fetch.bind(window);
-    window.fetch=async(input,init)=>{try{const r=await oldFetch(input,init);if(String(input||'').includes('/api/analyze'))transportFailed=false;return r}catch(e){if(String(input||'').includes('/api/analyze')){transportFailed=true;if(status)status.textContent=t('transport')}throw e}};
+    window.fetch=async(input,init)=>{try{const r=await oldFetch(input,init);if(isAnalysisEndpoint(input))transportFailed=false;return r}catch(e){if(isAnalysisEndpoint(input)){transportFailed=true;if(status)status.textContent=t('transport')}throw e}};
     new MutationObserver(()=>{if(!status||!transportFailed)return;if(/Failed to fetch|NetworkError|Load failed/i.test(status.textContent||''))status.textContent=t('transport')}).observe(status,{childList:true,subtree:true,characterData:true});
     ['languagechange','apo-language-changed','apomonet:language-change'].forEach(e=>addEventListener(e,()=>{if(transportFailed&&status)status.textContent=t('transport')}));
   });
+  window.ApoUnifiedUpload=Object.freeze({endpoint,isAnalysisEndpoint});
 })();
