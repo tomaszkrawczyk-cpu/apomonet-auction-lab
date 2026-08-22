@@ -13,10 +13,18 @@ test('runtime loads focused catalog enrichment',()=>{
   assert.match(enrich,/mode:'catalog-candidate'/);
 });
 
-test('catalog candidate remains distinct from confirmed Kopicki',()=>{
-  assert.match(enrich,/catalogCandidate:\{reference,rarity,confidence:/);
-  assert.match(gate,/const output = \{ \.\.\.detail \}/);
-  assert.doesNotMatch(gate,/delete output\.catalogCandidate/);
+test('focused catalog pass persists only an unconfirmed candidate onto the current Stage 2 identity',()=>{
+  assert.match(enrich,/const normalizedCandidate=\{reference,rarity:/);
+  assert.match(enrich,/persistCandidate\(normalizedCandidate\)/);
+  assert.match(enrich,/detailReanalysisIdentityKey!==identityKey/);
+  assert.match(enrich,/catalogEvidenceStatus:detail\.catalogEvidenceStatus==='supported-by-stage2-variant-evidence'\?detail\.catalogEvidenceStatus:'unconfirmed'/);
+});
+
+test('identity correction invalidates old candidates while Stage 2 gate keeps candidate separate from confirmed Kopicki',()=>{
+  assert.match(gate,/"catalogCandidate"/);
+  assert.match(gate,/output\.catalogCandidate=\{reference:/);
+  assert.match(gate,/output\.kopickiReference=""/);
+  assert.match(gate,/output\.catalogEvidenceStatus="unconfirmed"/);
 });
 
 test('coin card visibly surfaces an unconfirmed catalog candidate',()=>{
