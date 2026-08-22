@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+const market=fs.readFileSync('market-reanalysis-refresh.js','utf8');
+const stage2=fs.readFileSync('stage2-literature-persist.js','utf8');
+const derived=fs.readFileSync('derived-analysis-invalidation.js','utf8');
+const drift=fs.readFileSync('resolved-identity-drift-guard.js','utf8');
+test('market refresh requires fresh Stage 2 for current accepted identity',()=>{assert.match(market,/detailReanalysisCompletedAt/);assert.match(market,/detailReanalysisIdentityKey!==identityKey/);assert.doesNotMatch(market,/DOMContentLoaded.*refresh/)});
+test('Stage 2 records completion marker tied to current identity',()=>{assert.match(stage2,/detailReanalysisIdentityKey:identityKey\(current\)/);assert.match(stage2,/detailReanalysisCompletedAt:new Date\(\)\.toISOString\(\)/)});
+test('new corrections clear old Stage 2 completion markers',()=>{for(const source of [derived,drift]){assert.ok(source.includes('detailReanalysisIdentityKey'));assert.ok(source.includes('detailReanalysisCompletedAt'))}});
