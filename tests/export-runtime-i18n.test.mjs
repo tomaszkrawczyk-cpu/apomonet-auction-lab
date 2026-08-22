@@ -17,8 +17,10 @@ test('export audit field and note are translated in all supported base languages
   assert.match(i18n,/querySelector\('\.audit-note'\)/);
 });
 
-test('export record normalization still uses confirmed detail and never rawAI',()=>{
+test('export record normalization strips private internals while using accepted detail',()=>{
   const view=read('export-record-view.js');
   assert.match(view,/detail\.fullDescription/);
-  assert.doesNotMatch(view,/rawAI/);
+  assert.match(view,/PRIVATE_FIELDS/);
+  for(const token of ['rawAI','userAdditionalInfo','previousDetailAudit','recordMigrationVersion'])assert.ok(view.includes(token),token);
+  assert.match(view,/for\(const key of PRIVATE_FIELDS\)delete output\[key\]/);
 });
