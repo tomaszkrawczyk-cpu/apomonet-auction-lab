@@ -21,3 +21,9 @@ test('unconfirmed catalog evidence is visibly marked uncertain',()=>{
   assert.match(ui,/candidateRarity/);
   assert.match(ui,/join\(' • '\)\}\?`/);
 });
+
+test('album evidence observer only watches list replacements and avoids recursive refresh',()=>{
+  assert.match(ui,/observe\(root,\{childList:true\}\)/);
+  assert.doesNotMatch(ui,/subtree:true/);
+  assert.match(ui,/if\(row\.textContent!==text\)row\.textContent=text/);
+});
