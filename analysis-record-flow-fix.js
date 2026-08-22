@@ -1,5 +1,8 @@
 (()=>{
   const onAnalyze=()=>location.pathname.endsWith('analyze.html');
+  const L={pl:'Nowe zdjęcie — tworzę nowy rekord monety. Dodaj obie strony i uruchom analizę.',en:'New photo — creating a new coin record. Add both sides and start the analysis.',de:'Neues Foto — ein neuer Münzdatensatz wird erstellt. Beide Seiten hinzufügen und die Analyse starten.',fr:'Nouvelle photo — création d’une nouvelle fiche monnaie. Ajoutez les deux faces et lancez l’analyse.'};
+  const lang=()=>window.ApoLanguageRegistry?.current?.()||window.ApoI18n?.current?.()||localStorage.getItem('apomonet_language_v2')||'pl';
+  const freshMessage=()=>L[lang()]||L.en||L.pl;
 
   function clearAnalysisForFreshPhotos(){
     if(!onAnalyze())return;
@@ -17,7 +20,7 @@
     document.getElementById('deepPanel')?.classList.add('hidden');
     document.getElementById('savedActions')?.classList.add('hidden');
     const status=document.getElementById('status');
-    if(status)status.textContent='Nowe zdjęcie — tworzę nowy rekord monety. Dodaj obie strony i uruchom analizę.';
+    if(status)status.textContent=freshMessage();
   }
 
   function protectNewRecordIdentity(){
@@ -61,8 +64,6 @@
     });
   }
 
-  // Rendering the saved Stage 2 card lives in coin-card-finish.js.
-  // Keeping only one renderer prevents duplicated "Analiza szczegółowa" sections.
   addEventListener('DOMContentLoaded',()=>{
     protectNewRecordIdentity();
     captureAlbumAssignment();
