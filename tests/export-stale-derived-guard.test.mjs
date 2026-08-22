@@ -4,12 +4,13 @@ import fs from 'node:fs';
 
 const read=p=>fs.readFileSync(p,'utf8');
 
-test('export view suppresses stale market and catalog data after identity correction',()=>{
+test('export view suppresses stale market catalog and literature data after identity correction',()=>{
   const source=read('export-record-view.js');
   assert.match(source,/derivedDataStale\|\|coin\.needsReanalysis/);
   assert.match(source,/valuationSuppressedBecauseStale=true/);
+  assert.match(source,/literatureSuppressedBecauseStale=true/);
   assert.match(source,/stale-after-identity-correction/);
-  for(const token of ['estimatedPrice','marketMedian','priceRange','estimateLow','estimateHigh'])assert.ok(source.includes(`'${token}'`),token);
+  for(const token of ['estimatedPrice','marketMedian','priceRange','estimateLow','estimateHigh','tyszkiewiczReference','tyszkiewiczValue','parchimowiczReference'])assert.ok(source.includes(`'${token}'`),token);
 });
 
 test('XLSX export never publishes stale derived market or catalog evidence',()=>{
