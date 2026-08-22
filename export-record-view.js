@@ -2,14 +2,26 @@
   if(!location.pathname.endsWith('export.html'))return;
   if(!window.ApoMonet?.load)return;
   const originalLoad=window.ApoMonet.load.bind(window.ApoMonet);
+  const clean=v=>String(v??'').trim();
   const normalize=coin=>{
     if(!coin||typeof coin!=='object')return coin;
     const detail=coin.detail&&typeof coin.detail==='object'?coin.detail:{};
+    const status=clean(detail.catalogEvidenceStatus||coin.catalogEvidenceStatus);
+    const confirmed=status==='supported-by-stage2-variant-evidence';
+    const candidate=detail.catalogCandidate&&typeof detail.catalogCandidate==='object'?detail.catalogCandidate:{};
+    const confirmedReference=confirmed?clean(coin.kopickiReference||detail.kopickiReference):'';
+    const confirmedRarity=confirmed?clean(coin.kopickiRarity||detail.kopickiRarity):'';
+    const candidateReference=!confirmed?clean(candidate.reference||coin.kopickiReference||detail.kopickiReference):'';
+    const candidateRarity=!confirmed?clean(candidate.rarity||coin.kopickiRarity||detail.kopickiRarity):'';
     return {
       ...coin,
       variant:coin.variant||detail.variant||'',
-      kopickiReference:coin.kopickiReference||detail.kopickiReference||'',
-      kopickiRarity:coin.kopickiRarity||detail.kopickiRarity||'',
+      kopickiReference:confirmedReference,
+      kopickiRarity:confirmedRarity,
+      catalogEvidenceStatus:status||'unconfirmed',
+      catalogCandidateReference:candidateReference,
+      catalogCandidateRarity:candidateRarity,
+      catalogCandidateConfidence:Number(candidate.confidence||0)||0,
       fullDescription:coin.fullDescription||coin.description||detail.fullDescription||detail.description||'',
     };
   };
