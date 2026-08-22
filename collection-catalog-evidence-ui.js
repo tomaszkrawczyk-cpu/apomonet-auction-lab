@@ -24,13 +24,13 @@
   }
   function updateCard(card){
     const coin=coinForCard(card);if(!coin)return;
-    const secondary=card.querySelector('.coin-secondary'),parts=[clean(coin.mint),clean(coin.metal),rarityLabel(coin)].filter(Boolean);
+    const secondary=card.querySelector('.coin-secondary'),parts=[clean(coin.mint),clean(coin.metal),rarityLabel(coin)].filter(Boolean),text=parts.join(' • ');
     if(parts.length){
-      const target=secondary||document.createElement('p');target.className='coin-secondary';target.textContent=parts.join(' • ');
+      const target=secondary||document.createElement('p');target.className='coin-secondary';if(target.textContent!==text)target.textContent=text;
       if(!secondary)card.querySelector('.coin-summary')?.insertAdjacentElement('afterend',target);
     }else secondary?.remove();
   }
   function refresh(){document.querySelectorAll('.collection-coin').forEach(updateCard)}
-  function init(){refresh();const root=document.getElementById('coins');if(root)new MutationObserver(refresh).observe(root,{childList:true,subtree:true});['languagechange','apo-language-changed','apomonet:language-change'].forEach(e=>addEventListener(e,refresh));}
+  function init(){refresh();const root=document.getElementById('coins');if(root)new MutationObserver(refresh).observe(root,{childList:true});['languagechange','apo-language-changed','apomonet:language-change'].forEach(e=>addEventListener(e,refresh));}
   document.readyState==='loading'?addEventListener('DOMContentLoaded',init):init();
 })();
