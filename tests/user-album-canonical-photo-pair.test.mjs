@@ -15,3 +15,7 @@ test('fallback never mirrors one missing side into the other',()=>{
   assert.doesNotMatch(pair,/obverseImage\|\|c\?\.reverseImage/);
   assert.doesNotMatch(pair,/reverseImage\|\|c\?\.obverseImage/);
 });
+test('mutation observer does not rewrite an unchanged photo pair forever',()=>{
+  assert.match(pair,/pair\.dataset\.apoSignature!==signature/);
+  assert.match(pair,/pair\.dataset\.apoSignature=signature/);
+});
