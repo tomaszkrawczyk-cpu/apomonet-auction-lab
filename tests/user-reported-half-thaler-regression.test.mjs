@@ -65,3 +65,18 @@ test('coin card language change covers photos, actions and AI status',()=>{
   for(const token of ['missingObverse','missingReverse','collectionLink','another','badge.textContent=tx.ai'])assert.ok(card.includes(token),token);
   assert.match(card,/const rerender=\(\)=>render\(\)\.then\(localizeStatic\)/);
 });
+
+test('concurrent language events share one translation request',async()=>{
+  const storage=new Map();
+  let calls=0;
+  const sandbox={
+    window:{ApoLanguageRegistry:{current:()=> 'en',isEnabled:()=>true}},
+    localStorage:{getItem:key=>storage.get(key)||null,setItem:(key,value)=>storage.set(key,value)},
+    fetch:async()=>{calls++;await new Promise(resolve=>setTimeout(resolve,5));return{ok:true,json:async()=>({ok:true,translations:{title:'Half thaler'}})}}
+  };
+  vm.runInNewContext(read('analysis-content-i18n.js'),sandbox,{filename:'analysis-content-i18n.js'});
+  const record={title:'Półtalar'};
+  const results=await Promise.all([sandbox.window.ApoAnalysisI18n.localize(record,'en'),sandbox.window.ApoAnalysisI18n.localize(record,'en'),sandbox.window.ApoAnalysisI18n.localize(record,'en')]);
+  assert.equal(calls,1);
+  assert.ok(results.every(result=>result.title==='Half thaler'));
+});
