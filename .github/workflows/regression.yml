@@ -14,4 +14,12 @@ jobs:
         with:
           node-version: '24'
       - name: Run regression suite
-        run: node --test tests/*.test.mjs tests/*.test.js *.test.mjs *.test.js test-*.mjs
+        shell: bash
+        run: |
+          shopt -s nullglob
+          tests=(tests/*.test.mjs tests/*.test.js *.test.mjs *.test.js test-*.mjs)
+          if ((${#tests[@]} == 0)); then
+            echo "No regression tests found"
+            exit 1
+          fi
+          node --test "${tests[@]}"
