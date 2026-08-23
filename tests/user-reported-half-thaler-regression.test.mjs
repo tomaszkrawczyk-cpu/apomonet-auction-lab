@@ -62,7 +62,7 @@ test('detailed analysis uses a stable job id and reports measured server duratio
 
 test('coin card language change covers photos, actions and AI status',()=>{
   const card=read('coin-card-finish.js');
-  for(const token of ['missingObverse','missingReverse','collectionLink','another','badge.textContent=tx.ai'])assert.ok(card.includes(token),token);
+  for(const token of ['missingObverse','missingReverse','acceptedBadge','collectionLink','another','badge.textContent=tx.ai'])assert.ok(card.includes(token),token);
   assert.match(card,/const rerender=\(\)=>render\(\)\.then\(localizeStatic\)/);
 });
 
