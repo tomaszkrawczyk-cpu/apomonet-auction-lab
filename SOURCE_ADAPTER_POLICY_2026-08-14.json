@@ -1,5 +1,5 @@
 {
-  "version": "2026-08-17-v6",
+  "version": "2026-08-22-v7",
   "default": "YELLOW_MANUAL_FACTS",
   "sources": {
     "NUMISBIDS": {"automation":"RED","factsManual":true,"marketSingleRecord":false,"images":false,"reason":"Terms prohibit automated storage/harvesting"},
@@ -7,7 +7,7 @@
     "NIEMCZYK": {"automation":"RED","factsManual":true,"marketSingleRecord":false,"images":false,"reason":"Terms prohibit automated downloading/aggregation without written permission","upgrade":"GREEN_WITH_WRITTEN_PERMISSION"},
     "KATALOG_FISCHER": {"automation":"RED","factsManual":false,"referenceOnly":true,"images":false,"reason":"Catalogue terms prohibit copying and distribution"},
     "ONEBID": {"automation":"YELLOW","factsManual":true,"marketSingleRecord":false,"images":false,"reason":"Public facts may be recorded manually; platform automation remains pending separate terms/rights review"},
-    "WCN": {"automation":"YELLOW_DIRECT_RECORD_BATCH","factsManual":true,"marketSingleRecord":true,"marketBoundedBatch":true,"maxBatch":8,"delayMs":250,"images":false,"allowedPath":"/archive/{numeric_id}","reason":"Controlled fetch of user-supplied direct public lot URLs may extract normalized sale facts only; no discovery, pagination, crawling, descriptions or images"},
+    "WCN": {"automation":"RED","factsManual":true,"marketSingleRecord":false,"marketBoundedBatch":false,"images":false,"reason":"Automatic fetching is disabled until separate permission/rights review. Direct source links and manually entered factual market records remain allowed."},
     "STARY_SKLEP": {"automation":"YELLOW","factsManual":true,"marketSingleRecord":false,"images":false,"reason":"Public facts allowed manually; awaiting direct permission/export for broader use","upgrade":"GREEN_WITH_WRITTEN_PERMISSION"},
     "PORTAL_NUMIZMATYCZNY": {"automation":"YELLOW_MANUAL","communityCandidate":true,"storeParaphraseOnly":true,"images":false},
     "BLOG_NUMIZMATYCZNY": {"automation":"YELLOW_MANUAL","communityCandidate":true,"storeParaphraseOnly":true,"images":false},

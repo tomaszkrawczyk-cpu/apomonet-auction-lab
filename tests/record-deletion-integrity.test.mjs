@@ -24,6 +24,14 @@ test('deleted coin is removed from export selection and modern or legacy linked 
   assert.match(src,/cleanupLinkedWatchlist/);
 });
 
+test('market facts survive coin deletion but their orphaned collection link is removed',()=>{
+  assert.match(src,/cleanupArchiveLink/);
+  assert.match(src,/ApoArchive\.load/);
+  assert.match(src,/delete clean\.linkedCoinId/);
+  assert.match(src,/delete clean\.expertMapped/);
+  assert.match(src,/ApoArchive\.save\(next\)/);
+});
+
 test('shared fingerprint and learning stores are deliberately not erased by record deletion',()=>{
   assert.doesNotMatch(src,/apomonetCoinFingerprintsV1/);
   assert.doesNotMatch(src,/apomonetHardNegativesV1/);

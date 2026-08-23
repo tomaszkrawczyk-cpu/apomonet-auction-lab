@@ -26,8 +26,10 @@
     ApoMonet.assignCoinToAlbum=function(coinId,albumId){
       syncPendingCoinId(coinId);
       const coin=ApoMonet.getCoin(coinId);
-      const obverse=previewSource('oi')||(persistentImage(coin?.obverseImage)?coin.obverseImage:'');
-      const reverse=previewSource('ri')||(persistentImage(coin?.reverseImage)?coin.reverseImage:'');
+      const obverseCandidate=previewSource('oi')||coin?.obverseImage||'';
+      const reverseCandidate=previewSource('ri')||coin?.reverseImage||'';
+      const obverse=persistentImage(obverseCandidate)?obverseCandidate:'';
+      const reverse=persistentImage(reverseCandidate)?reverseCandidate:'';
       if(coin&&(obverse||reverse))ApoMonet.upsertCoin({id:coinId,obverseImage:obverse||null,reverseImage:reverse||null});
       const result=previous.call(ApoMonet,coinId,albumId);
       const saved=ApoMonet.getCoin(coinId);

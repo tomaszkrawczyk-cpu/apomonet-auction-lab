@@ -9,8 +9,8 @@
   const TRANSIENT=['apomonet_demo_album_moves_v1','apomonetAnalysisResilienceV1'];
   const TEXT_KEYS=new Set(['apomonet_language_v2','apomonet_album_view','apomonet_collection_view_v1','apomonet_collection_sort_v1']);
   const JSON_KEYS=new Set(KEYS.filter(k=>!TEXT_KEYS.has(k)));
+  const FALLBACK_LANGUAGES=new Set(['pl','en','de','fr']);
   const ALLOWED_TEXT={
-    apomonet_language_v2:new Set(['pl','en','de','fr']),
     apomonet_album_view:new Set(['grid','list','large','small']),
     apomonet_collection_view_v1:new Set(['grid','list']),
     apomonet_collection_sort_v1:new Set(['added-desc','year-asc','year-desc','nominal-desc','nominal-asc'])
@@ -30,12 +30,22 @@
     if('settings'in raw&&(!raw.settings||typeof raw.settings!=='object'||Array.isArray(raw.settings)))return false;
     return true;
   }
+  function languageAllowed(value){
+    const normalized=String(value||'').trim().toLowerCase().split('-')[0];
+    if(!normalized)return false;
+    const registry=window.ApoLanguageRegistry;
+    return typeof registry?.isEnabled==='function'?registry.isEnabled(normalized):FALLBACK_LANGUAGES.has(normalized);
+  }
   function validateItems(items){
     if(!items||typeof items!=='object'||Array.isArray(items))throw Error(t('bad'));
     const unknown=Object.keys(items).filter(k=>!allowed.has(k));if(unknown.length)throw Error(t('unknown'));
     for(const [k,v] of Object.entries(items)){
       if(typeof v!=='string')throw Error(t('badValue'));
       if(TEXT_KEYS.has(k)){
+        if(k==='apomonet_language_v2'){
+          if(!languageAllowed(v))throw Error(`${t('badValue')} (${k})`);
+          continue;
+        }
         const choices=ALLOWED_TEXT[k];
         if(choices&&!choices.has(v))throw Error(`${t('badValue')} (${k})`);
         continue;
@@ -65,6 +75,6 @@
     download.onclick=()=>{const blob=new Blob([JSON.stringify(build(),null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='APOMONET-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200)};
     restore.onclick=async()=>{const f=file.files?.[0];if(!f){status.textContent=t('choose');return}try{const x=JSON.parse(await f.text());if(x?.format!=='APOMONET_BACKUP'||![1,2,3,4,5,6,7,8].includes(x?.version))throw Error(t('bad'));validateItems(x.items);if(!confirm(t('confirm')))return;transactionalRestore(x.items);status.textContent=t('ok');setTimeout(()=>location.href='index.html',900)}catch(error){status.textContent=t('failed')+(error?.message||String(error))}};
   }
-  window.ApoBackupIntegrity=Object.freeze({KEYS,LEGACY,TRANSIENT,TEXT_KEYS,JSON_KEYS,ALLOWED_TEXT,build,validateCoreState,validateItems,durableItems,transactionalRestore});
+  window.ApoBackupIntegrity=Object.freeze({KEYS,LEGACY,TRANSIENT,TEXT_KEYS,JSON_KEYS,FALLBACK_LANGUAGES,ALLOWED_TEXT,build,validateCoreState,languageAllowed,validateItems,durableItems,transactionalRestore});
   document.readyState==='loading'?addEventListener('DOMContentLoaded',mount):mount();
 })();

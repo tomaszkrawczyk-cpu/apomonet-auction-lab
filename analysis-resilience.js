@@ -7,6 +7,14 @@
   let hiddenDuringActiveRequest = false;
   let activeTrackedRequests = 0;
   const originalFetch = window.fetch.bind(window);
+  const COPY={
+    pl:{restoring:'Przywracam przerwaną analizę. Zdjęcia są bezpieczne…',photosManual:'Analiza została zachowana, ale ta przeglądarka wymaga ponownego wskazania zdjęć.',resume1:'Wznawiam analizę podstawową…',need1:'Zdjęcia zostały przywrócone. Uruchom Etap 1, a następnie analizę szczegółową.',restore1:'Odtwarzam Etap 1 przed wznowieniem analizy szczegółowej…',resume2:'Wznawiam analizę szczegółową…'},
+    en:{restoring:'Restoring the interrupted analysis. Your photos are safe…',photosManual:'The analysis was preserved, but this browser requires you to select the photos again.',resume1:'Resuming the basic analysis…',need1:'The photos were restored. Run Stage 1 and then the detailed analysis.',restore1:'Restoring Stage 1 before resuming the detailed analysis…',resume2:'Resuming the detailed analysis…'},
+    de:{restoring:'Die unterbrochene Analyse wird wiederhergestellt. Ihre Fotos sind sicher…',photosManual:'Die Analyse wurde erhalten, aber dieser Browser erfordert eine erneute Auswahl der Fotos.',resume1:'Die Basisanalyse wird fortgesetzt…',need1:'Die Fotos wurden wiederhergestellt. Führen Sie Stufe 1 und danach die Detailanalyse aus.',restore1:'Stufe 1 wird vor der Fortsetzung der Detailanalyse wiederhergestellt…',resume2:'Die Detailanalyse wird fortgesetzt…'},
+    fr:{restoring:'Restauration de l’analyse interrompue. Vos photos sont conservées…',photosManual:'L’analyse a été conservée, mais ce navigateur exige de sélectionner à nouveau les photos.',resume1:'Reprise de l’analyse de base…',need1:'Les photos ont été restaurées. Lancez l’étape 1 puis l’analyse détaillée.',restore1:'Restauration de l’étape 1 avant de reprendre l’analyse détaillée…',resume2:'Reprise de l’analyse détaillée…'}
+  };
+  const language=()=>window.ApoLanguageRegistry?.current?.()||window.ApoI18n?.current?.()||localStorage.getItem('apomonet_language_v2')||'pl';
+  const tx=k=>COPY[language()]?.[k]||COPY.en[k]||COPY.pl[k]||k;
 
   function loadState() {
     try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; }
@@ -17,14 +25,12 @@
   }
   function patchState(patch) { saveState({ ...loadState(), ...patch, updatedAt: Date.now() }); }
   function clearPending() { const s = loadState(); delete s.pending; saveState(s); }
-  function isAnalysisUrl(input) {
-    const url = typeof input === 'string' ? input : input?.url || '';
-    return url === '/api/analyze' || url === '/api/analyze-detail' || url.endsWith('/api/analyze') || url.endsWith('/api/analyze-detail');
+  function requestPath(input) {
+    try { const raw=typeof input==='string'?input:String(input?.url||''); return new URL(raw,location.href).pathname; }
+    catch { return ''; }
   }
-  function stageFor(input) {
-    const url = typeof input === 'string' ? input : input?.url || '';
-    return url.includes('analyze-detail') ? 'stage2' : 'stage1';
-  }
+  function isAnalysisUrl(input) { return ['/api/analyze','/api/analyze-detail'].includes(requestPath(input)); }
+  function stageFor(input) { return requestPath(input)==='/api/analyze-detail' ? 'stage2' : 'stage1'; }
   function parseBody(options) {
     try { return typeof options?.body === 'string' ? JSON.parse(options.body) : null; } catch { return null; }
   }
@@ -135,29 +141,29 @@
     const pending = loadState().pending;
     if (!pending?.requestBody?.images?.[0] || !pending?.requestBody?.images?.[1]) return;
     await waitFor(() => document.getElementById('obverseInput') && document.getElementById('reverseInput'));
-    message('Przywracam przerwaną analizę. Zdjęcia są bezpieczne…');
+    message(tx('restoring'));
     const ok1 = setInputFile(document.getElementById('obverseInput'), dataUrlToFile(pending.requestBody.images[0], 'apomonet-awers.jpg'));
     await sleep(250);
     const ok2 = setInputFile(document.getElementById('reverseInput'), dataUrlToFile(pending.requestBody.images[1], 'apomonet-rewers.jpg'));
-    if (!ok1 || !ok2) { message('Analiza została zachowana, ale ta przeglądarka wymaga ponownego wskazania zdjęć.'); return; }
+    if (!ok1 || !ok2) { message(tx('photosManual')); return; }
     await waitFor(() => !document.getElementById('go')?.disabled, 20000);
 
     if (pending.stage === 'stage1') {
-      message('Wznawiam analizę podstawową…');
+      message(tx('resume1'));
       document.getElementById('go')?.click();
       return;
     }
 
     const cache = loadState().recoveryCache?.stage1;
-    if (!responseFromCache(cache)) { message('Zdjęcia zostały przywrócone. Uruchom Etap 1, a następnie analizę szczegółową.'); return; }
-    message('Odtwarzam Etap 1 przed wznowieniem analizy szczegółowej…');
+    if (!responseFromCache(cache)) { message(tx('need1')); return; }
+    message(tx('restore1'));
     document.getElementById('go')?.click();
     const ready = await waitFor(() => !document.getElementById('panel')?.classList.contains('hidden'), 20000);
     if (!ready) return;
-    message('Wznawiam analizę szczegółową…');
+    message(tx('resume2'));
     document.getElementById('deep')?.click();
   }
 
   addEventListener('DOMContentLoaded', () => { void restorePending(); }, { once: true });
-  window.ApoAnalysisResilience = { loadState, clearPending };
+  window.ApoAnalysisResilience = { loadState, clearPending, requestPath, isAnalysisUrl, stageFor };
 })();
