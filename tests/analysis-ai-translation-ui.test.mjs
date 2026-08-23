@@ -4,11 +4,13 @@ import fs from 'node:fs';
 
 const read=p=>fs.readFileSync(p,'utf8');
 
-test('AI translation runtime is wired and uses the dedicated translation endpoint',()=>{
+test('follow-up runtime is wired while the canonical content layer owns the translation endpoint',()=>{
   const app=read('app.js');
   const ui=read('analysis-ai-translation-ui.js');
+  const content=read('analysis-content-i18n.js');
   assert.match(app,/analysis-ai-translation-ui\.js/);
-  assert.match(ui,/\/api\/translate-analysis/);
+  assert.doesNotMatch(ui,/\/api\/translate-analysis/);
+  assert.match(content,/\/api\/translate-analysis/);
   assert.match(ui,/response\.clone\(\)\.json\(\)/);
 });
 
@@ -20,10 +22,12 @@ test('translation is UI-only and does not replace the analyze API response or sa
   assert.doesNotMatch(ui,/localStorage\.setItem\([^\n]*coin/i);
 });
 
-test('stale translation responses cannot overwrite a newly selected language',()=>{
+test('AI content translation has one owner and the follow-up runtime consumes its completion event',()=>{
   const ui=read('analysis-ai-translation-ui.js');
-  assert.match(ui,/requestedLanguage=lang\(\)/);
-  assert.match(ui,/lang\(\)!==requestedLanguage/);
+  const analyze=read('analyze.html');
+  assert.match(ui,/apo:analysis-localized/);
+  assert.match(analyze,/translator\.currentLanguage\(\) !== requestedLanguage/);
+  assert.doesNotMatch(ui,/MutationObserver/);
 });
 
 test('translation endpoint protects catalog references and transcribed legends',()=>{

@@ -15,6 +15,7 @@ test('analysis translation localizes the current in-memory accepted record',()=>
   assert.match(analyze,/const source = a;/);
   assert.match(analyze,/const translated = await translator\.localize\(source\)/);
   assert.match(analyze,/if \(a !== source\) return;/);
+  assert.match(analyze,/translator\.currentLanguage\(\) !== requestedLanguage/);
 });
 
 test('identity correction removes stale detail and market data before translation',()=>{

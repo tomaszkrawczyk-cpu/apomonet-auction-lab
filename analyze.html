@@ -696,15 +696,23 @@
       async function localizeCurrent({ scroll = false, showDetail = false } = {}) {
         const source = a;
         const translator = window.ApoAnalysisI18n;
+        const requestedLanguage = translator?.currentLanguage?.() || "pl";
         localizedA = null;
         window.__apoLocalizedAnalysis = null;
-        if (!source || !translator || translator.currentLanguage() === "pl") {
+        if (!source || !translator || requestedLanguage === "pl") {
+          window.__apoLocalizedAnalysis = source || null;
+          window.dispatchEvent(
+            new CustomEvent("apo:analysis-localized", {
+              detail: { language: requestedLanguage, analysis: source, translated: false },
+            }),
+          );
           return true;
         }
         $("status").textContent = translator.message("translating");
         try {
           const translated = await translator.localize(source);
           if (a !== source) return;
+          if (translator.currentLanguage() !== requestedLanguage) return;
           localizedA = translated;
           window.__apoLocalizedAnalysis = translated;
           render({ scroll });
@@ -712,10 +720,20 @@
             renderDetail(translated.detail);
             $("deepPanel").classList.remove("hidden");
           }
+          window.dispatchEvent(
+            new CustomEvent("apo:analysis-localized", {
+              detail: { language: requestedLanguage, analysis: translated, translated: true },
+            }),
+          );
           return true;
         } catch (error) {
           console.error("[analysis-translation]", error);
           $("status").textContent = translator.message("failed");
+          window.dispatchEvent(
+            new CustomEvent("apo:analysis-localized", {
+              detail: { language: requestedLanguage, analysis: source, translated: false },
+            }),
+          );
           return false;
         }
       }
@@ -776,9 +794,15 @@
           updatePhotoQuality();
           localizedA = null;
           render();
-          void localizeCurrent({ scroll: false, showDetail: !!a.detail });
-          $("status").textContent =
-            "Wróciłeś do analizy — korekta została naniesiona.";
+          const translator = window.ApoAnalysisI18n;
+          const localization = localizeCurrent({ scroll: false, showDetail: !!a.detail });
+          if (translator?.currentLanguage?.() === "pl") {
+            $("status").textContent = translator.message("restored");
+          } else {
+            void localization.then((ok) => {
+              if (ok) $("status").textContent = translator.message("restored");
+            });
+          }
           sessionStorage.removeItem("apomonetReturnToAnalysis");
         } catch (e) {
           console.warn(e);
@@ -809,13 +833,33 @@
       }
       $("go").onclick = async () => {
         if (!ready()) return;
+        const controller = new AbortController();
+        const progressTimers = [
+          setTimeout(() => {
+            $("status").textContent = "Odczytuję podstawowe cechy obu stron…";
+          }, 8_000),
+          setTimeout(() => {
+            $("status").textContent = "Porównuję rok, władcę i nominał…";
+          }, 20_000),
+          setTimeout(() => {
+            $("status").textContent =
+              "Analiza nadal trwa. Zdjęcia są bezpieczne — proszę nie zamykać tej karty.";
+          }, 35_000),
+        ];
+        const requestTimeout = setTimeout(() => controller.abort(), 48_000);
+        const jobId = `apo-${crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`}`;
         try {
           $("go").disabled = true;
+          $("go").setAttribute("aria-busy", "true");
           $("status").textContent = "Szybka analiza podstawowych danych…";
           const r = await fetch("/api/analyze", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ images: analysisImgs, mode: "basic" }),
+            signal: controller.signal,
+            headers: {
+              "Content-Type": "application/json",
+              "X-Apo-Job-Id": jobId,
+            },
+            body: JSON.stringify({ images: analysisImgs, mode: "basic", jobId }),
           });
           let d;
           try {
@@ -828,12 +872,25 @@
           localizedA = null;
           render();
           const translated = await localizeCurrent({ scroll: false });
-          if (translated) $("status").textContent = "Etap 1 gotowy.";
+          if (translated) {
+            const seconds = Number(d.meta?.elapsedMs) / 1000;
+            $("status").textContent =
+              (window.ApoAnalysisI18n?.message("basicReady") || "Etap 1 gotowy.") +
+              (Number.isFinite(seconds) && seconds > 0
+                ? ` (${seconds.toFixed(1)} s)`
+                : "");
+          }
         } catch (e) {
           console.error(e);
-          $("status").textContent = "Błąd analizy: " + e.message;
+          $("status").textContent =
+            e.name === "AbortError"
+              ? "Analiza wstępna trwała zbyt długo. Zdjęcia są bezpieczne — spróbuj ponownie."
+              : "Błąd analizy: " + e.message;
         } finally {
+          progressTimers.forEach(clearTimeout);
+          clearTimeout(requestTimeout);
           $("go").disabled = false;
+          $("go").removeAttribute("aria-busy");
         }
       };
       $("deep").onclick = async () => {
@@ -878,7 +935,9 @@
             showDetail: true,
           });
           if (translated) {
-            $("status").textContent = "Analiza szczegółowa zakończona.";
+            $("status").textContent =
+              window.ApoAnalysisI18n?.message("detailReady") ||
+              "Analiza szczegółowa zakończona.";
           }
         } catch (e) {
           console.error("[analyze-detail]", e);
