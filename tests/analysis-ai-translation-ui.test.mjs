@@ -22,8 +22,9 @@ test('translation is UI-only and does not replace the analyze API response or sa
 
 test('stale translation responses cannot overwrite a newly selected language',()=>{
   const ui=read('analysis-ai-translation-ui.js');
-  assert.match(ui,/requestedLanguage=lang\(\)/);
-  assert.match(ui,/lang\(\)!==requestedLanguage/);
+  assert.match(ui,/requestedLang=lang\(\)/);
+  assert.match(ui,/lang\(\)!==requestedLang/);
+  assert.match(ui,/token!==seq/);
 });
 
 test('translation endpoint protects catalog references and transcribed legends',()=>{
