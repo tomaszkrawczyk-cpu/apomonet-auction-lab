@@ -24,15 +24,26 @@
     });
     if(after.length!==before.length){state.watchlist=after;ApoMonet.save(state)}
   }
+  function cleanupArchiveLink(id){
+    if(!window.ApoArchive?.load||!window.ApoArchive?.save)return;
+    const sid=String(id),rows=ApoArchive.load();let changed=false;
+    const next=(rows||[]).map(row=>{
+      if(String(row?.linkedCoinId||'')!==sid)return row;
+      changed=true;
+      const clean={...row};delete clean.linkedCoinId;delete clean.expertMapped;return clean;
+    });
+    if(changed)ApoArchive.save(next);
+  }
   ApoMonet.deleteCoin=function(id){
     const coin=ApoMonet.getCoin(id);if(!coin)return false;
     original(id);
     if(ApoMonet.getCoin(id))return false;
     cleanupSession(id);
     try{cleanupLinkedWatchlist(id)}catch(error){console.warn('[record-delete-watchlist-cleanup]',error)}
+    try{cleanupArchiveLink(id)}catch(error){console.warn('[record-delete-archive-cleanup]',error)}
     return true;
   };
   ApoMonet.__recordDeletionIntegrity=true;
-  window.ApoRecordDeletionIntegrity=Object.freeze({cleanupSession,cleanupLinkedWatchlist});
+  window.ApoRecordDeletionIntegrity=Object.freeze({cleanupSession,cleanupLinkedWatchlist,cleanupArchiveLink});
   if(location.pathname.endsWith('coin.html')&&!document.querySelector('script[data-apo-coin-delete-i18n]')){const s=document.createElement('script');s.src='coin-delete-i18n.js';s.dataset.apoCoinDeleteI18n='1';document.head.appendChild(s)}
 })();
