@@ -8,8 +8,6 @@
 
   function clearAnalysisForFreshPhotos(){
     if(!onAnalyze())return;
-    // Retake inside the background-removal dialog belongs to the SAME coin and must
-    // preserve the accepted analysis. Every other new photo selection starts a new record.
     if(document.getElementById('albumPhotoPrep'))return;
     try{ id=null; }catch{}
     try{ a=null; }catch{}
@@ -61,7 +59,7 @@
         if(!assignment?.coinId||Date.now()-Number(assignment.at||0)>3000)return;
         const session=readSession();
         if(session?.id&&String(session.id)!==String(assignment.coinId))return;
-        const saved=window.ApoMonet?.getCoin?.(assignment.coinId);
+        const saved=(window.ApoMonet&&typeof ApoMonet.getCoin==='function')?ApoMonet.getCoin(assignment.coinId):null;
         if(!saved||String(saved.id)!==String(assignment.coinId))return;
         clearLastAssignment();
         location.href='coin.html?id='+encodeURIComponent(saved.id);
