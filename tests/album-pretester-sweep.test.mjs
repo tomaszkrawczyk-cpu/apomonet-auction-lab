@@ -19,10 +19,11 @@ test('duplicate custom album names are blocked in UI',()=>{
   assert.match(src,/t\('exists'\)/);
 });
 
-test('canonical album UI removes legacy custom cards and owns the new-album action',()=>{
+test('canonical album UI suppresses legacy cards and owns the new-album action',()=>{
   const src=read('user-albums-ui.js');
   assert.match(src,/\[data-custom-album\]/);
-  assert.match(src,/button\.onclick=null/);
+  assert.match(src,/suppressLegacyAlbumHotfix/);
+  assert.match(src,/apoLegacyAlbumLabel/);
   assert.match(src,/button\.dataset\.apoAlbumBound/);
   assert.match(src,/esc\(album\.name\)/);
   assert.match(src,/esc\(album\.description/);
