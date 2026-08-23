@@ -4,7 +4,7 @@
   const STRING_FIELDS = ["title","country","ruler","nominal","metal","mint","variant","grade","rarity","imageQualityNote","denominationEvidence","valuationNote","description","fullDescription"];
   const ARRAY_FIELDS = ["warnings","uncertaintyReasons","followUpQuestions"];
   const DETAIL_STRING_FIELDS = ["variant","kopickiRarity","obverseDetails","reverseDetails","legendPunctuation","fullDescription","visibleDateReading","obverseLegend","reverseLegend","mintmaster","gradeAssessment","edgeDescription"];
-  const DETAIL_ARRAY_FIELDS = ["warnings","diagnosticFeatures","authenticitySignals","recommendedChecks"];
+  const DETAIL_ARRAY_FIELDS = ["warnings","diagnosticFeatures","initialsAndMarks","priceCriticalFeatures","authenticitySignals","recommendedChecks"];
   const clone=value=>{try{return JSON.parse(JSON.stringify(value))}catch{return value&&typeof value==='object'?{...value}:value}};
   function currentLanguage(){return window.ApoLanguageRegistry?.current?.()||window.ApoI18n?.current?.()||localStorage.getItem(LANGUAGE_KEY)||'pl'}
   function canTranslate(language){if(language==='pl')return false;const registry=window.ApoLanguageRegistry;if(registry?.isEnabled)return registry.isEnabled(language);return /^[a-z]{2,3}(?:-[A-Za-z0-9]+)?$/.test(String(language||''))}

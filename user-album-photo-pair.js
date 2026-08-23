@@ -7,7 +7,8 @@
  function source(c,side){
    if(window.ApoAlbumPhotos?.resolve)return ApoAlbumPhotos.resolve(c,side)||'';
    if(c?.albumPhotoMode==='none')return'';
-   if(c?.albumPhotoMode==='cut'&&Number(c.albumPhotoPrepVersion||0)>=2)return side==='obverse'?(c.albumObverseImage||''):(c.albumReverseImage||'');
+   const sideMode=side==='obverse'?(c?.albumObversePhotoMode||(c?.albumPhotoMode==='cut'?'cut':'original')):(c?.albumReversePhotoMode||(c?.albumPhotoMode==='cut'?'cut':'original'));
+   if(sideMode==='cut'&&Number(c?.albumPhotoPrepVersion||0)>=2)return side==='obverse'?(c.albumObverseImage||c.obverseImage||''):(c.albumReverseImage||c.reverseImage||'');
    return side==='obverse'?(c?.obverseImage||''):(c?.reverseImage||'');
  }
  function draw(){

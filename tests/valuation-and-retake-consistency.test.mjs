@@ -19,7 +19,7 @@ test('home dashboard uses the same fresh valuation ordering',()=>{
 
 test('retaking a photo invalidates prepared cut album images',()=>{
   const source=read('analysis-album-save-fix.js');
-  assert.match(source,/albumPhotoMode==='cut'/);
+  assert.match(source,/\['cut','mixed'\]\.includes\(coin\.albumPhotoMode\)/);
   assert.match(source,/albumPhotoMode:'original'/);
   assert.match(source,/albumObverseImage:null/);
   assert.match(source,/albumReverseImage:null/);

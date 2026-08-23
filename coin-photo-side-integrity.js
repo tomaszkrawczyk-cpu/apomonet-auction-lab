@@ -3,6 +3,9 @@
   const persistent=src=>typeof src==='string'&&(src.startsWith('data:image/')||src.startsWith('http://')||src.startsWith('https://'));
   function strictSource(coin,side){
     if(!coin)return'';
+    if(coin.albumPhotoMode==='none')return'';
+    const prepared=window.ApoAlbumPhotos?.resolve?.(coin,side)||'';
+    if(persistent(prepared))return prepared;
     const raw=side==='obverse'?(coin.obverseImage||coin.image||coin.img):coin.reverseImage;
     return persistent(raw)?raw:'';
   }

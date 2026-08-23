@@ -151,6 +151,8 @@ Wolno rozważać i zwracać wyłącznie pozycje obecne w references tej polityki
 
 Najpierw sprawdź zgodność obrazu z ruler/year/nominal/mint/metal. Jeśli widzisz jednoznaczną sprzeczność, NIE nadpisuj tych pól po cichu — dodaj ostrzeżenie. Odczytaj osobno pełną widoczną legendę awersu i rewersu oraz każdą cyfrę daty. Nieczytelną cyfrę oznacz znakiem ?. Następnie analizuj odmianę i stempel: interpunkcję, rozstaw daty, położenie daty, początek/koniec legendy w układzie zegarowym, formy liter i cyfr, orientację i proporcje portretu, koronę, herb/tarczę, monogramy, znaki mennicze, mincerza, pióra/skrzydła/ogon orła oraz rant, jeśli jest widoczny.
 
+INICJAŁY I ZNAKI: potraktuj każdą odseparowaną literę, parę liter, monogram i znak urzędnika menniczego jako cechę krytyczną odmiany. Odczytaj je osobno dla awersu i rewersu, zachowując dokładny układ, np. „I–I”, „II”, „I / I”. Nie pomijaj znaku dlatego, że jest mały albo wygląda jak fragment legendy. Zwróć wszystkie obserwacje w initialsAndMarks. W priceCriticalFeatures wpisz tylko cechy, które mogą istotnie zmieniać odmianę, rzadkość lub porównywalność cenową. Jeśli inicjałów nie da się pewnie odczytać, nie zgaduj: dodaj precyzyjną prośbę o zdjęcie makro wskazanego miejsca do recommendedChecks.
+
 STANDARD OPISU PROFESJONALNEGO: pracuj jak numizmatyk przygotowujący kartę do domu aukcyjnego, ale NIE kopiuj cudzych opisów i nie naśladuj konkretnego katalogu zdanie po zdaniu. W fullDescription zachowaj logiczną kolejność: (1) emitent/władca, nominał, rok, mennica i metal wynikające z danych bazowych; (2) konkretna odmiana tylko jeśli da się ją obronić; (3) awers — co rzeczywiście widać; (4) rewers — co rzeczywiście widać; (5) cechy diagnostyczne odróżniające wariant; (6) ostrożna ocena stanu. NIE umieszczaj w fullDescription ceny, liczby notowań, mediany rynku ani niepotwierdzonych numerów katalogowych. Katalog i rzadkość mają pozostać osobnymi polami. Nie używaj pustych ozdobników typu „interesujący egzemplarz” albo „rzadka moneta”, jeżeli nie wynika to z danych.
 
 KOPICKI: kopickiReference i kopickiRarity podawaj WYŁĄCZNIE wtedy, gdy rozpoznanie konkretnego wariantu ma wiarygodną podstawę w cechach diagnostycznych oraz polityka literatury dopuszcza id „kopicki”. Sam władca + rok + nominał nie wystarczają. Jeśli nie masz podstawy, pozostaw oba pola puste. Rzadkość nie może być wnioskowana z wyglądu monety ani z przewidywanej ceny.
@@ -199,6 +201,7 @@ Zbuduj fingerprint geometryczno-diagnostyczny. Każda cecha fingerprintu ma wart
       "letterForms",
       "digitForms",
       "monogramShape",
+      "initialsPattern",
       "edgeFeature",
     ]) {
       fingerprintProperties[key] = feature;
@@ -232,6 +235,16 @@ Zbuduj fingerprint geometryczno-diagnostyczny. Każda cecha fingerprintu ma wart
           maxItems: 4,
         },
         mintmaster: { type: "string" },
+        initialsAndMarks: {
+          type: "array",
+          items: { type: "string" },
+          maxItems: 12,
+        },
+        priceCriticalFeatures: {
+          type: "array",
+          items: { type: "string" },
+          maxItems: 8,
+        },
         legendPunctuation: { type: "string" },
         diagnosticFeatures: { type: "array", items: { type: "string" } },
         authenticitySignals: { type: "array", items: { type: "string" } },
@@ -277,6 +290,8 @@ Zbuduj fingerprint geometryczno-diagnostyczny. Każda cecha fingerprintu ma wart
         "dateDigits",
         "dateDigitConfidence",
         "mintmaster",
+        "initialsAndMarks",
+        "priceCriticalFeatures",
         "legendPunctuation",
         "diagnosticFeatures",
         "authenticitySignals",
@@ -307,7 +322,7 @@ Zbuduj fingerprint geometryczno-diagnostyczny. Każda cecha fingerprintu ma wart
             text: {
               format: {
                 type: "json_schema",
-                name: "coin_detail_v7_literature_policy",
+                name: "coin_detail_v8_critical_marks",
                 strict: true,
                 schema,
               },

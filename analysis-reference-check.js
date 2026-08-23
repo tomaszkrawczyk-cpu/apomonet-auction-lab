@@ -41,6 +41,7 @@
       details = document.createElement("details");
       details.id = "referenceEvidenceBox";
       details.className = "detail";
+      details.open = true;
       details.style.marginTop = "12px";
       const summary = document.createElement("summary");
       summary.textContent = "Podobne egzemplarze i kontrola źródeł";

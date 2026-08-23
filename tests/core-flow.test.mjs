@@ -57,19 +57,19 @@ test('a retake preserves the analysis record while invalidating old prepared and
   assert.match(retake,/imgs,photoDiagnostics/);
 });
 
-test('coin card is documentary: original images and confirmed catalog evidence only',()=>{
+test('coin card uses the accepted photo presentation and confirmed catalog evidence only',()=>{
   const page=read('coin.html');
   const canonical=read('coin-card-canonical-fields.js');
   const photo=read('coin-photo-side-integrity.js');
   assert.match(page,/coin\.obverseImage/);
   assert.match(page,/coin\.reverseImage/);
-  assert.doesNotMatch(page,/ApoAlbumPhotos\.resolve\(coin/);
+  assert.match(page,/ApoAlbumPhotos\?\.resolve/);
   assert.match(canonical,/supported-by-stage2-variant-evidence/);
   assert.match(canonical,/kopickiReference/);
-  assert.ok(!photo.includes("albumPhotoMode==='cut'"));
+  assert.match(photo,/ApoAlbumPhotos\?\.resolve/);
 });
 
-test('album and export may use accepted prepared cutouts without changing the coin card originals',()=>{
+test('album and export use accepted prepared cutouts without overwriting stored originals',()=>{
   const album=read('user-album-photo-pair.js');
   const exp=read('export-record-view.js');
   assert.match(album,/albumPhotoMode==='cut'/);

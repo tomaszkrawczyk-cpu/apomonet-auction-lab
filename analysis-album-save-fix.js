@@ -61,7 +61,7 @@
           const coin=window.ApoMonet?.getCoin?.(session.id);
           if(coin)try{
             const patch={id:session.id,[field]:src};
-            if(coin.albumPhotoMode==='cut')Object.assign(patch,{albumPhotoMode:'original',albumObverseImage:null,albumReverseImage:null,albumPhotoPrepVersion:null,albumPhotoPreparedAt:null,albumPhotoRemovalConfidence:null,albumPhotoInvalidatedByRetake:true,albumPhotoInvalidatedAt:new Date().toISOString()});
+            if(['cut','mixed'].includes(coin.albumPhotoMode))Object.assign(patch,{albumPhotoMode:'original',albumObverseImage:null,albumReverseImage:null,albumObversePhotoMode:'original',albumReversePhotoMode:'original',albumPhotoPrepVersion:null,albumPhotoPreparedAt:null,albumPhotoRemovalConfidence:null,albumPhotoInvalidatedByRetake:true,albumPhotoInvalidatedAt:new Date().toISOString()});
             ApoMonet.upsertCoin(patch);
           }catch(error){console.warn('[retake-record-sync]',error)}
         },80);

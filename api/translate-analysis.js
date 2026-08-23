@@ -32,6 +32,10 @@ const ARRAY_PREFIXES = [
   "followUpQuestions.",
   "detail.warnings.",
   "detail.diagnosticFeatures.",
+  "detail.initialsAndMarks.",
+  "detail.priceCriticalFeatures.",
+  "detail.authenticitySignals.",
+  "detail.recommendedChecks.",
 ];
 
 const SUMMARY_FIELDS = new Set([

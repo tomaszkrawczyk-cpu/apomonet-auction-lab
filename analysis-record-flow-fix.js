@@ -14,6 +14,7 @@
     try{ id=null; }catch{}
     try{ a=null; }catch{}
     try{ localizedA=null; }catch{}
+    try{ detailJobId=null; }catch{}
     try{ window.__apoLocalizedAnalysis=null; }catch{}
     clearLastAssignment();
     for(const key of ['apomonetAnalysisSession','apomonetReturnToAnalysis','apomonetOpenAlbumAfterResume','apomonetAlbumPhotoPrep']){

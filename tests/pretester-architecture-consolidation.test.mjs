@@ -17,11 +17,11 @@ test('home dashboard owns multilingual dynamic rendering and locale-aware money'
   assert.match(src,/Intl\.NumberFormat\(locale\(\)/);
 });
 
-test('coin card uses original record photos while album and export may use prepared cutouts',()=>{
+test('coin card album and export use the accepted prepared presentation',()=>{
   const card=read('coin-photo-side-integrity.js');
   const album=read('user-album-photo-pair.js');
   const exp=read('export-record-view.js');
-  assert.ok(!card.includes("albumPhotoMode==='cut'"));
+  assert.match(card,/ApoAlbumPhotos\?\.resolve/);
   assert.match(card,/coin\.obverseImage/);
   assert.match(card,/coin\.reverseImage/);
   assert.match(album,/albumPhotoMode==='cut'/);

@@ -17,10 +17,10 @@
       fr: "Voulez-vous supprimer l’arrière-plan ?",
     },
     help: {
-      pl: "Najlepszy wynik daje jednolite, kontrastowe tło. Oryginały pozostaną bez zmian, a wersja PNG z przezroczystym tłem trafi tylko do albumu i eksportu.",
-      en: "A plain, contrasting background gives the best result. The originals stay unchanged; only the album and export use a transparent PNG.",
-      de: "Ein einfarbiger, kontrastreicher Hintergrund liefert das beste Ergebnis. Die Originale bleiben unverändert; Album und Export verwenden nur eine transparente PNG-Version.",
-      fr: "Un fond uni et contrasté donne le meilleur résultat. Les originaux restent inchangés ; seuls l’album et l’export utilisent un PNG transparent.",
+      pl: "Najlepszy wynik daje jednolite, kontrastowe tło. Oryginały pozostaną bez zmian, a zaakceptowana wersja PNG będzie widoczna na karcie monety, w albumie i eksporcie.",
+      en: "A plain, contrasting background gives the best result. Originals remain unchanged; the accepted transparent PNG is shown on the coin card, in albums and exports.",
+      de: "Ein einfarbiger, kontrastreicher Hintergrund liefert das beste Ergebnis. Die Originale bleiben unverändert; die akzeptierte transparente PNG-Version erscheint auf der Münzkarte, im Album und im Export.",
+      fr: "Un fond uni et contrasté donne le meilleur résultat. Les originaux restent inchangés ; le PNG transparent accepté apparaît sur la fiche, dans l’album et dans l’export.",
     },
     cutting: {
       pl: "Usuwam tło…",
@@ -57,6 +57,18 @@
       en: "✓ Yes — save the cutout",
       de: "✓ Ja — Freistellung speichern",
       fr: "✓ Oui — enregistrer le détourage",
+    },
+    acceptObverse: {
+      pl: "Zapisz wycięty awers, rewers zostaw oryginalny",
+      en: "Save the cutout obverse; keep the original reverse",
+      de: "Freigestellte Vorderseite speichern; Rückseite original lassen",
+      fr: "Enregistrer l’avers détouré ; conserver le revers original",
+    },
+    acceptReverse: {
+      pl: "Zapisz wycięty rewers, awers zostaw oryginalny",
+      en: "Save the cutout reverse; keep the original obverse",
+      de: "Freigestellte Rückseite speichern; Vorderseite original lassen",
+      fr: "Enregistrer le revers détouré ; conserver l’avers original",
     },
     keepOriginal: {
       pl: "🖼️ Zostaw oryginalne zdjęcie",
@@ -353,6 +365,8 @@
         box.appendChild(button);
       };
       make(msg("acceptCut"), "primary", "accept");
+      make(msg("acceptObverse"), "secondary", "obverse");
+      make(msg("acceptReverse"), "secondary", "reverse");
       make(msg("keepOriginal"), "secondary", "original");
       make(msg("reviewBack"), "secondary", "back");
       background.appendChild(box);
@@ -380,14 +394,18 @@
           albumPhotoMode: pending.mode,
           albumPhotoPreparedAt: new Date().toISOString(),
         };
-        if (pending.mode === "cut") {
+        if (pending.mode === "cut" || pending.mode === "mixed") {
           patch.albumObverseImage = pending.obverse || null;
           patch.albumReverseImage = pending.reverse || null;
+          patch.albumObversePhotoMode = pending.obverseMode || "cut";
+          patch.albumReversePhotoMode = pending.reverseMode || "cut";
           patch.albumPhotoRemovalConfidence = pending.confidence || null;
           patch.albumPhotoPrepVersion = pending.cutVersion || CUT_VERSION;
         } else {
           patch.albumObverseImage = null;
           patch.albumReverseImage = null;
+          patch.albumObversePhotoMode = pending.mode;
+          patch.albumReversePhotoMode = pending.mode;
         }
         ApoMonet.upsertCoin(patch);
         clearPending();
@@ -458,11 +476,15 @@
           finish();
           return;
         }
+        const obverseMode = choice === "accept" || choice === "obverse" ? "cut" : "original";
+        const reverseMode = choice === "accept" || choice === "reverse" ? "cut" : "original";
         setPending({
-          mode: "cut",
+          mode: obverseMode === "cut" && reverseMode === "cut" ? "cut" : "mixed",
           coinId,
-          obverse: obverse.data,
-          reverse: reverse.data,
+          obverse: obverseMode === "cut" ? obverse.data : null,
+          reverse: reverseMode === "cut" ? reverse.data : null,
+          obverseMode,
+          reverseMode,
           cutVersion: CUT_VERSION,
           confidence: Math.min(
             obverse.confidence || 100,
@@ -477,17 +499,17 @@
   function albumPhoto(coin, side = "obverse") {
     if (!coin) return "";
     if (coin.albumPhotoMode === "none") return "";
-    if (
-      coin.albumPhotoMode === "cut" &&
-      Number(coin.albumPhotoPrepVersion || 0) >= CUT_VERSION
-    ) {
-      return side === "obverse"
-        ? coin.albumObverseImage || coin.albumReverseImage || ""
-        : coin.albumReverseImage || coin.albumObverseImage || "";
+    const isObverse = side === "obverse";
+    const sideMode = isObverse
+      ? coin.albumObversePhotoMode || (coin.albumPhotoMode === "cut" ? "cut" : "original")
+      : coin.albumReversePhotoMode || (coin.albumPhotoMode === "cut" ? "cut" : "original");
+    if (sideMode === "cut" && Number(coin.albumPhotoPrepVersion || 0) >= CUT_VERSION) {
+      const prepared = isObverse ? coin.albumObverseImage : coin.albumReverseImage;
+      if (prepared) return prepared;
     }
-    return side === "obverse"
-      ? coin.obverseImage || coin.reverseImage || coin.image || coin.img || ""
-      : coin.reverseImage || coin.obverseImage || "";
+    return isObverse
+      ? coin.obverseImage || coin.image || coin.img || ""
+      : coin.reverseImage || "";
   }
 
   // Jedno źródło prawdy dla karty, albumów, okładek i eksportu.

@@ -370,7 +370,8 @@
         analysisImgs = [null, null],
         photoDiagnostics = [null, null],
         id = null,
-        localizedA = null;
+        localizedA = null,
+        detailJobId = null;
       const $ = (x) => document.getElementById(x);
       function preview(data, i, p) {
         $(i).src = data;
@@ -869,6 +870,7 @@
           }
           if (!r.ok) throw Error(apiError(d, "Błąd serwera HTTP " + r.status));
           a = d.analysis;
+          detailJobId = null;
           localizedA = null;
           render();
           const translated = await localizeCurrent({ scroll: false });
@@ -895,6 +897,7 @@
       };
       $("deep").onclick = async () => {
         const controller = new AbortController();
+        detailJobId ||= `apo-detail-${crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`}`;
         const progressTimers = [
           setTimeout(() => {
             $("status").textContent = "Odczytuję legendę i detale stempla…";
@@ -915,8 +918,11 @@
           const r = await fetch("/api/analyze-detail", {
             method: "POST",
             signal: controller.signal,
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ images: analysisImgs, base: detailBase() }),
+            headers: {
+              "Content-Type": "application/json",
+              "X-Apo-Job-Id": detailJobId,
+            },
+            body: JSON.stringify({ images: analysisImgs, base: detailBase(), jobId: detailJobId }),
           });
           let d;
           try {
@@ -935,9 +941,13 @@
             showDetail: true,
           });
           if (translated) {
+            const seconds = Number(d.meta?.elapsedMs) / 1000;
             $("status").textContent =
-              window.ApoAnalysisI18n?.message("detailReady") ||
-              "Analiza szczegółowa zakończona.";
+              (window.ApoAnalysisI18n?.message("detailReady") ||
+                "Analiza szczegółowa zakończona.") +
+                (Number.isFinite(seconds) && seconds > 0
+                  ? ` (${seconds.toFixed(1)} s)`
+                  : "");
           }
         } catch (e) {
           console.error("[analyze-detail]", e);
