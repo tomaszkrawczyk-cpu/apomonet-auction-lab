@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import vm from 'node:vm';
 
 const filter=fs.readFileSync('collection-extra-filters.js','utf8');
 const sentinel=fs.readFileSync('canonical-record-sentinels.js','utf8');
@@ -11,13 +12,15 @@ test('collection filters reuse the shared canonical unknown helper',()=>{
 });
 
 test('legacy multilingual unknown values collapse to one canonical value',()=>{
-  for(const token of ['unknown','unbekannt','inconnu','do\\s+potwierdzenia']) assert.match(sentinel,new RegExp(token,'i'));
-  assert.match(sentinel,/\?'Nie ustalono':v/);
+  const state={coins:[]};
+  const sandbox={console,ApoMonet:{upsertCoin:coin=>coin,load:()=>state,save(){}},window:null};sandbox.window=sandbox;
+  vm.runInNewContext(sentinel,sandbox,{filename:'canonical-record-sentinels.js'});
+  for(const value of ['unknown','unbekannt','inconnu','do potwierdzenia'])assert.equal(sandbox.ApoCanonicalRecordSentinels.canonical(value),'Nie ustalono');
 });
 
 test('unknown option keeps canonical value but localizes only its visible label',()=>{
-  assert.match(filter,/v==='Nie ustalono'\?labelUnknown\(\):v/);
-  assert.match(filter,/en'\?'Not determined'/);
-  assert.match(filter,/de'\?'Nicht bestimmt'/);
-  assert.match(filter,/fr'\?'Non déterminé'/);
+  assert.match(filter,/v==='Nie ustalono'\?t\('unknown'\):v/);
+  assert.match(filter,/en:\{[^}]*unknown:'Not determined'/);
+  assert.match(filter,/de:\{[^}]*unknown:'Nicht bestimmt'/);
+  assert.match(filter,/fr:\{[^}]*unknown:'Non déterminé'/);
 });

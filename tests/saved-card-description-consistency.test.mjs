@@ -8,7 +8,7 @@ test('accepted identity correction reconciles stale description',()=>{
   assert.match(consistency,/function reconcileDescription\(coin\)/);
   assert.match(consistency,/changedValuesArePresent/);
   assert.match(consistency,/staleRawValuesPresent/);
-  assert.match(consistency,/descriptionSource: "accepted-correction"/);
+  assert.match(consistency,/descriptionSource\s*:\s*["']accepted-correction["']/);
 });
 test('identity correction invalidates old detailed analysis before new Stage 2',()=>{
   assert.match(invalidation,/for \(const key of DERIVED_FIELDS\) delete output\[key\]/);

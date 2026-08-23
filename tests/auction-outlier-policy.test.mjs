@@ -11,11 +11,11 @@ test('outlier policy uses conservative IQR filtering',()=>{
 test('outliers remain recorded but are excluded from valuation rows',()=>{
   assert.match(policy,/outliers/);
   assert.match(policy,/pozostają widoczne jako fakty aukcyjne/);
-  assert.match(hook,/rows:filtered\.rows/);
-  assert.match(hook,/outliers:filtered\.outliers/);
+  assert.match(hook,/rows=filtered\.rows\|\|\[\],outliers=filtered\.outliers\|\|\[\]/);
+  assert.match(hook,/valuationRecords:rows/);
 });
 test('valuation hook wraps archive valuationRows rather than deleting records',()=>{
-  assert.match(hook,/const base=ApoArchive\.valuationRows/);
-  assert.match(hook,/ApoArchive\.valuationRows=function/);
+  assert.match(hook,/const baseValuation=ApoArchive\.valuation\.bind\(ApoArchive\)/);
+  assert.match(hook,/ApoArchive\.valuation=function/);
   assert.doesNotMatch(hook,/remove\(/);
 });

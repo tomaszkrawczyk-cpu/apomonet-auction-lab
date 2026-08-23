@@ -16,6 +16,6 @@ test('confirmed Kopicki requires Stage 2 evidence status',()=>{
 });
 
 test('unconfirmed catalog data is downgraded to candidate fields',()=>{
-  assert.match(src,/candidateRef=!confirmed\?/);
+  assert.match(src,/candidateRef=!stale&&!confirmed\?/);
   assert.match(src,/Kandydat — wymaga potwierdzenia/);
 });

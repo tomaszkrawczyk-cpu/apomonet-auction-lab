@@ -16,7 +16,7 @@ test('correction sync preserves full analysis session state',()=>{
   assert.match(correction,/imgs:\s*Array\.isArray\(old\.imgs\)/);
   assert.match(correction,/analysisImgs:\s*Array\.isArray\(old\.analysisImgs\)/);
   assert.match(correction,/photoDiagnostics:\s*Array\.isArray\(old\.photoDiagnostics\)/);
-  assert.match(correction,/Math\.max\(Number\(old\.version\) \|\| 0, 5\)/);
+  assert.match(correction,/Math\.max\(Number\(old\.version\)\s*\|\|\s*0,\s*5\)/);
 });
 
 test('every correction submit re-synchronizes the analysis session',()=>{

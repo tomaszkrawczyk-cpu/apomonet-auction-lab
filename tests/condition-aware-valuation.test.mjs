@@ -13,7 +13,8 @@ test('same condition is preferred and distant condition is penalized',()=>{
   assert.match(core,/s-=15/);
 });
 test('valuation requires same or neighboring condition when coin condition is known',()=>{
-  assert.match(core,/exact\.length>=2/);
+  assert.match(core,/exact\.length>=3/);
   assert.match(core,/conditionDistance==null\|\|r\.conditionDistance<=1/);
+  assert.match(core,/near\.length>=4/);
   assert.match(core,/insufficient-condition/);
 });

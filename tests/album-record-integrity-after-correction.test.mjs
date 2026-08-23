@@ -13,8 +13,8 @@ test('album assignment always uses the coin being assigned, not a stale analysis
 });
 
 test('album save recovers both current analysis photos onto that same record',()=>{
-  assert.match(albumFix,/previewSource\('oi'\)\|\|coin\?\.obverseImage/);
-  assert.match(albumFix,/previewSource\('ri'\)\|\|coin\?\.reverseImage/);
+  assert.match(albumFix,/previewSource\('oi'\)\|\|\(persistentImage\(coin\?\.obverseImage\)\?coin\.obverseImage:''\)/);
+  assert.match(albumFix,/previewSource\('ri'\)\|\|\(persistentImage\(coin\?\.reverseImage\)\?coin\.reverseImage:''\)/);
   assert.match(albumFix,/obverseImage:obverse\|\|null,reverseImage:reverse\|\|null/);
 });
 

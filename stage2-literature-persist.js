@@ -7,12 +7,12 @@
   const identityKey=coin=>identityFields.map(key=>comparable(coin?.[key])).join('|');
   const changedIdentity=current=>{if(!current?.userAccepted||!current?.rawAI)return[];return identityFields.filter(key=>known(current[key])&&comparable(current[key])!==comparable(current.rawAI?.[key]))};
   const contains=(text,value)=>{const needle=comparable(value);return needle.length>1&&comparable(text).includes(needle)};
-  function safeDetailDescription(detail,current){const source=clean(detail?.fullDescription);if(!source)return detail;const changed=changedIdentity(current);if(!changed.length)return detail;const conflicting=changed.filter(key=>known(current.rawAI?.[key])&&contains(source,current.rawAI[key])&&!contains(source,current[key]));if(!conflicting.length)return detail;const sentences=source.split(/(?<=[.!?])\s+/u).map(clean).filter(Boolean).filter(sentence=>!conflicting.some(key=>contains(sentence,current.rawAI[key])));const labels={nominal:'Nominał',ruler:'Władca / emitent',year:'Rok',mint:'Mennica',metal:'Metal',variant:'Odmiana / typ'};const summary=identityFields.filter(key=>known(current[key])).map(key=>`${labels[key]}: ${clean(current[key])}.`).join(' ');const fullDescription=[summary,...sentences].filter(Boolean).join(' ');return {...detail,fullDescription,descriptionConsistencySource:'accepted-user-identity',descriptionConsistencyFields:conflicting,warnings:[...(Array.isArray(detail.warnings)?detail.warnings:[]),'Opis Stage 2 został skorygowany pod kątem zgodności z danymi zaakceptowanymi przez użytkownika.']}}
+  function reconcileDetailDescription(detail,current){const source=clean(detail?.fullDescription);if(!source)return detail;const changed=changedIdentity(current);if(!changed.length)return detail;const conflicting=changed.filter(key=>known(current.rawAI?.[key])&&contains(source,current.rawAI[key])&&!contains(source,current[key]));if(!conflicting.length)return detail;const sentences=source.split(/(?<=[.!?])\s+/u).map(clean).filter(Boolean).filter(sentence=>!conflicting.some(key=>contains(sentence,current.rawAI[key])));const labels={nominal:'Nominał',ruler:'Władca / emitent',year:'Rok',mint:'Mennica',metal:'Metal',variant:'Odmiana / typ'};const summary=identityFields.filter(key=>known(current[key])).map(key=>`${labels[key]}: ${clean(current[key])}.`).join(' ');const fullDescription=[summary,...sentences].filter(Boolean).join(' ');return {...detail,fullDescription,descriptionConsistencySource:'accepted-user-identity',descriptionConsistencyFields:conflicting,warnings:[...(Array.isArray(detail.warnings)?detail.warnings:[]),'Opis Stage 2 został skorygowany pod kątem zgodności z danymi zaakceptowanymi przez użytkownika.']}}
   function sessionId(){try{return JSON.parse(sessionStorage.getItem('apomonetAnalysisSession')||'null')?.id||''}catch{return''}}
   addEventListener('apo-stage2-detail',event=>{
     const id=sessionId();if(!id||!window.ApoMonet)return;
     const current=ApoMonet.getCoin(id);if(!current)return;
-    const detail=safeDetailDescription(event?.detail?.detail||{},current);
+    const detail=reconcileDetailDescription(event?.detail?.detail||{},current);
     const refs=(event?.detail?.literature?.references||[]).filter(r=>known(r?.value)||known(r?.historicalValue));
     const by=id=>refs.find(r=>String(r?.id||'').toLowerCase()===id);
     const tys=by('tyszkiewicz'),par=by('parchimowicz');
@@ -25,5 +25,5 @@
     next.literatureEvidence={method:event?.detail?.literature?.policyMethod||'evidence-based',confirmedAt:new Date().toISOString(),references:refs.map(r=>({id:r.id,label:r.label,value:known(r.value)?r.value:'',source:r.source||'',historicalValue:known(r.historicalValue)?r.historicalValue:'',historicalValueOnly:Boolean(r.historicalValueOnly)}))};
     ApoMonet.upsertCoin(next);
   });
-  window.ApoStage2Persist=Object.freeze({safeDetailDescription,changedIdentity,identityKey});
+  window.ApoStage2Persist=Object.freeze({reconcileDetailDescription,safeDetailDescription:reconcileDetailDescription,changedIdentity,identityKey});
 })();

@@ -112,9 +112,9 @@ test('album domain rejects orphan target IDs before removing the source assignme
   const guard=read('album-domain-integrity.js');
   const app=read('app.js');
   assert.ok(app.includes('album-domain-integrity.js'));
-  assert.match(guard,/validAlbum/);
-  assert.match(guard,/if\(!toAlbumId\|\|!validAlbum\(s,toAlbumId\)\)return/);
-  assert.match(guard,/if\(String\(fromAlbumId\|\|'\'\)===String\(toAlbumId\)\)return/);
+  assert.match(guard,/const exists=\(state,id\)=>/);
+  assert.match(guard,/if\(!to\|\|!exists\(state,to\)\)return null/);
+  assert.match(guard,/if\(from&&from===to\)return ApoMonet\.getCoin/);
 });
 
 test('legacy corrected records migrate conservatively and migration is versioned',()=>{

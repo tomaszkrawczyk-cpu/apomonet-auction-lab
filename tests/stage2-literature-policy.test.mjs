@@ -11,7 +11,7 @@ test('Stage 2 backend consumes literature policy and has specialist schema field
   assert.match(api,/tyszkiewiczReference/);
   assert.match(api,/tyszkiewiczValue/);
   assert.match(api,/parchimowiczReference/);
-  assert.match(api,/dozwolone.*literatur/i);
+  assert.match(api,/Wolno rozważać i zwracać wyłącznie pozycje obecne w references tej polityki/i);
 });
 
 test('Stage 2 backend clears specialist literature that policy did not allow',()=>{

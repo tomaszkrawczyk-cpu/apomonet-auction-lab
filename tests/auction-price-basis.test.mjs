@@ -8,8 +8,9 @@ test('valuation keeps auction price bases separate',()=>{
   assert.match(core,/return'realized'/);
   assert.match(core,/return'total'/);
 });
-test('valuation requires at least two records on one price basis',()=>{
-  assert.match(core,/matching\.length>=2/);
+test('valuation requires at least three records on one price basis',()=>{
+  assert.match(core,/matching\.length>=minCount/);
+  assert.match(core,/function dominantBasis\(rows,minCount=3\)/);
   assert.match(core,/insufficient-price-basis/);
 });
 test('market value reads only the selected price basis',()=>{

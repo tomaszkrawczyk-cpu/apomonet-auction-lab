@@ -11,5 +11,5 @@ test('identity correction clears persisted valuation fields and requires recompu
   for(const field of ['marketMedian','marketCurrency','priceRange','valuationConfidence','valuationUpdatedAt','estimateLow','estimateHigh','estimatedPrice']){
     assert.match(invalidation,new RegExp(`"${field}"`));
   }
-  assert.match(invalidation,/Wycena i notowania wymagają ponownego dopasowania po korekcie identyfikacji/);
+  assert.match(invalidation,/Wycena, literatura i notowania wymagają ponownego dopasowania po korekcie identyfikacji/);
 });

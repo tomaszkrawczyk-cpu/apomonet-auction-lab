@@ -3,7 +3,7 @@
   if(!window.ApoMonet?.load)return;
   const originalLoad=window.ApoMonet.load.bind(window.ApoMonet);
   const clean=v=>String(v??'').trim();
-  const lang=()=>window.ApoLanguageRegistry?.current?.()||window.ApoI18n?.current?.()||localStorage.getItem('apomonet_language_v2')||'pl';
+  const lang=()=>window.ApoLanguageRegistry?.current?.()||window.ApoI18n?.current?.()||(typeof localStorage!=='undefined'?localStorage.getItem('apomonet_language_v2'):'')||'pl';
   const STALE_NOTE={pl:'Wycena, literatura i dane katalogowe wymagają ponownej analizy po korekcie identyfikacji.',en:'Valuation, literature and catalog data require re-analysis after the identification correction.',de:'Bewertung, Literatur- und Katalogdaten müssen nach der Identifikationskorrektur erneut analysiert werden.',fr:'L’estimation, la littérature et les données de catalogue doivent être réanalysées après la correction de l’identification.'};
   const PRIVATE_FIELDS=['rawAI','userAdditionalInfo','acceptedAt','updatedAt','createdAt','previousDetailAudit','derivedStateIdentityKey','derivedStateInvalidatedAt','recordMigratedAt','recordMigrationVersion','legacyDerivedDataQuarantined'];
   const CONFIRMED=new Set(['supported-by-stage2-variant-evidence','verified-curated','confirmed','verified']);

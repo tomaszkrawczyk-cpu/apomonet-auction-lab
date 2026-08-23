@@ -25,7 +25,7 @@ test('PDF export has distinct specialist-literature and contemporary-market sect
   assert.match(page,/Tyszkiewicz/);
   assert.match(page,/Parchimowicz/);
   assert.match(page,/wartość historyczna/i);
-  assert.match(page,/nie jest.*wycen/i);
+  assert.match(page,/nie (?:jest|stanowi) współczesnej wycen/i);
   assert.match(page,/c\.tyszkiewiczReference/);
   assert.match(page,/c\.tyszkiewiczValue/);
   assert.match(page,/c\.parchimowiczReference/);

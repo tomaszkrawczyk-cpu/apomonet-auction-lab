@@ -11,6 +11,6 @@ test('FX date policy loads before FX valuation policy',()=>{
 });
 test('auction cards expose FX date proximity and quarantine stale FX',()=>{
   assert.match(ui,/ApoAuctionFxDate\?\.assess/);
-  assert.match(ui,/Kurs zbyt odległy od daty sprzedaży/);
+  assert.match(ui,/kurs zbyt odległy od daty sprzedaży/);
   assert.match(ui,/bez wpływu na wycenę PLN/);
 });

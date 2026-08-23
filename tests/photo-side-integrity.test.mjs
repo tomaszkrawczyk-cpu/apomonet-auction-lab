@@ -22,7 +22,7 @@ test('photo side swap is disabled once Stage 1 result is visible',()=>{
 });
 
 test('coin card never substitutes the opposite side for a missing photo',()=>{
-  assert.match(card,/side==='obverse'\?coin\.obverseImage:coin\.reverseImage/);
+  assert.match(card,/side==='obverse'\?\(coin\.obverseImage\|\|coin\.image\|\|coin\.img\):coin\.reverseImage/);
   assert.doesNotMatch(card,/coin\.obverseImage\s*\|\|\s*coin\.reverseImage/);
   assert.doesNotMatch(card,/coin\.reverseImage\s*\|\|\s*coin\.obverseImage/);
   assert.match(card,/image\.hidden=true;empty\.hidden=false/);

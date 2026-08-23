@@ -57,5 +57,5 @@
   }
   function installCollectionUi(){if(!location.pathname.endsWith('collection.html'))return;makeLegacyPageUseCanonicalResolvers();patchCollectionCards();installCollectionSummary();const coins=document.getElementById('coins');if(coins)new MutationObserver(()=>patchCollectionCards()).observe(coins,{childList:true,subtree:true});['languagechange','apo-language-changed','apomonet:language-change'].forEach(e=>addEventListener(e,()=>setTimeout(()=>{makeLegacyPageUseCanonicalResolvers();patchCollectionCards()},0)))}
   window.ApoCollectionValuation=Object.freeze({value,currency,summary,money,makeLegacyPageUseCanonicalResolvers,patchCollectionCards,installCollectionSummary});
-  document.readyState==='loading'?addEventListener('DOMContentLoaded',installCollectionUi):installCollectionUi();
+  if(typeof document!=='undefined')document.readyState==='loading'?addEventListener('DOMContentLoaded',installCollectionUi):installCollectionUi();
 })();

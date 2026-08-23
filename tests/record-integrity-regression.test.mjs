@@ -31,7 +31,8 @@ test('return-to-analysis session refresh reads the latest persisted record by id
 
 test('album navigation opens the exact record returned from assignment',()=>{
   const source=read('analysis-record-flow-fix.js');
-  assert.match(source,/__apoLastAlbumCoinId=result\.id/);
-  assert.match(source,/ApoMonet\?\.getCoin\?\.\(coinId\)/);
+  assert.match(source,/const savedId=result\?\.id\|\|coinId\|\|''/);
+  assert.match(source,/__apoLastAlbumCoinId=savedId/);
+  assert.match(source,/ApoMonet\?\.getCoin\?\.\(assignment\.coinId\)/);
   assert.match(source,/coin\.html\?id=/);
 });

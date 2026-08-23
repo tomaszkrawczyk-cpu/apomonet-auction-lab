@@ -1,9 +1,13 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
 import test from 'node:test';
-const pp=readFileSync(new URL('../auction-purchasing-power.js',import.meta.url),'utf8');
+const pp=readFileSync(new URL('../auction-purchasing-power-context.js',import.meta.url),'utf8');
+const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
 const ui=readFileSync(new URL('../auction-record-cost-ui.js',import.meta.url),'utf8');
 const archive=readFileSync(new URL('../auction-archive-core.js',import.meta.url),'utf8');
 test('purchasing power requires explicit factor provenance',()=>{assert.match(pp,/inflationFactorToPresent/);assert.match(pp,/inflationSource/);assert.match(pp,/inflationReferenceDate/)});
+test('purchasing power stays unavailable without provenance and calculates context when complete',()=>{const sandbox={window:null};sandbox.window=sandbox;vm.runInNewContext(pp,sandbox,{filename:'auction-purchasing-power-context.js'});const api=sandbox.ApoAuctionPurchasingPower;assert.equal(api.assess({inflationFactorToPresent:2},100).available,false);const result=api.assess({inflationFactorToPresent:2,inflationSource:'GUS',inflationReferenceDate:'2026-08-23'},100);assert.equal(result.available,true);assert.equal(result.presentValue,200);assert.equal(result.source,'GUS');assert.equal(result.referenceDate,'2026-08-23')});
 test('purchasing power is presented as context only',()=>{assert.match(ui,/To tylko kontekst ekonomiczny i nie wpływa na wycenę monety/)});
+test('purchasing power context is loaded before auction cards consume it',()=>{const context=app.indexOf('auction-purchasing-power-context.js'),cards=app.indexOf('auction-record-cost-ui.js');assert.ok(context>=0&&cards>context)});
 test('core valuation does not use purchasing power factors',()=>{assert.doesNotMatch(archive,/inflationFactorToPresent|purchasingPower|presentValue/)});

@@ -8,7 +8,7 @@ const invalidation=readFileSync(new URL('../derived-analysis-invalidation.js',im
 
 test('translation cache is keyed by the current record content',()=>{
   assert.match(i18n,/hash\(JSON\.stringify\(items\)\)/);
-  assert.match(i18n,/const cacheKey = `\$\{language\}:\$\{hash\(JSON\.stringify\(items\)\)\}`/);
+  assert.match(i18n,/const cacheKey\s*=\s*`\$\{language\}:\$\{hash\(JSON\.stringify\(items\)\)\}`/);
 });
 
 test('analysis translation localizes the current in-memory accepted record',()=>{
@@ -25,6 +25,6 @@ test('identity correction removes stale detail and market data before translatio
 });
 
 test('Polish display bypasses translated cache and returns the live record',()=>{
-  assert.match(i18n,/language === "pl"/);
+  assert.match(i18n,/language\s*===\s*['"]pl['"]/);
   assert.match(i18n,/return record/);
 });

@@ -22,6 +22,6 @@ test('identity invalidation clears persisted market-derived fields before a fres
   for(const field of ['estimatedValue','estimate','valuation','priceEstimate','marketValue','marketMedian','estimateLow','estimateHigh','estimatedPrice','priceRange']){
     assert.ok(invalidation.includes(field),field);
   }
-  assert.match(invalidation,/needsReanalysis:true/);
-  assert.match(invalidation,/derivedDataStale:true/);
+  assert.match(invalidation,/output\.needsReanalysis\s*=\s*true/);
+  assert.match(invalidation,/output\.derivedDataStale\s*=\s*true/);
 });

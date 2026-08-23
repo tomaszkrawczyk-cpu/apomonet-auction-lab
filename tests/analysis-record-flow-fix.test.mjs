@@ -19,14 +19,17 @@ test('album save navigates to the exact assigned record', async()=>{
   const source=await text('analysis-record-flow-fix.js');
   assert.match(source,/__apoLastAlbumCoinId/);
   assert.match(source,/coin\.html\?id=/);
-  assert.match(source,/ApoMonet\.getCoin/);
+  assert.match(source,/ApoMonet\?\.getCoin\?\.\(assignment\.coinId\)/);
 });
 
-test('saved detailed analysis is visible on the coin card', async()=>{
-  const source=await text('analysis-record-flow-fix.js');
-  assert.match(source,/savedDetailAnalysis/);
-  assert.match(source,/Analiza szczegółowa/);
-  assert.match(source,/diagnosticFeatures/);
+test('saved detailed analysis is persisted and rendered by canonical modules', async()=>{
+  const persist=await text('stage2-literature-persist.js');
+  const card=await text('coin-card-finish.js');
+  assert.match(persist,/detail,analysisLevel:'detailed'/);
+  assert.match(persist,/ApoMonet\.upsertCoin\(next\)/);
+  assert.match(card,/current\.detail/);
+  assert.match(card,/Analiza szczegółowa/);
+  assert.match(card,/diagnosticFeatures/);
 });
 
 test('basic recognition explicitly considers trial and pattern issues', async()=>{

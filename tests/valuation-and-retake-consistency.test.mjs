@@ -14,7 +14,7 @@ test('collection valuation prefers fresh market median and rejects stale records
 test('home dashboard uses the same fresh valuation ordering',()=>{
   const source=read('home-dashboard-summary.js');
   assert.match(source,/ApoCollectionValuation/);
-  assert.ok(source.indexOf('c.marketMedian')<source.indexOf('c.estimatedValue'));
+  assert.match(source,/ApoCollectionValuation\?\.value\?\.\(record\)/);
 });
 
 test('retaking a photo invalidates prepared cut album images',()=>{

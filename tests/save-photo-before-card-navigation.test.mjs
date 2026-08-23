@@ -6,15 +6,15 @@ const nav=readFileSync(new URL('../analysis-save-open-card.js',import.meta.url),
 
 test('saved coin navigation verifies the exact record before opening the card',()=>{
   assert.match(nav,/savedCoinLink/);
-  assert.match(nav,/coin\.html\?id=/);
-  assert.match(nav,/ApoMonet\.getCoin/);
+  assert.match(nav,/\^coin\\\.html\\\?id=/);
+  assert.match(nav,/ApoMonet\?\.getCoin\?\.\(coinId\)/);
 });
 
 test('missing obverse or reverse is recovered from the current analysis previews before navigation',()=>{
   assert.match(nav,/obverseImage/);
   assert.match(nav,/reverseImage/);
-  assert.match(nav,/document\.getElementById\('oi'\)/);
-  assert.match(nav,/document\.getElementById\('ri'\)/);
+  assert.match(nav,/preview\('oi'\)/);
+  assert.match(nav,/preview\('ri'\)/);
   assert.match(nav,/ApoMonet\.upsertCoin/);
 });
 

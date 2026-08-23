@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import vm from 'node:vm';
 
 const code=fs.readFileSync('canonical-record-sentinels.js','utf8');
 const app=fs.readFileSync('app.js','utf8');
@@ -12,8 +13,10 @@ test('runtime loads canonical record normalization immediately after app core',(
 });
 
 test('common multilingual unknown markers collapse to one canonical value',()=>{
-  for(const token of ['unknown','unbekannt','inconnu','do\\s+potwierdzenia','not\\s+determined'])assert.match(code,new RegExp(token));
-  assert.match(code,/\?\s*'Nie ustalono'\s*:/);
+  const state={coins:[]};
+  const sandbox={console,ApoMonet:{upsertCoin:coin=>coin,load:()=>state,save(){}},window:null};sandbox.window=sandbox;
+  vm.runInNewContext(code,sandbox,{filename:'canonical-record-sentinels.js'});
+  for(const value of ['unknown','unbekannt','inconnu','do potwierdzenia','not determined'])assert.equal(sandbox.ApoCanonicalRecordSentinels.canonical(value),'Nie ustalono');
 });
 
 test('normalization happens at upsert boundary and migrates existing coins',()=>{

@@ -46,18 +46,18 @@
     renderFollowups();
   }
   async function translate(kind,payload){
-    const requestedLang=lang();if(!canTranslate(requestedLang)||!payload)return;
+    const requestedLanguage=lang();if(!canTranslate(requestedLanguage)||!payload)return;
     const items=itemsFrom(kind,payload);if(!items.length)return;
     const token=++seq;
     try{
-      const r=await nativeFetch('/api/translate-analysis',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({language:requestedLang,items})});
+      const r=await nativeFetch('/api/translate-analysis',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({language:requestedLanguage,items})});
       if(!r.ok)return;
       const out=await r.json();
-      if(token!==seq||lang()!==requestedLang)return;
+      if(token!==seq||lang()!==requestedLanguage)return;
       const byKey=out?.translations||{};
       for(const item of items){const translated=clean(byKey[item.key]);if(translated)maps.set(item.text,translated)}
       apply();
-      window.dispatchEvent(new CustomEvent('apo:analysis-ai-translated',{detail:{language:requestedLang,kind}}));
+      window.dispatchEvent(new CustomEvent('apo:analysis-ai-translated',{detail:{language:requestedLanguage,kind}}));
     }catch{}
   }
   function translated(text){return maps.get(clean(text))||text}
