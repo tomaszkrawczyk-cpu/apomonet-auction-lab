@@ -145,6 +145,18 @@ test("final basic card is populated only after the evidence gate confirms a cata
   assert.equal(confirmedCard.weight, 57.74);
 });
 
+test("condition engine withholds a grade when its own confidence is too low", () => {
+  const raw = janKazimierzDecision();
+  raw.condition.band = "xf";
+  raw.condition.confidence = 8;
+
+  const condition = conditionFromRaw(raw);
+
+  assert.equal(condition.band, "Nie ustalono");
+  assert.equal(condition.bandCode, "uncertain");
+  assert.equal(condition.confidence, 8);
+});
+
 test("Numista image retrieval stays disabled without a configured server key", async () => {
   const result = await searchNumistaByImage("", ["data:image/jpeg;base64,AA=="]);
   assert.deepEqual(result, { available: false, candidates: [], reason: "missing-key" });
