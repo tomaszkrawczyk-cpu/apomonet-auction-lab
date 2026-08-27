@@ -1,13 +1,7 @@
-import {
-  adjudicateRecognition,
-  analysisFromRecognition,
-  candidatePrompt,
-  conditionFromRaw,
-  localReferenceCandidates,
-  rankEvidenceCandidates,
-  searchMnkByEvidence,
-  searchNumistaByImage,
-} from "../lib/recognition-core.mjs";
+// Vercel bundles API `.js` files as CommonJS in this project. A static import
+// would be rewritten to `require()`, which cannot load an `.mjs` dependency.
+// Native dynamic import keeps the recognition core as ESM in production.
+const recognitionCorePromise = import("../lib/recognition-core.mjs");
 
 const BASIC_TIMEOUT_MS = 45_000;
 const VISION_TIMEOUT_MS = 32_000;
@@ -152,6 +146,16 @@ const schema = {
 };
 
 async function runAnalysis(apiKey, images, measurements) {
+  const {
+    adjudicateRecognition,
+    analysisFromRecognition,
+    candidatePrompt,
+    conditionFromRaw,
+    localReferenceCandidates,
+    rankEvidenceCandidates,
+    searchMnkByEvidence,
+    searchNumistaByImage,
+  } = await recognitionCorePromise;
   const localCandidates = localReferenceCandidates();
   const numista = await searchNumistaByImage(
     process.env.NUMISTA_API_KEY,
