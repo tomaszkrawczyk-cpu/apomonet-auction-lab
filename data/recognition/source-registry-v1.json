@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-27",
+  "tiers": {
+    "A": "Primary institutional catalogue; may support identity when record rights and provenance pass",
+    "B": "Licensed specialist catalogue/API; may support identity under its contract and attribution rules",
+    "C": "Auction archive or specialist publication; corroboration only unless independently verified",
+    "D": "Forum, marketplace, community correction; discovery lead only until curated"
+  },
+  "sources": [
+    {
+      "id": "mnk",
+      "name": "Muzeum Narodowe w Krakowie — Zbiory Cyfrowe",
+      "tier": "A",
+      "status": "runtime-and-curated-seed",
+      "identityRole": "candidate-and-verification",
+      "rightsGate": "Accept only records explicitly marked Domena publiczna and unrestricted",
+      "data": ["title", "ruler/creator", "date", "mint", "material", "dimensions", "weight", "descriptions", "two-side images"],
+      "url": "https://zbiory.mnk.pl/"
+    },
+    {
+      "id": "mnw",
+      "name": "Muzeum Narodowe w Warszawie — Cyfrowe MNW",
+      "tier": "A",
+      "status": "adapter-planned",
+      "identityRole": "candidate-and-verification",
+      "rightsGate": "Per-record public-domain/open-rights check before metadata or image ingestion",
+      "data": ["Dublin Core metadata", "images", "inventory provenance"],
+      "url": "https://cyfrowe.mnw.art.pl/"
+    },
+    {
+      "id": "nbp",
+      "name": "Narodowy Bank Polski",
+      "tier": "A",
+      "status": "adapter-planned",
+      "identityRole": "authoritative-modern-polish-issues",
+      "rightsGate": "Follow NBP image-reuse conditions; factual metadata kept separate from image permissions",
+      "data": ["issue catalogues", "mintage", "technical parameters", "official images"],
+      "url": "https://nbp.pl/banknoty-i-monety/"
+    },
+    {
+      "id": "polona",
+      "name": "POLONA / Biblioteka Narodowa",
+      "tier": "A",
+      "status": "curation-pipeline-planned",
+      "identityRole": "historical-typology-and-legends",
+      "rightsGate": "Only public-domain objects; transform facts into APOMONET records with page-level provenance",
+      "data": ["historic catalogues", "OCR", "public-domain plates"],
+      "url": "https://polona.pl/"
+    },
+    {
+      "id": "numista",
+      "name": "Numista API",
+      "tier": "B",
+      "status": "implemented-not-configured",
+      "identityRole": "visual-retrieval-candidates",
+      "rightsGate": "API contract, N# and Source: Numista attribution; no bulk copy or long-lived metadata cache",
+      "data": ["two-image similarity", "type metadata", "measurements", "candidate thumbnails"],
+      "url": "https://en.numista.com/api/"
+    },
+    {
+      "id": "europeana",
+      "name": "Europeana APIs",
+      "tier": "A",
+      "status": "configured-key-invalid",
+      "identityRole": "cross-museum-discovery",
+      "rightsGate": "Per-object rights statement and provider provenance",
+      "data": ["search", "records", "IIIF"],
+      "url": "https://pro.europeana.eu/page/apis"
+    },
+    {
+      "id": "smithsonian",
+      "name": "Smithsonian Open Access",
+      "tier": "A",
+      "status": "runtime-reference",
+      "identityRole": "secondary-global-corroboration",
+      "rightsGate": "Use only records and assets carrying compatible Open Access rights",
+      "data": ["catalogue metadata", "open assets"],
+      "url": "https://www.si.edu/openaccess/devtools"
+    },
+    {
+      "id": "auction-archives",
+      "name": "Auction-house archives",
+      "tier": "C",
+      "status": "removed-from-identity-critical-path",
+      "identityRole": "market-and-provenance-corroboration-only",
+      "rightsGate": "No copied photos or descriptions without licence; direct links and independently structured facts only",
+      "data": ["sale identity", "provenance", "price basis"],
+      "url": ""
+    },
+    {
+      "id": "community",
+      "name": "Numismatic forums and user corrections",
+      "tier": "D",
+      "status": "quarantined-learning",
+      "identityRole": "lead-until-curated",
+      "rightsGate": "Consent, provenance and independent verification required before promotion",
+      "data": ["candidate corrections", "diagnostic leads"],
+      "url": ""
+    }
+  ]
+}

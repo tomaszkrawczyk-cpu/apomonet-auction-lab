@@ -1,4 +1,16 @@
+import {
+  adjudicateRecognition,
+  analysisFromRecognition,
+  candidatePrompt,
+  conditionFromRaw,
+  localReferenceCandidates,
+  rankEvidenceCandidates,
+  searchMnkByEvidence,
+  searchNumistaByImage,
+} from "../lib/recognition-core.mjs";
+
 const BASIC_TIMEOUT_MS = 45_000;
+const VISION_TIMEOUT_MS = 32_000;
 const JOB_TTL_MS = 10 * 60_000;
 
 const basicJobs =
@@ -7,14 +19,6 @@ const basicJobs =
 
 function clean(value) {
   return String(value ?? "").trim();
-}
-
-function normalized(value) {
-  return clean(value)
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/ł/g, "l");
 }
 
 function responseText(data) {
@@ -42,221 +46,142 @@ function pruneJobs() {
   }
 }
 
-function chronologyGuard(analysis) {
-  const year = /^\d{4}$/.test(clean(analysis.year))
-    ? Number(analysis.year)
-    : null;
-  if (!year || !analysis.ruler || normalized(analysis.ruler) === "nie ustalono") {
-    return;
-  }
-  const reigns = [
-    ["Zygmunt I Stary", 1506, 1548],
-    ["Zygmunt II August", 1548, 1572],
-    ["Henryk Walezy", 1573, 1575],
-    ["Anna Jagiellonka", 1575, 1596],
-    ["Stefan Batory", 1576, 1586],
-    ["Zygmunt III Waza", 1587, 1632],
-    ["Władysław IV Waza", 1632, 1648],
-    ["Jan II Kazimierz", 1648, 1668],
-    ["Michał Korybut Wiśniowiecki", 1669, 1673],
-    ["Jan III Sobieski", 1674, 1696],
-    ["August II Mocny", 1697, 1706],
-    ["Stanisław Leszczyński", 1704, 1709],
-    ["August II Mocny", 1709, 1733],
-    ["Stanisław Leszczyński", 1733, 1736],
-    ["August III Sas", 1733, 1763],
-    ["Stanisław August Poniatowski", 1764, 1795],
-  ];
-  const possible = reigns.filter((item) => year >= item[1] && year <= item[2]);
-  const ruler = normalized(analysis.ruler);
-  if (
-    possible.length &&
-    !possible.some((item) => {
-      const expected = normalized(item[0]);
-      return ruler.includes(expected) || expected.includes(ruler);
-    })
-  ) {
-    const reason = `Konflikt chronologiczny: rok ${year} nie pasuje do rozpoznania „${analysis.ruler}”.`;
-    analysis.warnings.push(`${reason} APOMONET nie zmienił danych automatycznie.`);
-    analysis.uncertaintyReasons.push(reason);
-    analysis.needsDetailedAnalysis = true;
-    analysis.confidence = Math.min(analysis.confidence, 72);
-    analysis.rulerConfidence = Math.min(analysis.rulerConfidence, 72);
-    analysis.estimateLow = 0;
-    analysis.estimateHigh = 0;
-    analysis.valuationNote =
-      "Wycena wstrzymana: konflikt rok–władca wymaga kontroli legendy i portretu.";
-  }
-}
-
-function normalizeAnalysis(raw) {
-  const analysis = { ...raw };
-  analysis.warnings = Array.isArray(analysis.warnings)
-    ? analysis.warnings.filter(Boolean).slice(0, 4)
-    : [];
-  analysis.uncertaintyReasons = Array.isArray(analysis.uncertaintyReasons)
-    ? analysis.uncertaintyReasons.filter(Boolean).slice(0, 4)
-    : [];
-  analysis.followUpQuestions = Array.isArray(analysis.followUpQuestions)
-    ? analysis.followUpQuestions.filter(Boolean).slice(0, 3)
-    : [];
-  analysis.confidence = Math.min(95, Math.max(0, Number(analysis.confidence) || 0));
-  analysis.rulerConfidence = Math.min(
-    100,
-    Math.max(0, Number(analysis.rulerConfidence) || 0),
-  );
-  analysis.yearConfidence = Math.min(
-    100,
-    Math.max(0, Number(analysis.yearConfidence) || 0),
-  );
-  analysis.nominalConfidence = Math.min(
-    100,
-    Math.max(0, Number(analysis.nominalConfidence) || 0),
-  );
-  if (!analysis.valuationCurrency) analysis.valuationCurrency = "PLN";
-  if (Number(analysis.estimateHigh) < Number(analysis.estimateLow)) {
-    [analysis.estimateLow, analysis.estimateHigh] = [
-      analysis.estimateHigh,
-      analysis.estimateLow,
-    ];
-  }
-
-  const critical = ["country", "ruler", "year", "nominal"];
-  const missing = critical.filter((key) => {
-    const value = normalized(analysis[key]);
-    return !value || value === "nie ustalono" || value.includes("do potwierdzenia");
-  });
-  if (missing.length) {
-    analysis.needsDetailedAnalysis = true;
-    analysis.uncertaintyReasons.push(
-      `Brakuje pewnego pola: ${missing.join(", ")}.`,
-    );
-  }
-  if (
-    analysis.confidence < 85 ||
-    analysis.rulerConfidence < 80 ||
-    analysis.yearConfidence < 80 ||
-    analysis.nominalConfidence < 80
-  ) {
-    analysis.needsDetailedAnalysis = true;
-    analysis.uncertaintyReasons.push(
-      "Jedno z kluczowych pól ma obniżoną pewność.",
-    );
-  }
-  if (analysis.warnings.length) analysis.needsDetailedAnalysis = true;
-
-  chronologyGuard(analysis);
-
-  analysis.uncertaintyReasons = [...new Set(analysis.uncertaintyReasons)].slice(0, 4);
-  analysis.needsDetailedAnalysis = Boolean(analysis.needsDetailedAnalysis);
-  analysis.detailRecommended = analysis.needsDetailedAnalysis;
-  analysis.description = clean(analysis.summary);
-  analysis.fullDescription = clean(analysis.summary);
-  analysis.analysisLevel = "basic";
-  analysis.analysisVersion = "two-stage-v2";
-
-  // Pola zgodności ze starszym interfejsem; Etap 1 celowo ich nie analizuje.
-  analysis.portraitRuler = analysis.ruler;
-  analysis.portraitConfidence = analysis.rulerConfidence;
-  analysis.obverseLegend = "";
-  analysis.reverseLegend = "";
-  analysis.visibleDateReading = analysis.year;
-  analysis.dateDigits = /^\d{4}$/.test(clean(analysis.year))
-    ? clean(analysis.year).split("")
-    : ["?", "?", "?", "?"];
-  analysis.dateDigitConfidence = analysis.dateDigits.map((digit) =>
-    digit === "?" ? 0 : analysis.yearConfidence,
-  );
-  analysis.denominationEvidence =
-    "Analiza wstępna — cechy rozstrzygające sprawdza Etap 2.";
-  return analysis;
-}
-
 const schema = {
   type: "object",
   additionalProperties: false,
   properties: {
     imageUsable: { type: "boolean" },
     imageQualityNote: { type: "string" },
-    title: { type: "string" },
+    sameObject: { type: "boolean" },
     objectKind: {
       type: "string",
       enum: ["coin", "pattern", "medal", "token", "copy", "uncertain"],
     },
-    country: { type: "string" },
-    ruler: { type: "string" },
-    year: { type: "string" },
-    nominal: { type: "string" },
-    metal: { type: "string" },
-    mint: { type: "string" },
-    variant: { type: "string" },
-    grade: { type: "string" },
     confidence: { type: "integer", minimum: 0, maximum: 95 },
-    rulerConfidence: { type: "integer", minimum: 0, maximum: 100 },
-    yearConfidence: { type: "integer", minimum: 0, maximum: 100 },
-    nominalConfidence: { type: "integer", minimum: 0, maximum: 100 },
-    summary: { type: "string" },
-    needsDetailedAnalysis: { type: "boolean" },
-    uncertaintyReasons: {
-      type: "array",
-      maxItems: 4,
-      items: { type: "string" },
+    observations: {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        rulerReading: { type: "string" },
+        yearReading: { type: "string" },
+        denominationReading: { type: "string" },
+        denominationEvidence: { type: "string" },
+        mintReading: { type: "string" },
+        metalAppearance: { type: "string" },
+        shape: { type: "string" },
+        portrait: { type: "string" },
+        heraldry: { type: "array", maxItems: 6, items: { type: "string" } },
+        mintMarks: { type: "array", maxItems: 6, items: { type: "string" } },
+        obverseLegendFragments: {
+          type: "array",
+          maxItems: 8,
+          items: { type: "string" },
+        },
+        reverseLegendFragments: {
+          type: "array",
+          maxItems: 8,
+          items: { type: "string" },
+        },
+      },
+      required: [
+        "rulerReading",
+        "yearReading",
+        "denominationReading",
+        "denominationEvidence",
+        "mintReading",
+        "metalAppearance",
+        "shape",
+        "portrait",
+        "heraldry",
+        "mintMarks",
+        "obverseLegendFragments",
+        "reverseLegendFragments",
+      ],
     },
-    estimateLow: { type: "number", minimum: 0 },
-    estimateHigh: { type: "number", minimum: 0 },
-    valuationCurrency: { type: "string" },
-    valuationNote: { type: "string" },
-    followUpQuestions: {
-      type: "array",
-      maxItems: 3,
-      items: { type: "string" },
+    decision: {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        selectedCandidateId: { type: "string" },
+        candidateFit: { type: "integer", minimum: 0, maximum: 100 },
+        supportingFeatures: {
+          type: "array",
+          maxItems: 8,
+          items: { type: "string" },
+        },
+        contradictions: {
+          type: "array",
+          maxItems: 6,
+          items: { type: "string" },
+        },
+      },
+      required: [
+        "selectedCandidateId",
+        "candidateFit",
+        "supportingFeatures",
+        "contradictions",
+      ],
     },
-    warnings: { type: "array", maxItems: 4, items: { type: "string" } },
+    condition: {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        band: {
+          type: "string",
+          enum: ["unc", "au", "xf", "vf", "f", "vg", "g", "uncertain"],
+        },
+        confidence: { type: "integer", minimum: 0, maximum: 80 },
+        wear: { type: "string" },
+        strike: { type: "string" },
+        surface: { type: "string" },
+        damage: { type: "string" },
+      },
+      required: ["band", "confidence", "wear", "strike", "surface", "damage"],
+    },
   },
   required: [
     "imageUsable",
     "imageQualityNote",
-    "title",
+    "sameObject",
     "objectKind",
-    "country",
-    "ruler",
-    "year",
-    "nominal",
-    "metal",
-    "mint",
-    "variant",
-    "grade",
     "confidence",
-    "rulerConfidence",
-    "yearConfidence",
-    "nominalConfidence",
-    "summary",
-    "needsDetailedAnalysis",
-    "uncertaintyReasons",
-    "estimateLow",
-    "estimateHigh",
-    "valuationCurrency",
-    "valuationNote",
-    "followUpQuestions",
-    "warnings",
+    "observations",
+    "decision",
+    "condition",
   ],
 };
 
-async function runAnalysis(apiKey, images) {
-  const prompt = `ETAP 1 APOMONET — szybka i ostrożna identyfikacja podstawowa z dwóch zdjęć.
+async function runAnalysis(apiKey, images, measurements) {
+  const localCandidates = localReferenceCandidates();
+  const numista = await searchNumistaByImage(
+    process.env.NUMISTA_API_KEY,
+    images,
+  );
+  let candidates = [...numista.candidates, ...localCandidates].slice(0, 12);
+  const prompt = `ETAP 1 APOMONET — analiza dowodów i wybór wyłącznie z katalogu kandydatów.
 
-Najpierw oceń, czy oba zdjęcia nadają się do identyfikacji i czy pokazują dwie strony tego samego obiektu. Rozpoznaj rodzaj obiektu: regularna moneta obiegowa, emisja próbna/wzorcowa (PRÓBA/PROBA/ESSAI/PATTERN), medal, żeton, możliwa kopia albo obiekt niepewny. Uwzględnij widoczny napis „PRÓBA”, nietypowy metal, talar próbny oraz sygnatur projektanta/medaliera, ale niczego nie zgaduj. Następnie podaj tylko podstawową kartę: kraj/emitent, władca, rok, nominał, metal, mennica, ogólny typ i szeroką klasę stanu zachowania. Nie podawaj gradingu liczbowego.
+Najpierw oceń, czy oba zdjęcia nadają się do identyfikacji i czy pokazują dwie strony tego samego obiektu. Rozpoznaj wyłącznie rodzaj obiektu: regularna moneta obiegowa, emisja próbna/wzorcowa (PRÓBA/PROBA/ESSAI/PATTERN), medal, żeton, możliwa kopia albo obiekt niepewny. Uwzględnij widoczny napis „PRÓBA”, nietypowy metal, talar próbny oraz sygnatur projektanta/medaliera.
 
-To nie jest analiza odmianowa. Nie odczytuj pełnych legend, nie buduj fingerprintu stempla i nie zgaduj mikroszczegółów — zrobi to opcjonalny Etap 2. Jeśli pole nie jest czytelne, wpisz „Nie ustalono”. Nie potwierdzaj autentyczności wyłącznie ze zdjęć. Przy emisji próbnej nie wciskaj obiektu w zwykły typ obiegowy.
+IDENTYFIKACJA I STAN TO DWA ODDZIELNE ZADANIA. W observations zapisz tylko to, co faktycznie widać: fragmenty legend, portret, herby, datę/cyfry, oznaczenie nominału, mennicę lub znaki, kształt i wygląd metalu. Nie dopasowuj obserwacji do oczekiwanego wyniku. Gdy czegoś nie widać, wpisz „Nie ustalono” albo pustą tablicę.
 
-needsDetailedAnalysis ustaw na true, gdy zdjęcie jest słabsze, istnieje więcej niż jedna wiarygodna identyfikacja, brakuje ważnego pola, pola są ze sobą sprzeczne albo do rozstrzygnięcia potrzebna jest legenda, rant, masa, średnica lub detal stempla. uncertaintyReasons mają być krótkie i konkretne. summary: maksymalnie 3 krótkie zdania, bez powtarzania tabeli. Wycena wyłącznie jako bardzo ostrożny przedział przy spójnej identyfikacji; w przeciwnym razie zera i wyjaśnienie. Odpowiadaj po polsku.`;
+W decision wolno wybrać TYLKO dokładne id z listy KANDYDACI albo pusty tekst. Nie wolno wymyślić nowej tożsamości. Kandydat musi zgadzać się z obiema stronami. Portret bez zgodnego rewersu, mennicy, legendy lub nominału nie wystarcza. Każdą sprzeczność wpisz jawnie. Jeśli dwa nominały mają podobne stemple i rozstrzyga je masa/średnica, nie zgaduj.
+
+W condition niezależnie oceń wyłącznie szeroki stan zachowania. Oddziel zużycie obiegowe od słabego bicia, korozji, czyszczenia, rys i uszkodzeń. Nie podawaj gradingu liczbowego i nie używaj tożsamości monety do zawyżania stanu.
+
+KANDYDACI:
+${candidatePrompt(candidates)}
+
+POMIARY WŁAŚCICIELA (mogą być puste):
+${JSON.stringify(measurements || {})}
+
+Odpowiadaj po polsku.`;
   const content = [
     { type: "input_text", text: prompt },
     { type: "input_image", image_url: images[0], detail: "high" },
     { type: "input_image", image_url: images[1], detail: "high" },
   ];
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), BASIC_TIMEOUT_MS);
+  const timeout = setTimeout(() => controller.abort(), VISION_TIMEOUT_MS);
   try {
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
@@ -272,7 +197,7 @@ needsDetailedAnalysis ustaw na true, gdy zdjęcie jest słabsze, istnieje więce
         text: {
           format: {
             type: "json_schema",
-            name: "coin_basic_v4_two_stage",
+            name: "coin_evidence_candidate_v1",
             strict: true,
             schema,
           },
@@ -291,24 +216,60 @@ needsDetailedAnalysis ustaw na true, gdy zdjęcie jest słabsze, istnieje więce
     }
     const text = responseText(data);
     if (!text) throw new Error("Analiza wstępna zwróciła pusty wynik.");
-    const analysis = normalizeAnalysis(JSON.parse(text));
-    if (analysis.imageUsable === false) {
+    const raw = JSON.parse(text);
+    if (raw.imageUsable === false || raw.sameObject === false) {
       return {
         status: 422,
         body: {
           error:
-            analysis.imageQualityNote ||
-            "Zdjęcia są zbyt słabe do wiarygodnej identyfikacji.",
+            raw.imageQualityNote ||
+            (raw.sameObject === false
+              ? "Zdjęcia nie pokazują dwóch stron tego samego obiektu."
+              : "Zdjęcia są zbyt słabe do wiarygodnej identyfikacji."),
           code: "IMAGE_NOT_USABLE",
           retryable: false,
         },
       };
     }
+    const mnk = await searchMnkByEvidence(raw.observations);
+    const byId = new Map();
+    for (const candidate of [...numista.candidates, ...mnk.candidates, ...localCandidates]) {
+      if (candidate?.id && !byId.has(candidate.id)) byId.set(candidate.id, candidate);
+    }
+    candidates = [...byId.values()];
+    const ranked = rankEvidenceCandidates(raw.observations, candidates);
+    if (ranked.selected) {
+      raw.decision.selectedCandidateId = ranked.selected.candidate.id;
+      raw.decision.candidateFit = Math.max(
+        Number(raw.decision.candidateFit) || 0,
+        Math.min(100, ranked.selected.score),
+      );
+      raw.decision.supportingFeatures = [
+        ...new Set([
+          ...(raw.decision.supportingFeatures || []),
+          ...ranked.selected.reasons,
+        ]),
+      ].slice(0, 8);
+    }
+    const orderedCandidates = ranked.ranked.map((item) => item.candidate);
+    const recognition = adjudicateRecognition(
+      raw,
+      orderedCandidates,
+      measurements,
+    );
+    const condition = conditionFromRaw(raw, raw.imageUsable !== false);
+    const analysis = analysisFromRecognition(raw, recognition, condition);
+    analysis.needsDetailedAnalysis = Boolean(analysis.needsDetailedAnalysis);
     return {
       status: 200,
       body: {
         success: true,
         analysis,
+        sources: {
+          numista: { available: numista.available, reason: numista.reason },
+          mnk: { available: mnk.available, reason: mnk.reason },
+          curatedReferenceCount: localCandidates.length,
+        },
         usage: {
           inputTokens: data.usage?.input_tokens || 0,
           outputTokens: data.usage?.output_tokens || 0,
@@ -335,6 +296,7 @@ export default async function handler(req, res) {
         .json({ error: "Brak OPENAI_API_KEY na aktywnym deploymentcie." });
     }
     const body = req.body || {};
+    const measurements = body.measurements || {};
     const images = Array.isArray(body.images)
       ? body.images.filter(Boolean)
       : [];
@@ -360,7 +322,7 @@ export default async function handler(req, res) {
     let entry = jobId ? basicJobs.get(jobId) : null;
     const deduplicated = Boolean(entry);
     if (!entry) {
-      const promise = runAnalysis(apiKey, images).catch((error) => {
+      const promise = runAnalysis(apiKey, images, measurements).catch((error) => {
         if (jobId) basicJobs.delete(jobId);
         throw error;
       });

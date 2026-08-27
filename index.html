@@ -1,1 +1,81 @@
-<!DOCTYPE html><html lang="pl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ApoMonet</title><link rel="stylesheet" href="style.css"></head><body><header class="topbar"><a class="brand" href="index.html">ApoMonet</a><nav class="nav"><a class="active" href="index.html">Start</a><a href="analyze.html">Analiza</a><a href="collection.html">Kolekcja</a><a href="albums.html">Albumy</a><a href="calendar.html">Kalendarz</a><a href="auction-houses.html">Domy aukcyjne</a><a href="tools.html">Narzędzia</a></nav></header><main class="shell"><section class="hero"><span class="eyebrow">Collector & Auction Workspace</span><h1>Twoje centrum numizmatyczne</h1><p>Analiza monet, kolekcja, albumy, kalendarz aukcji i szybkie przejścia do domów aukcyjnych w jednym miejscu.</p></section><section class="grid"><a class="card" href="analyze.html"><span class="eyebrow">AI</span><h2>Analizuj monetę</h2><p>Dodaj awers i rewers, odczytaj datę, emitenta, typ i poziom pewności.</p><div class="meta">Przejdź do analizy →</div></a><a class="card" href="collection.html"><span class="eyebrow">Kolekcja</span><h2>Moje monety</h2><p>Centralny katalog monet z miejscem na zdjęcia, notatki, wycenę i historię.</p><div class="meta">Otwórz kolekcję →</div></a><a class="card" href="calendar.html"><span class="eyebrow">Aukcje</span><h2>Kalendarz</h2><p>Plan nadchodzących aukcji, obserwowane wydarzenia i przypomnienia.</p><div class="meta">Zobacz kalendarz →</div></a><a class="card" href="albums.html"><span class="eyebrow">Albumy</span><h2>Moje albumy</h2><p>Układaj kolekcję według epoki, władcy, kraju, nominału albo własnego klucza.</p><div class="meta">Przejdź do albumów →</div></a><a class="card" href="auction-houses.html"><span class="eyebrow">Rynek</span><h2>Domy aukcyjne</h2><p>Katalog domów aukcyjnych, profili i źródeł rynkowych.</p><div class="meta">Otwórz katalog →</div></a><a class="card" href="tools.html"><span class="eyebrow">PRO</span><h2>Narzędzia APOMONET</h2><p>Katalog, archiwum, wycena porównawcza, ROI i tryb eksperta.</p><div class="meta">Otwórz narzędzia →</div></a></section><div class="section-title"><h2>Stan projektu</h2><span class="todo">WERSJA TESTOWA</span></div><section class="grid two"><div class="card"><div class="kpi">AI + PRO</div><p>Najważniejsze przepływy kolekcjonerskie są połączone z rozwijaną warstwą katalogową, wyceną i eksportem.</p></div><div class="card"><h3>Etap stabilizacji</h3><p>Domykamy niezawodność analizy, tłumaczenia, integracje aukcyjne i testy na urządzeniach mobilnych przed szerszymi testami.</p></div></section></main><nav class="bottom-nav"><a class="active" href="index.html">Start</a><a href="analyze.html">Analiza</a><a href="collection.html">Kolekcja</a><a href="calendar.html">Aukcje</a><a href="albums.html">Albumy</a></nav><script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>ApoMonet</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="index.html">ApoMonet</a>
+      <nav class="nav">
+        <a class="active" href="index.html">Start</a>
+        <a href="analyze.html">Analiza</a>
+        <a href="collection.html">Kolekcja</a>
+        <a href="albums.html">Albumy</a>
+      </nav>
+    </header>
+    <main class="shell">
+      <section class="hero">
+        <span class="eyebrow">Identyfikacja oparta na źródłach</span>
+        <h1>Najpierw poprawne rozpoznanie</h1>
+        <p>
+          Dwa zdjęcia, widoczne cechy, kandydaci katalogowi i jawny poziom
+          pewności. Gdy brakuje dowodu, APO mówi czego potrzeba zamiast zgadywać.
+        </p>
+      </section>
+      <section class="grid">
+        <a class="card" href="analyze.html">
+          <span class="eyebrow">START</span>
+          <h2>Analizuj monetę</h2>
+          <p>
+            Dodaj awers i rewers. APO porówna portret, legendy, rok, nominał,
+            mennicę, znaki i pomiary z pozycjami źródłowymi.
+          </p>
+          <div class="meta">Przejdź do analizy →</div>
+        </a>
+        <a class="card" href="collection.html">
+          <span class="eyebrow">Kolekcja</span>
+          <h2>Moje monety</h2>
+          <p>Zdjęcia, zaakceptowana identyfikacja, notatki i historia korekt.</p>
+          <div class="meta">Otwórz kolekcję →</div>
+        </a>
+        <a class="card" href="albums.html">
+          <span class="eyebrow">Albumy</span>
+          <h2>Moje albumy</h2>
+          <p>Układaj kolekcję według epoki, władcy, mennicy albo własnego klucza.</p>
+          <div class="meta">Przejdź do albumów →</div>
+        </a>
+      </section>
+      <div class="section-title">
+        <h2>Stan projektu</h2>
+        <span class="todo">NOWY RDZEŃ</span>
+      </div>
+      <section class="grid two">
+        <div class="card">
+          <div class="kpi">DOWODY → KANDYDACI → WERDYKT</div>
+          <p>
+            Identyfikacja jest oddzielona od oceny stanu i od rynku. Wycena ani
+            link aukcyjny nie mogą wpływać na nazwę monety.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Uczciwa niepewność</h3>
+          <p>
+            Sprzeczny rok, nominał, mennica, masa lub średnica blokują pewny
+            wynik. Dostaniesz wtedy kandydatów i konkretną informację, co zmierzyć.
+          </p>
+        </div>
+      </section>
+    </main>
+    <nav class="bottom-nav">
+      <a class="active" href="index.html">Start</a>
+      <a href="analyze.html">Analiza</a>
+      <a href="collection.html">Kolekcja</a>
+      <a href="albums.html">Albumy</a>
+    </nav>
+    <script src="app.js"></script>
+    <script src="home-core-i18n.js"></script>
+  </body>
+</html>

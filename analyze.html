@@ -215,6 +215,47 @@
       .new-row input {
         flex: 1;
       }
+      .measurement-card,
+      .recognition-evidence {
+        margin: 14px 0;
+        padding: 14px;
+        border: 1px solid #34343a;
+        border-radius: 14px;
+        background: #151518;
+      }
+      .measurement-card p,
+      .recognition-evidence p {
+        margin: 5px 0 10px;
+      }
+      .measurement-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .measurement-grid label,
+      .measurement-card > label {
+        display: grid;
+        gap: 5px;
+        color: #d2d2d8;
+        font-size: 0.9rem;
+      }
+      .measurement-card > label {
+        margin-top: 10px;
+      }
+      .recognition-evidence[data-status="confirmed-candidate"] {
+        border-color: #2e7d52;
+      }
+      .recognition-evidence[data-status="candidate-only"],
+      .recognition-evidence[data-status="unresolved"] {
+        border-color: #9c6b25;
+      }
+      .candidate-list {
+        margin: 9px 0 0;
+        padding-left: 20px;
+      }
+      .candidate-list a {
+        color: #9bc7ff;
+      }
       @media (max-width: 560px) {
         .facts,
         .actions-grid {
@@ -222,6 +263,9 @@
         }
         .new-row {
           flex-direction: column;
+        }
+        .measurement-grid {
+          grid-template-columns: 1fr;
         }
       }
     </style>
@@ -231,9 +275,7 @@
       <a class="brand" href="index.html">ApoMonet</a>
       <nav class="nav">
         <a class="active" href="analyze.html">Analiza</a
-        ><a href="collection.html">Kolekcja</a><a href="albums.html">Albumy</a
-        ><a href="calendar.html">Kalendarz</a
-        ><a href="auction-houses.html">Domy aukcyjne</a>
+        ><a href="collection.html">Kolekcja</a><a href="albums.html">Albumy</a>
       </nav>
     </header>
     <main class="shell narrow">
@@ -284,6 +326,18 @@
         pozostawia całe zdjęcie, żeby nie uciąć rantu, daty ani legendy.
       </div>
       <div id="photoQuality" class="photo-quality hidden" role="status"></div>
+      <section class="measurement-card" aria-labelledby="basicMeasurementsTitle">
+        <b id="basicMeasurementsTitle">Pomiary — opcjonalne, ale rozstrzygające</b>
+        <p class="muted">
+          Masa odróżnia m.in. talar, 1½ talara i dwutalar. Brak pomiaru nie
+          blokuje analizy; APO ma wtedy wstrzymać niepewny werdykt.
+        </p>
+        <div class="measurement-grid">
+          <label>Masa (g)<input id="basicWeight" class="input" inputmode="decimal" placeholder="np. 57,74" /></label>
+          <label>Średnica / bok klipy (mm)<input id="basicDiameter" class="input" inputmode="decimal" placeholder="np. 46,5" /></label>
+        </div>
+        <label>Rant lub dodatkowy znak<input id="basicEdge" class="input" placeholder="np. gładki, napis, inicjały" /></label>
+      </section>
       <button id="swap" class="btn secondary full hidden">
         Zamień awers ↔ rewers</button
       ><button id="go" class="btn primary full" disabled>Analizuj monetę</button>
@@ -297,6 +351,7 @@
           <h2>Etap 1 — szybka analiza</h2>
           <span id="conf" class="todo"></span>
         </div>
+        <div id="recognitionEvidence" class="recognition-evidence hidden" role="status"></div>
         <div id="facts" class="facts"></div>
         <div class="detail">
           <b>Wstępne podsumowanie</b>
@@ -664,6 +719,68 @@
       function displayAnalysis() {
         return localizedA || a;
       }
+      function decimalValue(id) {
+        const value = Number(String($(id)?.value || "").replace(",", "."));
+        return Number.isFinite(value) && value > 0 ? value : null;
+      }
+      function basicMeasurements() {
+        return {
+          weightGrams: decimalValue("basicWeight"),
+          diameterMm: decimalValue("basicDiameter"),
+          edge: String($("basicEdge")?.value || "").trim(),
+        };
+      }
+      function renderRecognition(shown) {
+        const box = $("recognitionEvidence");
+        const recognition = shown?.recognition;
+        if (!box || !recognition) {
+          box?.classList.add("hidden");
+          return;
+        }
+        box.replaceChildren();
+        box.dataset.status = recognition.status || "unresolved";
+        const heading = document.createElement("b");
+        heading.textContent =
+          recognition.status === "confirmed-candidate"
+            ? "Zgodny kandydat katalogowy"
+            : recognition.status === "candidate-only"
+              ? "Kandydat — wynik jeszcze nierozstrzygnięty"
+              : "Identyfikacja wstrzymana";
+        box.appendChild(heading);
+        const selected = recognition.selectedCandidate;
+        if (selected) {
+          const paragraph = document.createElement("p");
+          paragraph.textContent = selected.title;
+          box.appendChild(paragraph);
+        }
+        const questions = shown.followUpQuestions || [];
+        if (questions.length) {
+          const question = document.createElement("p");
+          question.textContent = `Co rozstrzygnie wynik: ${questions.join(" ")}`;
+          box.appendChild(question);
+        }
+        const candidates = Array.isArray(recognition.candidates)
+          ? recognition.candidates.slice(0, 3)
+          : [];
+        if (candidates.length) {
+          const label = document.createElement("span");
+          label.textContent = "Najbliższe pozycje źródłowe:";
+          const list = document.createElement("ol");
+          list.className = "candidate-list";
+          for (const candidate of candidates) {
+            const item = document.createElement("li");
+            const link = document.createElement("a");
+            link.href = candidate.sourceUrl;
+            link.target = "_blank";
+            link.rel = "noopener noreferrer";
+            link.textContent = `${candidate.title} — ${candidate.sourceName} ${candidate.sourceReference || ""}`.trim();
+            item.appendChild(link);
+            list.appendChild(item);
+          }
+          box.append(label, list);
+        }
+        box.classList.remove("hidden");
+      }
       function render({ scroll = true } = {}) {
         const shown = displayAnalysis();
         if (!shown) return;
@@ -691,6 +808,7 @@
         });
         $("conf").textContent = `Pewność ${shown.confidence || 0}%`;
         $("desc").textContent = v(shown.fullDescription || shown.description);
+        renderRecognition(shown);
         $("panel").classList.remove("hidden");
         if (scroll) $("panel").scrollIntoView({ behavior: "smooth" });
       }
@@ -847,7 +965,7 @@
               "Analiza nadal trwa. Zdjęcia są bezpieczne — proszę nie zamykać tej karty.";
           }, 35_000),
         ];
-        const requestTimeout = setTimeout(() => controller.abort(), 48_000);
+        const requestTimeout = setTimeout(() => controller.abort(), 55_000);
         const jobId = `apo-${crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`}`;
         try {
           $("go").disabled = true;
@@ -860,7 +978,11 @@
               "Content-Type": "application/json",
               "X-Apo-Job-Id": jobId,
             },
-            body: JSON.stringify({ images: analysisImgs, mode: "basic", jobId }),
+            body: JSON.stringify({
+              images: analysisImgs,
+              mode: "basic", jobId,
+              measurements: basicMeasurements(),
+            }),
           });
           let d;
           try {

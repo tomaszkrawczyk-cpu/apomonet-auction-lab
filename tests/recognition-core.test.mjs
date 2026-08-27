@@ -1,0 +1,126 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {
+  adjudicateRecognition,
+  analysisFromRecognition,
+  conditionFromRaw,
+  localReferenceCandidates,
+  rankEvidenceCandidates,
+  recognitionCatalogPolicy,
+  searchNumistaByImage,
+} from "../lib/recognition-core.mjs";
+import sourceRegistry from "../data/recognition/source-registry-v1.json" with { type: "json" };
+
+const candidates = localReferenceCandidates();
+
+function janKazimierzDecision(id = "mnk:87323") {
+  return {
+    imageUsable: true,
+    observations: {
+      rulerReading: "Jan II Kazimierz",
+      yearReading: "1651",
+      denominationReading: "Dwutalar",
+      denominationEvidence: "klipa i znaki pola",
+      mintReading: "Elbląg",
+      metalAppearance: "srebro",
+      shape: "square-klippe",
+      portrait: "król w koronie i zbroi",
+      heraldry: ["herb Elbląga z aniołem"],
+      mintMarks: ["W-VE"],
+      obverseLegendFragments: ["IOAN", "CASIM", "REX POL"],
+      reverseLegendFragments: ["CIVITATIS", "ELBINGENSIS", "1651"],
+    },
+    decision: {
+      selectedCandidateId: id,
+      candidateFit: 96,
+      supportingFeatures: ["portret", "herb Elbląga", "W-VE"],
+      contradictions: [],
+    },
+    condition: {
+      band: "vf",
+      confidence: 74,
+      wear: "umiarkowane",
+      strike: "pełny",
+      surface: "naturalna patyna",
+      damage: "brak oczywistych",
+    },
+  };
+}
+
+test("curated catalogue only exposes records with explicit accepted rights and provenance", () => {
+  assert.equal(recognitionCatalogPolicy.recordCount, 4);
+  assert.equal(recognitionCatalogPolicy.provenanceRequired, true);
+  assert.equal(candidates.length, 4);
+  for (const candidate of candidates) {
+    assert.equal(candidate.rights, "Domena publiczna");
+    assert.match(candidate.sourceUrl, /^https:\/\/zbiory\.mnk\.pl\/pl\/katalog\/\d+$/);
+    assert.match(candidate.sourceReference, /^MNK /);
+  }
+});
+
+test("auction and community sources cannot become identity ground truth", () => {
+  const auction = sourceRegistry.sources.find((source) => source.id === "auction-archives");
+  const community = sourceRegistry.sources.find((source) => source.id === "community");
+  assert.equal(auction.tier, "C");
+  assert.match(auction.identityRole, /only$/);
+  assert.equal(community.tier, "D");
+  assert.match(community.identityRole, /^lead/);
+});
+
+test("Jan Kazimierz Elblag klippe abstains between 1.5 thaler and double thaler without weight", () => {
+  const result = adjudicateRecognition(janKazimierzDecision(), candidates, {});
+  assert.equal(result.status, "candidate-only");
+  assert.equal(result.selected.id, "mnk:87323");
+  assert.match(result.followUpQuestions.join(" "), /57\.74 g/);
+  assert.match(result.followUpQuestions.join(" "), /43\.266 g/);
+});
+
+test("matching weight resolves the Jan Kazimierz double-thaler candidate", () => {
+  const result = adjudicateRecognition(janKazimierzDecision(), candidates, {
+    weightGrams: "57,7",
+    diameterMm: "46,6",
+  });
+  assert.equal(result.status, "confirmed-candidate");
+  assert.equal(result.selected.nominal, "Dwutalar");
+  assert.equal(result.selected.mint, "Elbląg");
+  assert.ok(result.confidence >= 88);
+});
+
+test("evidence ranking normalizes Jan Kazimierz and keeps neighboring denominations as rivals", () => {
+  const observations = janKazimierzDecision().observations;
+  const ranked = rankEvidenceCandidates(observations, candidates);
+  assert.equal(ranked.selected.candidate.id, "mnk:87323");
+  assert.equal(ranked.ranked[1].candidate.id, "mnk:87256");
+  assert.ok(ranked.selected.score >= 90);
+});
+
+test("a 1.5-thaler weight blocks a false double-thaler verdict", () => {
+  const result = adjudicateRecognition(janKazimierzDecision(), candidates, {
+    weightGrams: 43.3,
+  });
+  assert.notEqual(result.status, "confirmed-candidate");
+  assert.match(result.contradictions.join(" "), /Masa 43\.3 g nie pasuje/);
+});
+
+test("final basic card is populated only after the evidence gate confirms a catalogue candidate", () => {
+  const raw = janKazimierzDecision();
+  const condition = conditionFromRaw(raw);
+  const unresolved = adjudicateRecognition(raw, candidates, {});
+  const unresolvedCard = analysisFromRecognition(raw, unresolved, condition);
+  assert.equal(unresolvedCard.nominal, "Nie ustalono");
+  assert.equal(unresolvedCard.estimateLow, 0);
+  assert.equal(unresolvedCard.analysisVersion, "retrieval-first-v1");
+
+  const confirmed = adjudicateRecognition(raw, candidates, { weightGrams: 57.74 });
+  const confirmedCard = analysisFromRecognition(raw, confirmed, condition);
+  assert.equal(confirmedCard.nominal, "Dwutalar");
+  assert.equal(confirmedCard.ruler, "Jan II Kazimierz");
+  assert.equal(confirmedCard.recognition.status, "confirmed-candidate");
+  assert.equal(confirmedCard.condition.engineVersion, "condition-v1-independent");
+  assert.equal(confirmedCard.weight, 57.74);
+});
+
+test("Numista image retrieval stays disabled without a configured server key", async () => {
+  const result = await searchNumistaByImage("", ["data:image/jpeg;base64,AA=="]);
+  assert.deepEqual(result, { available: false, candidates: [], reason: "missing-key" });
+});

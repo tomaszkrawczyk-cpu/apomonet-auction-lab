@@ -14,9 +14,10 @@ module.exports=async function handler(req,res){
   const out=JSON.parse(txt);out.candidateReference=clean(out.candidateReference);out.candidateRarity=clean(out.candidateRarity).toUpperCase().replace(/\s+/g,'');out.confidence=Math.min(95,Number(out.confidence)||0);return res.status(200).json({candidate:out});
  }
  if(req.method!=='GET')return res.status(405).json({ok:false,error:'GET or catalog POST only'});
- const openai=!!process.env.OPENAI_API_KEY?.trim(),siKey=process.env.SMITHSONIAN_API_KEY?.trim()||'',euKey=process.env.EUROPEANA_API_KEY?.trim()||'';
+ const openai=!!process.env.OPENAI_API_KEY?.trim(),siKey=process.env.SMITHSONIAN_API_KEY?.trim()||'',euKey=process.env.EUROPEANA_API_KEY?.trim()||'',numistaKey=process.env.NUMISTA_API_KEY?.trim()||'';
  async function verifySmithsonian(){if(!siKey)return false;try{const r=await fetch('https://api.si.edu/openaccess/api/v1.0/search?q=coin&rows=1&api_key='+encodeURIComponent(siKey));return r.ok}catch{return false}}
  async function verifyEuropeana(){if(!euKey)return false;try{const r=await fetch('https://api.europeana.eu/record/v2/search.json?query=coin&rows=1&wskey='+encodeURIComponent(euKey));const j=await r.json();return r.ok&&j?.success!==false}catch{return false}}
- const [smithsonianValid,europeanaValid]=await Promise.all([verifySmithsonian(),verifyEuropeana()]);const ok=openai;
- return res.status(ok?200:503).json({ok,app:'APOMONET',environment:'production-capable',keys:{openaiConfigured:openai,smithsonianConfigured:!!siKey,europeanaConfigured:!!euKey},checks:{smithsonianValid,europeanaValid},features:{analysis:openai,smithsonianReference:smithsonianValid,europeanaOpenData:europeanaValid},node:process.version});
+ async function verifyMnk(){const c=new AbortController(),t=setTimeout(()=>c.abort(),4000);try{const r=await fetch('https://api-zbiory.mnk.pl/',{signal:c.signal});const j=await r.json();return r.ok&&j?.repositoryName==='MuzaCMS API'}catch{return false}finally{clearTimeout(t)}}
+ const [smithsonianValid,europeanaValid,mnkValid]=await Promise.all([verifySmithsonian(),verifyEuropeana(),verifyMnk()]);const ok=openai;
+ return res.status(ok?200:503).json({ok,app:'APOMONET',environment:'production-capable',keys:{openaiConfigured:openai,smithsonianConfigured:!!siKey,europeanaConfigured:!!euKey,numistaConfigured:!!numistaKey},checks:{smithsonianValid,europeanaValid,mnkValid},features:{analysis:openai,retrievalFirstRecognition:true,independentConditionEngine:true,mnkPublicDomainSource:mnkValid,numistaImageSearch:!!numistaKey,smithsonianReference:smithsonianValid,europeanaOpenData:europeanaValid},recognitionEngine:'retrieval-first-v1',node:process.version});
 }

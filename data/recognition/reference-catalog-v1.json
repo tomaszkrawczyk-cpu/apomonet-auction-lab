@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-27T00:00:00.000Z",
+  "policy": {
+    "purpose": "Curated retrieval candidates for APOMONET identification",
+    "acceptedRights": ["public-domain", "explicit-open-license", "contracted-api"],
+    "provenanceRequired": true
+  },
+  "records": [
+    {
+      "id": "mnk:87323",
+      "title": "Jan Kazimierz, dwutalar, klipa, Elbląg, 1651",
+      "objectKind": "coin",
+      "country": "Rzeczpospolita Obojga Narodów",
+      "ruler": "Jan II Kazimierz",
+      "year": "1651",
+      "nominal": "Dwutalar",
+      "metal": "Srebro",
+      "mint": "Elbląg",
+      "shape": "square-klippe",
+      "weightGrams": 57.74,
+      "diameterMm": 46.5,
+      "portrait": "Popiersie w prawo, w koronie i zbroi, Order Złotego Runa, płaszcz spięty broszą",
+      "obverseLegend": "IOAN CASIM D G REX POL & SVEC M D L RVS PRV",
+      "reverseLegend": "MONETA ARGENTEA CIVITATIS ELBINGENSIS 1651",
+      "diagnosticMarkers": [
+        "herb Elbląga trzymany przez anioła",
+        "inicjały W-VE po bokach tarczy",
+        "kwadratowa klipa",
+        "inicjały A-G i cyfry 1669 na polu klipy"
+      ],
+      "images": [
+        "https://cdn-zbiory.mnk.pl/upload/cache/multimedia_detail/a0/d7/a0d74889f2cf22a817ce604a03bbd681.jpg",
+        "https://cdn-zbiory.mnk.pl/upload/cache/multimedia_detail/4f/83/4f83892aee8c5ca082371643b7cbb752.jpg"
+      ],
+      "source": {
+        "name": "Muzeum Narodowe w Krakowie",
+        "recordId": "MNK VII-P-3425",
+        "url": "https://zbiory.mnk.pl/pl/katalog/87323",
+        "apiUrl": "https://api-zbiory.mnk.pl/api/object/87323",
+        "retrievedAt": "2026-08-27",
+        "rights": "Domena publiczna",
+        "rightsCode": "public-domain",
+        "restricted": false
+      }
+    },
+    {
+      "id": "mnk:87256",
+      "title": "Jan II Kazimierz, 1½ talara elbląskiego, klipa, Elbląg, 1651",
+      "objectKind": "coin",
+      "country": "Rzeczpospolita Obojga Narodów",
+      "ruler": "Jan II Kazimierz",
+      "year": "1651",
+      "nominal": "1½ talara",
+      "metal": "Srebro",
+      "mint": "Elbląg",
+      "shape": "square-klippe",
+      "weightGrams": 43.266,
+      "diameterMm": 46.25,
+      "portrait": "Popiersie Jana II Kazimierza i tytulatura królewska",
+      "obverseLegend": "Tytulatura królewska Jana II Kazimierza",
+      "reverseLegend": "Napis otokowy mennicy elbląskiej",
+      "diagnosticMarkers": [
+        "herb Elbląga trzymany przez anioła",
+        "inicjały W-VE Wilhelma von Ecka",
+        "kwadratowa klipa"
+      ],
+      "images": [
+        "https://cdn-zbiory.mnk.pl/upload/cache/multimedia_detail/a6/3d/a63d680b5ba5def9ed21c86caa0badca.jpg",
+        "https://cdn-zbiory.mnk.pl/upload/cache/multimedia_detail/ac/d9/acd90f42c10bf2b9d32d4cca3cebef76.jpg"
+      ],
+      "source": {
+        "name": "Muzeum Narodowe w Krakowie",
+        "recordId": "MNK VII-P-3424",
+        "url": "https://zbiory.mnk.pl/pl/katalog/87256",
+        "apiUrl": "https://api-zbiory.mnk.pl/api/object/87256",
+        "retrievedAt": "2026-08-27",
+        "rights": "Domena publiczna",
+        "rightsCode": "public-domain",
+        "restricted": false
+      }
+    },
+    {
+      "id": "mnk:384397",
+      "title": "Jan Kazimierz, dwutalar gdański, Gdańsk, 1650",
+      "objectKind": "coin",
+      "country": "Rzeczpospolita Obojga Narodów",
+      "ruler": "Jan II Kazimierz",
+      "year": "1650",
+      "nominal": "Dwutalar",
+      "metal": "Srebro",
+      "mint": "Gdańsk",
+      "shape": "round",
+      "weightGrams": 57.337,
+      "diameterMm": 52.1,
+      "portrait": "Półpostać króla i tytulatura królewska",
+      "obverseLegend": "Tytulatura królewska Jana II Kazimierza",
+      "reverseLegend": "Napis z datą przy herbie Gdańska",
+      "diagnosticMarkers": [
+        "herb Gdańska trzymany przez lwy",
+        "inicjały G-R Gerharda Rogge",
+        "półpostać króla"
+      ],
+      "images": [
+        "https://cdn-zbiory.mnk.pl/upload/cache/multimedia_detail/8b/2d/8b2d2b974c28fa625f2161246c185bc1.jpg",
+        "https://cdn-zbiory.mnk.pl/upload/cache/multimedia_detail/af/ce/afcefc882b5ba3109f5609735a53c2f6.jpg"
+      ],
+      "source": {
+        "name": "Muzeum Narodowe w Krakowie",
+        "recordId": "MNK VII-P-10576",
+        "url": "https://zbiory.mnk.pl/pl/katalog/384397",
+        "apiUrl": "https://api-zbiory.mnk.pl/api/object/384397",
+        "retrievedAt": "2026-08-27",
+        "rights": "Domena publiczna",
+        "rightsCode": "public-domain",
+        "restricted": false
+      }
+    },
+    {
+      "id": "mnk:2535",
+      "title": "Jan II Kazimierz, talar koronny, Bydgoszcz, 1650",
+      "objectKind": "coin",
+      "country": "Rzeczpospolita Obojga Narodów",
+      "ruler": "Jan II Kazimierz",
+      "year": "1650",
+      "nominal": "Talar",
+      "metal": "Srebro",
+      "mint": "Bydgoszcz",
+      "shape": "round",
+      "weightGrams": 28.48,
+      "diameterMm": 44.3,
+      "portrait": "Popiersie w wieńcu laurowym i tytulatura królewska",
+      "obverseLegend": "Tytulatura królewska Jana II Kazimierza",
+      "reverseLegend": "Napis wokół koronowanej tarczy polsko-litewskiej",
+      "diagnosticMarkers": [
+        "owalna tarcza z herbami Polski, Litwy i Wazów",
+        "inicjały C-G Krzysztofa Guttmanna",
+        "herb Wieniawa",
+        "wieniec laurowy"
+      ],
+      "images": [
+        "https://cdn-zbiory.mnk.pl/upload/cache/multimedia_detail/87/a7/87a73f95c0da29b10d5ccbf1b8d0ad43.jpg",
+        "https://cdn-zbiory.mnk.pl/upload/cache/multimedia_detail/68/4c/684c83ab9f03794dab75afbf46168301.jpg"
+      ],
+      "source": {
+        "name": "Muzeum Narodowe w Krakowie",
+        "recordId": "MNK VII-P-43037",
+        "url": "https://zbiory.mnk.pl/pl/katalog/2535",
+        "apiUrl": "https://api-zbiory.mnk.pl/api/object/2535",
+        "retrievedAt": "2026-08-27",
+        "rights": "Domena publiczna",
+        "rightsCode": "public-domain",
+        "restricted": false
+      }
+    }
+  ]
+}
