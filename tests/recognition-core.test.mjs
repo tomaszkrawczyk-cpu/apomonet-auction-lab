@@ -86,6 +86,25 @@ test("matching weight resolves the Jan Kazimierz double-thaler candidate", () =>
   assert.ok(result.confidence >= 88);
 });
 
+test("Latin mint legend and descriptive Polish klippe shape match the Elblag catalogue record", () => {
+  const raw = janKazimierzDecision();
+  raw.observations.rulerReading = "Nie ustalono";
+  raw.observations.yearReading = "1651 w legendzie rewersu; 1669 w narożnikach klipy";
+  raw.observations.denominationReading = "Nie ustalono";
+  raw.observations.mintReading = "ELBINGENSIS";
+  raw.observations.shape = "Kwadratowa klipa z okrągłym odciskiem stempla";
+  raw.decision.candidateFit = 80;
+
+  const result = adjudicateRecognition(raw, candidates, {
+    weightGrams: 57.74,
+    diameterMm: 46.5,
+  });
+
+  assert.equal(result.status, "confirmed-candidate");
+  assert.equal(result.selected.id, "mnk:87323");
+  assert.deepEqual(result.contradictions, []);
+});
+
 test("evidence ranking normalizes Jan Kazimierz and keeps neighboring denominations as rivals", () => {
   const observations = janKazimierzDecision().observations;
   const ranked = rankEvidenceCandidates(observations, candidates);
