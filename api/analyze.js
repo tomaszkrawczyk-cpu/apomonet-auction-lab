@@ -168,7 +168,7 @@ Najpierw oceń, czy oba zdjęcia nadają się do identyfikacji i czy pokazują d
 
 IDENTYFIKACJA I STAN TO DWA ODDZIELNE ZADANIA. W observations zapisz tylko to, co faktycznie widać: fragmenty legend, portret, herby, datę/cyfry, oznaczenie nominału, mennicę lub znaki, kształt i wygląd metalu. Nie dopasowuj obserwacji do oczekiwanego wyniku. Gdy czegoś nie widać, wpisz „Nie ustalono” albo pustą tablicę.
 
-W decision wolno wybrać TYLKO dokładne id z listy KANDYDACI albo pusty tekst. Nie wolno wymyślić nowej tożsamości. Kandydat musi zgadzać się z obiema stronami. Portret bez zgodnego rewersu, mennicy, legendy lub nominału nie wystarcza. Każdą sprzeczność wpisz jawnie. Jeśli dwa nominały mają podobne stemple i rozstrzyga je masa/średnica, nie zgaduj.
+W decision wolno wybrać TYLKO dokładne id z listy KANDYDACI albo pusty tekst. Nie wolno wymyślić nowej tożsamości. Kandydat musi zgadzać się z obiema stronami. Portret bez zgodnego rewersu, mennicy, legendy lub nominału nie wystarcza. Jako sprzeczność wpisz tylko cechę, która faktycznie przeczy wybranemu kandydatowi — brak napisu PRÓBA nie jest sprzecznością dla monety regularnej, a dodatkowe cyfry nie przeczą dacie, jeżeli właściwa data również jest czytelna. Jeśli dwa nominały mają podobne stemple i rozstrzyga je masa/średnica, nie zgaduj.
 
 W condition niezależnie oceń wyłącznie szeroki stan zachowania. Oddziel zużycie obiegowe od słabego bicia, korozji, czyszczenia, rys i uszkodzeń. Nie podawaj gradingu liczbowego i nie używaj tożsamości monety do zawyżania stanu.
 
