@@ -88,9 +88,10 @@ test("matching weight resolves the Jan Kazimierz double-thaler candidate", () =>
 
 test("Latin mint legend and descriptive Polish klippe shape match the Elblag catalogue record", () => {
   const raw = janKazimierzDecision();
-  raw.observations.rulerReading = "Nie ustalono";
+  raw.observations.rulerReading =
+    "Brak podziałki na zdjęciu; według pomiaru właściciela średnica 46,5 mm.";
   raw.observations.yearReading = "Widoczne cyfry 1669 w narożnikach oraz 1651 w legendzie";
-  raw.observations.denominationReading = "Nie ustalono";
+  raw.observations.denominationReading = "Brak czytelnego oznaczenia nominału.";
   raw.observations.mintReading = "ELBINGENSIS";
   raw.observations.shape = "Kwadratowa klipa z okrągłym odciskiem stempla";
   raw.decision.candidateFit = 80;
