@@ -166,7 +166,9 @@ async function runAnalysis(apiKey, images, measurements) {
 
 Najpierw oceń, czy oba zdjęcia nadają się do identyfikacji i czy pokazują dwie strony tego samego obiektu. Rozpoznaj wyłącznie rodzaj obiektu: regularna moneta obiegowa, emisja próbna/wzorcowa (PRÓBA/PROBA/ESSAI/PATTERN), medal, żeton, możliwa kopia albo obiekt niepewny. Uwzględnij widoczny napis „PRÓBA”, nietypowy metal, talar próbny oraz sygnatur projektanta/medaliera.
 
-IDENTYFIKACJA I STAN TO DWA ODDZIELNE ZADANIA. W observations zapisz tylko to, co faktycznie widać: fragmenty legend, portret, herby, datę/cyfry, oznaczenie nominału, mennicę lub znaki, kształt i wygląd metalu. Nie dopasowuj obserwacji do oczekiwanego wyniku. Gdy czegoś nie widać, wpisz „Nie ustalono” albo pustą tablicę.
+IDENTYFIKACJA I STAN TO DWA ODDZIELNE ZADANIA. W observations zapisz tylko to, co faktycznie widać: fragmenty legend, portret, herby, datę/cyfry, oznaczenie nominału, mennicę lub znaki, kształt i wygląd metalu. Nie dopasowuj obserwacji do oczekiwanego wyniku. Gdy czegoś nie widać, wpisz „Nie ustalono” albo pustą tablicę. Traktuj listę kandydatów wyłącznie jako materiał do późniejszego porównania, a nie jako podpowiedź do odczytu obrazu.
+
+Przy legendach nowożytnych rozróżniaj podstawowe imiona: STEPHAN/STEPHANVS wskazuje Stefana (w polskim materiale zwykle Stefana Batorego), SIGIS/SIGISM — Zygmunta, a IOAN razem z CASIM — Jana Kazimierza. GEDAN/GEDANENSIS oznacza Gdańsk. Masa około 3,4–3,7 g przy złotym wyglądzie jest skalą dukata; nie jest skalą srebrnego talara ani dwutalara. To są wskazówki językowe i metrologiczne, ale ostatecznie muszą zgadzać się również portret, herb i druga strona.
 
 W decision wolno wybrać TYLKO dokładne id z listy KANDYDACI albo pusty tekst. Nie wolno wymyślić nowej tożsamości. Kandydat musi zgadzać się z obiema stronami. Portret bez zgodnego rewersu, mennicy, legendy lub nominału nie wystarcza. Jako sprzeczność wpisz tylko cechę, która faktycznie przeczy wybranemu kandydatowi — brak napisu PRÓBA nie jest sprzecznością dla monety regularnej, a dodatkowe cyfry nie przeczą dacie, jeżeli właściwa data również jest czytelna. Jeśli dwa nominały mają podobne stemple i rozstrzyga je masa/średnica, nie zgaduj.
 
@@ -241,7 +243,7 @@ Odpowiadaj po polsku.`;
       if (candidate?.id && !byId.has(candidate.id)) byId.set(candidate.id, candidate);
     }
     candidates = [...byId.values()];
-    const ranked = rankEvidenceCandidates(raw.observations, candidates);
+    const ranked = rankEvidenceCandidates(raw.observations, candidates, measurements);
     if (ranked.selected) {
       raw.decision.selectedCandidateId = ranked.selected.candidate.id;
       raw.decision.candidateFit = Math.max(
@@ -254,6 +256,14 @@ Odpowiadaj po polsku.`;
           ...ranked.selected.reasons,
         ]),
       ].slice(0, 8);
+    } else {
+      const modelSelection = ranked.ranked.find(
+        (item) => item.candidate.id === clean(raw.decision.selectedCandidateId),
+      );
+      if (!modelSelection || modelSelection.score < 35 || modelSelection.hardConflicts.length) {
+        raw.decision.selectedCandidateId = "";
+        raw.decision.candidateFit = 0;
+      }
     }
     const orderedCandidates = ranked.ranked.map((item) => item.candidate);
     const recognition = adjudicateRecognition(

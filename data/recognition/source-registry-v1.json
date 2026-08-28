@@ -79,6 +79,16 @@
       "url": "https://www.si.edu/openaccess/devtools"
     },
     {
+      "id": "apomonet-curated-facts",
+      "name": "APOMONET — zweryfikowane rekordy faktograficzne",
+      "tier": "B",
+      "status": "runtime-curated",
+      "identityRole": "candidate-after-multi-source-verification",
+      "rightsGate": "Store only independently structured facts, historical legends, measurements, literature identifiers and direct provenance links; never copy protected photos or descriptions",
+      "data": ["identity", "historical legends", "measurements", "literature identifiers", "provenance links"],
+      "url": ""
+    },
+    {
       "id": "auction-archives",
       "name": "Auction-house archives",
       "tier": "C",

@@ -47,15 +47,58 @@ function janKazimierzDecision(id = "mnk:87323") {
   };
 }
 
+function batoryDecision({ noisyOcr = false, selected = "curated:batory-ducat-gdansk-1587" } = {}) {
+  return {
+    imageUsable: true,
+    observations: {
+      rulerReading: noisyOcr ? "Nie ustalono — brak skali na zdjęciu." : "STEPHANVS",
+      yearReading: noisyOcr ? "1600" : "1587",
+      denominationReading: noisyOcr ? "Nie ustalono" : "Dukat",
+      denominationEvidence: "złota moneta o masie około 3,57 g",
+      mintReading: "Fragment GEDAN; herb Gdańska z dwoma krzyżami i lwami",
+      metalAppearance: "Żółtozłote",
+      shape: "Okrągła",
+      portrait: "koronowane popiersie króla w prawo, w zbroi",
+      heraldry: ["Koronowana tarcza z dwoma krzyżami", "Dwa lwy podtrzymujące tarczę"],
+      mintMarks: [],
+      obverseLegendFragments: noisyOcr
+        ? ["SIG III D G", "REX POL", "M D L"]
+        : ["STEPHANVS", "D G", "REX POL"],
+      reverseLegendFragments: noisyOcr
+        ? ["1600", "MONETA", "GEDAN"]
+        : ["MONE", "AVR", "GEDANENSIS", "87"],
+    },
+    decision: {
+      selectedCandidateId: selected,
+      candidateFit: noisyOcr ? 68 : 96,
+      supportingFeatures: ["herb Gdańska", "masa dukata", "legenda GEDANENSIS"],
+      contradictions: [],
+    },
+    condition: {
+      band: "vf",
+      confidence: 65,
+      wear: "umiarkowane",
+      strike: "czytelny",
+      surface: "bez oceny autentyczności",
+      damage: "brak oczywistych",
+    },
+  };
+}
+
 test("curated catalogue only exposes records with explicit accepted rights and provenance", () => {
-  assert.equal(recognitionCatalogPolicy.recordCount, 4);
+  assert.equal(recognitionCatalogPolicy.recordCount, 5);
   assert.equal(recognitionCatalogPolicy.provenanceRequired, true);
-  assert.equal(candidates.length, 4);
-  for (const candidate of candidates) {
+  assert.equal(candidates.length, 5);
+  for (const candidate of candidates.filter((candidate) => candidate.sourceType === "museum")) {
     assert.equal(candidate.rights, "Domena publiczna");
     assert.match(candidate.sourceUrl, /^https:\/\/zbiory\.mnk\.pl\/pl\/katalog\/\d+$/);
     assert.match(candidate.sourceReference, /^MNK /);
   }
+  const batory = candidates.find((candidate) => candidate.id === "curated:batory-ducat-gdansk-1587");
+  assert.equal(batory.sourceType, "curated-fact");
+  assert.equal(batory.images.length, 0);
+  assert.match(batory.rights, /bez kopiowania zdjęć/);
+  assert.equal(batory.source.provenance.length, 3);
 });
 
 test("auction and community sources cannot become identity ground truth", () => {
@@ -65,6 +108,9 @@ test("auction and community sources cannot become identity ground truth", () => 
   assert.match(auction.identityRole, /only$/);
   assert.equal(community.tier, "D");
   assert.match(community.identityRole, /^lead/);
+  const curated = sourceRegistry.sources.find((source) => source.id === "apomonet-curated-facts");
+  assert.equal(curated.tier, "B");
+  assert.match(curated.rightsGate, /never copy protected photos or descriptions/);
 });
 
 test("Jan Kazimierz Elblag klippe abstains between 1.5 thaler and double thaler without weight", () => {
@@ -118,6 +164,42 @@ test("evidence ranking normalizes Jan Kazimierz and keeps neighboring denominati
   assert.ok(ranked.selected.score >= 90);
 });
 
+test("Batory ducat survives noisy OCR because mint, heraldry, metal and 3.57 g agree", () => {
+  const raw = batoryDecision({ noisyOcr: true, selected: "" });
+  const ranked = rankEvidenceCandidates(raw.observations, candidates, {
+    weightGrams: 3.57,
+  });
+
+  assert.equal(ranked.selected.candidate.id, "curated:batory-ducat-gdansk-1587");
+  assert.equal(ranked.selected.hardConflicts.length, 0);
+  assert.ok(ranked.selected.score >= 65);
+  assert.match(ranked.selected.reasons.join(" "), /masa: 3\.57 g/);
+});
+
+test("verified legend and measurements confirm the Stefan Batory Gdansk ducat", () => {
+  const raw = batoryDecision();
+  const result = adjudicateRecognition(raw, candidates, {
+    weightGrams: 3.57,
+    diameterMm: 22,
+  });
+
+  assert.equal(result.status, "confirmed-candidate");
+  assert.equal(result.selected.ruler, "Stefan Batory");
+  assert.equal(result.selected.nominal, "Dukat");
+  assert.equal(result.selected.mint, "Gdańsk");
+  assert.deepEqual(result.contradictions, []);
+});
+
+test("unresolved results never fall back to unrelated Jan Kazimierz records", () => {
+  const raw = batoryDecision({ noisyOcr: true, selected: "" });
+  const janOnly = candidates.filter((candidate) => candidate.ruler.includes("Kazimierz"));
+  const result = adjudicateRecognition(raw, janOnly, { weightGrams: 3.57 });
+
+  assert.equal(result.status, "unresolved");
+  assert.deepEqual(result.candidates, []);
+  assert.match(result.followUpQuestions[0], /aktualnie podłączonych katalogach/);
+});
+
 test("a 1.5-thaler weight blocks a false double-thaler verdict", () => {
   const result = adjudicateRecognition(janKazimierzDecision(), candidates, {
     weightGrams: 43.3,
@@ -133,7 +215,7 @@ test("final basic card is populated only after the evidence gate confirms a cata
   const unresolvedCard = analysisFromRecognition(raw, unresolved, condition);
   assert.equal(unresolvedCard.nominal, "Nie ustalono");
   assert.equal(unresolvedCard.estimateLow, 0);
-  assert.equal(unresolvedCard.analysisVersion, "retrieval-first-v1");
+  assert.equal(unresolvedCard.analysisVersion, "retrieval-first-v2");
 
   const confirmed = adjudicateRecognition(raw, candidates, { weightGrams: 57.74 });
   const confirmedCard = analysisFromRecognition(raw, confirmed, condition);

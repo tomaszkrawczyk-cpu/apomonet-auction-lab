@@ -1,12 +1,65 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-27T00:00:00.000Z",
+  "generatedAt": "2026-08-28T00:00:00.000Z",
   "policy": {
     "purpose": "Curated retrieval candidates for APOMONET identification",
-    "acceptedRights": ["public-domain", "explicit-open-license", "contracted-api"],
+    "acceptedRights": ["public-domain", "explicit-open-license", "contracted-api", "factual-metadata-only"],
     "provenanceRequired": true
   },
   "records": [
+    {
+      "id": "curated:batory-ducat-gdansk-1587",
+      "title": "Stefan Batory, dukat gdański, Gdańsk, 1587",
+      "objectKind": "coin",
+      "country": "Rzeczpospolita Obojga Narodów",
+      "ruler": "Stefan Batory",
+      "year": "1587",
+      "nominal": "Dukat",
+      "metal": "Złoto",
+      "mint": "Gdańsk",
+      "shape": "round",
+      "weightGrams": 3.57,
+      "diameterMm": 22,
+      "portrait": "Koronowane popiersie Stefana Batorego w prawo, w zbroi",
+      "obverseLegend": "STEPHANVS D G REX POL D PRVS",
+      "reverseLegend": "MONE NO AVR CIVI GEDANENSIS 87",
+      "diagnosticMarkers": [
+        "herb Gdańska pod koroną",
+        "dwa krzyże w tarczy",
+        "dwa lwy podtrzymujące tarczę",
+        "złoty standard dukata około 3,57 g",
+        "legenda awersu STEPHANVS",
+        "legenda rewersu GEDANENSIS"
+      ],
+      "images": [],
+      "source": {
+        "type": "curated-fact",
+        "name": "APOMONET — rekord wieloźródłowy",
+        "recordId": "Kopicki 7454; Dutkowski 134",
+        "url": "https://onebid.pl/pl/monety-rr-stefan-batory-dukat-1587-gdansk-b-rzadki-rocznik-t-60-mk-egzemplarz-ilustrowany-w-zloto-jagiellonow/264188",
+        "retrievedAt": "2026-08-28",
+        "rights": "Wyłącznie fakty, parametry i transkrypcja historycznej legendy; bez kopiowania zdjęć i opisu aukcyjnego",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "provenance": [
+          {
+            "role": "identity-and-literature",
+            "name": "WDA – MiM / OneBid",
+            "url": "https://onebid.pl/pl/monety-rr-stefan-batory-dukat-1587-gdansk-b-rzadki-rocznik-t-60-mk-egzemplarz-ilustrowany-w-zloto-jagiellonow/264188"
+          },
+          {
+            "role": "measurements-and-museum-attribution",
+            "name": "Coinstrail — obiekt opisany jako pochodzący z MNW",
+            "url": "https://coinstrail.com/pl/catalog/poland/stephen-bathory/gold-ducat/62289a0ab2288575086edde4"
+          },
+          {
+            "role": "type-corroboration",
+            "name": "Numista",
+            "url": "https://en.numista.com/63450"
+          }
+        ]
+      }
+    },
     {
       "id": "mnk:87323",
       "title": "Jan Kazimierz, dwutalar, klipa, Elbląg, 1651",
