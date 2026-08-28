@@ -2,15 +2,16 @@
 
 ## Wdrożony katalog — aktualizacja 2026-08-28
 
-- aktywne lokalne rekordy rozpoznawcze: **2150** po usunięciu duplikatów źródłowych;
+- aktywne lokalne rekordy rozpoznawcze: **2407** po usunięciu duplikatów źródłowych;
 - katalog MNK: **2139** typów/pozycji z prawem `Domena publiczna`, w tym **2102** z co najmniej dwoma zdjęciami;
+- dedykowany katalog PRL: **257** rekordów rocznikowo-materiałowych z **92** typów (1949–1989), w tym **244** z odsyłaczem do aktu urzędowego i **15** ze zdjęciem na otwartej licencji sprawdzonej na poziomie pliku;
 - NBP: **10** oficjalnych emisji 2026 wydanych do 21 lipca, zapisanych jako fakty bez kopiowania zdjęć;
 - okresy: średniowiecze piastowskie, Jagiellonowie, monarchia elekcyjna, zabory i powstania, II RP i wojna, PRL oraz III RP;
 - odrzucone automatycznie: medale, żetony, banknoty, kopie, repliki i obiekty jawnie opisane jako fałszywe;
 - pierwszy odczyt zdjęć działa bez listy przypadkowych rekordów lokalnych; dopiero potem uruchamia się ranking po całym katalogu oraz osobne porównanie zdjęć z maksymalnie trzema parami referencyjnymi;
 - sprzeczny odczyt władcy jest twardą blokadą identyfikacji, a brak rozstrzygnięcia kończy się wynikiem `Nie ustalono`.
 
-Powtarzalny importer znajduje się w `scripts/build-mnk-polish-catalog.mjs`, skompresowany wynik w `data/recognition/mnk-polish-catalog-v1.json.gz`, bieżące fakty NBP w `data/recognition/nbp-official-catalog-v1.json`, a jawny rejestr przeglądanych źródeł w `data/recognition/research-source-manifest-v1.json`.
+Powtarzalne importery znajdują się w `scripts/build-mnk-polish-catalog.mjs` i `scripts/build-prl-open-catalog.mjs`; skompresowane wyniki w `data/recognition/mnk-polish-catalog-v1.json.gz` i `data/recognition/prl-open-catalog-v1.json.gz`, bieżące fakty NBP w `data/recognition/nbp-official-catalog-v1.json`, a jawny rejestr przeglądanych źródeł w `data/recognition/research-source-manifest-v1.json`.
 
 ## Zasada produktowa
 
@@ -32,6 +33,7 @@ APOMONET korzysta z szerokiego spektrum publicznej wiedzy, ale rozróżnia jej m
 | Numista API | RUNTIME_REFERENCE | Maksymalnie 5 kandydatów N#, tytuł i emitent; atrybucja „Source: Numista”; bez zdjęć i trwałego magazynowania metadanych |
 | POLONA | VERIFIED_ITEM_LEVEL | Fakty z obiektów public-domain/open po zapisaniu praw konkretnego obiektu |
 | NBP | OFFICIAL_FACTS | Parametry emisji zapisane własnymi polami; bez importu materiałów graficznych |
+| Korpus PRL APOMONET | VERIFIED_ITEM_LEVEL | Fakty z wersjonowanych stron CC BY-SA, akty prawne ELI/ISAP i wyłącznie zdjęcia Commons z prawami sprawdzonymi na poziomie pliku |
 | ANS / Nomisma / Wikidata / Smithsonian / Met | OPEN_DATA | Znormalizowane fakty zgodnie z licencją i provenance |
 | IKMK | IDS_ONLY | Public-domain identifiers jako odsyłacze; bez tekstów objętych licencją NC |
 | Zeno.ru | ITEM_REVIEW | Tylko konkretny rekord z jednoznaczną licencją komercyjną |

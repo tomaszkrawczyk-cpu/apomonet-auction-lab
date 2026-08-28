@@ -22,6 +22,15 @@
       "result": "10 issues released in 2026 through 2026-07-21"
     },
     {
+      "id": "prl-open-catalog",
+      "category": "open-reference-plus-official-law",
+      "name": "Polskie monety PRL 1949–1989 — otwarty korpus APOMONET",
+      "url": "https://pl.wikipedia.org/wiki/Kategoria:Monety_obiegowe_PRL_(1949%E2%80%931990)",
+      "role": "positive-identification-catalog",
+      "mode": "revision-pinned-structured-facts-with-ELI-ISAP-provenance-and-item-level-image-rights",
+      "result": "257 year-and-material records from 92 types; 244 records carry official legal references; 15 records have openly licensed Commons images"
+    },
+    {
       "id": "polona-stronczynski",
       "category": "public-domain-book",
       "name": "Kazimierz Stronczyński, Dawne monety polskie dynastyi Piastów i Jagiellonów",

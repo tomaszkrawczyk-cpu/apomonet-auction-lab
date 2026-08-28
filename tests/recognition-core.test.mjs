@@ -86,8 +86,9 @@ function batoryDecision({ noisyOcr = false, selected = "curated:batory-ducat-gda
 }
 
 test("catalogue set exposes only records with explicit accepted rights and provenance", () => {
-  assert.ok(recognitionCatalogPolicy.recordCount >= 2_100);
-  assert.equal(recognitionCatalogPolicy.catalogCount, 3);
+  assert.ok(recognitionCatalogPolicy.recordCount >= 2_400);
+  assert.equal(recognitionCatalogPolicy.catalogCount, 4);
+  assert.ok(recognitionCatalogPolicy.peopleRepublicRecordCount >= 250);
   assert.equal(recognitionCatalogPolicy.provenanceRequired, true);
   assert.equal(candidates.length, recognitionCatalogPolicy.recordCount);
   for (const candidate of candidates.filter((candidate) => candidate.sourceType === "museum")) {
