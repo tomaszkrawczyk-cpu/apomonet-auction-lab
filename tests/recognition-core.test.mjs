@@ -190,6 +190,22 @@ test("verified legend and measurements confirm the Stefan Batory Gdansk ducat", 
   assert.deepEqual(result.contradictions, []);
 });
 
+test("visible 87 is accepted as a partial 1587 date and rejected thalers stay hidden", () => {
+  const raw = batoryDecision();
+  raw.observations.rulerReading = "Nie ustalono";
+  raw.observations.yearReading = "Końcowe cyfry 87 widoczne na rewersie; pełna data nie jest jednoznaczna.";
+  raw.observations.denominationReading = "Brak widocznego oznaczenia nominału.";
+  raw.decision.candidateFit = 89;
+
+  const result = adjudicateRecognition(raw, candidates, { weightGrams: 3.57 });
+
+  assert.equal(result.status, "confirmed-candidate");
+  assert.deepEqual(result.contradictions, []);
+  assert.deepEqual(result.candidates.map((candidate) => candidate.id), [
+    "curated:batory-ducat-gdansk-1587",
+  ]);
+});
+
 test("unresolved results never fall back to unrelated Jan Kazimierz records", () => {
   const raw = batoryDecision({ noisyOcr: true, selected: "" });
   const janOnly = candidates.filter((candidate) => candidate.ruler.includes("Kazimierz"));
