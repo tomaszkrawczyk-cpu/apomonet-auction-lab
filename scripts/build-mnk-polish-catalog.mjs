@@ -449,12 +449,11 @@ function summaryKey(record) {
 
 function shortlist(items) {
   const filtered = items.filter((item) => isCoin(item) && !excludedObject(item) && isPolish(item));
-  const groups = new Map();
-  for (const item of filtered) {
-    const key = summaryKey(item);
-    if (!groups.has(key)) groups.set(key, item);
-  }
-  return { filtered, representatives: [...groups.values()] };
+  // Stage 1 compares real, item-level specimens. Several specimens of one
+  // type are useful visual evidence and must not disappear behind an early
+  // typology merge. Type/variant consolidation is deferred to Stage 2 and
+  // the runtime consensus engine still groups equivalent identities.
+  return { filtered, representatives: filtered };
 }
 
 async function collectDetails(representatives) {
@@ -706,18 +705,17 @@ async function main() {
   await mkdir(BUILD_DIR, { recursive: true });
   const discovery = await discover();
   const selected = shortlist(discovery.items);
-  console.log(`[filter] monety: ${selected.filtered.length}; typy wstępne: ${selected.representatives.length}`);
+  console.log(`[filter] monety: ${selected.filtered.length}; okazy do weryfikacji: ${selected.representatives.length}`);
   if (discoverOnly) return;
   const details = await collectDetails(selected.representatives);
   const transformed = details.map(transform).filter(Boolean);
-  const previousCatalog = await readGzipJson(OUTPUT, { records: [] });
-  const previousIdsBySource = new Map();
-  for (const record of previousCatalog.records || []) {
-    for (const source of [record.source, ...(record.specimenSources || [])]) {
-      if (source?.url && !previousIdsBySource.has(source.url)) previousIdsBySource.set(source.url, record.id);
-    }
-  }
-  const records = mergeTypes(transformed, previousIdsBySource);
+  const canonicalTypes = mergeTypes(transformed);
+  const records = transformed.sort((left, right) =>
+    Number(left.year || 9999) - Number(right.year || 9999) ||
+    left.ruler.localeCompare(right.ruler, "pl") ||
+    left.nominal.localeCompare(right.nominal, "pl") ||
+    left.title.localeCompare(right.title, "pl")
+  );
   const output = {
     schemaVersion: 1,
     generatedAt: new Date().toISOString(),
@@ -726,6 +724,8 @@ async function main() {
       source: "Muzeum Narodowe w Krakowie — Zbiory Cyfrowe",
       rightsGate: "Only item-level records explicitly marked Domena publiczna and unrestricted",
       transformations: "Independent APOMONET field normalization and diagnostic atoms; no copied catalogue prose",
+      recordUnit: "public-domain-specimen",
+      variantsDeferred: true,
       provenanceRequired: true,
     },
     stats: {
@@ -733,13 +733,13 @@ async function main() {
       filteredCoinObjects: selected.filtered.length,
       detailRecordsReviewed: details.length,
       acceptedPublicDomainSpecimens: transformed.length,
-      canonicalTypes: records.length,
+      canonicalTypes: canonicalTypes.length,
       ...coverage(records),
     },
     records,
   };
   await writeGzipJson(OUTPUT, output);
-  console.log(`[done] ${records.length} typów zapisano w ${OUTPUT}`);
+  console.log(`[done] ${records.length} okazów zapisano w ${OUTPUT}`);
   console.log(JSON.stringify(output.stats, null, 2));
 }
 

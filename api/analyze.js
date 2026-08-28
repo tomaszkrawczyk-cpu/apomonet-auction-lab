@@ -2,11 +2,13 @@
 // would be rewritten to `require()`, which cannot load an `.mjs` dependency.
 // Native dynamic import keeps the recognition core as ESM in production.
 const recognitionCorePromise = import("../lib/recognition-core.mjs");
+const recognitionOrchestratorPromise = import("../lib/recognition-orchestrator.mjs");
 
 const BASIC_TIMEOUT_MS = 45_000;
 const VISION_TIMEOUT_MS = 32_000;
 const REFERENCE_COMPARE_TIMEOUT_MS = 12_000;
 const JOB_TTL_MS = 10 * 60_000;
+const RUNTIME_SOURCE_GRACE_MS = 1_200;
 
 const basicJobs =
   globalThis.__apomonetBasicJobs ||
@@ -39,6 +41,13 @@ function pruneJobs() {
   for (const [key, entry] of basicJobs) {
     if (Number(entry?.createdAt || 0) < cutoff) basicJobs.delete(key);
   }
+}
+
+function settleWithin(promise, timeoutMs, fallback) {
+  return Promise.race([
+    promise,
+    new Promise((resolve) => setTimeout(() => resolve(fallback), timeoutMs)),
+  ]);
 }
 
 const schema = {
@@ -250,19 +259,20 @@ async function runAnalysis(apiKey, images, measurements) {
     candidatePrompt,
     conditionFromRaw,
     localReferenceCandidates,
-    rankEvidenceCandidates,
     searchMnkByEvidence,
     searchNumistaByImage,
   } = await recognitionCorePromise;
+  const { orchestrateRecognitionCandidates, recognitionEnginePolicy } =
+    await recognitionOrchestratorPromise;
   const localCandidates = localReferenceCandidates();
-  const numista = await searchNumistaByImage(
+  const numistaPromise = searchNumistaByImage(
     process.env.NUMISTA_API_KEY,
     images,
   );
   // The first vision pass must describe the photographs without being anchored
   // by an arbitrary slice of the large local catalogue. Numista candidates are
   // allowed here only because they were retrieved from the submitted images.
-  let candidates = numista.candidates.slice(0, 8);
+  let candidates = [];
   const prompt = `ETAP 1 APOMONET — analiza dowodów i wybór wyłącznie z katalogu kandydatów.
 
 Najpierw oceń, czy oba zdjęcia nadają się do identyfikacji i czy pokazują dwie strony tego samego obiektu. Rozpoznaj wyłącznie rodzaj obiektu: regularna moneta obiegowa, emisja próbna/wzorcowa (PRÓBA/PROBA/ESSAI/PATTERN), medal, żeton, możliwa kopia albo obiekt niepewny. Uwzględnij widoczny napis „PRÓBA”, nietypowy metal, talar próbny oraz sygnatur projektanta/medaliera.
@@ -338,17 +348,36 @@ Odpowiadaj po polsku.`;
         },
       };
     }
-    const mnk = await searchMnkByEvidence(raw.observations);
+    const localOrchestration = orchestrateRecognitionCandidates(
+      raw.observations,
+      localCandidates,
+      measurements,
+    );
+    const [numista, mnk] = await Promise.all([
+      settleWithin(numistaPromise, RUNTIME_SOURCE_GRACE_MS, {
+        available: Boolean(process.env.NUMISTA_API_KEY), candidates: [], reason: "deferred-time-budget",
+      }),
+      settleWithin(searchMnkByEvidence(raw.observations), RUNTIME_SOURCE_GRACE_MS, {
+        available: true, candidates: [], reason: "deferred-time-budget",
+      }),
+    ]);
     const byId = new Map();
-    for (const candidate of [...numista.candidates, ...mnk.candidates, ...localCandidates]) {
+    for (const candidate of [
+      ...numista.candidates,
+      ...mnk.candidates,
+      ...localOrchestration.retrieval.shortlist,
+    ]) {
       if (candidate?.id && !byId.has(candidate.id)) byId.set(candidate.id, candidate);
     }
     candidates = [...byId.values()];
-    const ranked = rankEvidenceCandidates(raw.observations, candidates, measurements);
-    const visualReference =
-      Date.now() - analysisStartedAt <= BASIC_TIMEOUT_MS - REFERENCE_COMPARE_TIMEOUT_MS - 2_000
-        ? await compareWithReferenceImages(apiKey, images, ranked)
-        : { status: "skipped-time-budget", result: null };
+    const ranked = orchestrateRecognitionCandidates(
+      raw.observations,
+      candidates,
+      measurements,
+    );
+    // A second high-resolution model call belongs to Stage 2. Stage 1 now
+    // returns the basic identity as soon as the independent local engines agree.
+    const visualReference = { status: "deferred-to-stage2", result: null };
     if (ranked.selected) {
       raw.decision.selectedCandidateId = ranked.selected.candidate.id;
       raw.decision.candidateFit = Math.max(
@@ -404,6 +433,13 @@ Odpowiadaj po polsku.`;
           mnk: { available: mnk.available, reason: mnk.reason },
           localReferenceCount: localCandidates.length,
           visualReferenceComparison: visualReference.status,
+          recognitionEngine: recognitionEnginePolicy.version,
+          engineDiagnostics: ranked.retrieval.diagnostics,
+        },
+        timings: {
+          localRetrievalMs: localOrchestration.timings.totalLocalMs,
+          finalOrchestrationMs: ranked.timings.totalLocalMs,
+          totalMs: Date.now() - analysisStartedAt,
         },
         usage: {
           inputTokens: data.usage?.input_tokens || 0,

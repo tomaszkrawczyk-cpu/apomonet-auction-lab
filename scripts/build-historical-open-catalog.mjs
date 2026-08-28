@@ -288,6 +288,15 @@ function candidateText(record) {
   return normalized(`${record.title} ${record.country} ${record.ruler} ${record.mint} ${record.period}`);
 }
 
+function basicIdentityKey(record) {
+  return [
+    normalized(record.ruler),
+    record.year,
+    nominalKey(record.nominal),
+    normalized(record.mint),
+  ].join("|");
+}
+
 function matchRecord(group, records) {
   const sample = group[0];
   const title = group.map((image) => image.title).join(" ");
@@ -305,6 +314,21 @@ function matchRecord(group, records) {
     else if (candidates.length > 1) return null;
   }
   if (candidates.length === 1) return { record: candidates[0], year, nominal, confidence: "exact-year-nominal-region" };
+  const identityGroups = new Map();
+  for (const candidate of candidates) {
+    const identity = basicIdentityKey(candidate);
+    if (!identityGroups.has(identity)) identityGroups.set(identity, []);
+    identityGroups.get(identity).push(candidate);
+  }
+  // Multiple museum specimens of the same Stage-1 identity are consensus,
+  // not ambiguity. Attach the external image to one deterministic specimen;
+  // the runtime source-consensus engine will consolidate their votes.
+  if (identityGroups.size === 1) {
+    const record = [...candidates].sort((left, right) =>
+      (right.images?.length || 0) - (left.images?.length || 0) || left.id.localeCompare(right.id)
+    )[0];
+    return { record, year, nominal, confidence: "exact-year-nominal-region-and-specimen-consensus" };
+  }
   const tokens = meaningfulTokens(title);
   const ranked = candidates.map((record) => ({
     record,

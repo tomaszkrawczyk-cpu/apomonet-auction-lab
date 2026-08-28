@@ -21,7 +21,7 @@ test("historical open-image layer retains file-level licensing and conservative 
   assert.ok(historical.stats.licensedFilesReviewed >= 1_070);
   assert.ok(historical.stats.matchedMuseumTypes >= 63);
   assert.ok(historical.stats.rejectedForbidden >= 90);
-  assert.ok(historical.stats.rejectedAmbiguousOrIncomplete >= 790);
+  assert.ok(historical.stats.rejectedAmbiguousOrIncomplete >= 750);
   assert.equal(historical.records.length, 0, "filenames alone must not create identity candidates");
   assert.equal(new Set(historical.enrichments.map((item) => item.targetId)).size, historical.enrichments.length);
 

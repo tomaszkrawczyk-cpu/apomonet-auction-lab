@@ -15,17 +15,17 @@
       "status": "bulk-public-domain-catalog-and-runtime",
       "identityRole": "candidate-and-verification",
       "rightsGate": "Accept only records explicitly marked Domena publiczna and unrestricted",
-      "data": ["title", "ruler/creator", "date", "mint", "material", "dimensions", "weight", "descriptions", "two-side images"],
+      "data": ["title", "ruler/creator", "date", "mint", "material", "dimensions", "weight", "normalized diagnostic atoms", "two-side public-domain images"],
       "url": "https://zbiory.mnk.pl/"
     },
     {
       "id": "mnw",
       "name": "Muzeum Narodowe w Warszawie — Cyfrowe MNW",
       "tier": "A",
-      "status": "adapter-planned",
+      "status": "bulk-public-domain-catalog-runtime",
       "identityRole": "candidate-and-verification",
-      "rightsGate": "Per-record public-domain/open-rights check before metadata or image ingestion",
-      "data": ["Dublin Core metadata", "images", "inventory provenance"],
+      "rightsGate": "The importer simultaneously requires keyword monety polskie (175926) and copyright DOMENA PUBLICZNA (500); it rejects non-coins, counterfeits, copies, restrikes and records without a recognized denomination",
+      "data": ["title", "ruler", "date", "mint", "mintmaster or mint manager", "material", "inventory provenance", "one public-domain image reference"],
       "url": "https://cyfrowe.mnw.art.pl/"
     },
     {
@@ -90,6 +90,45 @@
       "url": "https://polona.pl/"
     },
     {
+      "id": "czapski-kpbc-public-domain",
+      "name": "Emeric Hutten-Czapski — Catalogue de la collection des médailles et monnaies polonaises, tomy I–V",
+      "tier": "A",
+      "status": "public-domain-ocr-facts-runtime",
+      "identityRole": "historical-basic-identity-and-literature-provenance",
+      "rightsGate": "KPBC oznacza pięć tomów jako domenę publiczną i dostęp bez ograniczeń; przechowujemy własne pola faktograficzne oraz numer tomu, pozycji i strony, bez skanów i bez kopiowania narracji katalogowej",
+      "data": [
+        "catalogue number",
+        "denomination",
+        "ruler",
+        "date",
+        "mint",
+        "inscription fragments",
+        "pattern status",
+        "volume and scan page provenance"
+      ],
+      "url": "https://kpbc.umk.pl/dlibra/publication/74966"
+    },
+    {
+      "id": "ikmk-network",
+      "name": "IKMK — sieć publicznych zbiorów numizmatycznych",
+      "tier": "A",
+      "status": "bulk-open-structured-facts",
+      "identityRole": "candidate-and-metrology-corroboration",
+      "rightsGate": "Store normalized factual fields and LOD identifiers; do not copy catalogue prose; retain an image URL only when the individual JSON-IKMK record declares PDM/CC and no restriction",
+      "data": ["issuer/title", "date range", "denomination", "mint", "metal", "weight", "diameter", "per-item open image references"],
+      "url": "https://ikmk.net/about?lang=en"
+    },
+    {
+      "id": "ans-mantis",
+      "name": "American Numismatic Society — MANTIS",
+      "tier": "A",
+      "status": "bulk-odbl-structured-facts",
+      "identityRole": "candidate-and-cross-collection-corroboration",
+      "rightsGate": "Collections metadata under ODbL 1.0; import only normalized facts and record links; media excluded",
+      "data": ["title", "authority", "denomination", "date", "mint", "metal", "record identifier"],
+      "url": "https://numismatics.org/search/"
+    },
+    {
       "id": "tyszkiewicz-public-domain",
       "name": "Józef Tyszkiewicz — Podręcznik numizmatyczny (1890)",
       "tier": "A",
@@ -105,7 +144,7 @@
         "historical amateur value",
         "page reference"
       ],
-      "url": "https://polona.pl/preview/6d286cc3-14a0-45d4-b34f-8c3d3012298f"
+      "url": "https://polona.pl/preview/b7cd6960-0057-413d-ac33-24292f6ee0a9"
     },
     {
       "id": "kopicki",
@@ -135,10 +174,10 @@
       "id": "europeana",
       "name": "Europeana APIs",
       "tier": "A",
-      "status": "configured-key-invalid",
+      "status": "bulk-factual-metadata-catalog",
       "identityRole": "cross-museum-discovery",
-      "rightsGate": "Per-object rights statement and provider provenance",
-      "data": ["search", "records", "IIIF"],
+      "rightsGate": "Europeana metadata reused as normalized facts with provider and record provenance; media excluded unless separately licensed at item level",
+      "data": ["normalized title facts", "provider", "record identifier", "date", "denomination", "issuer", "mint", "legend fragments"],
       "url": "https://pro.europeana.eu/page/apis"
     },
     {

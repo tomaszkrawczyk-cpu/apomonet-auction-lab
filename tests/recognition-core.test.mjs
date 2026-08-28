@@ -86,20 +86,27 @@ function batoryDecision({ noisyOcr = false, selected = "curated:batory-ducat-gda
 }
 
 test("catalogue set exposes only records with explicit accepted rights and provenance", () => {
-  assert.ok(recognitionCatalogPolicy.recordCount >= 2_900);
-  assert.equal(recognitionCatalogPolicy.catalogCount, 6);
+  assert.ok(recognitionCatalogPolicy.recordCount >= 21_000);
+  assert.ok(recognitionCatalogPolicy.catalogCount >= 11);
   assert.ok(recognitionCatalogPolicy.peopleRepublicRecordCount >= 250);
   assert.equal(recognitionCatalogPolicy.patternRecordCount, 502);
-  assert.ok(recognitionCatalogPolicy.allPatternCandidateCount >= 598);
-  assert.ok(recognitionCatalogPolicy.historicalFamilyRecordCount >= 805);
+  assert.ok(recognitionCatalogPolicy.allPatternCandidateCount >= 650);
+  assert.ok(recognitionCatalogPolicy.historicalFamilyRecordCount >= 10_000);
   assert.ok(recognitionCatalogPolicy.partitionRecordCount >= 445);
   assert.ok(recognitionCatalogPolicy.historicalOpenEnrichmentCount >= 60);
+  assert.ok(recognitionCatalogPolicy.mnwPublicDomainRecordCount >= 7_700);
+  assert.ok(recognitionCatalogPolicy.czapskiPublicDomainRecordCount >= 2_850);
   assert.equal(recognitionCatalogPolicy.provenanceRequired, true);
   assert.equal(candidates.length, recognitionCatalogPolicy.recordCount);
   for (const candidate of candidates.filter((candidate) => candidate.sourceType === "museum")) {
-    assert.equal(candidate.rights, "Domena publiczna");
-    assert.match(candidate.sourceUrl, /^https:\/\/zbiory\.mnk\.pl\/pl\/katalog\/\d+$/);
-    assert.match(candidate.sourceReference, /^MNK /);
+    assert.match(candidate.rights, /^Domena publiczna/);
+    if (candidate.sourceUrl.startsWith("https://zbiory.mnk.pl/")) {
+      assert.match(candidate.sourceUrl, /^https:\/\/zbiory\.mnk\.pl\/pl\/katalog\/\d+$/);
+      assert.match(candidate.sourceReference, /^MNK /);
+    } else {
+      assert.match(candidate.sourceUrl, /^https:\/\/cyfrowe\.mnw\.art\.pl\/pl\/zbiory\/\d+$/);
+      assert.match(candidate.sourceReference, /M(?:NW|uzeum)/i);
+    }
   }
   const batory = candidates.find((candidate) => candidate.id === "curated:batory-ducat-gdansk-1587");
   assert.equal(batory.sourceType, "curated-fact");
@@ -167,7 +174,8 @@ test("evidence ranking normalizes Jan Kazimierz and keeps neighboring denominati
   const observations = janKazimierzDecision().observations;
   const ranked = rankEvidenceCandidates(observations, candidates);
   assert.equal(ranked.selected.candidate.id, "mnk:87323");
-  assert.equal(ranked.ranked[1].candidate.id, "mnk:87256");
+  const neighborIndex = ranked.ranked.findIndex((entry) => entry.candidate.id === "mnk:87256");
+  assert.ok(neighborIndex > 0 && neighborIndex < 5);
   assert.ok(ranked.selected.score >= 90);
 });
 
@@ -240,12 +248,13 @@ test("final basic card is populated only after the evidence gate confirms a cata
   const unresolvedCard = analysisFromRecognition(raw, unresolved, condition);
   assert.equal(unresolvedCard.nominal, "Nie ustalono");
   assert.equal(unresolvedCard.estimateLow, 0);
-  assert.equal(unresolvedCard.analysisVersion, "retrieval-first-v3");
+  assert.equal(unresolvedCard.analysisVersion, "multi-engine-orchestrator-v1");
 
   const confirmed = adjudicateRecognition(raw, candidates, { weightGrams: 57.74 });
   const confirmedCard = analysisFromRecognition(raw, confirmed, condition);
   assert.equal(confirmedCard.nominal, "Dwutalar");
   assert.equal(confirmedCard.ruler, "Jan II Kazimierz");
+  assert.equal(confirmedCard.variant, "Nie ustalono");
   assert.equal(confirmedCard.recognition.status, "confirmed-candidate");
   assert.equal(confirmedCard.condition.engineVersion, "condition-v1-independent");
   assert.equal(confirmedCard.weight, 57.74);

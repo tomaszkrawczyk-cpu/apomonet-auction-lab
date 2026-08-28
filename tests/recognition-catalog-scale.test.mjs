@@ -27,8 +27,10 @@ const patternCatalog = JSON.parse(
 );
 
 test("bulk catalogue covers Polish coinage from the medieval period through 2026", () => {
-  assert.ok(mnkCatalog.records.length >= 2_160);
-  assert.ok(recognitionCatalogPolicy.recordCount >= 2_930);
+  assert.ok(mnkCatalog.records.length >= 5_800);
+  assert.equal(mnkCatalog.policy.recordUnit, "public-domain-specimen");
+  assert.ok(mnkCatalog.stats.canonicalTypes >= 2_160);
+  assert.ok(recognitionCatalogPolicy.recordCount >= 21_000);
   for (const period of [
     "medieval-piast",
     "jagiellonian",
@@ -46,14 +48,14 @@ test("bulk catalogue covers Polish coinage from the medieval period through 2026
   assert.equal(recognitionCatalogPolicy.peopleRepublicRecordCount, 257);
   assert.equal(patternCatalog.records.length, 502);
   assert.equal(recognitionCatalogPolicy.patternRecordCount, 502);
-  assert.ok(recognitionCatalogPolicy.allPatternCandidateCount >= 598);
-  assert.ok(recognitionCatalogPolicy.historicalFamilyRecordCount >= 805);
+  assert.ok(recognitionCatalogPolicy.allPatternCandidateCount >= 650);
+  assert.ok(recognitionCatalogPolicy.historicalFamilyRecordCount >= 10_000);
   assert.ok(recognitionCatalogPolicy.partitionRecordCount >= 445);
   assert.ok(nbpCatalog.records.every((record) => record.year === "2026"));
 });
 
 test("museum images and every source record pass explicit item-level rights gates", () => {
-  assert.ok(mnkCatalog.stats.withTwoSideImages >= 2_000);
+  assert.ok(mnkCatalog.stats.withTwoSideImages >= 5_700);
   for (const record of mnkCatalog.records) {
     assert.equal(record.source.rightsCode, "public-domain");
     assert.equal(record.source.restricted, false);
@@ -84,9 +86,10 @@ test("separate NBP denominations sharing one official page are not deduplicated"
 
 test("vision starts without arbitrary local-name anchoring and can compare public-domain reference pairs", async () => {
   const source = await readFile(new URL("../api/analyze.js", import.meta.url), "utf8");
-  assert.match(source, /let candidates = numista\.candidates\.slice\(0, 8\)/);
+  assert.match(source, /let candidates = \[\]/);
   assert.doesNotMatch(source, /\[\.\.\.numista\.candidates, \.\.\.localCandidates\]\.slice/);
   assert.match(source, /compareWithReferenceImages/);
+  assert.match(source, /deferred-to-stage2/);
   assert.match(source, /candidate\.images\[0\]/);
   assert.match(source, /candidate\.images\[1\]/);
 });
