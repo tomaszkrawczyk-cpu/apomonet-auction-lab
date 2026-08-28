@@ -19,6 +19,7 @@ const RETRIEVED_AT = new Date().toISOString().slice(0, 10);
 
 const args = new Set(process.argv.slice(2));
 const refresh = args.has("--refresh");
+const refreshDetails = args.has("--refresh-details");
 const discoverOnly = args.has("--discover-only");
 const maxDetailsArg = process.argv.find((value) => value.startsWith("--max-details="));
 const maxDetails = maxDetailsArg ? Number(maxDetailsArg.split("=")[1]) : Infinity;
@@ -36,6 +37,7 @@ const SEARCH_QUERIES = [
   "Wielkie Księstwo Poznańskie moneta",
   "niemieckie władze okupacyjne Królestwa Polskiego moneta",
   "półgrosz grosz szeląg kopiejka marka trojak czworak szóstak półtalar",
+  "1 marka moneta",
   "II Rzeczpospolita moneta",
   "Polska Rzeczpospolita Ludowa moneta",
   "Rzeczpospolita Polska moneta",
@@ -240,7 +242,7 @@ function typeNames(record) {
 function isCoin(record) {
   const title = normalized(record?.title);
   const types = typeNames(record).join(" ");
-  const coinWords = /\b(monet|denar|brakteat|dukat|talar|grosz|groszy|szelag|trojak|szostak|ort|zlot|fenig|halerz|kwartnik|poltorak|solid)\w*\b/;
+  const coinWords = /\b(monet|denar|brakteat|dukat|talar|grosz|groszy|szelag|trojak|szostak|ort|zlot|fenig|halerz|kwartnik|poltorak|solid|mark)\w*\b/;
   return types.includes("monet") || coinWords.test(title);
 }
 
@@ -268,6 +270,11 @@ function isPolish(record) {
   const ruler = POLISH_RULERS.some((name) => `${title} ${issuer}`.includes(normalized(name)));
   const realm = /\b(pols|koronn|rzeczpospolit|ksiestwo warszaw|krolestwo polsk|wolne miasto krak|powstanie listopad|galicj|lodomeri|prusy poludniow|prusy wschodni|prusy zachodni|wielkie ksiestwo poznan|ober ost|prl|gdansk|danzig|elblag|elbing|torun|thorn|bydgoszcz|krakow|poznan|wilno|vilnius|litew|ryga|riga)\w*\b/.test(value);
   const year = Number(yearFrom(record));
+  const prussianPartitionCurrency =
+    year >= 1871 && year <= 1918 &&
+    /\bmark\w*\b/.test(title) &&
+    /\b(niemc|cesarstwo niemieck|rzesza niemieck|krolestwo prus|krolestwo bawari|baden|sakson|wirtemberg|hamburg|brema|hesj|oldenburg|meklemburg)\w*\b/.test(value);
+  if (prussianPartitionCurrency) return true;
   if (year >= 1918) {
     const modernIssuer = /\b(rzeczpospolita polska|polska rzeczpospolita ludowa|narodowy bank polski|nbp|wolne miasto gdansk|okupacja niemiecka)\b/.test(`${title} ${issuer}`);
     const polishCurrency = /\b(zlot\w*|zl|grosz\w*|gr)\b/.test(title);
@@ -451,7 +458,7 @@ function shortlist(items) {
 }
 
 async function collectDetails(representatives) {
-  const cached = !refresh ? await readJson(DETAIL_CACHE, { records: {} }) : { records: {} };
+  const cached = !refreshDetails ? await readJson(DETAIL_CACHE, { records: {} }) : { records: {} };
   const records = new Map(Object.entries(cached?.records || {}));
   const pending = representatives
     .filter((item) => !records.has(String(item.id)))
@@ -556,6 +563,11 @@ function periodFor(record, year) {
   if (!value) return "undated";
   const context = normalized(`${record?.title || ""} ${(record?.createPlaces || []).map((item) => `${item?.name || ""} ${item?.hierarchy || ""}`).join(" ")}`);
   if (
+    value >= 1871 && value <= 1918 &&
+    /\bmark\w*\b/.test(context) &&
+    /\b(niemc|cesarstwo niemieck|rzesza niemieck|krolestwo prus|krolestwo bawari|baden|sakson|wirtemberg|hamburg|brema|hesj|oldenburg|meklemburg)\w*\b/.test(context)
+  ) return "partitions-and-uprisings";
+  if (
     value >= 1772 && value <= 1918 &&
     /\b(zabor|galicj|lodomeri|prusy poludniow|prusy wschodni|prusy zachodni|ksiestwo warszaw|krolestwo polsk|wolne miasto krak|powstanie listopad|wielkie ksiestwo poznan|ober ost|niemieck\w* wladz\w* okupacyjn)\w*\b/.test(context)
   ) return "partitions-and-uprisings";
@@ -582,6 +594,10 @@ function transform(record) {
   const images = [imageUrl(record.image), ...(record.additionalImages || []).map(imageUrl)].filter(Boolean).slice(0, 4);
   const mint = mintFrom(record);
   const sourceReference = clean(record.noEvidence || record.inventoryNumber);
+  const circulationContext =
+    Number(year) >= 1871 && Number(year) <= 1918 && /\bmark\w*\b/.test(normalized(record?.title))
+      ? "Zabór pruski — obieg prawny Cesarstwa Niemieckiego (emisja niepolska)"
+      : "";
   return {
     id: `mnk:${record.id}`,
     title,
@@ -590,6 +606,7 @@ function transform(record) {
     ruler: rulerFrom(record),
     year,
     period: periodFor(record, year),
+    circulationContext,
     nominal,
     metal: materialFrom(record),
     mint,

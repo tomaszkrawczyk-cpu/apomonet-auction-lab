@@ -66,6 +66,11 @@ const CATEGORIES = [
     region: "Królestwo Polskie 1917–1918",
     tokens: ["okupacja niemiecka", "krolestwo polskie"],
   },
+  { title: "Category:1/2 Mark coins of the German Empire", region: "Zabór pruski — ½ marki", tokens: [] },
+  { title: "Category:1 Mark coins of the German Empire", region: "Zabór pruski — 1 marka", tokens: [] },
+  { title: "Category:2 Mark coins of the German Empire", region: "Zabór pruski — 2 marki", tokens: [] },
+  { title: "Category:3 Mark coins of the German Empire", region: "Zabór pruski — 3 marki", tokens: [] },
+  { title: "Category:5 Mark coins of the German Empire", region: "Zabór pruski — 5 marek", tokens: [] },
   { title: "Category:Półgrosze", region: "Półgrosze", tokens: [] },
   { title: "Category:Polish groschens", region: "Grosze polskie", tokens: [] },
   { title: "Category:Szelągi", region: "Szelągi", tokens: [] },
@@ -231,8 +236,9 @@ function nominalFrom(value) {
   }
   const fenig = text.match(/\b(1|5|10|20)\s*fenig\w*\b/);
   if (fenig) return fenig[1] === "1" ? "1 fenig" : `${fenig[1]} fenigów`;
-  const marka = text.match(/\b(½|1|2|3|5|10|20)\s*mark\w*\b/);
-  if (marka) return marka[1] === "1" ? "1 marka" : `${marka[1]} marki`;
+  if (/\b(½|1 2)\s*mark\w*\b/.test(text)) return "½ marki";
+  const marka = text.match(/\b(1|2|3|5|10|20)\s*mark\w*\b/);
+  if (marka) return marka[1] === "1" ? "1 marka" : ["2", "3"].includes(marka[1]) ? `${marka[1]} marki` : `${marka[1]} marek`;
   const grosz = text.match(/\b(1|2|5|10|20|30|40)\s*grosz\w*\b/);
   if (grosz) return grosz[1] === "1" ? "1 grosz" : `${grosz[1]} groszy`;
   if (/\bgrosz\b/.test(text)) return "1 grosz";

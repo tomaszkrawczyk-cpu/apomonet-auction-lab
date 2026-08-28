@@ -18,10 +18,10 @@ const candidates = localReferenceCandidates();
 const candidateById = new Map(candidates.map((candidate) => [candidate.id, candidate]));
 
 test("historical open-image layer retains file-level licensing and conservative matching", () => {
-  assert.ok(historical.stats.licensedFilesReviewed >= 900);
-  assert.ok(historical.stats.matchedMuseumTypes >= 60);
-  assert.ok(historical.stats.rejectedForbidden >= 80);
-  assert.ok(historical.stats.rejectedAmbiguousOrIncomplete >= 600);
+  assert.ok(historical.stats.licensedFilesReviewed >= 1_070);
+  assert.ok(historical.stats.matchedMuseumTypes >= 63);
+  assert.ok(historical.stats.rejectedForbidden >= 90);
+  assert.ok(historical.stats.rejectedAmbiguousOrIncomplete >= 790);
   assert.equal(historical.records.length, 0, "filenames alone must not create identity candidates");
   assert.equal(new Set(historical.enrichments.map((item) => item.targetId)).size, historical.enrichments.length);
 
@@ -37,8 +37,8 @@ test("historical open-image layer retains file-level licensing and conservative 
 });
 
 test("requested historical families and partition issues have explicit scale gates", () => {
-  assert.ok(recognitionCatalogPolicy.historicalFamilyRecordCount >= 790);
-  assert.ok(recognitionCatalogPolicy.partitionRecordCount >= 430);
+  assert.ok(recognitionCatalogPolicy.historicalFamilyRecordCount >= 805);
+  assert.ok(recognitionCatalogPolicy.partitionRecordCount >= 445);
   assert.equal(recognitionCatalogPolicy.historicalOpenEnrichmentCount, historical.enrichments.length);
   assert.equal(
     recognitionCatalogPolicy.historicalOpenImageCount,
@@ -49,7 +49,7 @@ test("requested historical families and partition issues have explicit scale gat
     ["półgrosz", 80],
     ["szeląg", 140],
     ["kopiej", 70],
-    ["mark", 2],
+    ["mark", 15],
     ["trojak", 140],
     ["czworak", 4],
     ["szóstak", 70],
@@ -66,6 +66,18 @@ test("partition regions before 1795 no longer fall into elective-monarchy period
     const records = candidates.filter((candidate) => candidate.title.includes(marker));
     assert.ok(records.length > 0, marker);
     assert.ok(records.every((candidate) => candidate.period === "partitions-and-uprisings"), marker);
+  }
+});
+
+test("German Empire marks are labeled as non-Polish circulation references for the Prussian partition", () => {
+  const markCirculation = candidates.filter((candidate) => candidate.circulationContext);
+  assert.ok(markCirculation.length >= 13);
+  for (const candidate of markCirculation) {
+    assert.match(candidate.nominal, /^[23] marki$/);
+    assert.equal(candidate.period, "partitions-and-uprisings");
+    assert.equal(candidate.source.rightsCode, "public-domain");
+    assert.ok(candidate.images.length >= 2);
+    assert.match(candidate.circulationContext, /emisja niepolska/);
   }
 });
 
@@ -98,4 +110,14 @@ test("kopeck values stay distinct while colloquial three, four and six match his
     }, [candidate]);
     assert.equal(ranked.selected?.candidate.id, candidate.id, reading);
   }
+
+  const twoMarks = candidates.find((candidate) => candidate.nominal === "2 marki" && candidate.circulationContext);
+  const threeMarks = candidates.find((candidate) => candidate.nominal === "3 marki" && candidate.circulationContext);
+  const rankedMarks = rankEvidenceCandidates({
+    denominationReading: "3 marki",
+    yearReading: threeMarks.year,
+    rulerReading: threeMarks.ruler,
+    mintReading: threeMarks.mint,
+  }, [twoMarks, threeMarks]);
+  assert.equal(rankedMarks.selected?.candidate.id, threeMarks.id);
 });

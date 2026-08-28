@@ -10,7 +10,7 @@
       "url": "https://zbiory.mnk.pl/pl/katalog",
       "role": "positive-identification-catalog",
       "mode": "public-api-item-level-rights-check",
-      "result": "2151 normalized coin types; 2114 with at least two public-domain images; numeric kopeck, fenig, mark, ruble and kreuzer denominations preserved; partition regions classified contextually"
+      "result": "2164 normalized coin types; 2127 with at least two public-domain images; numeric kopeck, fenig, mark, ruble and kreuzer denominations preserved; partition regions classified contextually; 13 German Empire mark types explicitly marked as non-Polish partition-circulation references"
     },
     {
       "id": "commons-historical-open",
@@ -19,7 +19,7 @@
       "url": "https://commons.wikimedia.org/wiki/Category:Coins_of_Poland",
       "role": "licensed-visual-corroboration",
       "mode": "item-level-licence-check-plus-exact-year-denomination-region-match",
-      "result": "900 licensed files reviewed across 17 targeted categories; 62 museum types enriched with 65 images; 89 forbidden groups and 627 ambiguous/incomplete groups rejected"
+      "result": "1072 licensed files reviewed across 22 targeted categories; 63 museum types enriched with 66 images; 90 forbidden groups and 794 ambiguous/incomplete groups rejected"
     },
     {
       "id": "nbp-catalog",
