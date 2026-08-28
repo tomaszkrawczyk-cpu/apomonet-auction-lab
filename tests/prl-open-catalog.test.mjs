@@ -29,7 +29,7 @@ test("PRL catalogue has useful scale, classes and year-specific records", () => 
   assert.equal(new Set(catalog.records.map((record) => record.source.recordId)).size, catalog.records.length);
   assert.equal(prlCandidates.length, catalog.records.length);
   assert.equal(recognitionCatalogPolicy.peopleRepublicRecordCount, catalog.records.length);
-  assert.equal(recognitionCatalogPolicy.catalogCount, 5);
+  assert.equal(recognitionCatalogPolicy.catalogCount, 6);
 
   for (const record of catalog.records) {
     assert.ok(Number(record.year) >= 1949 && Number(record.year) <= 1989, record.id);

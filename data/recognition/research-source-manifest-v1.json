@@ -40,6 +40,15 @@
       "result": "257 year-and-material records from 92 types; 244 records carry official legal references; 15 records have openly licensed Commons images"
     },
     {
+      "id": "polish-pattern-open-catalog",
+      "category": "open-reference",
+      "name": "Polskie monety próbne 1949–1994 — otwarty korpus APOMONET",
+      "url": "https://pl.wikipedia.org/wiki/Kategoria:Polskie_monety_pr%C3%B3bne",
+      "role": "positive-identification-pattern-catalog",
+      "mode": "CC-BY-SA-revision-pinned-table-facts-without-contemporary-catalogue-numbering-or-auction-images",
+      "result": "502 records: 389 nickel patterns, 13 brass patterns and 100 collector patterns; all carry weight and diameter; 13 have item-level open Commons images"
+    },
+    {
       "id": "polona-stronczynski",
       "category": "public-domain-book",
       "name": "Kazimierz Stronczyński, Dawne monety polskie dynastyi Piastów i Jagiellonów",
@@ -56,6 +65,24 @@
       "role": "early-modern-and-partition-period-index-reference",
       "mode": "public-domain-item-page-provenance",
       "result": "registered for page-level manual verification; not bulk-copied"
+    },
+    {
+      "id": "polona-tyszkiewicz",
+      "category": "public-domain-book",
+      "name": "Józef Tyszkiewicz, Podręcznik numizmatyczny zawierający ceny amatorskie monet polskich od 1506 do 1795",
+      "url": "https://polona.pl/preview/6d286cc3-14a0-45d4-b34f-8c3d3012298f",
+      "role": "early-modern-typology-rarity-and-historical-value-reference",
+      "mode": "public-domain-original-with-page-level-provenance-and-historical-value-separation",
+      "result": "public-domain source verified; importer registered, but page-level extraction is not yet part of the runtime catalogue"
+    },
+    {
+      "id": "kopicki-reference",
+      "category": "copyrighted-specialist-catalogue",
+      "name": "Edmund Kopicki — katalogi monet polskich",
+      "url": "",
+      "role": "confirmed-variant-reference-only",
+      "mode": "isolated-reference-only-unless-a-bulk-licence-is-obtained",
+      "result": "bulk transcription and systematic catalogue-number extraction excluded; isolated references remain behind the Stage 2 evidence gate"
     },
     {
       "id": "wiadomosci-numizmatyczne",

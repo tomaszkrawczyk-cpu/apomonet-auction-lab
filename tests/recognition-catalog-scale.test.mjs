@@ -20,9 +20,15 @@ const prlCatalog = JSON.parse(
   ).toString("utf8"),
 );
 
+const patternCatalog = JSON.parse(
+  gunzipSync(
+    await readFile(new URL("../data/recognition/polish-pattern-open-catalog-v1.json.gz", import.meta.url)),
+  ).toString("utf8"),
+);
+
 test("bulk catalogue covers Polish coinage from the medieval period through 2026", () => {
   assert.ok(mnkCatalog.records.length >= 2_160);
-  assert.ok(recognitionCatalogPolicy.recordCount >= 2_430);
+  assert.ok(recognitionCatalogPolicy.recordCount >= 2_930);
   for (const period of [
     "medieval-piast",
     "jagiellonian",
@@ -38,6 +44,9 @@ test("bulk catalogue covers Polish coinage from the medieval period through 2026
   assert.equal(prlCatalog.records.length, 257);
   assert.equal(prlCatalog.stats.uniqueTypes, 92);
   assert.equal(recognitionCatalogPolicy.peopleRepublicRecordCount, 257);
+  assert.equal(patternCatalog.records.length, 502);
+  assert.equal(recognitionCatalogPolicy.patternRecordCount, 502);
+  assert.ok(recognitionCatalogPolicy.allPatternCandidateCount >= 598);
   assert.ok(recognitionCatalogPolicy.historicalFamilyRecordCount >= 805);
   assert.ok(recognitionCatalogPolicy.partitionRecordCount >= 445);
   assert.ok(nbpCatalog.records.every((record) => record.year === "2026"));

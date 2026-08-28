@@ -59,6 +59,27 @@
       "url": "https://pl.wikipedia.org/wiki/Kategoria:Monety_obiegowe_PRL_(1949%E2%80%931990)"
     },
     {
+      "id": "polish-pattern-open-catalog",
+      "name": "APOMONET — otwarty katalog polskich monet próbnych 1949–1994",
+      "tier": "B",
+      "status": "runtime-revision-pinned-open-facts",
+      "identityRole": "pattern-candidate-with-open-provenance",
+      "rightsGate": "CC BY-SA 4.0 revision provenance for structured table facts; contemporary catalogue numbering, auction photographs and page prose excluded; Commons images accepted only after an item-level licence check",
+      "data": [
+        "denomination",
+        "year",
+        "pattern series",
+        "material",
+        "weight and diameter",
+        "edge",
+        "strike",
+        "designer",
+        "PRÓBA mark form",
+        "open images"
+      ],
+      "url": "https://pl.wikipedia.org/wiki/Kategoria:Polskie_monety_pr%C3%B3bne"
+    },
+    {
       "id": "polona",
       "name": "POLONA / Biblioteka Narodowa",
       "tier": "A",
@@ -67,6 +88,38 @@
       "rightsGate": "Only public-domain objects; transform facts into APOMONET records with page-level provenance",
       "data": ["historic catalogues", "OCR", "public-domain plates"],
       "url": "https://polona.pl/"
+    },
+    {
+      "id": "tyszkiewicz-public-domain",
+      "name": "Józef Tyszkiewicz — Podręcznik numizmatyczny (1890)",
+      "tier": "A",
+      "status": "public-domain-source-verified-importer-planned",
+      "identityRole": "historical-typology-rarity-and-literature-corroboration",
+      "rightsGate": "Use the 1890 public-domain original from POLONA with page-level provenance; preserve historical values as historical catalogue assessments, never as current PLN valuation",
+      "data": [
+        "coin type",
+        "date",
+        "mint",
+        "historical legend",
+        "rarity context",
+        "historical amateur value",
+        "page reference"
+      ],
+      "url": "https://polona.pl/preview/6d286cc3-14a0-45d4-b34f-8c3d3012298f"
+    },
+    {
+      "id": "kopicki",
+      "name": "Edmund Kopicki — katalogi monet polskich",
+      "tier": "B",
+      "status": "reference-only-license-required-for-bulk",
+      "identityRole": "confirmed-variant-reference-only",
+      "rightsGate": "No bulk transcription, scans, tables or systematic numbering import without a licence; allow isolated references only after independent variant confirmation and provenance",
+      "data": [
+        "isolated catalogue number",
+        "isolated rarity reference",
+        "edition and volume citation"
+      ],
+      "url": ""
     },
     {
       "id": "numista",
