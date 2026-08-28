@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-08-28",
+  "purpose": "Jawny rejestr źródeł rozpoznania polskich monet i dopuszczalnego sposobu ich użycia",
+  "sources": [
+    {
+      "id": "mnk-digital",
+      "category": "museum",
+      "name": "Muzeum Narodowe w Krakowie — Zbiory Cyfrowe",
+      "url": "https://zbiory.mnk.pl/pl/katalog",
+      "role": "positive-identification-catalog",
+      "mode": "public-api-item-level-rights-check",
+      "result": "2139 normalized coin types; 2102 with at least two public-domain images"
+    },
+    {
+      "id": "nbp-catalog",
+      "category": "official-issuer",
+      "name": "Narodowy Bank Polski — katalog monet okolicznościowych",
+      "url": "https://nbp.pl/banknoty-i-monety/monety-okolicznosciowe/katalog/",
+      "role": "authoritative-current-issue-facts",
+      "mode": "facts-only-no-images",
+      "result": "10 issues released in 2026 through 2026-07-21"
+    },
+    {
+      "id": "polona-stronczynski",
+      "category": "public-domain-book",
+      "name": "Kazimierz Stronczyński, Dawne monety polskie dynastyi Piastów i Jagiellonów",
+      "url": "https://polona.pl/preview/5d33212b-1504-4301-bdd5-58591e4c734e",
+      "role": "medieval-and-jagiellonian-typology-reference",
+      "mode": "public-domain-item-page-provenance",
+      "result": "registered for page-level manual verification; not bulk-copied"
+    },
+    {
+      "id": "polona-beyer",
+      "category": "public-domain-book",
+      "name": "Karol Beyer, Skorowidz monet polskich od 1506 do 1825 roku",
+      "url": "https://polona.pl/preview/5f2c7743-090f-4c13-81cc-2732bb2e093e",
+      "role": "early-modern-and-partition-period-index-reference",
+      "mode": "public-domain-item-page-provenance",
+      "result": "registered for page-level manual verification; not bulk-copied"
+    },
+    {
+      "id": "wiadomosci-numizmatyczne",
+      "category": "journal",
+      "name": "Wiadomości Numizmatyczne",
+      "url": "https://katalogi.bn.org.pl/",
+      "role": "specialist-bibliography-and-item-level-corroboration",
+      "mode": "reference-only-unless-an-article-has-compatible-rights",
+      "result": "journal and article records reviewed; protected text is not copied"
+    },
+    {
+      "id": "tpzn-forum",
+      "category": "community-forum",
+      "name": "Towarzystwo Przeciwników Złomu Numizmatycznego",
+      "url": "https://forum.tpzn.pl/",
+      "role": "diagnostic-leads-and-known-error-cases",
+      "mode": "lead-only-requires-independent-verification",
+      "result": "never promoted directly to identity ground truth"
+    },
+    {
+      "id": "monetyforum",
+      "category": "community-forum",
+      "name": "monetyforum.pl",
+      "url": "https://monetyforum.pl/",
+      "role": "diagnostic-leads-and-known-error-cases",
+      "mode": "lead-only-requires-independent-verification",
+      "result": "never promoted directly to identity ground truth"
+    },
+    {
+      "id": "auction-archives",
+      "category": "auction",
+      "name": "Publiczne archiwa aukcyjne",
+      "url": "",
+      "role": "provenance-and-market-corroboration-only",
+      "mode": "no-bulk-copy-without-license",
+      "result": "excluded from the positive identification database"
+    },
+    {
+      "id": "numista-api",
+      "category": "licensed-api",
+      "name": "Numista API",
+      "url": "https://en.numista.com/api/",
+      "role": "transient-image-retrieval",
+      "mode": "runtime-only-when-api-key-is-configured",
+      "result": "no cloned Numista database"
+    }
+  ]
+}

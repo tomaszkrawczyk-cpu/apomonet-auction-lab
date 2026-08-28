@@ -1,5 +1,17 @@
 # Rozszerzenie źródeł APOMONET — 2026-08-17
 
+## Wdrożony katalog — aktualizacja 2026-08-28
+
+- aktywne lokalne rekordy rozpoznawcze: **2150** po usunięciu duplikatów źródłowych;
+- katalog MNK: **2139** typów/pozycji z prawem `Domena publiczna`, w tym **2102** z co najmniej dwoma zdjęciami;
+- NBP: **10** oficjalnych emisji 2026 wydanych do 21 lipca, zapisanych jako fakty bez kopiowania zdjęć;
+- okresy: średniowiecze piastowskie, Jagiellonowie, monarchia elekcyjna, zabory i powstania, II RP i wojna, PRL oraz III RP;
+- odrzucone automatycznie: medale, żetony, banknoty, kopie, repliki i obiekty jawnie opisane jako fałszywe;
+- pierwszy odczyt zdjęć działa bez listy przypadkowych rekordów lokalnych; dopiero potem uruchamia się ranking po całym katalogu oraz osobne porównanie zdjęć z maksymalnie trzema parami referencyjnymi;
+- sprzeczny odczyt władcy jest twardą blokadą identyfikacji, a brak rozstrzygnięcia kończy się wynikiem `Nie ustalono`.
+
+Powtarzalny importer znajduje się w `scripts/build-mnk-polish-catalog.mjs`, skompresowany wynik w `data/recognition/mnk-polish-catalog-v1.json.gz`, bieżące fakty NBP w `data/recognition/nbp-official-catalog-v1.json`, a jawny rejestr przeglądanych źródeł w `data/recognition/research-source-manifest-v1.json`.
+
 ## Zasada produktowa
 
 APOMONET korzysta z szerokiego spektrum publicznej wiedzy, ale rozróżnia jej moc dowodową:

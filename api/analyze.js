@@ -5,6 +5,7 @@ const recognitionCorePromise = import("../lib/recognition-core.mjs");
 
 const BASIC_TIMEOUT_MS = 45_000;
 const VISION_TIMEOUT_MS = 32_000;
+const REFERENCE_COMPARE_TIMEOUT_MS = 12_000;
 const JOB_TTL_MS = 10 * 60_000;
 
 const basicJobs =
@@ -145,7 +146,104 @@ const schema = {
   ],
 };
 
+const referenceComparisonSchema = {
+  type: "object",
+  additionalProperties: false,
+  properties: {
+    selectedCandidateId: { type: "string" },
+    candidateFit: { type: "integer", minimum: 0, maximum: 100 },
+    supportingFeatures: { type: "array", maxItems: 8, items: { type: "string" } },
+    contradictions: { type: "array", maxItems: 8, items: { type: "string" } },
+  },
+  required: ["selectedCandidateId", "candidateFit", "supportingFeatures", "contradictions"],
+};
+
+async function compareWithReferenceImages(apiKey, userImages, ranked) {
+  const top = ranked?.ranked?.[0];
+  if (
+    !top ||
+    top.score < 35 ||
+    top.hardConflicts.length ||
+    !Array.isArray(top.candidate?.images) ||
+    top.candidate.images.length < 2
+  ) {
+    return { status: "not-available", result: null };
+  }
+  const shortlist = (ranked?.ranked || [])
+    .filter(
+      (item) =>
+        item.score >= 35 &&
+        item.hardConflicts.length === 0 &&
+        Array.isArray(item.candidate?.images) &&
+        item.candidate.images.length >= 2,
+    )
+    .slice(0, 3);
+  if (!shortlist.length) return { status: "not-available", result: null };
+
+  const content = [
+    {
+      type: "input_text",
+      text: `APOMONET — niezależne porównanie obrazu z krótką listą katalogową.
+
+Pierwsze dwa obrazy to awers i rewers monety użytkownika. Następnie każda podpisana para obrazów pochodzi z jawnie wskazanego rekordu katalogowego. Porównaj portret, heraldykę, układ legendy, cyfry daty, znaki mennicy/mincerza i geometrię stempla na OBU stronach. Podobny styl epoki nie wystarcza. Nie oceniaj stanu zachowania. Wybierz dokładne id tylko wtedy, gdy para jest wizualnie zgodna; w przeciwnym razie zwróć pusty selectedCandidateId.`,
+    },
+    { type: "input_text", text: "MONETA UŻYTKOWNIKA — AWERS" },
+    { type: "input_image", image_url: userImages[0], detail: "high" },
+    { type: "input_text", text: "MONETA UŻYTKOWNIKA — REWERS" },
+    { type: "input_image", image_url: userImages[1], detail: "high" },
+  ];
+  for (const item of shortlist) {
+    const candidate = item.candidate;
+    content.push({
+      type: "input_text",
+      text: `KANDYDAT ${candidate.id}: ${candidate.title}; ${candidate.ruler || ""}; ${candidate.year || ""}; ${candidate.nominal || ""}; ${candidate.mint || ""}`,
+    });
+    content.push({ type: "input_image", image_url: candidate.images[0], detail: "high" });
+    content.push({ type: "input_image", image_url: candidate.images[1], detail: "high" });
+  }
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), REFERENCE_COMPARE_TIMEOUT_MS);
+  try {
+    const response = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
+      signal: controller.signal,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-5.6",
+        reasoning: { effort: "low" },
+        input: [{ role: "user", content }],
+        text: {
+          format: {
+            type: "json_schema",
+            name: "coin_reference_comparison_v1",
+            strict: true,
+            schema: referenceComparisonSchema,
+          },
+        },
+      }),
+    });
+    const data = await response.json();
+    if (!response.ok) return { status: `error-${response.status}`, result: null };
+    const text = responseText(data);
+    if (!text) return { status: "empty", result: null };
+    const result = JSON.parse(text);
+    const allowedIds = new Set(shortlist.map((item) => item.candidate.id));
+    if (!allowedIds.has(clean(result.selectedCandidateId))) result.selectedCandidateId = "";
+    result.candidateFit = Math.max(0, Math.min(100, Number(result.candidateFit) || 0));
+    return { status: "ok", result };
+  } catch (error) {
+    return { status: error?.name === "AbortError" ? "timeout" : "error", result: null };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 async function runAnalysis(apiKey, images, measurements) {
+  const analysisStartedAt = Date.now();
   const {
     adjudicateRecognition,
     analysisFromRecognition,
@@ -161,7 +259,10 @@ async function runAnalysis(apiKey, images, measurements) {
     process.env.NUMISTA_API_KEY,
     images,
   );
-  let candidates = [...numista.candidates, ...localCandidates].slice(0, 12);
+  // The first vision pass must describe the photographs without being anchored
+  // by an arbitrary slice of the large local catalogue. Numista candidates are
+  // allowed here only because they were retrieved from the submitted images.
+  let candidates = numista.candidates.slice(0, 8);
   const prompt = `ETAP 1 APOMONET — analiza dowodów i wybór wyłącznie z katalogu kandydatów.
 
 Najpierw oceń, czy oba zdjęcia nadają się do identyfikacji i czy pokazują dwie strony tego samego obiektu. Rozpoznaj wyłącznie rodzaj obiektu: regularna moneta obiegowa, emisja próbna/wzorcowa (PRÓBA/PROBA/ESSAI/PATTERN), medal, żeton, możliwa kopia albo obiekt niepewny. Uwzględnij widoczny napis „PRÓBA”, nietypowy metal, talar próbny oraz sygnatur projektanta/medaliera.
@@ -244,6 +345,10 @@ Odpowiadaj po polsku.`;
     }
     candidates = [...byId.values()];
     const ranked = rankEvidenceCandidates(raw.observations, candidates, measurements);
+    const visualReference =
+      Date.now() - analysisStartedAt <= BASIC_TIMEOUT_MS - REFERENCE_COMPARE_TIMEOUT_MS - 2_000
+        ? await compareWithReferenceImages(apiKey, images, ranked)
+        : { status: "skipped-time-budget", result: null };
     if (ranked.selected) {
       raw.decision.selectedCandidateId = ranked.selected.candidate.id;
       raw.decision.candidateFit = Math.max(
@@ -265,6 +370,21 @@ Odpowiadaj po polsku.`;
         raw.decision.candidateFit = 0;
       }
     }
+    if (visualReference.result?.selectedCandidateId && visualReference.result.candidateFit >= 60) {
+      raw.decision.selectedCandidateId = visualReference.result.selectedCandidateId;
+      raw.decision.candidateFit = visualReference.result.candidateFit;
+      raw.decision.supportingFeatures = visualReference.result.supportingFeatures;
+      raw.decision.contradictions = visualReference.result.contradictions;
+    } else if (visualReference.status === "ok" && visualReference.result) {
+      raw.decision.selectedCandidateId = "";
+      raw.decision.candidateFit = 0;
+      raw.decision.contradictions = visualReference.result.contradictions;
+    } else if (visualReference.result?.contradictions?.length) {
+      raw.decision.contradictions = [
+        ...(raw.decision.contradictions || []),
+        ...visualReference.result.contradictions,
+      ].slice(0, 6);
+    }
     const orderedCandidates = ranked.ranked.map((item) => item.candidate);
     const recognition = adjudicateRecognition(
       raw,
@@ -282,7 +402,8 @@ Odpowiadaj po polsku.`;
         sources: {
           numista: { available: numista.available, reason: numista.reason },
           mnk: { available: mnk.available, reason: mnk.reason },
-          curatedReferenceCount: localCandidates.length,
+          localReferenceCount: localCandidates.length,
+          visualReferenceComparison: visualReference.status,
         },
         usage: {
           inputTokens: data.usage?.input_tokens || 0,

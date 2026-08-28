@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-27",
+  "updatedAt": "2026-08-28",
   "tiers": {
     "A": "Primary institutional catalogue; may support identity when record rights and provenance pass",
     "B": "Licensed specialist catalogue/API; may support identity under its contract and attribution rules",
@@ -12,7 +12,7 @@
       "id": "mnk",
       "name": "Muzeum Narodowe w Krakowie — Zbiory Cyfrowe",
       "tier": "A",
-      "status": "runtime-and-curated-seed",
+      "status": "bulk-public-domain-catalog-and-runtime",
       "identityRole": "candidate-and-verification",
       "rightsGate": "Accept only records explicitly marked Domena publiczna and unrestricted",
       "data": ["title", "ruler/creator", "date", "mint", "material", "dimensions", "weight", "descriptions", "two-side images"],
@@ -32,10 +32,10 @@
       "id": "nbp",
       "name": "Narodowy Bank Polski",
       "tier": "A",
-      "status": "adapter-planned",
+      "status": "official-facts-current-through-2026-07-21",
       "identityRole": "authoritative-modern-polish-issues",
       "rightsGate": "Follow NBP image-reuse conditions; factual metadata kept separate from image permissions",
-      "data": ["issue catalogues", "mintage", "technical parameters", "official images"],
+      "data": ["issue catalogues", "mintage", "technical parameters"],
       "url": "https://nbp.pl/banknoty-i-monety/"
     },
     {

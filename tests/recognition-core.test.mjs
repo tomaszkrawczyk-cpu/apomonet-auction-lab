@@ -85,10 +85,11 @@ function batoryDecision({ noisyOcr = false, selected = "curated:batory-ducat-gda
   };
 }
 
-test("curated catalogue only exposes records with explicit accepted rights and provenance", () => {
-  assert.equal(recognitionCatalogPolicy.recordCount, 5);
+test("catalogue set exposes only records with explicit accepted rights and provenance", () => {
+  assert.ok(recognitionCatalogPolicy.recordCount >= 2_100);
+  assert.equal(recognitionCatalogPolicy.catalogCount, 3);
   assert.equal(recognitionCatalogPolicy.provenanceRequired, true);
-  assert.equal(candidates.length, 5);
+  assert.equal(candidates.length, recognitionCatalogPolicy.recordCount);
   for (const candidate of candidates.filter((candidate) => candidate.sourceType === "museum")) {
     assert.equal(candidate.rights, "Domena publiczna");
     assert.match(candidate.sourceUrl, /^https:\/\/zbiory\.mnk\.pl\/pl\/katalog\/\d+$/);
@@ -164,16 +165,17 @@ test("evidence ranking normalizes Jan Kazimierz and keeps neighboring denominati
   assert.ok(ranked.selected.score >= 90);
 });
 
-test("Batory ducat survives noisy OCR because mint, heraldry, metal and 3.57 g agree", () => {
+test("direct SIG III and 1600 readings block a false Batory verdict despite generic Gdansk ducat features", () => {
   const raw = batoryDecision({ noisyOcr: true, selected: "" });
   const ranked = rankEvidenceCandidates(raw.observations, candidates, {
     weightGrams: 3.57,
   });
 
-  assert.equal(ranked.selected.candidate.id, "curated:batory-ducat-gdansk-1587");
-  assert.equal(ranked.selected.hardConflicts.length, 0);
-  assert.ok(ranked.selected.score >= 65);
-  assert.match(ranked.selected.reasons.join(" "), /masa: 3\.57 g/);
+  assert.equal(ranked.selected, null);
+  const batory = ranked.ranked.find(
+    (item) => item.candidate.id === "curated:batory-ducat-gdansk-1587",
+  );
+  assert.match(batory.hardConflicts.join(" "), /SIG III/);
 });
 
 test("verified legend and measurements confirm the Stefan Batory Gdansk ducat", () => {
@@ -202,9 +204,9 @@ test("visible 87 is accepted as a partial 1587 date and rejected thalers stay hi
   assert.equal(result.status, "confirmed-candidate");
   assert.deepEqual(result.contradictions, []);
   assert.match(result.support.join(" "), /STEPHANVS/);
-  assert.deepEqual(result.candidates.map((candidate) => candidate.id), [
-    "curated:batory-ducat-gdansk-1587",
-  ]);
+  assert.equal(result.candidates[0].id, "curated:batory-ducat-gdansk-1587");
+  assert.ok(result.candidates.every((candidate) => /duka(?:t|cie)/i.test(candidate.title)));
+  assert.ok(result.candidates.every((candidate) => !/Kazimierz/i.test(candidate.title)));
 });
 
 test("unresolved results never fall back to unrelated Jan Kazimierz records", () => {
@@ -232,7 +234,7 @@ test("final basic card is populated only after the evidence gate confirms a cata
   const unresolvedCard = analysisFromRecognition(raw, unresolved, condition);
   assert.equal(unresolvedCard.nominal, "Nie ustalono");
   assert.equal(unresolvedCard.estimateLow, 0);
-  assert.equal(unresolvedCard.analysisVersion, "retrieval-first-v2");
+  assert.equal(unresolvedCard.analysisVersion, "retrieval-first-v3");
 
   const confirmed = adjudicateRecognition(raw, candidates, { weightGrams: 57.74 });
   const confirmedCard = analysisFromRecognition(raw, confirmed, condition);
