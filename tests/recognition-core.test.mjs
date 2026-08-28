@@ -192,7 +192,7 @@ test("verified legend and measurements confirm the Stefan Batory Gdansk ducat", 
 
 test("visible 87 is accepted as a partial 1587 date and rejected thalers stay hidden", () => {
   const raw = batoryDecision();
-  raw.observations.rulerReading = "Nie ustalono";
+  raw.observations.rulerReading = "Nie pokazano linijki; średnicy nie ustalono.";
   raw.observations.yearReading = "Końcowe cyfry 87 widoczne na rewersie; pełna data nie jest jednoznaczna.";
   raw.observations.denominationReading = "Brak widocznego oznaczenia nominału.";
   raw.decision.candidateFit = 89;
@@ -201,6 +201,7 @@ test("visible 87 is accepted as a partial 1587 date and rejected thalers stay hi
 
   assert.equal(result.status, "confirmed-candidate");
   assert.deepEqual(result.contradictions, []);
+  assert.match(result.support.join(" "), /STEPHANVS/);
   assert.deepEqual(result.candidates.map((candidate) => candidate.id), [
     "curated:batory-ducat-gdansk-1587",
   ]);
