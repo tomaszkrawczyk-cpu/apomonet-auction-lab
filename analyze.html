@@ -739,14 +739,34 @@
         }
         box.replaceChildren();
         box.dataset.status = recognition.status || "unresolved";
+        const partial = recognition.partialIdentity;
+        const partialFields = Array.isArray(partial?.populatedFields)
+          ? partial.populatedFields
+          : [];
+        const hasPartialIdentity = partialFields.some((field) =>
+          ["country", "ruler", "year", "nominal", "mint"].includes(field),
+        );
         const heading = document.createElement("b");
         heading.textContent =
           recognition.status === "confirmed-candidate"
             ? "Zgodny kandydat katalogowy"
+            : hasPartialIdentity
+              ? "Identyfikacja częściowa — pewne pola zachowane"
             : recognition.status === "candidate-only"
               ? "Kandydat — wynik jeszcze nierozstrzygnięty"
               : "Identyfikacja wstrzymana";
         box.appendChild(heading);
+        if (hasPartialIdentity) {
+          const labels = { country: "Kraj", ruler: "Władca", year: "Rok", nominal: "Nominał", mint: "Mennica" };
+          const facts = partialFields
+            .filter((field) => labels[field] && partial[field])
+            .map((field) => `${labels[field]}: ${partial[field]}`);
+          if (facts.length) {
+            const paragraph = document.createElement("p");
+            paragraph.textContent = `Ustalone niezależnie od pełnego werdyktu: ${facts.join("; ")}.`;
+            box.appendChild(paragraph);
+          }
+        }
         const selected = recognition.selectedCandidate;
         if (selected) {
           const paragraph = document.createElement("p");

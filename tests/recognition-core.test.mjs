@@ -241,12 +241,16 @@ test("a 1.5-thaler weight blocks a false double-thaler verdict", () => {
   assert.match(result.contradictions.join(" "), /Masa 43\.3 g nie pasuje/);
 });
 
-test("final basic card is populated only after the evidence gate confirms a catalogue candidate", () => {
+test("a withheld Jan Kazimierz denomination keeps safe partial identity fields", () => {
   const raw = janKazimierzDecision();
   const condition = conditionFromRaw(raw);
   const unresolved = adjudicateRecognition(raw, candidates, {});
   const unresolvedCard = analysisFromRecognition(raw, unresolved, condition);
   assert.equal(unresolvedCard.nominal, "Nie ustalono");
+  assert.equal(unresolvedCard.ruler, "Jan II Kazimierz");
+  assert.equal(unresolvedCard.mint, "Elbląg");
+  assert.ok(unresolvedCard.rulerConfidence > 0);
+  assert.equal(unresolvedCard.recognition.partialIdentity.nominal, undefined);
   assert.equal(unresolvedCard.estimateLow, 0);
   assert.equal(unresolvedCard.analysisVersion, "multi-engine-orchestrator-v1");
 
@@ -258,6 +262,43 @@ test("final basic card is populated only after the evidence gate confirms a cata
   assert.equal(confirmedCard.recognition.status, "confirmed-candidate");
   assert.equal(confirmedCard.condition.engineVersion, "condition-v1-independent");
   assert.equal(confirmedCard.weight, 57.74);
+});
+
+test("an unresolved Batory image preserves ruler and Gdansk instead of blanking the card", () => {
+  const raw = batoryDecision();
+  raw.observations.rulerReading = "Nie ustalono";
+  raw.observations.yearReading = "Nie ustalono";
+  raw.observations.denominationReading = "Nie ustalono";
+  raw.observations.mintReading = "GEDANENSIS";
+  raw.decision.selectedCandidateId = "";
+  raw.decision.candidateFit = 0;
+
+  const recognition = adjudicateRecognition(raw, candidates, {});
+  const card = analysisFromRecognition(raw, recognition, conditionFromRaw(raw));
+
+  assert.equal(recognition.status, "unresolved");
+  assert.equal(card.ruler, "Stefan Batory");
+  assert.equal(card.mint, "Gdańsk");
+  assert.equal(card.year, "Nie ustalono");
+  assert.equal(card.nominal, "Nie ustalono");
+  assert.match(card.summary, /Rozpoznanie częściowe/);
+  assert.ok(card.rulerConfidence > 0);
+});
+
+test("an unresolved Gdansk Jan Kazimierz image keeps ruler and mint but not a guessed denomination", () => {
+  const raw = janKazimierzDecision("");
+  raw.observations.yearReading = "Nie ustalono";
+  raw.observations.denominationReading = "Nie ustalono";
+  raw.observations.mintReading = "GEDANENSIS; herb Gdańska z lwami";
+  raw.decision.candidateFit = 0;
+
+  const recognition = adjudicateRecognition(raw, candidates, {});
+  const card = analysisFromRecognition(raw, recognition, conditionFromRaw(raw));
+
+  assert.equal(recognition.status, "unresolved");
+  assert.match(card.ruler, /Jan.*Kazimierz/);
+  assert.equal(card.mint, "Gdańsk");
+  assert.equal(card.nominal, "Nie ustalono");
 });
 
 test("condition engine withholds a grade when its own confidence is too low", () => {
