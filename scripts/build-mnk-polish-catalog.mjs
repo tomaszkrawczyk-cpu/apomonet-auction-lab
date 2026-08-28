@@ -4,7 +4,7 @@ import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { gzipSync } from "node:zlib";
+import { gunzipSync, gzipSync } from "node:zlib";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const BUILD_DIR = resolve(ROOT, "data/recognition/build");
@@ -31,6 +31,11 @@ const SEARCH_QUERIES = [
   "Królestwo Polskie moneta",
   "Wolne Miasto Kraków moneta",
   "Powstanie Listopadowe moneta",
+  "Galicja i Lodomeria moneta",
+  "Prusy Południowe moneta",
+  "Wielkie Księstwo Poznańskie moneta",
+  "niemieckie władze okupacyjne Królestwa Polskiego moneta",
+  "półgrosz grosz szeląg kopiejka marka trojak czworak szóstak półtalar",
   "II Rzeczpospolita moneta",
   "Polska Rzeczpospolita Ludowa moneta",
   "Rzeczpospolita Polska moneta",
@@ -114,6 +119,9 @@ async function fetchJson(url, options = {}, attempt = 1) {
     });
     const body = await response.json().catch(() => ({}));
     if (!response.ok || Number(body?.status || 200) >= 400) {
+      if (body?.message === "NO_RESULTS_FOR_GIVEN_QUERY") {
+        return { data: { items: [], paginatorDetails: { totalPagesCount: 0, totalItemsCount: 0 } } };
+      }
       throw new Error(body?.message || `HTTP ${response.status}`);
     }
     return body;
@@ -158,6 +166,14 @@ async function writeGzipJson(path, value) {
   await writeFile(path, gzipSync(`${JSON.stringify(value)}\n`, { level: 9 }));
 }
 
+async function readGzipJson(path, fallback) {
+  try {
+    return JSON.parse(gunzipSync(await readFile(path)).toString("utf8"));
+  } catch {
+    return fallback;
+  }
+}
+
 async function queryPage(phrase, page) {
   return fetchJson(`${API}/api/query/page/${page}?maxPerPage=${PAGE_SIZE}&sort=score`, {
     method: "POST",
@@ -175,7 +191,17 @@ async function discover() {
   const byId = new Map();
   const queryStats = [];
   for (const phrase of SEARCH_QUERIES) {
-    const first = await queryPage(phrase, 1);
+    let first;
+    try {
+      first = await queryPage(phrase, 1);
+    } catch (error) {
+      if (String(error?.message || error).includes("NO_RESULTS_FOR_GIVEN_QUERY")) {
+        queryStats.push({ phrase, returned: 0, reported: 0 });
+        console.log(`[discover] ${phrase}: 0 wyników`);
+        continue;
+      }
+      throw error;
+    }
     const details = first?.data?.paginatorDetails || {};
     const pages = Math.max(1, Number(details.totalPagesCount) || 1);
     const pageNumbers = Array.from({ length: pages - 1 }, (_, index) => index + 2);
@@ -240,7 +266,7 @@ function isPolish(record) {
   );
   const value = `${title} ${issuer} ${places}`;
   const ruler = POLISH_RULERS.some((name) => `${title} ${issuer}`.includes(normalized(name)));
-  const realm = /\b(pols|koronn|rzeczpospolit|ksiestwo warszaw|krolestwo polsk|wolne miasto krak|powstanie listopad|prl|gdansk|danzig|elblag|elbing|torun|thorn|bydgoszcz|krakow|poznan|wilno|vilnius|litew|ryga|riga)\w*\b/.test(value);
+  const realm = /\b(pols|koronn|rzeczpospolit|ksiestwo warszaw|krolestwo polsk|wolne miasto krak|powstanie listopad|galicj|lodomeri|prusy poludniow|prusy wschodni|prusy zachodni|wielkie ksiestwo poznan|ober ost|prl|gdansk|danzig|elblag|elbing|torun|thorn|bydgoszcz|krakow|poznan|wilno|vilnius|litew|ryga|riga)\w*\b/.test(value);
   const year = Number(yearFrom(record));
   if (year >= 1918) {
     const modernIssuer = /\b(rzeczpospolita polska|polska rzeczpospolita ludowa|narodowy bank polski|nbp|wolne miasto gdansk|okupacja niemiecka)\b/.test(`${title} ${issuer}`);
@@ -317,13 +343,37 @@ function rulerFrom(record) {
 
 function nominalFrom(title) {
   const value = normalized(title);
+  if (/\btrzy ruble dwadziescia zlot\w*\b/.test(value)) return "20 zł / 3 ruble";
   const numeric = value.match(/\b(\d{1,3}(?:\s\d{3})*)\s+(grosz|grosze|groszy|gr|zloty|zlote|zlotych|zltych|zl)\b/);
   if (numeric) {
     const unit = numeric[2].startsWith("grosz") || numeric[2] === "gr" ? "gr" : "zł";
     return `${numeric[1].replace(/\s/g, "")} ${unit}`;
   }
+  const wordAmounts = new Map([
+    ["pol", "½"],
+    ["jeden", "1"],
+    ["jedna", "1"],
+    ["dwie", "2"],
+    ["dwa", "2"],
+    ["trzy", "3"],
+    ["cztery", "4"],
+    ["piec", "5"],
+    ["szesc", "6"],
+    ["dziesiec", "10"],
+    ["dwadziescia", "20"],
+    ["dwadziescia piec", "25"],
+  ]);
+  const historicUnit = value.match(/\b(½|\d{1,3}|dwadziescia piec|dwadziescia|dziesiec|szesc|piec|cztery|trzy|dwie|dwa|jedna|jeden|pol)\s+(kopiej\w*|fenig\w*|mark\w*|rubl\w*|rubel\w*|krajcar\w*)\b/);
+  if (historicUnit) {
+    const amount = wordAmounts.get(historicUnit[1]) || historicUnit[1];
+    const unit = historicUnit[2];
+    if (unit.startsWith("kopiej")) return amount === "½" ? "½ kopiejki" : amount === "1" ? "1 kopiejka" : ["2", "3", "4"].includes(amount) ? `${amount} kopiejki` : `${amount} kopiejek`;
+    if (unit.startsWith("fenig")) return amount === "1" ? "1 fenig" : `${amount} fenigów`;
+    if (unit.startsWith("mark")) return amount === "½" ? "½ marki" : amount === "1" ? "1 marka" : ["2", "3", "4"].includes(amount) ? `${amount} marki` : `${amount} marek`;
+    if (unit.startsWith("rub")) return amount === "½" ? "½ rubla" : amount === "1" ? "1 rubel" : ["2", "3", "4"].includes(amount) ? `${amount} ruble` : `${amount} rubli`;
+    if (unit.startsWith("krajcar")) return amount === "1" ? "1 krajcar" : `${amount} krajcarów`;
+  }
   const patterns = [
-    [/\btrzy ruble dwadziescia zlot\w*\b/, "20 zł / 3 ruble"],
     [/\b100 bez nazwy nominal\w*\b/, "100 (próba bez nazwy nominału)"],
     [/\b50 bez nazwy mark\w*\b/, "50 marek (próba)"],
     [/\b½ rubel\w*\b|\b1 2 rubel\w*\b/, "½ rubla"],
@@ -358,13 +408,13 @@ function nominalFrom(title) {
     [/\bpolgrosz\w*\b/, "Półgrosz"],
     [/\bgrosz\w*\b/, "Grosz"],
     [/\bszelag\w*\b|\bsolidus\w*\b|\bsolid\b/, "Szeląg"],
-    [/\bmark\w*\b/, "Marka"],
+    [/\bmark\w*\b/, "1 marka"],
     [/\bferding\w*\b/, "Ferding"],
     [/\bgulden\w*\b/, "Gulden"],
-    [/\bkrajcar\w*\b/, "Krajcar"],
-    [/\brubel\w*\b/, "Rubel"],
+    [/\bkrajcar\w*\b/, "1 krajcar"],
+    [/\brubel\w*\b/, "1 rubel"],
     [/\bpoltin\w*\b/, "Połtina"],
-    [/\bkopiej\w*\b/, "Kopiejka"],
+    [/\bkopiej\w*\b/, "1 kopiejka"],
     [/\bdwudenar\w*\b/, "Dwudenar"],
     [/\bpieniadz\w*\b/, "Pieniądz"],
     [/\bpolskojec\w*\b/, "Półskojec"],
@@ -375,7 +425,7 @@ function nominalFrom(title) {
     [/\bkwartnik\w*\b/, "Kwartnik"],
     [/\bbrakteat\w*\b/, "Brakteat"],
     [/\bdenar\w*\b/, "Denar"],
-    [/\bfenig\w*\b/, "Fenig"],
+    [/\bfenig\w*\b/, "1 fenig"],
     [/\bhalerz\w*\b/, "Halerz"],
   ];
   return patterns.find(([pattern]) => pattern.test(value))?.[1] || "";
@@ -501,9 +551,14 @@ function shapeFrom(record) {
   return "round";
 }
 
-function periodFor(year) {
+function periodFor(record, year) {
   const value = Number(clean(year).match(/\b\d{3,4}\b/)?.[0]);
   if (!value) return "undated";
+  const context = normalized(`${record?.title || ""} ${(record?.createPlaces || []).map((item) => `${item?.name || ""} ${item?.hierarchy || ""}`).join(" ")}`);
+  if (
+    value >= 1772 && value <= 1918 &&
+    /\b(zabor|galicj|lodomeri|prusy poludniow|prusy wschodni|prusy zachodni|ksiestwo warszaw|krolestwo polsk|wolne miasto krak|powstanie listopad|wielkie ksiestwo poznan|ober ost|niemieck\w* wladz\w* okupacyjn)\w*\b/.test(context)
+  ) return "partitions-and-uprisings";
   if (value < 1386) return "medieval-piast";
   if (value <= 1572) return "jagiellonian";
   if (value <= 1795) return "elective-monarchy";
@@ -534,7 +589,7 @@ function transform(record) {
     country: countryFrom(record),
     ruler: rulerFrom(record),
     year,
-    period: periodFor(year),
+    period: periodFor(record, year),
     nominal,
     metal: materialFrom(record),
     mint,
@@ -578,13 +633,13 @@ function typeId(key) {
   return `mnk-type:${createHash("sha256").update(key).digest("hex").slice(0, 16)}`;
 }
 
-function mergeTypes(records) {
+function mergeTypes(records, previousIdsBySource = new Map()) {
   const groups = new Map();
   for (const record of records) {
     const key = canonicalTypeKey(record);
     const current = groups.get(key);
     if (!current) {
-      groups.set(key, { ...record, id: typeId(key), specimenCount: 1, specimenSources: [record.source], images: [...record.images] });
+      groups.set(key, { ...record, id: previousIdsBySource.get(record.source.url) || typeId(key), specimenCount: 1, specimenSources: [record.source], images: [...record.images] });
       continue;
     }
     current.specimenCount += 1;
@@ -638,7 +693,14 @@ async function main() {
   if (discoverOnly) return;
   const details = await collectDetails(selected.representatives);
   const transformed = details.map(transform).filter(Boolean);
-  const records = mergeTypes(transformed);
+  const previousCatalog = await readGzipJson(OUTPUT, { records: [] });
+  const previousIdsBySource = new Map();
+  for (const record of previousCatalog.records || []) {
+    for (const source of [record.source, ...(record.specimenSources || [])]) {
+      if (source?.url && !previousIdsBySource.has(source.url)) previousIdsBySource.set(source.url, record.id);
+    }
+  }
+  const records = mergeTypes(transformed, previousIdsBySource);
   const output = {
     schemaVersion: 1,
     generatedAt: new Date().toISOString(),

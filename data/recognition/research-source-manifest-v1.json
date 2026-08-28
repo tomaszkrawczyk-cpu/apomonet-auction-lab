@@ -10,7 +10,16 @@
       "url": "https://zbiory.mnk.pl/pl/katalog",
       "role": "positive-identification-catalog",
       "mode": "public-api-item-level-rights-check",
-      "result": "2139 normalized coin types; 2102 with at least two public-domain images"
+      "result": "2151 normalized coin types; 2114 with at least two public-domain images; numeric kopeck, fenig, mark, ruble and kreuzer denominations preserved; partition regions classified contextually"
+    },
+    {
+      "id": "commons-historical-open",
+      "category": "open-image-repository",
+      "name": "Wikimedia Commons — historyczne monety polskie i ziem polskich",
+      "url": "https://commons.wikimedia.org/wiki/Category:Coins_of_Poland",
+      "role": "licensed-visual-corroboration",
+      "mode": "item-level-licence-check-plus-exact-year-denomination-region-match",
+      "result": "900 licensed files reviewed across 17 targeted categories; 62 museum types enriched with 65 images; 89 forbidden groups and 627 ambiguous/incomplete groups rejected"
     },
     {
       "id": "nbp-catalog",

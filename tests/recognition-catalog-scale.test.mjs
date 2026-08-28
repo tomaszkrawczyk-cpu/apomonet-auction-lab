@@ -21,8 +21,8 @@ const prlCatalog = JSON.parse(
 );
 
 test("bulk catalogue covers Polish coinage from the medieval period through 2026", () => {
-  assert.ok(mnkCatalog.records.length >= 2_100);
-  assert.ok(recognitionCatalogPolicy.recordCount >= 2_400);
+  assert.ok(mnkCatalog.records.length >= 2_150);
+  assert.ok(recognitionCatalogPolicy.recordCount >= 2_415);
   for (const period of [
     "medieval-piast",
     "jagiellonian",
@@ -38,6 +38,8 @@ test("bulk catalogue covers Polish coinage from the medieval period through 2026
   assert.equal(prlCatalog.records.length, 257);
   assert.equal(prlCatalog.stats.uniqueTypes, 92);
   assert.equal(recognitionCatalogPolicy.peopleRepublicRecordCount, 257);
+  assert.ok(recognitionCatalogPolicy.historicalFamilyRecordCount >= 790);
+  assert.ok(recognitionCatalogPolicy.partitionRecordCount >= 430);
   assert.ok(nbpCatalog.records.every((record) => record.year === "2026"));
 });
 

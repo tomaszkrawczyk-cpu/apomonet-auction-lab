@@ -29,6 +29,16 @@
       "url": "https://cyfrowe.mnw.art.pl/"
     },
     {
+      "id": "historical-open-images",
+      "name": "Wikimedia Commons — historyczne monety polskie i ziem polskich",
+      "tier": "B",
+      "status": "item-level-licensed-visual-evidence",
+      "identityRole": "visual-corroboration-of-museum-candidates",
+      "rightsGate": "Accept only item files carrying compatible CC/CC BY/CC BY-SA or public-domain metadata; reject counterfeits, restrikes, proofs and ambiguous matches",
+      "data": ["file-level image URLs", "creator and credit", "licence and licence URL", "category provenance", "exact year/denomination/region match"],
+      "url": "https://commons.wikimedia.org/wiki/Category:Coins_of_Poland"
+    },
+    {
       "id": "nbp",
       "name": "Narodowy Bank Polski",
       "tier": "A",
