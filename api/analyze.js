@@ -528,6 +528,11 @@ Odpowiadaj po polsku.`;
         confidence: recognition.confidence,
       },
     });
+    console.log("[recognition-visual-scores]", JSON.stringify({
+      selectionBasis: visualReference.result?.selectionBasis || null,
+      margin: visualReference.result?.margin || 0,
+      comparisons: visualReference.result?.comparisons || [],
+    }));
     const condition = conditionFromRaw(raw, raw.imageUsable !== false);
     const analysis = analysisFromRecognition(raw, recognition, condition);
     analysis.needsDetailedAnalysis = Boolean(analysis.needsDetailedAnalysis);
