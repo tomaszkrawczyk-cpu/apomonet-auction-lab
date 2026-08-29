@@ -164,12 +164,56 @@ const referenceComparisonSchema = {
     candidateFit: { type: "integer", minimum: 0, maximum: 100 },
     supportingFeatures: { type: "array", maxItems: 8, items: { type: "string" } },
     contradictions: { type: "array", maxItems: 8, items: { type: "string" } },
+    comparisons: {
+      type: "array",
+      maxItems: 8,
+      items: {
+        type: "object",
+        additionalProperties: false,
+        properties: {
+          candidateId: { type: "string" },
+          visualFit: { type: "integer", minimum: 0, maximum: 100 },
+          sameType: { type: "boolean" },
+          sameSpecimen: { type: "boolean" },
+          matchedSides: {
+            type: "string",
+            enum: ["both", "obverse", "reverse", "uncertain"],
+          },
+          decisiveFeatures: {
+            type: "array",
+            maxItems: 4,
+            items: { type: "string" },
+          },
+          contradictions: {
+            type: "array",
+            maxItems: 4,
+            items: { type: "string" },
+          },
+        },
+        required: [
+          "candidateId",
+          "visualFit",
+          "sameType",
+          "sameSpecimen",
+          "matchedSides",
+          "decisiveFeatures",
+          "contradictions",
+        ],
+      },
+    },
   },
-  required: ["selectedCandidateId", "candidateFit", "supportingFeatures", "contradictions"],
+  required: [
+    "selectedCandidateId",
+    "candidateFit",
+    "supportingFeatures",
+    "contradictions",
+    "comparisons",
+  ],
 };
 
 async function compareWithReferenceImages(apiKey, userImages, ranked) {
   const {
+    resolveVisualComparison,
     shouldCompareVisualReferences,
     visualReferenceShortlist,
   } = await recognitionVisualPromise;
@@ -188,7 +232,9 @@ Pierwsze dwa obrazy to awers i rewers monety użytkownika. Dalej są podpisane o
 
 Najpierw porównaj niezależnie: postać/portret, heraldykę, układ legendy, czytelne fragmenty napisów, cyfry daty, znaki mennicy lub mincerza oraz geometrię stempla. Potem sprawdź zgodność obu stron jako jednej monety. Metadane kandydata służą wyłącznie do kontroli, nie mogą zastąpić obrazu. Podobny styl epoki, ten sam władca albo ta sama mennica nie wystarczają. Nie oceniaj stanu zachowania i nie wybieraj „najbliższego” na siłę.
 
-Wybierz dokładne id tylko wtedy, gdy obraz potwierdza ten sam podstawowy typ monety i nie ma widocznej sprzeczności daty, nominału, portretu lub herbu. candidateFit 80+ oznacza rozstrzygające dopasowanie typu. Jeśli żaden rekord nie spełnia tego warunku, zwróć pusty selectedCandidateId.`,
+Dla KAŻDEGO przedstawionego kandydata dodaj dokładnie jeden wpis comparisons z jego dokładnym ID. Oceniaj visualFit bez porównywania jakości zdjęć: 0 oznacza inny projekt monety, 100 oznacza ten sam egzemplarz lub praktycznie identyczny stempel. sameType oznacza ten sam podstawowy typ monety; sameSpecimen ustaw true tylko wtedy, gdy układ stempla, zużycie i drobne ślady pokazują, że to dokładnie ten sam egzemplarz mimo kadru, skali lub tła. matchedSides mówi, które strony mają realne potwierdzenie.
+
+Jedno dokładnie zgodne zdjęcie referencyjne może rozstrzygnąć podstawowy typ, jeśli przedstawia ten sam egzemplarz lub jednoznacznie ten sam stempel; druga strona użytkownika nadal musi być zgodna z metadanymi i nie może im przeczyć. Wybierz dokładne id tylko wtedy, gdy obraz potwierdza ten sam podstawowy typ monety i nie ma widocznej sprzeczności daty, nominału, portretu lub herbu. candidateFit 80+ oznacza rozstrzygające dopasowanie typu. Jeśli żaden rekord nie spełnia tego warunku, zwróć pusty selectedCandidateId.`,
     },
     { type: "input_text", text: "MONETA UŻYTKOWNIKA — AWERS" },
     { type: "input_image", image_url: userImages[0], detail: "high" },
@@ -244,10 +290,7 @@ Wybierz dokładne id tylko wtedy, gdy obraz potwierdza ten sam podstawowy typ mo
     }
     const text = responseText(data);
     if (!text) return { status: "empty", result: null, comparedCandidateIds };
-    const result = JSON.parse(text);
-    const allowedIds = new Set(shortlist.map((item) => item.candidate.id));
-    if (!allowedIds.has(clean(result.selectedCandidateId))) result.selectedCandidateId = "";
-    result.candidateFit = Math.max(0, Math.min(100, Number(result.candidateFit) || 0));
+    const result = resolveVisualComparison(JSON.parse(text), shortlist);
     return { status: "ok", result, comparedCandidateIds };
   } catch (error) {
     return {
@@ -458,6 +501,14 @@ Odpowiadaj po polsku.`;
         selectedCandidateId:
           visualReference.result?.selectedCandidateId || null,
         candidateFit: visualReference.result?.candidateFit || 0,
+        selectionBasis: visualReference.result?.selectionBasis || null,
+        comparisons: (visualReference.result?.comparisons || []).map((item) => ({
+          id: item.candidateId,
+          fit: item.visualFit,
+          sameType: item.sameType,
+          sameSpecimen: item.sameSpecimen,
+          contradictions: item.contradictions.length,
+        })),
       },
       final: {
         status: recognition.status,
