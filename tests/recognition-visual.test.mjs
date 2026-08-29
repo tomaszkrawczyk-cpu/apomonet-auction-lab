@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  resolveVisualComparison,
   shouldCompareVisualReferences,
   visualRecognitionPolicy,
   visualReferenceShortlist,
@@ -79,6 +80,78 @@ test("strong deterministic identity does not pay for an unnecessary visual reran
     gap: 26,
   };
   assert.equal(shouldCompareVisualReferences(ranked), false);
+});
+
+test("per-candidate visual scores can confirm an exact specimen even when the model abstains globally", () => {
+  const shortlist = [
+    { candidate: { id: "wrong-year" } },
+    { candidate: { id: "exact-1551" } },
+  ];
+  const result = resolveVisualComparison({
+    selectedCandidateId: "",
+    candidateFit: 62,
+    comparisons: [
+      {
+        candidateId: "wrong-year",
+        visualFit: 61,
+        sameType: true,
+        sameSpecimen: false,
+        matchedSides: "obverse",
+        decisiveFeatures: ["podobny portret"],
+        contradictions: [],
+      },
+      {
+        candidateId: "exact-1551",
+        visualFit: 91,
+        sameType: true,
+        sameSpecimen: true,
+        matchedSides: "obverse",
+        decisiveFeatures: ["identyczny stempel i ślady powierzchni"],
+        contradictions: [],
+      },
+    ],
+  }, shortlist);
+  assert.equal(result.selectedCandidateId, "exact-1551");
+  assert.equal(result.selectionBasis, "same-specimen");
+  assert.equal(result.candidateFit, 91);
+});
+
+test("visual score gate abstains when similar types have no decisive margin", () => {
+  const shortlist = [
+    { candidate: { id: "year-a" } },
+    { candidate: { id: "year-b" } },
+  ];
+  const result = resolveVisualComparison({
+    selectedCandidateId: "",
+    candidateFit: 70,
+    comparisons: [
+      { candidateId: "year-a", visualFit: 84, sameType: true, sameSpecimen: false, matchedSides: "obverse", decisiveFeatures: [], contradictions: [] },
+      { candidateId: "year-b", visualFit: 82, sameType: true, sameSpecimen: false, matchedSides: "obverse", decisiveFeatures: [], contradictions: [] },
+    ],
+  }, shortlist);
+  assert.equal(result.selectedCandidateId, "");
+  assert.equal(result.selectionBasis, "abstained");
+});
+
+test("zlocisty appearance removes silver candidates before visual comparison", () => {
+  const observations = {
+    rulerReading: "Zygmunt II August",
+    yearReading: "Nie ustalono",
+    denominationReading: "Nie ustalono",
+    mintReading: "Gdańsk",
+    metalAppearance: "Złocisty metal",
+    shape: "okrągła",
+    portrait: "koronowany król",
+    heraldry: ["herb Gdańska"],
+    mintMarks: [],
+    obverseLegendFragments: ["SIGIS AVG"],
+    reverseLegendFragments: ["MONE NO AVR", "CIVI GEDANEN"],
+  };
+  const ranked = orchestrateRecognitionCandidates(observations, localReferenceCandidates());
+  const shortlist = visualReferenceShortlist(ranked);
+  assert.ok(shortlist.length > 0);
+  assert.ok(shortlist.every((item) => !/srebro/i.test(item.candidate.metal)));
+  assert.ok(shortlist.some((item) => item.candidate.id === "mnw:721631"));
 });
 
 test("the real 1551 Gdansk ducat reaches the visual challenger despite tied neighboring years", () => {
