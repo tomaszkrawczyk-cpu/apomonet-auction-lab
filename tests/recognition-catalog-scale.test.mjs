@@ -84,12 +84,13 @@ test("separate NBP denominations sharing one official page are not deduplicated"
   assert.ok(candidates.some((record) => record.id === "nbp:2026-hetmani-jan-tarnowski-10-zl"));
 });
 
-test("vision starts without arbitrary local-name anchoring and can compare public-domain reference pairs", async () => {
+test("vision starts without arbitrary local-name anchoring and Stage 1 compares legal reference images", async () => {
   const source = await readFile(new URL("../api/analyze.js", import.meta.url), "utf8");
   assert.match(source, /let candidates = \[\]/);
   assert.doesNotMatch(source, /\[\.\.\.numista\.candidates, \.\.\.localCandidates\]\.slice/);
   assert.match(source, /compareWithReferenceImages/);
-  assert.match(source, /deferred-to-stage2/);
-  assert.match(source, /candidate\.images\[0\]/);
-  assert.match(source, /candidate\.images\[1\]/);
+  assert.doesNotMatch(source, /deferred-to-stage2/);
+  assert.match(source, /visualReferenceShortlist/);
+  assert.match(source, /item\.referenceImages/);
+  assert.match(source, /visualReference\.result\.contradictions\.length === 0/);
 });
