@@ -36,7 +36,7 @@ test("Stage 1 visual shortlist accepts a legal record with one reference image",
   assert.equal(shouldCompareVisualReferences(ranked, shortlist), true);
 });
 
-test("visual challenger keeps the fifth metadata candidate within a six-type final", () => {
+test("visual challenger keeps the fifth metadata candidate within a five-type final", () => {
   const ranked = {
     ranked: Array.from({ length: 10 }, (_, index) =>
       rankedItem(`candidate-${index + 1}`, 90 - index, [
@@ -323,6 +323,7 @@ test("generic SIGIS plus a reign-period date opens Zygmunt II August visual riva
   const shortlist = visualReferenceShortlist(ranked);
   assert.ok(shortlist.some((item) => item.candidate.id === "mnw:721631"));
   assert.ok(shortlist.every((item) => !/srebro/i.test(item.candidate.metal || "")));
+  assert.ok(shortlist.length <= 5);
 });
 
 test("the real 1577 Gdansk siege thaler reference reaches the visual challenger", () => {
