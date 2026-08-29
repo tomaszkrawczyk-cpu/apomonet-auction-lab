@@ -252,7 +252,7 @@ Jedno dokładnie zgodne zdjęcie referencyjne może rozstrzygnąć podstawowy ty
         type: "input_text",
         text: `KANDYDAT ${candidate.id} — OBRAZ REFERENCYJNY ${imageIndex + 1}/${item.referenceImages.length}`,
       });
-      content.push({ type: "input_image", image_url: imageUrl, detail: "high" });
+      content.push({ type: "input_image", image_url: imageUrl, detail: "low" });
     }
   }
 
