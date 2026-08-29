@@ -189,6 +189,16 @@ const referenceComparisonSchema = {
             maxItems: 4,
             items: { type: "string" },
           },
+          specimenDifferences: {
+            type: "array",
+            maxItems: 4,
+            items: { type: "string" },
+          },
+          limitations: {
+            type: "array",
+            maxItems: 4,
+            items: { type: "string" },
+          },
         },
         required: [
           "candidateId",
@@ -198,6 +208,8 @@ const referenceComparisonSchema = {
           "matchedSides",
           "decisiveFeatures",
           "contradictions",
+          "specimenDifferences",
+          "limitations",
         ],
       },
     },
@@ -233,6 +245,8 @@ Pierwsze dwa obrazy to awers i rewers monety użytkownika. Dalej są podpisane o
 Najpierw porównaj niezależnie: postać/portret, heraldykę, układ legendy, czytelne fragmenty napisów, cyfry daty, znaki mennicy lub mincerza oraz geometrię stempla. Potem sprawdź zgodność obu stron jako jednej monety. Metadane kandydata służą wyłącznie do kontroli, nie mogą zastąpić obrazu. Podobny styl epoki, ten sam władca albo ta sama mennica nie wystarczają. Nie oceniaj stanu zachowania i nie wybieraj „najbliższego” na siłę.
 
 Dla KAŻDEGO przedstawionego kandydata dodaj dokładnie jeden wpis comparisons z jego dokładnym ID. Oceniaj visualFit bez porównywania jakości zdjęć: 0 oznacza inny projekt monety, 100 oznacza ten sam egzemplarz lub praktycznie identyczny stempel. sameType oznacza ten sam podstawowy typ monety; sameSpecimen ustaw true tylko wtedy, gdy układ stempla, zużycie i drobne ślady pokazują, że to dokładnie ten sam egzemplarz mimo kadru, skali lub tła. matchedSides mówi, które strony mają realne potwierdzenie.
+
+Ściśle rozdzielaj trzy klasy uwag. contradictions zawiera WYŁĄCZNIE sprzeczności podstawowego typu: inny władca, data, nominał, mennica, legenda, herb albo projekt. Różnice zużycia, obrysu krążka, rys, patyny i powierzchni wpisuj tylko do specimenDifferences — mogą wykluczyć ten sam egzemplarz, ale nie ten sam typ. Brak rewersu referencji, inny kadr, skala lub jakość zdjęcia wpisuj tylko do limitations; ograniczenie nie jest sprzecznością. Puste tablice są prawidłowe.
 
 Jedno dokładnie zgodne zdjęcie referencyjne może rozstrzygnąć podstawowy typ, jeśli przedstawia ten sam egzemplarz lub jednoznacznie ten sam stempel; druga strona użytkownika nadal musi być zgodna z metadanymi i nie może im przeczyć. Wybierz dokładne id tylko wtedy, gdy obraz potwierdza ten sam podstawowy typ monety i nie ma widocznej sprzeczności daty, nominału, portretu lub herbu. candidateFit 80+ oznacza rozstrzygające dopasowanie typu. Jeśli żaden rekord nie spełnia tego warunku, zwróć pusty selectedCandidateId.`,
     },
