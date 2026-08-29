@@ -3,10 +3,11 @@
 // Native dynamic import keeps the recognition core as ESM in production.
 const recognitionCorePromise = import("../lib/recognition-core.mjs");
 const recognitionOrchestratorPromise = import("../lib/recognition-orchestrator.mjs");
+const recognitionVisualPromise = import("../lib/recognition-visual.mjs");
 
 const BASIC_TIMEOUT_MS = 45_000;
 const VISION_TIMEOUT_MS = 32_000;
-const REFERENCE_COMPARE_TIMEOUT_MS = 12_000;
+const REFERENCE_COMPARE_TIMEOUT_MS = 24_000;
 const JOB_TTL_MS = 10 * 60_000;
 const RUNTIME_SOURCE_GRACE_MS = 1_200;
 
@@ -163,38 +164,91 @@ const referenceComparisonSchema = {
     candidateFit: { type: "integer", minimum: 0, maximum: 100 },
     supportingFeatures: { type: "array", maxItems: 8, items: { type: "string" } },
     contradictions: { type: "array", maxItems: 8, items: { type: "string" } },
+    comparisons: {
+      type: "array",
+      maxItems: 8,
+      items: {
+        type: "object",
+        additionalProperties: false,
+        properties: {
+          candidateId: { type: "string" },
+          visualFit: { type: "integer", minimum: 0, maximum: 100 },
+          sameType: { type: "boolean" },
+          sameSpecimen: { type: "boolean" },
+          matchedSides: {
+            type: "string",
+            enum: ["both", "obverse", "reverse", "uncertain"],
+          },
+          decisiveFeatures: {
+            type: "array",
+            maxItems: 4,
+            items: { type: "string" },
+          },
+          contradictions: {
+            type: "array",
+            maxItems: 4,
+            items: { type: "string" },
+          },
+          specimenDifferences: {
+            type: "array",
+            maxItems: 4,
+            items: { type: "string" },
+          },
+          limitations: {
+            type: "array",
+            maxItems: 4,
+            items: { type: "string" },
+          },
+        },
+        required: [
+          "candidateId",
+          "visualFit",
+          "sameType",
+          "sameSpecimen",
+          "matchedSides",
+          "decisiveFeatures",
+          "contradictions",
+          "specimenDifferences",
+          "limitations",
+        ],
+      },
+    },
   },
-  required: ["selectedCandidateId", "candidateFit", "supportingFeatures", "contradictions"],
+  required: [
+    "selectedCandidateId",
+    "candidateFit",
+    "supportingFeatures",
+    "contradictions",
+    "comparisons",
+  ],
 };
 
 async function compareWithReferenceImages(apiKey, userImages, ranked) {
-  const top = ranked?.ranked?.[0];
-  if (
-    !top ||
-    top.score < 35 ||
-    top.hardConflicts.length ||
-    !Array.isArray(top.candidate?.images) ||
-    top.candidate.images.length < 2
-  ) {
-    return { status: "not-available", result: null };
+  const {
+    resolveVisualComparison,
+    shouldCompareVisualReferences,
+    visualReferenceShortlist,
+  } = await recognitionVisualPromise;
+  const shortlist = visualReferenceShortlist(ranked);
+  const comparedCandidateIds = shortlist.map((item) => item.candidate.id);
+  if (!shouldCompareVisualReferences(ranked, shortlist)) {
+    return { status: "not-needed", result: null, comparedCandidateIds: [] };
   }
-  const shortlist = (ranked?.ranked || [])
-    .filter(
-      (item) =>
-        item.score >= 35 &&
-        item.hardConflicts.length === 0 &&
-        Array.isArray(item.candidate?.images) &&
-        item.candidate.images.length >= 2,
-    )
-    .slice(0, 3);
-  if (!shortlist.length) return { status: "not-available", result: null };
 
   const content = [
     {
       type: "input_text",
-      text: `APOMONET — niezależne porównanie obrazu z krótką listą katalogową.
+      text: `APOMONET — niezależny wizualny reranking krótkiej listy katalogowej.
 
-Pierwsze dwa obrazy to awers i rewers monety użytkownika. Następnie każda podpisana para obrazów pochodzi z jawnie wskazanego rekordu katalogowego. Porównaj portret, heraldykę, układ legendy, cyfry daty, znaki mennicy/mincerza i geometrię stempla na OBU stronach. Podobny styl epoki nie wystarcza. Nie oceniaj stanu zachowania. Wybierz dokładne id tylko wtedy, gdy para jest wizualnie zgodna; w przeciwnym razie zwróć pusty selectedCandidateId.`,
+Pierwsze dwa obrazy to awers i rewers monety użytkownika. Dalej są podpisane obrazy legalnych rekordów referencyjnych. Rekord może mieć dwa osobne zdjęcia albo tylko jedno zdjęcie przedstawiające jedną lub obie strony — brak drugiego obrazu nie jest sprzecznością.
+
+Najpierw porównaj niezależnie: postać/portret, heraldykę, układ legendy, czytelne fragmenty napisów, cyfry daty, znaki mennicy lub mincerza oraz geometrię stempla. Potem sprawdź zgodność obu stron jako jednej monety. Metadane kandydata służą wyłącznie do kontroli, nie mogą zastąpić obrazu. Podobny styl epoki, ten sam władca albo ta sama mennica nie wystarczają. Nie oceniaj stanu zachowania i nie wybieraj „najbliższego” na siłę.
+
+Dla KAŻDEGO przedstawionego kandydata dodaj dokładnie jeden wpis comparisons z jego dokładnym ID. Oceniaj visualFit bez porównywania jakości zdjęć: 0 oznacza inny projekt monety, 100 oznacza ten sam egzemplarz lub praktycznie identyczny stempel. sameType oznacza ten sam podstawowy typ monety; sameSpecimen ustaw true tylko wtedy, gdy układ stempla, zużycie i drobne ślady pokazują, że to dokładnie ten sam egzemplarz mimo kadru, skali lub tła. matchedSides mówi, które strony mają realne potwierdzenie.
+
+Ściśle rozdzielaj trzy klasy uwag. contradictions zawiera WYŁĄCZNIE sprzeczności podstawowego typu: inny władca, data, nominał, mennica, legenda, herb albo projekt. Różnice zużycia, obrysu krążka, rys, patyny i powierzchni wpisuj tylko do specimenDifferences — mogą wykluczyć ten sam egzemplarz, ale nie ten sam typ. Brak rewersu referencji, inny kadr, skala lub jakość zdjęcia wpisuj tylko do limitations; ograniczenie nie jest sprzecznością. Puste tablice są prawidłowe.
+
+Jedno dokładnie zgodne zdjęcie referencyjne może rozstrzygnąć podstawowy typ, jeśli przedstawia ten sam egzemplarz lub jednoznacznie ten sam stempel; druga strona użytkownika nadal musi być zgodna z metadanymi i nie może im przeczyć. Wybierz dokładne id tylko wtedy, gdy obraz potwierdza ten sam podstawowy typ monety i nie ma widocznej sprzeczności daty, nominału, portretu lub herbu. candidateFit 80+ oznacza rozstrzygające dopasowanie typu. Jeśli żaden rekord nie spełnia tego warunku, zwróć pusty selectedCandidateId.`,
     },
     { type: "input_text", text: "MONETA UŻYTKOWNIKA — AWERS" },
     { type: "input_image", image_url: userImages[0], detail: "high" },
@@ -205,10 +259,15 @@ Pierwsze dwa obrazy to awers i rewers monety użytkownika. Następnie każda pod
     const candidate = item.candidate;
     content.push({
       type: "input_text",
-      text: `KANDYDAT ${candidate.id}: ${candidate.title}; ${candidate.ruler || ""}; ${candidate.year || ""}; ${candidate.nominal || ""}; ${candidate.mint || ""}`,
+      text: `KANDYDAT ${item.visualRank}/${shortlist.length} — ID ${candidate.id}: ${candidate.title}; władca ${candidate.ruler || "brak danych"}; rok ${candidate.year || "brak danych"}; nominał ${candidate.nominal || "brak danych"}; mennica ${candidate.mint || "brak danych"}; metal ${candidate.metal || "brak danych"}. Liczba obrazów referencyjnych: ${item.referenceImages.length}.`,
     });
-    content.push({ type: "input_image", image_url: candidate.images[0], detail: "high" });
-    content.push({ type: "input_image", image_url: candidate.images[1], detail: "high" });
+    for (const [imageIndex, imageUrl] of item.referenceImages.entries()) {
+      content.push({
+        type: "input_text",
+        text: `KANDYDAT ${candidate.id} — OBRAZ REFERENCYJNY ${imageIndex + 1}/${item.referenceImages.length}`,
+      });
+      content.push({ type: "input_image", image_url: imageUrl, detail: "low" });
+    }
   }
 
   const controller = new AbortController();
@@ -236,16 +295,23 @@ Pierwsze dwa obrazy to awers i rewers monety użytkownika. Następnie każda pod
       }),
     });
     const data = await response.json();
-    if (!response.ok) return { status: `error-${response.status}`, result: null };
+    if (!response.ok) {
+      return {
+        status: `error-${response.status}`,
+        result: null,
+        comparedCandidateIds,
+      };
+    }
     const text = responseText(data);
-    if (!text) return { status: "empty", result: null };
-    const result = JSON.parse(text);
-    const allowedIds = new Set(shortlist.map((item) => item.candidate.id));
-    if (!allowedIds.has(clean(result.selectedCandidateId))) result.selectedCandidateId = "";
-    result.candidateFit = Math.max(0, Math.min(100, Number(result.candidateFit) || 0));
-    return { status: "ok", result };
+    if (!text) return { status: "empty", result: null, comparedCandidateIds };
+    const result = resolveVisualComparison(JSON.parse(text), shortlist);
+    return { status: "ok", result, comparedCandidateIds };
   } catch (error) {
-    return { status: error?.name === "AbortError" ? "timeout" : "error", result: null };
+    return {
+      status: error?.name === "AbortError" ? "timeout" : "error",
+      result: null,
+      comparedCandidateIds,
+    };
   } finally {
     clearTimeout(timeout);
   }
@@ -264,6 +330,10 @@ async function runAnalysis(apiKey, images, measurements) {
   } = await recognitionCorePromise;
   const { orchestrateRecognitionCandidates, recognitionEnginePolicy } =
     await recognitionOrchestratorPromise;
+  const {
+    reconcileObservationsWithExactVisualMatch,
+    visualRecognitionPolicy,
+  } = await recognitionVisualPromise;
   const localCandidates = localReferenceCandidates();
   const numistaPromise = searchNumistaByImage(
     process.env.NUMISTA_API_KEY,
@@ -375,9 +445,10 @@ Odpowiadaj po polsku.`;
       candidates,
       measurements,
     );
-    // A second high-resolution model call belongs to Stage 2. Stage 1 now
-    // returns the basic identity as soon as the independent local engines agree.
-    const visualReference = { status: "deferred-to-stage2", result: null };
+    // Competitor-style image retrieval: metadata creates a broad shortlist,
+    // then Stage 1 independently compares the submitted photographs with legal
+    // reference images. Metadata still owns contradiction and chronology gates.
+    const visualReference = await compareWithReferenceImages(apiKey, images, ranked);
     if (ranked.selected) {
       raw.decision.selectedCandidateId = ranked.selected.candidate.id;
       raw.decision.candidateFit = Math.max(
@@ -399,11 +470,23 @@ Odpowiadaj po polsku.`;
         raw.decision.candidateFit = 0;
       }
     }
-    if (visualReference.result?.selectedCandidateId && visualReference.result.candidateFit >= 60) {
+    if (
+      visualReference.result?.selectedCandidateId &&
+      visualReference.result.candidateFit >= visualRecognitionPolicy.selectionFitThreshold &&
+      (!Array.isArray(visualReference.result.contradictions) ||
+        visualReference.result.contradictions.length === 0)
+    ) {
       raw.decision.selectedCandidateId = visualReference.result.selectedCandidateId;
       raw.decision.candidateFit = visualReference.result.candidateFit;
       raw.decision.supportingFeatures = visualReference.result.supportingFeatures;
       raw.decision.contradictions = visualReference.result.contradictions;
+      const reconciled = reconcileObservationsWithExactVisualMatch(
+        raw.observations,
+        visualReference.result,
+        ranked,
+      );
+      raw.observations = reconciled.observations;
+      visualReference.correctedObservationFields = reconciled.correctedFields;
     } else if (visualReference.status === "ok" && visualReference.result) {
       raw.decision.selectedCandidateId = "";
       raw.decision.candidateFit = 0;
@@ -420,6 +503,50 @@ Odpowiadaj po polsku.`;
       orderedCandidates,
       measurements,
     );
+    console.log("[recognition-stage1] decision", {
+      observations: {
+        ruler: clean(raw.observations?.rulerReading),
+        year: clean(raw.observations?.yearReading),
+        nominal: clean(raw.observations?.denominationReading),
+        mint: clean(raw.observations?.mintReading),
+        metal: clean(raw.observations?.metalAppearance),
+      },
+      topCandidates: ranked.ranked.slice(0, 8).map((item) => ({
+        id: item.candidate.id,
+        score: item.score,
+        conflicts: item.hardConflicts.length,
+        referenceImages: Array.isArray(item.candidate.images)
+          ? item.candidate.images.length
+          : 0,
+      })),
+      visualReference: {
+        status: visualReference.status,
+        comparedCandidateIds: visualReference.comparedCandidateIds || [],
+        selectedCandidateId:
+          visualReference.result?.selectedCandidateId || null,
+        candidateFit: visualReference.result?.candidateFit || 0,
+        selectionBasis: visualReference.result?.selectionBasis || null,
+        correctedObservationFields:
+          visualReference.correctedObservationFields || [],
+        comparisons: (visualReference.result?.comparisons || []).map((item) => ({
+          id: item.candidateId,
+          fit: item.visualFit,
+          sameType: item.sameType,
+          sameSpecimen: item.sameSpecimen,
+          contradictions: item.contradictions.length,
+        })),
+      },
+      final: {
+        status: recognition.status,
+        selectedCandidateId: recognition.selected?.id || null,
+        confidence: recognition.confidence,
+      },
+    });
+    console.log("[recognition-visual-scores]", JSON.stringify({
+      selectionBasis: visualReference.result?.selectionBasis || null,
+      margin: visualReference.result?.margin || 0,
+      comparisons: visualReference.result?.comparisons || [],
+    }));
     const condition = conditionFromRaw(raw, raw.imageUsable !== false);
     const analysis = analysisFromRecognition(raw, recognition, condition);
     analysis.needsDetailedAnalysis = Boolean(analysis.needsDetailedAnalysis);
@@ -433,6 +560,10 @@ Odpowiadaj po polsku.`;
           mnk: { available: mnk.available, reason: mnk.reason },
           localReferenceCount: localCandidates.length,
           visualReferenceComparison: visualReference.status,
+          visualReferencePolicy: visualRecognitionPolicy.version,
+          visualReferenceCandidateCount: visualReference.comparedCandidateIds?.length || 0,
+          visualReferenceSelectedCandidateId:
+            visualReference.result?.selectedCandidateId || null,
           recognitionEngine: recognitionEnginePolicy.version,
           engineDiagnostics: ranked.retrieval.diagnostics,
         },
