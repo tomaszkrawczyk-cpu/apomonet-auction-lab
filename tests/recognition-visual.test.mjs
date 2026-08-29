@@ -35,7 +35,7 @@ test("Stage 1 visual shortlist accepts a legal record with one reference image",
   assert.equal(shouldCompareVisualReferences(ranked, shortlist), true);
 });
 
-test("visual challenger keeps the fifth metadata candidate and compares up to eight types", () => {
+test("visual challenger keeps the fifth metadata candidate within a six-type final", () => {
   const ranked = {
     ranked: Array.from({ length: 10 }, (_, index) =>
       rankedItem(`candidate-${index + 1}`, 90 - index, [
