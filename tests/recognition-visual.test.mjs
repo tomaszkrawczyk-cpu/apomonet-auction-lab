@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import {
   reconcileObservationsWithExactVisualMatch,
   resolveVisualComparison,
@@ -21,6 +22,15 @@ function rankedItem(id, score, images, hardConflicts = []) {
     },
   };
 }
+
+test("production and mobile budgets allow the five-type visual comparison to finish", async () => {
+  const [api, page] = await Promise.all([
+    readFile(new URL("../api/analyze.js", import.meta.url), "utf8"),
+    readFile(new URL("../analyze.html", import.meta.url), "utf8"),
+  ]);
+  assert.match(api, /REFERENCE_COMPARE_TIMEOUT_MS = 36_000/);
+  assert.match(page, /requestTimeout = setTimeout\(\(\) => controller\.abort\(\), 78_000\)/);
+});
 
 test("Stage 1 visual shortlist accepts a legal record with one reference image", () => {
   const ranked = {
