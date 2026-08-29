@@ -2,7 +2,10 @@
   if(!location.pathname.endsWith('analyze.html'))return;
   const loadUi=()=>{if(document.querySelector('script[data-apo-stage2-literature-ui]'))return;const s=document.createElement('script');s.src='stage2-literature-ui.js';s.dataset.apoStage2LiteratureUi='1';document.head.appendChild(s)};
   const loadProfessionalUi=()=>{if(document.querySelector('script[data-apo-stage2-professional-ui]'))return;const s=document.createElement('script');s.src='stage2-professional-description-ui.js';s.dataset.apoStage2ProfessionalUi='1';document.head.appendChild(s)};
-  loadUi();loadProfessionalUi();
+  // The compact analysis screen renders Stage 2 itself. The former professional
+  // report renderer remains available for archived/export views, but must not
+  // replace the concise on-screen result after the request completes.
+  loadUi();
   const nativeFetch=window.fetch.bind(window);
   const norm=v=>String(v??'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ł/g,'l');
   const unknownPatterns=[/^nie\s+ustalono$/,/^nieokreslona?$/,/^brak$/,/^do\s+potwierdzenia$/,/^not\s+determined$/,/^undetermined$/,/^unknown$/,/^to\s+be\s+confirmed$/,/^nicht\s+bestimmt$/,/^unbekannt$/,/^zu\s+bestatigen$/,/^non\s+determinee?$/,/^inconnu(?:e)?$/,/^a\s+confirmer$/];

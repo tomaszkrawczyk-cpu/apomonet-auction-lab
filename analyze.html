@@ -9,6 +9,53 @@
       .analysis-panel {
         margin-top: 20px;
       }
+      .result-card {
+        background: linear-gradient(160deg, #151516, #101011);
+        border: 1px solid #303034;
+        border-radius: 22px;
+        padding: 18px;
+        box-shadow: 0 18px 48px #0005;
+      }
+      .result-heading {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 16px;
+      }
+      .result-heading h2 {
+        margin: 5px 0 4px;
+        font-size: clamp(1.45rem, 5vw, 2rem);
+        line-height: 1.15;
+      }
+      .result-stage-label {
+        color: #d9952f;
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .result-lead {
+        margin: 0;
+        color: #b5b5bb;
+      }
+      .result-confidence {
+        flex: 0 0 auto;
+        border: 1px solid #31533d;
+        border-radius: 999px;
+        background: #101a14;
+        color: #9fddb2;
+        padding: 7px 10px;
+        font-size: 12px;
+        font-weight: 900;
+        white-space: nowrap;
+      }
+      .result-confidence[data-tone="partial"],
+      .result-confidence[data-tone="unresolved"] {
+        border-color: #6b4814;
+        background: #1d160b;
+        color: #efc379;
+      }
       .facts,
       .actions-grid {
         display: grid;
@@ -31,6 +78,74 @@
       .fact.highlight {
         border-color: #5e441c;
         background: #16120c;
+      }
+      .result-note {
+        margin-top: 12px;
+        padding: 12px 14px;
+        border: 1px solid #31533d;
+        border-radius: 14px;
+        background: #101a14;
+        color: #b8d9c3;
+        line-height: 1.45;
+      }
+      .result-note[data-tone="partial"],
+      .result-note[data-tone="unresolved"] {
+        border-color: #6b4814;
+        background: #1d160b;
+        color: #efc379;
+      }
+      .result-disclaimer {
+        margin: 13px 2px 0;
+        color: #8f8f95;
+        font-size: 12px;
+        line-height: 1.5;
+      }
+      .result-details {
+        margin-top: 14px;
+        border: 1px solid #29292c;
+        border-radius: 15px;
+        background: #121214;
+        overflow: hidden;
+      }
+      .result-details > summary {
+        cursor: pointer;
+        padding: 15px;
+        font-weight: 850;
+      }
+      .result-details > div {
+        padding: 0 14px 14px;
+      }
+      .result-details .detail,
+      .result-details .recognition-evidence {
+        margin-top: 10px;
+      }
+      .result-actions {
+        margin-top: 16px;
+      }
+      .result-actions-title {
+        margin: 0 0 10px;
+        font-size: 15px;
+      }
+      .deep-status {
+        margin: 12px 0;
+        padding: 14px;
+        border: 1px solid #31533d;
+        border-radius: 15px;
+        background: #101a14;
+      }
+      .deep-status[data-established="false"] {
+        border-color: #6b4814;
+        background: #1d160b;
+      }
+      .deep-status strong {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 1.05rem;
+      }
+      .deep-status p {
+        margin: 0;
+        color: #b9b9bf;
+        line-height: 1.45;
       }
       .action-card {
         border: 1px solid #303034;
@@ -257,9 +372,24 @@
         color: #9bc7ff;
       }
       @media (max-width: 560px) {
-        .facts,
-        .actions-grid {
+        .facts {
           grid-template-columns: 1fr;
+        }
+        .actions-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .action-card {
+          padding: 13px;
+        }
+        .action-card strong {
+          font-size: 15px;
+        }
+        .result-heading {
+          display: block;
+        }
+        .result-confidence {
+          display: inline-flex;
+          margin-top: 10px;
         }
         .new-row {
           flex-direction: column;
@@ -347,34 +477,56 @@
         <p id="analysisTimingText"></p>
       </details>
       <section id="panel" class="analysis-panel hidden">
-        <div class="section-title">
-          <h2>Etap 1 — szybka analiza</h2>
-          <span id="conf" class="todo"></span>
-        </div>
-        <div id="recognitionEvidence" class="recognition-evidence hidden" role="status"></div>
-        <div id="facts" class="facts"></div>
-        <div class="detail">
-          <b>Wstępne podsumowanie</b>
-          <p id="desc"></p>
+        <div class="result-card">
+          <div class="result-heading">
+            <div>
+              <span id="resultStageLabel" class="result-stage-label">Wstępna identyfikacja</span>
+              <h2 id="resultTitle">Wynik analizy</h2>
+              <p id="resultLead" class="result-lead"></p>
+            </div>
+            <span id="conf" class="result-confidence"></span>
+          </div>
+          <div id="facts" class="facts"></div>
+          <div id="resultTypeStatus" class="result-note" role="status"></div>
+          <p id="resultDisclaimer" class="result-disclaimer">
+            Wynik służy do wstępnej identyfikacji. Nie potwierdza autentyczności i nie zastępuje opinii specjalisty.
+          </p>
+          <details id="resultWhy" class="result-details">
+            <summary id="resultWhySummary">Dlaczego taki wynik?</summary>
+            <div id="resultWhyContent">
+              <div id="recognitionEvidence" class="recognition-evidence hidden" role="status"></div>
+              <div id="resultSummary" class="detail">
+                <b id="resultSummaryLabel">Krótkie uzasadnienie</b>
+                <p id="desc"></p>
+              </div>
+              <details id="resultMore" class="result-details">
+                <summary id="resultMoreSummary">Dodatkowe wskazówki i źródła</summary>
+                <div id="resultMoreContent"></div>
+              </details>
+            </div>
+          </details>
         </div>
         <div id="deepRecommendation" class="stage-recommendation hidden" role="status"></div>
-        <div class="section-title"><h2>Co dalej?</h2></div>
-        <div class="actions-grid">
-          <button id="deep" class="action-card primary">
-            <strong>🔬 Analiza szczegółowa</strong
-            ><span
-              >Legendy, data, znaki, odmiana, stempel i katalog.</span
-            ></button
-          ><button id="edit" class="action-card">
-            <strong>✏️ Najpierw popraw dane</strong
-            ><span>Skoryguj dane przed dalszą pracą.</span></button
-          ><button id="save" class="action-card">
-            <strong>💾 Zapisz do kolekcji</strong
-            ><span>Zachowaj dane i oba zdjęcia.</span></button
-          ><button id="album" class="action-card">
-            <strong>📚 Zapisz i wybierz album</strong
-            ><span>Wybierz istniejący album albo utwórz nowy.</span>
-          </button>
+        <div class="result-actions">
+          <h3 id="resultActionsTitle" class="result-actions-title">Sprawdź dane przed zapisem</h3>
+          <div class="actions-grid">
+            <button id="edit" class="action-card">
+              <strong>✏️ Popraw dane</strong>
+              <span>Zmień tylko pola, które wymagają korekty.</span>
+            </button>
+            <button id="save" class="action-card primary">
+              <strong>💾 Zapisz</strong>
+              <span>Zachowaj dane i oba zdjęcia w kolekcji.</span>
+            </button>
+            <button id="deep" class="action-card">
+              <strong>🔬 Analiza szczegółowa</strong>
+              <span>Sprawdź odmianę, legendy, znaki i katalog.</span>
+            </button>
+            <button id="album" class="action-card">
+              <strong>📚 Zapisz i wybierz album</strong>
+              <span>Wybierz album albo utwórz nowy.</span>
+            </button>
+          </div>
         </div>
         <section id="savedActions" class="saved-next hidden" aria-live="polite">
           <div class="section-title"><h2>Moneta zapisana — co dalej?</h2></div>
@@ -395,10 +547,24 @@
         </section>
         <section id="deepPanel" class="hidden">
           <div class="section-title">
-            <h2>Etap 2 — analiza szczegółowa</h2>
+            <h2 id="deepTitle">Analiza szczegółowa</h2>
             <span id="deepConf" class="todo"></span>
           </div>
-          <div id="deepText" class="detail"></div>
+          <div id="deepStatus" class="deep-status" role="status">
+            <strong id="deepStatusTitle"></strong>
+            <p id="deepStatusNote"></p>
+          </div>
+          <div id="deepFacts" class="facts"></div>
+          <p id="deepDisclaimer" class="result-disclaimer">
+            Analiza szczegółowa nadal jest identyfikacją pomocniczą, a nie ekspertyzą ani certyfikatem autentyczności.
+          </p>
+          <details id="deepWhy" class="result-details">
+            <summary id="deepWhySummary">Cechy odmiany i ograniczenia</summary>
+            <div>
+              <div id="deepText" class="detail"></div>
+              <div id="deepMoreContent"></div>
+            </div>
+          </details>
         </section>
       </section>
     </main>
@@ -642,7 +808,9 @@
         "title",
         "objectKind",
         "country",
+        "issuer",
         "ruler",
+        "depictedPerson",
         "year",
         "nominal",
         "mint",
@@ -669,11 +837,44 @@
       function renderDetail(detail) {
         const container = $("deepText");
         container.replaceChildren();
+        const view = window.ApoAnalysisResultView;
+        const state = view?.stageTwoState?.(detail) || {
+          established: false,
+          label: "Typ ustalony — odmiana nierozstrzygnięta",
+          note: "Do rozstrzygnięcia odmiany potrzebne są lepsze zdjęcia cech diagnostycznych.",
+          confidence: Number(detail?.confidence) || 0,
+        };
+        $("deepStatus").dataset.established = String(state.established);
+        $("deepStatusTitle").textContent = state.label;
+        $("deepStatusNote").textContent = state.note || "";
+        $("deepStatusNote").classList.toggle("hidden", !state.note);
+        $("deepConf").textContent = state.confidence
+          ? `${view?.text?.("detailConfidence") || "Pewność analizy szczegółowej"} ${state.confidence}%`
+          : "";
+
+        const detailFacts = $("deepFacts");
+        detailFacts.replaceChildren();
+        [
+          [view?.text?.("variant") || "Odmiana / typ", detail.variant],
+          [view?.text?.("catalog") || "Numer katalogowy", detail.kopickiReference],
+          [view?.text?.("rarity") || "Stopień rzadkości", detail.kopickiRarity],
+        ].forEach(([labelText, fieldValue]) => {
+          const fact = document.createElement("div");
+          fact.className = "fact";
+          const label = document.createElement("span");
+          label.textContent = labelText;
+          const value = document.createElement("strong");
+          value.textContent = view?.value?.(fieldValue) || v(fieldValue);
+          fact.append(label, value);
+          detailFacts.appendChild(fact);
+        });
+
         const add = (label, value) => {
+          if (!view?.known?.(value) && !(Array.isArray(value) && value.length)) return;
           const heading = document.createElement("b");
           heading.textContent = label;
           const paragraph = document.createElement("p");
-          paragraph.textContent = v(value);
+          paragraph.textContent = Array.isArray(value) ? value.join("; ") : String(value);
           container.append(heading, paragraph);
         };
         const digitReading = Array.isArray(detail.dateDigits)
@@ -684,37 +885,30 @@
               })
               .join(" · ")
           : detail.visibleDateReading;
-        add("Odmiana", detail.variant);
-        add(
-          "Katalog Kopickiego",
-          [detail.kopickiReference, detail.kopickiRarity]
-            .filter((item) => item && String(item).trim())
-            .join(" • "),
-        );
-        add("Data — odczyt cyfr", digitReading);
-        add("Legenda awersu", detail.obverseLegend);
-        add("Legenda rewersu", detail.reverseLegend);
-        add("Mincerz / znak urzędnika", detail.mintmaster);
-        add("Interpunkcja legendy", detail.legendPunctuation);
-        add("Awers — obserwacje", detail.obverseDetails);
-        add("Rewers — obserwacje", detail.reverseDetails);
-        add("Stan — ocena ostrożna", detail.gradeAssessment);
+        add(view?.text?.("dateReading") || "Data — odczyt cyfr", digitReading);
+        add(view?.text?.("obverseLegend") || "Legenda awersu", detail.obverseLegend);
+        add(view?.text?.("reverseLegend") || "Legenda rewersu", detail.reverseLegend);
+        add(view?.text?.("mintmaster") || "Mincerz / znak urzędnika", detail.mintmaster);
+        add(view?.text?.("punctuation") || "Interpunkcja legendy", detail.legendPunctuation);
+        add(view?.text?.("obverseObservations") || "Awers — obserwacje", detail.obverseDetails);
+        add(view?.text?.("reverseObservations") || "Rewers — obserwacje", detail.reverseDetails);
+        add(view?.text?.("gradeAssessment") || "Stan — ocena ostrożna", detail.gradeAssessment);
         if (detail.diagnosticFeatures?.length) {
-          add("Cechy diagnostyczne", detail.diagnosticFeatures.join("; "));
+          add(view?.text?.("diagnosticFeatures") || "Cechy diagnostyczne", detail.diagnosticFeatures);
         }
         if (detail.authenticitySignals?.length) {
           add(
-            "Autentyczność — obserwacje, nie certyfikat",
-            detail.authenticitySignals.join(" "),
+            view?.text?.("authenticityObservations") || "Autentyczność — obserwacje, nie certyfikat",
+            detail.authenticitySignals,
           );
         }
         if (detail.recommendedChecks?.length) {
-          add("Co może rozstrzygnąć wynik", detail.recommendedChecks.join(" "));
+          add(view?.text?.("resolvingChecks") || "Co może rozstrzygnąć wynik", detail.recommendedChecks);
         }
         if (detail.warnings?.length) {
-          add("Uwagi i ograniczenia", detail.warnings.join(" "));
+          add(view?.text?.("limitations") || "Uwagi i ograniczenia", detail.warnings);
         }
-        add("Pełny opis", detail.fullDescription);
+        add(view?.text?.("fullDescription") || "Pełny opis", detail.fullDescription);
       }
       function displayAnalysis() {
         return localizedA || a;
@@ -737,6 +931,7 @@
           box?.classList.add("hidden");
           return;
         }
+        const view = window.ApoAnalysisResultView;
         box.replaceChildren();
         box.dataset.status = recognition.status || "unresolved";
         const partial = recognition.partialIdentity;
@@ -749,34 +944,40 @@
         const heading = document.createElement("b");
         heading.textContent =
           recognition.status === "confirmed-candidate"
-            ? "Zgodny kandydat katalogowy"
+            ? view?.text?.("matchingCandidate") || "Zgodny kandydat katalogowy"
             : hasPartialIdentity
-              ? "Identyfikacja częściowa — pewne pola zachowane"
+              ? view?.text?.("partialFields") || "Identyfikacja częściowa — pewne pola zachowane"
             : recognition.status === "candidate-only"
-              ? "Kandydat — wynik jeszcze nierozstrzygnięty"
-              : "Identyfikacja wstrzymana";
+              ? view?.text?.("candidateOnly") || "Kandydat — wynik jeszcze nierozstrzygnięty"
+              : view?.text?.("held") || "Identyfikacja wstrzymana";
         box.appendChild(heading);
         if (hasPartialIdentity) {
-          const labels = { country: "Kraj", ruler: "Władca", year: "Rok", nominal: "Nominał", mint: "Mennica" };
+          const labels = {
+            country: view?.text?.("country") || "Kraj / obszar",
+            ruler: view?.text?.("ruler") || "Władca",
+            year: view?.text?.("year") || "Rok",
+            nominal: view?.text?.("nominal") || "Nominał",
+            mint: view?.text?.("mint") || "Mennica",
+          };
           const facts = partialFields
-            .filter((field) => labels[field] && partial[field])
-            .map((field) => `${labels[field]}: ${partial[field]}`);
+            .filter((field) => labels[field] && (shown[field] || partial[field]))
+            .map((field) => `${labels[field]}: ${shown[field] || partial[field]}`);
           if (facts.length) {
             const paragraph = document.createElement("p");
-            paragraph.textContent = `Ustalone niezależnie od pełnego werdyktu: ${facts.join("; ")}.`;
+            paragraph.textContent = `${view?.text?.("establishedIndependently") || "Ustalone niezależnie od pełnego werdyktu"}: ${facts.join("; ")}.`;
             box.appendChild(paragraph);
           }
         }
         const selected = recognition.selectedCandidate;
         if (selected) {
           const paragraph = document.createElement("p");
-          paragraph.textContent = selected.title;
+          paragraph.textContent = shown.title || selected.title;
           box.appendChild(paragraph);
         }
         const questions = shown.followUpQuestions || [];
         if (questions.length) {
           const question = document.createElement("p");
-          question.textContent = `Co rozstrzygnie wynik: ${questions.join(" ")}`;
+          question.textContent = `${view?.text?.("resolves") || "Co rozstrzygnie wynik"}: ${questions.join(" ")}`;
           box.appendChild(question);
         }
         const candidates = Array.isArray(recognition.candidates)
@@ -784,7 +985,7 @@
           : [];
         if (candidates.length) {
           const label = document.createElement("span");
-          label.textContent = "Najbliższe pozycje źródłowe:";
+          label.textContent = `${view?.text?.("nearestSources") || "Najbliższe pozycje źródłowe"}:`;
           const list = document.createElement("ol");
           list.className = "candidate-list";
           for (const candidate of candidates) {
@@ -804,32 +1005,52 @@
       function render({ scroll = true } = {}) {
         const shown = displayAnalysis();
         if (!shown) return;
-        const rows = [
-          ["Kraj / emitent", shown.country],
+        const view = window.ApoAnalysisResultView;
+        const rows = view?.rows?.(shown) || [
+          ["Kraj / obszar", shown.country],
           ["Władca", shown.ruler],
           ["Rok", shown.year],
           ["Nominał", shown.nominal],
-          ["Metal", shown.metal],
           ["Mennica", shown.mint],
-          ["Typ", shown.variant],
-          ["Stan", shown.grade],
+          ["Metal", shown.metal],
+          ["Stan zachowania", shown.grade],
         ];
+        const state = view?.stageOneState?.(shown) || {
+          label: "Wstępna identyfikacja",
+          note: "Typ podstawowy ustalony — odmiana wymaga analizy szczegółowej.",
+          confidence: Number(shown.confidence) || 0,
+          tone: "partial",
+        };
         const facts = $("facts");
         facts.replaceChildren();
         rows.forEach((row, index) => {
           const fact = document.createElement("div");
-          fact.className = `fact${index === 1 || index === 2 ? " highlight" : ""}`;
+          fact.className = `fact${index === 4 || index === 5 ? " highlight" : ""}`;
           const label = document.createElement("span");
           const value = document.createElement("strong");
           label.textContent = row[0];
-          value.textContent = v(row[1]);
+          value.textContent = view?.value?.(row[1]) || v(row[1]);
           fact.append(label, value);
           facts.appendChild(fact);
         });
-        $("conf").textContent = `Pewność ${shown.confidence || 0}%`;
+        const usableTitle = view?.known?.(shown.title) &&
+          !/^Identyfikacja częściowa/i.test(String(shown.title || ""));
+        const fallbackTitle = [shown.nominal, shown.ruler, shown.year, shown.mint]
+          .filter((item) => view?.known?.(item) ?? Boolean(item))
+          .join(" • ");
+        $("resultTitle").textContent = usableTitle ? shown.title : fallbackTitle || state.label;
+        $("resultLead").textContent = state.label;
+        $("conf").dataset.tone = state.tone;
+        $("conf").textContent = state.confidence
+          ? `${view?.text?.("confidence") || "Pewność AI"} ${state.confidence}%`
+          : view?.text?.("fieldsOnly") || "Pewne pola zachowane";
+        $("resultTypeStatus").dataset.tone = state.tone;
+        $("resultTypeStatus").textContent = state.note;
         $("desc").textContent = v(shown.fullDescription || shown.description);
         renderRecognition(shown);
         $("panel").classList.remove("hidden");
+        view?.applyStaticCopy?.();
+        view?.adoptExtras?.();
         if (scroll) $("panel").scrollIntoView({ behavior: "smooth" });
       }
       async function localizeCurrent({ scroll = false, showDetail = false } = {}) {
@@ -1115,14 +1336,18 @@
         );
       };
       $("edit").onclick = () => {
-        const c = save();
-        if (c) {
-          persistAnalysisSession();
-          sessionStorage.setItem("apomonetReturnToAnalysis", "1");
-          location.href =
-            "coin-edit.html?id=" + encodeURIComponent(c.id) + "&from=analysis";
-        }
+        window.ApoInlineCorrection?.open?.();
       };
+      addEventListener("apo:analysis-corrected", (event) => {
+        if (!event.detail?.analysis) return;
+        a = event.detail.analysis;
+        localizedA = null;
+        detailJobId = null;
+        $("deepPanel").classList.add("hidden");
+        render({ scroll: false });
+        persistAnalysisSession();
+        void localizeCurrent({ scroll: false });
+      });
       $("album").onclick = openAlbums;
       $("closeAlbum").onclick = () => $("albumModal").classList.add("hidden");
       $("createAlbum").onclick = () => {

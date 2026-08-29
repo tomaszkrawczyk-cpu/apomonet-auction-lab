@@ -7,7 +7,9 @@ const TARGET_LANGUAGES = {
 const STRING_KEYS = new Set([
   "title",
   "country",
+  "issuer",
   "ruler",
+  "depictedPerson",
   "nominal",
   "metal",
   "mint",
@@ -25,10 +27,16 @@ const STRING_KEYS = new Set([
   "detail.reverseDetails",
   "detail.legendPunctuation",
   "detail.fullDescription",
+  "detail.obverseDetails",
+  "detail.reverseDetails",
+  "detail.mintmaster",
+  "detail.gradeAssessment",
+  "detail.edgeDescription",
 ]);
 
 const ARRAY_PREFIXES = [
   "warnings.",
+  "uncertaintyReasons.",
   "followUpQuestions.",
   "detail.warnings.",
   "detail.diagnosticFeatures.",
@@ -41,7 +49,9 @@ const ARRAY_PREFIXES = [
 const SUMMARY_FIELDS = new Set([
   "title",
   "country",
+  "issuer",
   "ruler",
+  "depictedPerson",
   "nominal",
   "metal",
   "mint",

@@ -1,7 +1,7 @@
 (() => {
   const LANGUAGE_KEY = "apomonet_language_v2";
-  const CACHE_KEY = "apomonet_analysis_translation_cache_v4";
-  const STRING_FIELDS = ["title","country","ruler","nominal","metal","mint","variant","grade","rarity","imageQualityNote","denominationEvidence","valuationNote","description","fullDescription"];
+  const CACHE_KEY = "apomonet_analysis_translation_cache_v5";
+  const STRING_FIELDS = ["title","country","issuer","ruler","depictedPerson","nominal","metal","mint","variant","grade","rarity","imageQualityNote","denominationEvidence","valuationNote","description","fullDescription"];
   const ARRAY_FIELDS = ["warnings","uncertaintyReasons","followUpQuestions"];
   const DETAIL_STRING_FIELDS = ["variant","kopickiRarity","obverseDetails","reverseDetails","legendPunctuation","fullDescription","visibleDateReading","obverseLegend","reverseLegend","mintmaster","gradeAssessment","edgeDescription"];
   const DETAIL_ARRAY_FIELDS = ["warnings","diagnosticFeatures","initialsAndMarks","priceCriticalFeatures","authenticitySignals","recommendedChecks"];
