@@ -985,7 +985,10 @@
               "Analiza nadal trwa. Zdjęcia są bezpieczne — proszę nie zamykać tej karty.";
           }, 35_000),
         ];
-        const requestTimeout = setTimeout(() => controller.abort(), 55_000);
+        // Stage 1 may perform a second, independent museum-image comparison.
+        // The browser timeout must remain above the server-side visual budget,
+        // including mobile upload and cold-start time.
+        const requestTimeout = setTimeout(() => controller.abort(), 78_000);
         const jobId = `apo-${crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`}`;
         try {
           $("go").disabled = true;
