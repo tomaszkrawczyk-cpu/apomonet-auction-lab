@@ -316,7 +316,10 @@ async function runAnalysis(apiKey, images, measurements) {
   } = await recognitionCorePromise;
   const { orchestrateRecognitionCandidates, recognitionEnginePolicy } =
     await recognitionOrchestratorPromise;
-  const { visualRecognitionPolicy } = await recognitionVisualPromise;
+  const {
+    reconcileObservationsWithExactVisualMatch,
+    visualRecognitionPolicy,
+  } = await recognitionVisualPromise;
   const localCandidates = localReferenceCandidates();
   const numistaPromise = searchNumistaByImage(
     process.env.NUMISTA_API_KEY,
@@ -463,6 +466,13 @@ Odpowiadaj po polsku.`;
       raw.decision.candidateFit = visualReference.result.candidateFit;
       raw.decision.supportingFeatures = visualReference.result.supportingFeatures;
       raw.decision.contradictions = visualReference.result.contradictions;
+      const reconciled = reconcileObservationsWithExactVisualMatch(
+        raw.observations,
+        visualReference.result,
+        ranked,
+      );
+      raw.observations = reconciled.observations;
+      visualReference.correctedObservationFields = reconciled.correctedFields;
     } else if (visualReference.status === "ok" && visualReference.result) {
       raw.decision.selectedCandidateId = "";
       raw.decision.candidateFit = 0;
@@ -502,6 +512,8 @@ Odpowiadaj po polsku.`;
           visualReference.result?.selectedCandidateId || null,
         candidateFit: visualReference.result?.candidateFit || 0,
         selectionBasis: visualReference.result?.selectionBasis || null,
+        correctedObservationFields:
+          visualReference.correctedObservationFields || [],
         comparisons: (visualReference.result?.comparisons || []).map((item) => ({
           id: item.candidateId,
           fit: item.visualFit,
