@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  reconcileObservationsWithExactVisualMatch,
   resolveVisualComparison,
   shouldCompareVisualReferences,
   visualRecognitionPolicy,
@@ -133,6 +134,44 @@ test("visual score gate abstains when similar types have no decisive margin", ()
   assert.equal(result.selectionBasis, "abstained");
 });
 
+test("an exact museum specimen can correct OCR year and fill denomination", () => {
+  const observations = {
+    yearReading: "1558",
+    denominationReading: "Nie ustalono",
+  };
+  const result = reconcileObservationsWithExactVisualMatch(
+    observations,
+    {
+      selectedCandidateId: "mnw:721631",
+      selectionBasis: "same-specimen",
+      contradictions: [],
+    },
+    {
+      ranked: [{ candidate: { id: "mnw:721631", year: "1551", nominal: "Dukat" } }],
+    },
+  );
+  assert.equal(result.observations.yearReading, "1551");
+  assert.equal(result.observations.denominationReading, "Dukat");
+  assert.deepEqual(result.correctedFields, ["yearReading", "denominationReading"]);
+});
+
+test("same-type evidence cannot overwrite a visible year", () => {
+  const observations = { yearReading: "1558", denominationReading: "Nie ustalono" };
+  const result = reconcileObservationsWithExactVisualMatch(
+    observations,
+    {
+      selectedCandidateId: "mnw:721631",
+      selectionBasis: "decisive-type",
+      contradictions: [],
+    },
+    {
+      ranked: [{ candidate: { id: "mnw:721631", year: "1551", nominal: "Dukat" } }],
+    },
+  );
+  assert.strictEqual(result.observations, observations);
+  assert.deepEqual(result.correctedFields, []);
+});
+
 test("zlocisty appearance removes silver candidates before visual comparison", () => {
   const observations = {
     rulerReading: "Zygmunt II August",
@@ -179,6 +218,30 @@ test("the real 1551 Gdansk ducat reaches the visual challenger despite tied neig
     shortlist.find((item) => item.candidate.id === "mnw:721631").referenceImages.length,
     1,
   );
+});
+
+test("a suspect 1558 OCR reading retains the exact 1551 gold specimen as a visual rival", () => {
+  const observations = {
+    rulerReading: "SIGIS AVG REX POLONI",
+    yearReading: "1558",
+    denominationReading: "Nie ustalono",
+    mintReading: "GEDAN; Gdańsk",
+    metalAppearance: "Metal o złotej, żółtej barwie",
+    shape: "okrągła",
+    portrait: "koronowany król w prawo",
+    heraldry: ["herb Gdańska podtrzymywany przez dwa lwy"],
+    mintMarks: [],
+    obverseLegendFragments: ["SIGIS", "AVG", "REX", "POLONI"],
+    reverseLegendFragments: ["MONETA", "NOVA", "CIVIT", "GEDAN"],
+  };
+  const ranked = orchestrateRecognitionCandidates(
+    observations,
+    localReferenceCandidates(),
+  );
+  const shortlist = visualReferenceShortlist(ranked);
+  assert.ok(shortlist.some((item) => item.candidate.id === "mnw:721631"));
+  assert.ok(shortlist.every((item) => !/srebro/i.test(item.candidate.metal || "")));
+  assert.ok(ranked.retrieval.diagnostics.chronologyEngine.retainedAsVisualRival > 0);
 });
 
 test("the real 1577 Gdansk siege thaler reference reaches the visual challenger", () => {
