@@ -7,7 +7,7 @@ const recognitionVisualPromise = import("../lib/recognition-visual.mjs");
 
 const BASIC_TIMEOUT_MS = 45_000;
 const VISION_TIMEOUT_MS = 32_000;
-const REFERENCE_COMPARE_TIMEOUT_MS = 14_000;
+const REFERENCE_COMPARE_TIMEOUT_MS = 24_000;
 const JOB_TTL_MS = 10 * 60_000;
 const RUNTIME_SOURCE_GRACE_MS = 1_200;
 
