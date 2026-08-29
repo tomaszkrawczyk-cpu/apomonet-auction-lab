@@ -240,6 +240,47 @@ test("a dated decisive type can correct an OCR digit with a twenty-point margin"
   assert.equal(result.observations.denominationReading, "Dukat");
 });
 
+test("an explicit high-margin dated selection can correct one OCR digit", () => {
+  const observations = { yearReading: "1558", denominationReading: "Nie ustalono" };
+  const result = reconcileObservationsWithExactVisualMatch(
+    observations,
+    {
+      selectedCandidateId: "mnw:721631",
+      selectionBasis: "explicit-model-selection",
+      candidateFit: 96,
+      margin: 48,
+      supportingFeatures: ["Zgodna data 1551.", "zgodny portret i herb Gdańska"],
+      contradictions: [],
+    },
+    {
+      ranked: [{ candidate: { id: "mnw:721631", year: "1551", nominal: "Dukat" } }],
+    },
+  );
+  assert.equal(result.observations.yearReading, "1551");
+  assert.equal(result.observations.denominationReading, "Dukat");
+  assert.deepEqual(result.correctedFields, ["yearReading", "denominationReading"]);
+});
+
+test("an explicit selection without the candidate year cannot overwrite OCR", () => {
+  const observations = { yearReading: "1558", denominationReading: "Nie ustalono" };
+  const result = reconcileObservationsWithExactVisualMatch(
+    observations,
+    {
+      selectedCandidateId: "mnw:721631",
+      selectionBasis: "explicit-model-selection",
+      candidateFit: 96,
+      margin: 48,
+      supportingFeatures: ["zgodny portret i herb Gdańska"],
+      contradictions: [],
+    },
+    {
+      ranked: [{ candidate: { id: "mnw:721631", year: "1551", nominal: "Dukat" } }],
+    },
+  );
+  assert.strictEqual(result.observations, observations);
+  assert.deepEqual(result.correctedFields, []);
+});
+
 test("zlocisty appearance removes silver candidates before visual comparison", () => {
   const observations = {
     rulerReading: "Zygmunt II August",
