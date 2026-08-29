@@ -7,7 +7,11 @@ const recognitionVisualPromise = import("../lib/recognition-visual.mjs");
 
 const BASIC_TIMEOUT_MS = 45_000;
 const VISION_TIMEOUT_MS = 32_000;
-const REFERENCE_COMPARE_TIMEOUT_MS = 24_000;
+// A cold production invocation can spend a little over 24 seconds comparing
+// two submitted sides with five museum types.  Cutting the request at 24 s
+// turned a correct 1577 thaler shortlist into an empty/unresolved result.
+// Keep the visual gate conservative, but give it enough time to finish.
+const REFERENCE_COMPARE_TIMEOUT_MS = 36_000;
 const JOB_TTL_MS = 10 * 60_000;
 const RUNTIME_SOURCE_GRACE_MS = 1_200;
 
