@@ -134,6 +134,44 @@ test("visual score gate abstains when similar types have no decisive margin", ()
   assert.equal(result.selectionBasis, "abstained");
 });
 
+test("a high-margin dated type is selected despite specimen-only differences", () => {
+  const shortlist = [
+    { candidate: { id: "exact-1551" } },
+    { candidate: { id: "near-1550" } },
+  ];
+  const result = resolveVisualComparison({
+    selectedCandidateId: "",
+    candidateFit: 0,
+    comparisons: [
+      {
+        candidateId: "exact-1551",
+        visualFit: 93,
+        sameType: true,
+        sameSpecimen: false,
+        matchedSides: "obverse",
+        decisiveFeatures: ["Zgodna data 1551", "zgodna geometria portretu"],
+        contradictions: [],
+        specimenDifferences: ["inne ślady zużycia"],
+        limitations: ["brak rewersu referencji"],
+      },
+      {
+        candidateId: "near-1550",
+        visualFit: 60,
+        sameType: false,
+        sameSpecimen: false,
+        matchedSides: "obverse",
+        decisiveFeatures: [],
+        contradictions: ["inna data"],
+        specimenDifferences: [],
+        limitations: ["brak rewersu referencji"],
+      },
+    ],
+  }, shortlist);
+  assert.equal(result.selectedCandidateId, "exact-1551");
+  assert.equal(result.selectionBasis, "decisive-type");
+  assert.equal(result.margin, 33);
+});
+
 test("an exact museum specimen can correct OCR year and fill denomination", () => {
   const observations = {
     yearReading: "1558",
@@ -170,6 +208,26 @@ test("same-type evidence cannot overwrite a visible year", () => {
   );
   assert.strictEqual(result.observations, observations);
   assert.deepEqual(result.correctedFields, []);
+});
+
+test("a dated decisive type can correct an OCR digit with a twenty-point margin", () => {
+  const observations = { yearReading: "1558", denominationReading: "Nie ustalono" };
+  const result = reconcileObservationsWithExactVisualMatch(
+    observations,
+    {
+      selectedCandidateId: "mnw:721631",
+      selectionBasis: "decisive-type",
+      candidateFit: 93,
+      margin: 33,
+      supportingFeatures: ["Zgodna data 1551", "zgodny portret"],
+      contradictions: [],
+    },
+    {
+      ranked: [{ candidate: { id: "mnw:721631", year: "1551", nominal: "Dukat" } }],
+    },
+  );
+  assert.equal(result.observations.yearReading, "1551");
+  assert.equal(result.observations.denominationReading, "Dukat");
 });
 
 test("zlocisty appearance removes silver candidates before visual comparison", () => {
