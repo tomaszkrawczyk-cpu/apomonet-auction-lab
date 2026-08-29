@@ -92,5 +92,7 @@ test("vision starts without arbitrary local-name anchoring and Stage 1 compares 
   assert.doesNotMatch(source, /deferred-to-stage2/);
   assert.match(source, /visualReferenceShortlist/);
   assert.match(source, /item\.referenceImages/);
+  assert.match(source, /image_url: imageUrl, detail: "low"/);
+  assert.match(source, /image_url: userImages\[0\], detail: "high"/);
   assert.match(source, /visualReference\.result\.contradictions\.length === 0/);
 });
