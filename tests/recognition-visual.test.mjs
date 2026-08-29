@@ -244,6 +244,29 @@ test("a suspect 1558 OCR reading retains the exact 1551 gold specimen as a visua
   assert.ok(ranked.retrieval.diagnostics.chronologyEngine.retainedAsVisualRival > 0);
 });
 
+test("generic SIGIS plus a reign-period date opens Zygmunt II August visual rivals", () => {
+  const observations = {
+    rulerReading: "SIGIS...; Zygmunt",
+    yearReading: "Prawdopodobnie 1548, cyfry rozdzielone elementem centralnym",
+    denominationReading: "Nie ustalono",
+    mintReading: "Gdańsk",
+    metalAppearance: "Złoty, żółty metal",
+    shape: "okrągła",
+    portrait: "koronowany król w prawo",
+    heraldry: ["herb Gdańska podtrzymywany przez dwa lwy"],
+    mintMarks: [],
+    obverseLegendFragments: ["SIGIS", "D G", "REX", "POLONI"],
+    reverseLegendFragments: ["MON", "AVREA", "CIVIT", "GEDAN"],
+  };
+  const ranked = orchestrateRecognitionCandidates(
+    observations,
+    localReferenceCandidates(),
+  );
+  const shortlist = visualReferenceShortlist(ranked);
+  assert.ok(shortlist.some((item) => item.candidate.id === "mnw:721631"));
+  assert.ok(shortlist.every((item) => !/srebro/i.test(item.candidate.metal || "")));
+});
+
 test("the real 1577 Gdansk siege thaler reference reaches the visual challenger", () => {
   const observations = {
     rulerReading: "Nie ustalono",
