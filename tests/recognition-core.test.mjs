@@ -318,10 +318,11 @@ test("Numista image retrieval stays disabled without a configured server key", a
   assert.deepEqual(result, { available: false, candidates: [], reason: "missing-key" });
 });
 
-test("medals, tokens and labelled copies cannot enter the positive verdict path", () => {
+test("medals, tokens and weakly matched copies cannot enter the positive verdict path", () => {
   for (const objectKind of ["medal", "token", "copy", "replica", "cast"]) {
     const raw = batoryDecision();
     raw.objectKind = objectKind;
+    if (["copy", "replica", "cast"].includes(objectKind)) raw.decision.candidateFit = 45;
     const result = adjudicateRecognition(raw, candidates, { weightGrams: 3.57 });
     assert.equal(result.status, "unresolved");
     assert.equal(result.selected, null);
@@ -329,4 +330,78 @@ test("medals, tokens and labelled copies cannot enter the positive verdict path"
     assert.equal(result.partialIdentity.objectKind, objectKind);
     assert.match(result.cautionNotes.join(" "), /nie został dopasowany|nie pozwala potwierdzić/);
   }
+});
+
+test("a strong catalogue match keeps coin type separate from a photo-only authenticity concern", () => {
+  const raw = batoryDecision();
+  raw.objectKind = "copy";
+
+  const result = adjudicateRecognition(raw, candidates, {
+    weightGrams: 3.57,
+    diameterMm: 22,
+  });
+  const card = analysisFromRecognition(raw, result, conditionFromRaw(raw));
+
+  assert.equal(result.status, "confirmed-candidate");
+  assert.equal(result.selected.id, "curated:batory-ducat-gdansk-1587");
+  assert.equal(result.authenticityConcern, "copy");
+  assert.equal(card.nominal, "Dukat");
+  assert.match(card.warnings.join(" "), /typ.*nie autentyczności/i);
+});
+
+test("literal visible year and denomination survive when no catalogue candidate exists", () => {
+  const raw = batoryDecision({ selected: "" });
+  raw.objectKind = "coin";
+  raw.observations.rulerReading = "Nie ustalono";
+  raw.observations.yearReading = "1564";
+  raw.observations.denominationReading = "XXX";
+  raw.observations.mintReading = "Nie ustalono";
+  raw.decision.candidateFit = 0;
+
+  const result = adjudicateRecognition(raw, [], {});
+  const card = analysisFromRecognition(raw, result, conditionFromRaw(raw));
+
+  assert.equal(result.status, "unresolved");
+  assert.equal(card.year, "1564");
+  assert.equal(card.nominal, "XXX");
+  assert.equal(result.partialIdentity.basis.year, "visible-evidence");
+  assert.equal(result.partialIdentity.basis.nominal, "visible-evidence");
+});
+
+test("a confirmed municipal siege issue does not invent a ruler", () => {
+  const candidate = candidates.find((item) => item.id === "mnk:210590");
+  assert.ok(candidate);
+  const raw = {
+    imageUsable: true,
+    objectKind: "coin",
+    observations: {
+      rulerReading: "Nie ustalono",
+      yearReading: "1577",
+      denominationReading: "Talar",
+      denominationEvidence: "układ obu stron",
+      mintReading: "Gdańsk",
+      metalAppearance: "srebro",
+      shape: "okrągła",
+      portrait: "Chrystus",
+      heraldry: ["herb Gdańska"],
+      mintMarks: [],
+      obverseLegendFragments: [],
+      reverseLegendFragments: ["1577"],
+    },
+    decision: {
+      selectedCandidateId: candidate.id,
+      candidateFit: 96,
+      supportingFeatures: ["zgodność obu stron"],
+      contradictions: [],
+    },
+    condition: { band: "vf", confidence: 70 },
+  };
+
+  const result = adjudicateRecognition(raw, [candidate], {});
+  const card = analysisFromRecognition(raw, result, conditionFromRaw(raw));
+
+  assert.equal(result.status, "confirmed-candidate");
+  assert.equal(card.issuer, "Gdańsk");
+  assert.equal(card.ruler, "Nie dotyczy — emisja miejska");
+  assert.equal(card.depictedPerson, "Chrystus");
 });

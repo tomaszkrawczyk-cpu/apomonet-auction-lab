@@ -349,7 +349,7 @@ async function runAnalysis(apiKey, images, measurements) {
   let candidates = [];
   const prompt = `ETAP 1 APOMONET — analiza dowodów i wybór wyłącznie z katalogu kandydatów.
 
-Najpierw oceń, czy oba zdjęcia nadają się do identyfikacji i czy pokazują dwie strony tego samego obiektu. Rozpoznaj wyłącznie rodzaj obiektu: regularna moneta obiegowa, emisja próbna/wzorcowa (PRÓBA/PROBA/ESSAI/PATTERN), medal, żeton, możliwa kopia albo obiekt niepewny. Uwzględnij widoczny napis „PRÓBA”, nietypowy metal, talar próbny oraz sygnatur projektanta/medaliera.
+Najpierw oceń, czy oba zdjęcia nadają się do identyfikacji i czy pokazują dwie strony tego samego obiektu. Rozpoznaj wyłącznie rodzaj obiektu: regularna moneta obiegowa, emisja próbna/wzorcowa (PRÓBA/PROBA/ESSAI/PATTERN), medal, żeton, możliwa kopia albo obiekt niepewny. Uwzględnij widoczny napis „PRÓBA”, nietypowy metal, talar próbny oraz sygnatur projektanta/medaliera. Zdjęcie samo w sobie nie potwierdza autentyczności. Użyj objectKind „copy” wyłącznie wtedy, gdy widać konkretną cechę techniki wykonania wskazującą kopię lub odlew; nie oznaczaj tak obiektu tylko dlatego, że zdjęcie pochodzi z galerii, aukcji, ekranu albo jest podobne do fotografii referencyjnej.
 
 IDENTYFIKACJA I STAN TO DWA ODDZIELNE ZADANIA. W observations zapisz tylko to, co faktycznie widać: fragmenty legend, portret, herby, datę/cyfry, oznaczenie nominału, mennicę lub znaki, kształt i wygląd metalu. Nie dopasowuj obserwacji do oczekiwanego wyniku. Gdy czegoś nie widać, wpisz „Nie ustalono” albo pustą tablicę. Traktuj listę kandydatów wyłącznie jako materiał do późniejszego porównania, a nie jako podpowiedź do odczytu obrazu.
 
@@ -530,6 +530,9 @@ Odpowiadaj po polsku.`;
         mint: clean(raw.observations?.mintReading),
         metal: clean(raw.observations?.metalAppearance),
       },
+      objectKind: clean(raw.objectKind),
+      authenticityConcern: recognition.authenticityConcern || null,
+      modelSelectedCandidateId: clean(raw.decision?.selectedCandidateId) || null,
       topCandidates: ranked.ranked.slice(0, 8).map((item) => ({
         id: item.candidate.id,
         score: item.score,
