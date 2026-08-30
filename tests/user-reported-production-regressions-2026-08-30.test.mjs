@@ -145,6 +145,57 @@ test("analysis uses the safe cropper, clears same-scope identity and reveals Sta
   assert.match(source, /persistAnalysisSession\(\);[\s\S]{0,160}deepPanel/);
 });
 
+test("clear coin edges are accepted even on an auction background or with full-frame preservation", async () => {
+  const source = await readFile(new URL("../analysis-image-pipeline.js", import.meta.url), "utf8");
+  const context = {
+    window: null,
+    document: { readyState: "loading" },
+    location: { pathname: "/" },
+    localStorage: { getItem: () => "pl" },
+    addEventListener: () => {},
+  };
+  context.window = context;
+  vm.runInNewContext(source, context);
+  const pipeline = context.ApoImagePipeline;
+  const sourceImage = { width: 1000, height: 1000 };
+  const detection = {
+    cx: 500,
+    cy: 500,
+    r: 250,
+    score: 18,
+    confidence: 78,
+    backgroundTexture: 24,
+  };
+
+  const crop = pipeline.safeCrop(sourceImage, detection);
+  assert.equal(crop.mode, "safe-crop");
+  assert.equal(pipeline.assessPhoto(detection, crop).level, "good");
+  assert.deepEqual(
+    { ...pipeline.assessPhoto(detection, { ...crop, mode: "full" }) },
+    { level: "good", reason: "full-frame-safe" },
+  );
+  assert.deepEqual(
+    { ...pipeline.assessPhoto({ score: 7, confidence: 20, backgroundTexture: 22 }, { mode: "full" }) },
+    { level: "warning", reason: "textured-background" },
+  );
+});
+
+test("home and analysis opt out of browser auto-translation while ApoMonet handles language", async () => {
+  const [home, analysis, core, complete] = await Promise.all([
+    readFile(new URL("../index.html", import.meta.url), "utf8"),
+    readFile(new URL("../analyze.html", import.meta.url), "utf8"),
+    readFile(new URL("../app-core.js", import.meta.url), "utf8"),
+    readFile(new URL("../i18n-complete.js", import.meta.url), "utf8"),
+  ]);
+  for (const html of [home, analysis]) {
+    assert.match(html, /<meta name="google" content="notranslate"/);
+    assert.match(html, /<body[^>]*class="notranslate"[^>]*translate="no"/);
+  }
+  assert.match(core, /box\.dataset\.i18nSkip='true'/);
+  assert.match(core, /documentElement\.setAttribute\('translate','no'\)/);
+  assert.match(complete, /data-i18n-skip/);
+});
+
 test("XLSX package builds eight records synchronously and returns a valid ZIP envelope", async () => {
   const context = { window: null, TextEncoder, Uint8Array, Math, Date, console, localStorage: { getItem: () => "pl" } };
   context.window = context;

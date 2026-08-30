@@ -106,9 +106,12 @@ const ApoI18n=(()=>{
   function tr(s,l=current()){return l==='pl'?s:(T[s]?.[l]||s)}
   function translate(root=document.body){
     const l=current();document.documentElement.lang=l;
+    document.documentElement.setAttribute('translate','no');
+    document.documentElement.classList.add('notranslate');
     const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;
     while(n=w.nextNode()){
       if(!n.parentElement||['SCRIPT','STYLE'].includes(n.parentElement.tagName))continue;
+      if(n.parentElement.closest?.('[data-i18n-skip]'))continue;
       const raw=n.nodeValue,trim=raw.trim();if(!trim)continue;
       if(!originals.has(n))originals.set(n,trim);
       const src=originals.get(n),dst=tr(src,l);
@@ -118,7 +121,7 @@ const ApoI18n=(()=>{
   }
   function mount(){
     if(document.getElementById('apomonetLang'))return;
-    const box=document.createElement('div');box.id='apomonetLang';box.style.cssText='position:fixed;right:10px;top:10px;z-index:9999;background:#111;border:1px solid #3b3b3f;border-radius:12px;padding:5px 7px;box-shadow:0 4px 18px #0008';
+    const box=document.createElement('div');box.id='apomonetLang';box.dataset.i18nSkip='true';box.setAttribute('translate','no');box.classList.add('notranslate');box.style.cssText='position:fixed;right:10px;top:10px;z-index:9999;background:#111;border:1px solid #3b3b3f;border-radius:12px;padding:5px 7px;box-shadow:0 4px 18px #0008';
     const s=document.createElement('select');s.style.cssText='background:#111;color:#fff;border:0;font-size:14px;padding:5px';s.setAttribute('aria-label','Language');
     Object.entries(langs).forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;s.appendChild(o)});s.value=current();
     s.onchange=()=>{

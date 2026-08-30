@@ -100,7 +100,7 @@ function tr(s,l){const t=String(s||'').trim();return D[t]?.[l]||null}
 let busy=false;
 function translate(){const l=lang();if(l==='pl'||busy||!document.body)return;busy=true;document.documentElement.lang=l;try{
  const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;
- while(n=w.nextNode()){const p=n.parentElement;if(!p||['SCRIPT','STYLE','NOSCRIPT'].includes(p.tagName))continue;const raw=n.nodeValue,t=raw.trim();if(!t)continue;const x=tr(t,l);if(x&&x!==t)n.nodeValue=raw.replace(t,x)}
+ while(n=w.nextNode()){const p=n.parentElement;if(!p||['SCRIPT','STYLE','NOSCRIPT'].includes(p.tagName)||p.closest?.('[data-i18n-skip]'))continue;const raw=n.nodeValue,t=raw.trim();if(!t)continue;const x=tr(t,l);if(x&&x!==t)n.nodeValue=raw.replace(t,x)}
  document.querySelectorAll('input[placeholder],textarea[placeholder]').forEach(e=>{const x=tr(e.placeholder,l);if(x)e.placeholder=x});
  document.querySelectorAll('[title]').forEach(e=>{const x=tr(e.getAttribute('title'),l);if(x)e.setAttribute('title',x)});
  document.querySelectorAll('[aria-label]').forEach(e=>{const x=tr(e.getAttribute('aria-label'),l);if(x)e.setAttribute('aria-label',x)});
