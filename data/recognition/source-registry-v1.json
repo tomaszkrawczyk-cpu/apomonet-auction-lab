@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-29",
+  "updatedAt": "2026-08-30",
   "tiers": {
     "A": "Primary institutional catalogue; may support identity when record rights and provenance pass",
     "B": "Licensed specialist catalogue/API; may support identity under its contract and attribution rules",
@@ -52,10 +52,10 @@
       "id": "nbp",
       "name": "Narodowy Bank Polski",
       "tier": "A",
-      "status": "official-facts-2023-through-2025-complete-and-2026-reviewed-through-2026-08-29",
+      "status": "official-facts-2023-through-2025-complete-standard-circulation-types-added-and-2026-reviewed-through-2026-08-30",
       "identityRole": "authoritative-modern-polish-issues",
       "rightsGate": "Follow NBP image-reuse conditions; factual metadata kept separate from image permissions",
-      "data": ["issue catalogues", "official ELI issuance acts", "issue dates", "mintage", "technical parameters"],
+      "data": ["issue catalogues", "official ELI issuance acts", "issue dates", "mintage", "technical parameters", "standard circulation denominations and design families"],
       "url": "https://nbp.pl/banknoty-i-monety/"
     },
     {

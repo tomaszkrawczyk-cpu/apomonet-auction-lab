@@ -591,6 +591,7 @@
         analysisImgs = [null, null],
         photoDiagnostics = [null, null],
         id = null,
+        savedPhotoSignature = null,
         localizedA = null,
         detailJobId = null;
       const $ = (x) => document.getElementById(x);
@@ -662,7 +663,7 @@
           confidence: best.score,
         };
       }
-      async function processCoin(file) {
+      async function legacyProcessCoin(file) {
         const im = await loadImage(file),
           q = detectCircle(im),
           r = Math.min(q.r * 1.12, Math.min(im.width, im.height) / 2),
@@ -748,13 +749,32 @@
         box.classList.toggle("good", key === "good");
         box.classList.remove("hidden");
       }
+      function resetRecordForNewPhotos() {
+        if ($("albumPhotoPrep")) return;
+        id = null;
+        savedPhotoSignature = null;
+        a = null;
+        localizedA = null;
+        detailJobId = null;
+        window.__apoLocalizedAnalysis = null;
+        delete window.__apoLastAlbumCoinId;
+        delete window.__apoLastAlbumAssignment;
+        ["apomonetAnalysisSession", "apomonetReturnToAnalysis", "apomonetOpenAlbumAfterResume", "apomonetAlbumPhotoPrep", "apomonetOwnerAnswers"].forEach((key) => {
+          try { sessionStorage.removeItem(key); } catch {}
+        });
+        $("panel").classList.add("hidden");
+        $("deepPanel").classList.add("hidden");
+        $("savedActions").classList.add("hidden");
+      }
       async function take(input, index, imgId, placeholderId, name) {
         const f = input.files && input.files[0];
         if (!f) return;
         try {
+          resetRecordForNewPhotos();
           $("status").textContent =
             "Wykrywam monetę i kadruję " + name.toLowerCase() + "…";
-          const p = await processCoin(f);
+          const processor = window.ApoImagePipeline?.processCoin || legacyProcessCoin;
+          const p = await processor(f);
           imgs[index] = p.display;
           analysisImgs[index] = p.analysis;
           photoDiagnostics[index] = {
@@ -1099,8 +1119,13 @@
       }
       function save() {
         if (!a) return null;
+        const reusableId = window.ApoAnalysisRecordIdentity?.reusableId?.({
+          id,
+          savedSignature: savedPhotoSignature,
+          images: imgs,
+        });
         const c = ApoMonet.upsertCoin({
-          id: id || undefined,
+          id: reusableId,
           ...a,
           description: a.fullDescription || a.description,
           analysisLevel: a.detail ? "detailed" : "basic",
@@ -1108,6 +1133,7 @@
           reverseImage: imgs[1],
         });
         id = c.id;
+        savedPhotoSignature = window.ApoAnalysisRecordIdentity?.photoSignature?.(imgs) || null;
         return c;
       }
       function showSavedActions(c, message) {
@@ -1120,7 +1146,7 @@
         $("savedActions").scrollIntoView({ behavior: "smooth", block: "start" });
       }
       function persistAnalysisSession({ light = false } = {}) {
-        const session = { id, a, imgs, photoDiagnostics, at: Date.now(), version: 5 };
+        const session = { id, a, imgs, photoDiagnostics, savedPhotoSignature, at: Date.now(), version: 6 };
         if (!light) session.analysisImgs = analysisImgs;
         try {
           sessionStorage.setItem("apomonetAnalysisSession", JSON.stringify(session));
@@ -1138,6 +1164,8 @@
           if (!s?.a && !c) return;
           id = s.id || c?.id || null;
           imgs = s.imgs || [c?.obverseImage || null, c?.reverseImage || null];
+          savedPhotoSignature = s.savedPhotoSignature ||
+            (id ? window.ApoAnalysisRecordIdentity?.photoSignature?.(imgs) || null : null);
           analysisImgs = s.analysisImgs || imgs;
           photoDiagnostics = Array.isArray(s.photoDiagnostics)
             ? s.photoDiagnostics
@@ -1302,17 +1330,25 @@
           $("deepConf").textContent = `Pewność ${d.detail.confidence || 0}%`;
           renderDetail(d.detail);
           $("deepPanel").classList.remove("hidden");
+          persistAnalysisSession();
+          $("deepPanel").scrollIntoView({ behavior: "smooth", block: "start" });
+          const detailSeconds = Number(d.meta?.elapsedMs) / 1000;
+          $("status").textContent =
+            (window.ApoAnalysisI18n?.message("detailReady") ||
+              "Analiza szczegółowa zakończona.") +
+            (Number.isFinite(detailSeconds) && detailSeconds > 0
+              ? ` (${detailSeconds.toFixed(1)} s)`
+              : "");
           const translated = await localizeCurrent({
             scroll: false,
             showDetail: true,
           });
           if (translated) {
-            const seconds = Number(d.meta?.elapsedMs) / 1000;
             $("status").textContent =
               (window.ApoAnalysisI18n?.message("detailReady") ||
                 "Analiza szczegółowa zakończona.") +
-                (Number.isFinite(seconds) && seconds > 0
-                  ? ` (${seconds.toFixed(1)} s)`
+                (Number.isFinite(detailSeconds) && detailSeconds > 0
+                  ? ` (${detailSeconds.toFixed(1)} s)`
                   : "");
           }
         } catch (e) {

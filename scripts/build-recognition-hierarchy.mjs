@@ -10,7 +10,7 @@ import { localReferenceCandidates } from "../lib/recognition-core.mjs";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const OUTPUT = resolve(ROOT, "data/recognition/recognition-hierarchy-v1.json.gz");
 const RUNTIME_OUTPUT = resolve(ROOT, "data/recognition/recognition-hierarchy-runtime-v1.json.gz");
-const AS_OF = "2026-08-29";
+const AS_OF = "2026-08-30";
 
 function clean(value) {
   return String(value ?? "").replace(/\s+/g, " ").trim();

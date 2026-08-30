@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "frozenAt": "2026-08-29",
+  "frozenAt": "2026-08-30",
   "purpose": "Stały, lokalny benchmark sit i bramki Stage 1. Nie zastępuje testu fotografii na telefonie ani pomiaru kosztu modelu.",
   "metrics": [
     "top1CoinType",
@@ -491,6 +491,67 @@
         "reverseLegendFragments": ["100 ROCZNICA WPROWADZENIA ZŁOTEGO DO OBIEGU", "1 ZŁ"]
       },
       "measurements": { "weightGrams": 28.28, "diameterMm": 40 }
+    },
+    {
+      "id": "third-republic-circulation-two-zloty-2016-user-regression",
+      "category": "third-republic-standard-circulation",
+      "targetId": "nbp-circulation:2-zl-1995-family",
+      "expectedTokens": ["2", "zlote", "standardowy"],
+      "observations": {
+        "rulerReading": "Rzeczpospolita Polska",
+        "yearReading": "2016",
+        "denominationReading": "2 złote",
+        "mintReading": "Warszawa",
+        "metalAppearance": "moneta bimetaliczna, złocisty pierścień i srebrzysty rdzeń",
+        "shape": "okrągła",
+        "portrait": "orzeł w koronie",
+        "heraldry": ["orzeł"],
+        "mintMarks": [],
+        "obverseLegendFragments": ["RZECZPOSPOLITA POLSKA", "2016"],
+        "reverseLegendFragments": ["2 ZŁOTE"]
+      },
+      "measurements": { "weightGrams": 5.21, "diameterMm": 21.5 }
+    },
+    {
+      "id": "third-republic-circulation-twenty-groszy-2026-user-regression",
+      "category": "third-republic-standard-circulation",
+      "targetId": "nbp-circulation:20-gr-1995-family",
+      "expectedTokens": ["20", "groszy", "standardowy"],
+      "observations": {
+        "rulerReading": "Rzeczpospolita Polska",
+        "yearReading": "2026",
+        "denominationReading": "20 groszy",
+        "mintReading": "Warszawa",
+        "metalAppearance": "srebrzysta moneta",
+        "shape": "okrągła",
+        "portrait": "orzeł w koronie",
+        "heraldry": ["orzeł"],
+        "mintMarks": [],
+        "obverseLegendFragments": ["RZECZPOSPOLITA POLSKA", "2026"],
+        "reverseLegendFragments": ["20 GROSZY", "wieniec"]
+      },
+      "measurements": { "weightGrams": 3.22, "diameterMm": 18.5 }
+    },
+    {
+      "id": "elective-gdansk-double-thaler-1650-without-weight-user-regression",
+      "category": "required-abstention-heavy-silver",
+      "targetId": "mnk:384397",
+      "expectedTokens": ["dwutalar", "gdansk", "1650"],
+      "expectAbstain": true,
+      "observations": {
+        "rulerReading": "IOAN CAS D G REX POL",
+        "yearReading": "1650",
+        "denominationReading": "Nie ustalono",
+        "mintReading": "Gdańsk",
+        "metalAppearance": "srebro",
+        "shape": "okrągła",
+        "portrait": "półpostać Jana Kazimierza z berłem i jabłkiem",
+        "heraldry": ["herb Gdańska trzymany przez dwa lwy"],
+        "mintMarks": ["G R"],
+        "obverseLegendFragments": ["IOAN CAS D G REX POL"],
+        "reverseLegendFragments": ["MONETA ARGENTEA CIVITATIS GEDANENSIS", "1650"]
+      },
+      "measurements": {}
     },
     {
       "id": "ambiguous-elblag-klippe-no-weight",
