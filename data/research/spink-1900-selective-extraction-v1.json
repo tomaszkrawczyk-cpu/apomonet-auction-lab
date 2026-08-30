@@ -82,13 +82,14 @@
   "stats": {
     "scannedPages": 707,
     "candidatePages": 79,
-    "mediumConfidencePages": 3,
+    "mediumConfidencePages": 1,
     "lowConfidencePages": 72,
-    "corroboratedPages": 2,
+    "corroboratedPages": 3,
     "excludedNonCoinPages": 2,
+    "reviewedNoMatchPages": 1,
     "runtimeRecordsAdded": 1,
     "imagesAdded": 0,
-    "researchOnlyCandidates": 75
+    "researchOnlyCandidates": 73
   },
   "candidates": [
     {
@@ -191,7 +192,7 @@
     },
     {
       "id": "spink-1900-leaf-143",
-      "status": "RESEARCH_ONLY",
+      "status": "REVIEWED_NO_POLISH_COIN_MATCH",
       "runtimeEligible": false,
       "scanLeaf": 143,
       "viewerPage": "143/706",
@@ -239,10 +240,10 @@
         }
       ],
       "score": 10,
-      "confidence": "MEDIUM",
+      "confidence": "HIGH",
       "reviewReason": "Polski kontekst i ciężkie złoto",
-      "manualDecision": "",
-      "objectKind": "",
+      "manualDecision": "Trafienie OCR jest kontekstowe: Polska występuje w proweniencji gemmy, nazwy mennic w nocie bibliograficznej, a Portugalia w artykule o antycznym pieniądzu ołowianym. Strona nie zawiera pozycji polskiej monety.",
+      "objectKind": "mixed-reference-page",
       "runtimeRecordId": "",
       "ocrPageSha256": "c218c8fd04c32d4f90cc05fe4c0773f6b68f7d03ef174597415aff24b71828ac",
       "independentSourceRequired": true,
@@ -288,8 +289,8 @@
     },
     {
       "id": "spink-1900-leaf-384",
-      "status": "RESEARCH_ONLY",
-      "runtimeEligible": false,
+      "status": "CORROBORATED_EXISTING_TYPE",
+      "runtimeEligible": true,
       "scanLeaf": 384,
       "viewerPage": "384/706",
       "printedPageCandidate": "556",
@@ -324,11 +325,11 @@
         }
       ],
       "score": 9,
-      "confidence": "MEDIUM",
+      "confidence": "HIGH",
       "reviewReason": "Polski kontekst i ciężkie złoto",
-      "manualDecision": "",
-      "objectKind": "",
-      "runtimeRecordId": "",
+      "manualDecision": "Pozycja 67529 opisuje kolejny egzemplarz dukata 1831 według wzoru niderlandzkiego, przeznaczonego dla Polski. Występujący na tej samej stronie dukat Krzysztofa Batorego z 1580 r. jest emisją siedmiogrodzką i nie może zostać przypisany Stefanowi Batoremu ani polskiemu typowi.",
+      "objectKind": "coin",
+      "runtimeRecordId": "historical-sale-fact:spink-1900-warsaw-ducat-1831",
       "ocrPageSha256": "95c5563614b71cd7302fa9d4404ff29a4cbec7544d31b23b3d178d3c532e63cc",
       "independentSourceRequired": true,
       "imagePromoted": false

@@ -70,7 +70,11 @@ test("historical collections remain a provenance index, not positive ground trut
   assert.equal(collections.stats.historicalAuctionCatalogues, 5);
   assert.equal(collections.stats.runtimePositiveRecordsAddedDirectly, 0);
   assert.equal(collections.knownSpecimenLinks.length, 3);
-  assert.ok(collections.knownSpecimenLinks.every((edge) => edge.status === "REFERENCE_ONLY"));
+  assert.ok(collections.knownSpecimenLinks.every((edge) => edge.status === "CATALOGUE_CHAIN_CORROBORATED"));
+  assert.ok(collections.knownSpecimenLinks.every((edge) => edge.exactSpecimenMatch === false));
+  assert.ok(collections.knownSpecimenLinks.every((edge) => edge.runtimeIdentity === false));
+  assert.equal(collections.stats.typeLevelRuntimeLinks, 1);
+  assert.equal(collections.stats.exactSpecimenLinks, 0);
   const chominski = collections.collections.find((entry) => entry.id === "collection-chominski-1932");
   const chelminski = collections.collections.find((entry) => entry.id === "collection-chelminski-1904");
   assert.notEqual(chominski.canonicalName, chelminski.canonicalName);

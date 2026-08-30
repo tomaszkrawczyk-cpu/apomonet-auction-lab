@@ -5,6 +5,7 @@ import catalogue from "../data/recognition/historical-sale-facts-v1.json" with {
 import sweep from "../data/research/public-domain-catalogue-sweep-v1.json" with { type: "json" };
 import spink1900 from "../data/research/spink-1900-selective-extraction-v1.json" with { type: "json" };
 import sourceRegistry from "../data/recognition/source-registry-v1.json" with { type: "json" };
+import manualMatching from "../data/research/historical-manual-matching-2026-08-30-v1.json" with { type: "json" };
 
 const runtimeRecords = localReferenceCandidates().filter((record) =>
   record.id.startsWith("historical-sale-fact:"),
@@ -28,8 +29,9 @@ test("old sale facts enter runtime only after an institutional identity match", 
 test("selective Spink 1900 extraction keeps OCR leads out of runtime unless museum records corroborate them", () => {
   assert.equal(spink1900.stats.scannedPages, 707);
   assert.equal(spink1900.stats.candidatePages, 79);
-  assert.equal(spink1900.stats.researchOnlyCandidates, 75);
+  assert.equal(spink1900.stats.researchOnlyCandidates, 73);
   assert.equal(spink1900.stats.excludedNonCoinPages, 2);
+  assert.equal(spink1900.stats.reviewedNoMatchPages, 1);
   assert.equal(spink1900.stats.runtimeRecordsAdded, 1);
   assert.equal(spink1900.candidates.some((candidate) => "ocrExcerpt" in candidate), false);
   assert.equal(spink1900.candidates.some((candidate) => "image" in candidate), false);
@@ -40,7 +42,7 @@ test("selective Spink 1900 extraction keeps OCR leads out of runtime unless muse
   const promotedLeaves = spink1900.candidates.filter((candidate) =>
     candidate.status === "CORROBORATED_EXISTING_TYPE",
   );
-  assert.deepEqual(promotedLeaves.map((candidate) => candidate.scanLeaf), [438, 665]);
+  assert.deepEqual(promotedLeaves.map((candidate) => candidate.scanLeaf), [384, 438, 665]);
   assert.equal(new Set(promotedLeaves.map((candidate) => candidate.runtimeRecordId)).size, 1);
 });
 
@@ -71,7 +73,7 @@ test("rights decisions keep public-domain scans separate from In Copyright catal
   assert.equal(sweep.stats.inCopyrightReferenceOnlySources, 5);
   assert.equal(sweep.stats.newIndexedPolishPositionsInRestrictedCatalogues, 1_578);
   assert.equal(sweep.stats.imagesAdded, 0);
-  assert.equal(sweep.selectiveExtraction.researchOnlyPages, 75);
+  assert.equal(sweep.selectiveExtraction.researchOnlyPages, 73);
   assert.equal(sweep.selectiveExtraction.runtimeRecordsAdded, 1);
   const open = sweep.sources.find((source) => source.id === "spink-circular-1900-commons");
   assert.equal(open.rightsDecision, "OPEN_SCAN");
@@ -97,7 +99,7 @@ test("mint context merges the same Riga ducat across museum catalogues and old s
   assert.equal(new Set(records.map((record) => record.issueId)).size, 1);
 });
 
-test("two Spink 1900 listings corroborate one Warsaw 1831 ducat type, not two new types", () => {
+test("three Spink 1900 listings corroborate one Warsaw 1831 ducat type, not three new types", () => {
   const ids = [
     "mnk:88713",
     "mnw:610385",
@@ -110,6 +112,25 @@ test("two Spink 1900 listings corroborate one Warsaw 1831 ducat type, not two ne
   const sourcePages = spink1900.candidates.filter((candidate) =>
     candidate.runtimeRecordId === ids[2],
   );
-  assert.equal(sourcePages.length, 2);
+  assert.equal(sourcePages.length, 3);
   assert.equal(catalogue.records.filter((record) => record.id === ids[2]).length, 1);
+});
+
+test("manual historical matching separates catalogue chains, type matches and specimens", () => {
+  assert.equal(manualMatching.stats.reviewedItems, 5);
+  assert.equal(manualMatching.stats.catalogueChainsCorroborated, 3);
+  assert.equal(manualMatching.stats.exactSpecimenMatches, 0);
+  assert.equal(manualMatching.stats.imagesImported, 0);
+  const counterstamp = manualMatching.reviews.find((review) =>
+    review.id === "manual-karolkiewicz-2139-frankiewicz-97",
+  );
+  assert.equal(counterstamp.typeMatchStatus, "DISTINCT_COUNTERSTAMPED_HOST_TYPE");
+  assert.equal(counterstamp.runtimeEligible, false);
+  assert.equal(counterstamp.confusionGuard, "counterstamped-host-coin");
+  const halfThaler = manualMatching.reviews.find((review) =>
+    review.id === "manual-karolkiewicz-2326-chelminski-891",
+  );
+  assert.equal(halfThaler.runtimeEffect, "EXISTING_TYPE_ONLY");
+  assert.equal(halfThaler.runtimeRecordId, "mnk:127042");
+  assert.equal(halfThaler.exactSpecimenMatch, false);
 });

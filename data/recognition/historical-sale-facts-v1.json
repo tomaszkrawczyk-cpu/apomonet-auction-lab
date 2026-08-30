@@ -114,7 +114,7 @@
       "source": {
         "type": "historical-sale-fact",
         "name": "Spink & Son — Numismatic Circular, 1900",
-        "recordId": "vol. 9, scan leaves 438 i 665; notowania 69229 i 76701",
+      "recordId": "vol. 9, scan leaves 384, 438 i 665; notowania 67529, 69229 i 76701",
         "url": "https://archive.org/details/spinkcircular1900v08v09",
         "retrievedAt": "2026-08-29",
         "rights": "Wyłącznie własny zapis faktów katalogowych; bez tekstu OCR, skanu, układu strony, ceny i fotografii",
@@ -123,7 +123,7 @@
         "provenance": [
           {
             "role": "historical-sale-corroboration",
-            "name": "Dwa notowania dukata 1831 ze znakiem rosyjskiego orła; drugie notowanie nie jest liczone jako niezależne źródło",
+          "name": "Trzy notowania dukata 1831 ze znakiem rosyjskiego orła; powtórne notowania nie są liczone jako niezależne źródła",
             "url": "https://archive.org/details/spinkcircular1900v08v09"
           },
           {

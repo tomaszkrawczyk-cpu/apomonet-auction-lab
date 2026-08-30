@@ -26,7 +26,7 @@ test("the orchestrator coordinates five independent evidence engines", () => {
   assert.deepEqual(recognitionEnginePolicy.engines, [
     "field-index", "legend-token", "chronology", "metrology", "source-consensus", "controlled-confusion-family",
   ]);
-  assert.equal(recognitionEnginePolicy.confusionFamilies.length, 6);
+  assert.equal(recognitionEnginePolicy.confusionFamilies.length, 7);
   assert.equal(recognitionEnginePolicy.abstainsOnConflict, true);
   const result = retrieveCandidatesWithEngines(batoryObservation, candidates, { weightGrams: 3.57 });
   assert.ok(result.shortlist.length > 0);
@@ -86,6 +86,29 @@ test("controlled II RP family abstains when otherwise equal candidates differ by
   assert.equal(result.selected, null);
   assert.equal(result.controlledConflict.blocked, true);
   assert.ok(result.controlledConflict.activeFamilies.includes("second-republic-mint-mark"));
+});
+
+test("a visible counterstamp blocks a regular host-coin lookalike", () => {
+  const regularIssue = candidates.filter((candidate) =>
+    candidate.coinTypeId === "type_058114093d8ab885",
+  );
+  assert.ok(regularIssue.length > 0);
+  const result = orchestrateRecognitionCandidates({
+    rulerReading: "SIGIS AVG",
+    yearReading: "1564",
+    denominationReading: "talar",
+    mintReading: "Nie ustalono",
+    metalAppearance: "srebro",
+    portrait: "popiersie Filipa II na monecie gospodarzu",
+    heraldry: ["tarcza neapolitańska"],
+    mintMarks: ["kontrmarka: ukoronowany monogram SA, data 15-64"],
+    obverseLegendFragments: ["PHILIPPVS"],
+    reverseLegendFragments: ["15", "64"],
+  }, regularIssue, { weightGrams: 29.04, diameterMm: 41.25 });
+  assert.equal(result.selected, null);
+  assert.equal(result.controlledConflict.blocked, true);
+  assert.ok(result.controlledConflict.activeFamilies.includes("counterstamped-host-coin"));
+  assert.match(result.controlledConflict.reason, /kontrmarka/i);
 });
 
 test("a warm 30k-record local comparison remains below one second", () => {

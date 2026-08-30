@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-08-30",
+  "purpose": "Ręcznie sprawdzona partia dopasowań dawnych katalogów: oddziela zgodność tożsamości typu, łańcuch proweniencji i zgodność konkretnego egzemplarza.",
+  "policy": {
+    "catalogueText": "Zapisujemy wyłącznie własne streszczenie faktów i bezpośrednie identyfikatory; nie kopiujemy opisów, układu ani fotografii katalogowych.",
+    "provenance": "Zgodne numery lotów mogą potwierdzić łańcuch katalogowy, lecz bez kontrolowanego porównania legalnych obrazów nie potwierdzają tego samego egzemplarza.",
+    "runtime": "Do pozytywnego runtime trafia tylko istniejący typ potwierdzony rekordem instytucjonalnym. Sam katalog aukcyjny pozostaje tropem badawczym.",
+    "imagesImported": false
+  },
+  "reviews": [
+    {
+      "id": "manual-spink-1900-leaf-143",
+      "subject": { "sourceId": "spink-circular-1900", "scanLeaf": 143 },
+      "decision": "REVIEWED_NO_POLISH_COIN_MATCH",
+      "confidence": "HIGH",
+      "ownFactSummary": "Trafienia nazw Polska, Gdańsk, Elbląg i Toruń występują wyłącznie w kontekście proweniencji, bibliografii lub artykułu nienumizmatycznego dla polskich monet.",
+      "runtimeEligible": false,
+      "exactSpecimenMatch": false,
+      "sources": [
+        {
+          "role": "open-scan-page-review",
+          "url": "https://archive.org/details/spinkcircular1900v08v09/page/n143/mode/1up",
+          "rightsUse": "własne streszczenie i numer strony; bez OCR, skanu i fotografii"
+        }
+      ]
+    },
+    {
+      "id": "manual-spink-1900-leaf-384",
+      "subject": { "sourceId": "spink-circular-1900", "scanLeaf": 384, "listing": "67529" },
+      "decision": "CORROBORATED_EXISTING_TYPE",
+      "confidence": "HIGH",
+      "ownFactSummary": "Notowanie 67529 dotyczy dukata 1831 według wzoru niderlandzkiego, przeznaczonego dla Polski. Wymieniony na tej samej stronie dukat Krzysztofa Batorego 1580 jest siedmiogrodzki i pozostaje poza polskim katalogiem pozytywnym.",
+      "runtimeEligible": true,
+      "runtimeRecordId": "historical-sale-fact:spink-1900-warsaw-ducat-1831",
+      "exactSpecimenMatch": false,
+      "sources": [
+        {
+          "role": "open-scan-page-review",
+          "url": "https://archive.org/details/spinkcircular1900v08v09/page/n384/mode/1up",
+          "rightsUse": "własne fakty katalogowe i numer strony; bez OCR, skanu i fotografii"
+        },
+        {
+          "role": "institutional-type-check",
+          "url": "https://zbiory.mnk.pl/pl/katalog/88713",
+          "rightsUse": "publiczny rekord muzealny"
+        },
+        {
+          "role": "institutional-type-check",
+          "url": "https://cyfrowe.mnw.art.pl/pl/zbiory/610385",
+          "rightsUse": "publiczny rekord muzealny"
+        }
+      ]
+    },
+    {
+      "id": "manual-karolkiewicz-2096-chelminski-59",
+      "subject": {
+        "from": { "collectionId": "collection-karolkiewicz-2000", "lot": "2096" },
+        "to": { "collectionId": "collection-chelminski-1904", "lot": "59" }
+      },
+      "decision": "CATALOGUE_CHAIN_CORROBORATED",
+      "confidence": "HIGH",
+      "ownFactSummary": "Toruń, 1533, złota prezentacyjna odbitka ze stempli talara o wadze dziesięciu dukatów. Późniejszy katalog jednoznacznie odsyła do lotu 59 sprzedaży Chełmińskiego.",
+      "runtimeEligible": false,
+      "runtimeBlocker": "Brak niezależnego instytucjonalnego rekordu tego typu w aktualnym katalogu APOMONET oraz brak legalnego porównania konkretnego egzemplarza.",
+      "typeMatchStatus": "RESEARCH_ONLY_NO_INSTITUTIONAL_TYPE",
+      "exactSpecimenMatch": false,
+      "sources": [
+        {
+          "role": "later-catalogue-lot-index",
+          "url": "https://one.bid/en/coins-1533-gold-10-ducats-thorn-mint-this-gold-show-talar-was-struck-from-talar-dies/928082",
+          "rightsUse": "identyfikator lotu, własne fakty i link; bez opisu i fotografii"
+        },
+        {
+          "role": "historical-catalogue-bibliography",
+          "url": "https://digi.ub.uni-heidelberg.de/diglit/otto_helbing1904_04_25",
+          "rightsUse": "identyfikator katalogu i lotu; bez tablic i systematycznej transkrypcji"
+        }
+      ]
+    },
+    {
+      "id": "manual-karolkiewicz-2139-frankiewicz-97",
+      "subject": {
+        "from": { "collectionId": "collection-karolkiewicz-2000", "lot": "2139" },
+        "to": { "collectionId": "collection-frankiewicz-1930", "lot": "97" }
+      },
+      "decision": "CATALOGUE_CHAIN_CORROBORATED",
+      "confidence": "HIGH",
+      "ownFactSummary": "Kontrmarka Zygmunta II Augusta z datą 1564 na neapolitańskim ducato Filipa II, a nie regularny talar litewski bity w Wilnie. Łańcuch Frankiewicz 97 — Karolkiewicz 2139 jest zgodny w dwóch późniejszych indeksach lotów.",
+      "runtimeEligible": false,
+      "runtimeBlocker": "Brak instytucjonalnego rekordu kontrmarkowanego typu. Pozytywne dopasowanie do zwykłego talara 1564 byłoby błędem.",
+      "typeMatchStatus": "DISTINCT_COUNTERSTAMPED_HOST_TYPE",
+      "exactSpecimenMatch": false,
+      "confusionGuard": "counterstamped-host-coin",
+      "metrology": { "weightGrams": 29.04, "diameterMm": "40.5–42" },
+      "sources": [
+        {
+          "role": "later-catalogue-lot-index",
+          "url": "https://onebid.pl/pl/coins-lithuania-counterstamp-on-naples-1564-ar-talara-60-groszy-a-crowned-sa-monogram-flanked-by-the-date-15-64-counterst/928125",
+          "rightsUse": "identyfikator lotu, własne fakty i link; bez opisu i fotografii"
+        },
+        {
+          "role": "later-provenance-corroboration",
+          "url": "https://onebid.pl/pl/monety-zygmunt-ii-august-talar-sumy-neapolitanskie-1564-ex-frankiewicz-karolkiewicz/1221445",
+          "rightsUse": "własne fakty, pomiary i odsyłacze proweniencyjne; bez opisu i fotografii"
+        },
+        {
+          "role": "historical-catalogue-bibliography",
+          "url": "https://digi.ub.uni-heidelberg.de/diglit/schlessinger1930_09_15",
+          "rightsUse": "identyfikator katalogu i DOI; materiał In Copyright nie jest kopiowany"
+        }
+      ]
+    },
+    {
+      "id": "manual-karolkiewicz-2326-chelminski-891",
+      "subject": {
+        "from": { "collectionId": "collection-karolkiewicz-2000", "lot": "2326" },
+        "to": { "collectionId": "collection-chelminski-1904", "lot": "891" }
+      },
+      "decision": "CATALOGUE_CHAIN_CORROBORATED",
+      "confidence": "HIGH",
+      "ownFactSummary": "Jan Kazimierz, półtalar gdański 1650 z herbem miasta podtrzymywanym przez lwy i inicjałami G–R. Późniejszy katalog odsyła do Chełmińskiego 891; rekord MNK potwierdza tożsamość typu, ale nie tożsamość egzemplarza.",
+      "runtimeEligible": true,
+      "runtimeEffect": "EXISTING_TYPE_ONLY",
+      "runtimeRecordId": "mnk:127042",
+      "coinTypeId": "type_7d04f4fd46eddec7",
+      "issueId": "issue_cef8e11a34ea6d42",
+      "exactSpecimenMatch": false,
+      "sources": [
+        {
+          "role": "later-catalogue-lot-index",
+          "url": "https://onebid.lt/lt/coins-1650-ar-1-2-talara-danzig-mint-superb-crowned-and-armored-bust-casimir-right-lions-support-city-arms-wreath-and-br/928312",
+          "rightsUse": "identyfikator lotu, własne fakty i link; bez opisu i fotografii"
+        },
+        {
+          "role": "institutional-type-check",
+          "url": "https://zbiory.mnk.pl/pl/katalog/127042",
+          "rightsUse": "rekord muzealny w domenie publicznej"
+        },
+        {
+          "role": "historical-catalogue-bibliography",
+          "url": "https://digi.ub.uni-heidelberg.de/diglit/otto_helbing1904_04_25",
+          "rightsUse": "identyfikator katalogu i lotu; bez tablic i systematycznej transkrypcji"
+        }
+      ]
+    }
+  ],
+  "stats": {
+    "reviewedItems": 5,
+    "catalogueChainsCorroborated": 3,
+    "falsePositivePagesClosed": 1,
+    "existingRuntimeTypesStrengthened": 2,
+    "newPositiveRuntimeTypes": 0,
+    "researchOnlyItems": 2,
+    "counterstampedConfusionGuards": 1,
+    "exactSpecimenMatches": 0,
+    "imagesImported": 0
+  }
+}

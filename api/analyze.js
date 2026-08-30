@@ -353,7 +353,7 @@ Najpierw oceń, czy oba zdjęcia nadają się do identyfikacji i czy pokazują d
 
 IDENTYFIKACJA I STAN TO DWA ODDZIELNE ZADANIA. W observations zapisz tylko to, co faktycznie widać: fragmenty legend, portret, herby, datę/cyfry, oznaczenie nominału, mennicę lub znaki, kształt i wygląd metalu. Nie dopasowuj obserwacji do oczekiwanego wyniku. Gdy czegoś nie widać, wpisz „Nie ustalono” albo pustą tablicę. Traktuj listę kandydatów wyłącznie jako materiał do późniejszego porównania, a nie jako podpowiedź do odczytu obrazu.
 
-Przy legendach nowożytnych rozróżniaj podstawowe imiona: STEPHAN/STEPHANVS wskazuje Stefana (w polskim materiale zwykle Stefana Batorego), SIGIS/SIGISM — Zygmunta, SIGIS razem z AVG/AVGVSTVS — Zygmunta II Augusta, a IOAN razem z CASIM — Jana Kazimierza. Pole rulerReading służy wyłącznie odczytowi imienia lub tytulatury władcy: jeśli widać STEPHANVS, wpisz STEPHANVS lub Stefan Batory; nigdy nie wpisuj tam uwag o skali, linijce ani średnicy. Jeżeli portretowa hipoteza przeczy czytelnej legendzie, przepisz legendę i nie broń hipotezy. GEDAN/GEDANENSIS oznacza Gdańsk, AVR/AUREA wskazuje złoto, ARG/ARGENTEA wskazuje srebro. Masa około 3,4–3,7 g przy złotym wyglądzie jest skalą dukata; nie jest skalą srebrnego talara ani dwutalara. To są wskazówki językowe i metrologiczne, ale ostatecznie muszą zgadzać się również portret, herb i druga strona.
+Przy legendach nowożytnych rozróżniaj podstawowe imiona: STEPHAN/STEPHANVS wskazuje Stefana (w polskim materiale zwykle Stefana Batorego), SIGIS/SIGISM — Zygmunta, SIGIS razem z AVG/AVGVSTVS — Zygmunta II Augusta, a IOAN razem z CASIM — Jana Kazimierza. Pole rulerReading służy wyłącznie odczytowi imienia lub tytulatury władcy: jeśli widać STEPHANVS, wpisz STEPHANVS lub Stefan Batory; nigdy nie wpisuj tam uwag o skali, linijce ani średnicy. Jeżeli portretowa hipoteza przeczy czytelnej legendzie, przepisz legendę i nie broń hipotezy. GEDAN/GEDANENSIS oznacza Gdańsk, AVR/AUREA wskazuje złoto, ARG/ARGENTEA wskazuje srebro. Widoczną kontrmarkę lub kontrsygnaturę zapisz w mintMarks, łącznie z odczytanym monogramem i datą; nie utożsamiaj automatycznie emitenta monety gospodarza z emitentem kontrmarki. Masa około 3,4–3,7 g przy złotym wyglądzie jest skalą dukata; nie jest skalą srebrnego talara ani dwutalara. To są wskazówki językowe i metrologiczne, ale ostatecznie muszą zgadzać się również portret, herb i druga strona.
 
 W decision wolno wybrać TYLKO dokładne id z listy KANDYDACI albo pusty tekst. Nie wolno wymyślić nowej tożsamości. Kandydat musi zgadzać się z obiema stronami. Portret bez zgodnego rewersu, mennicy, legendy lub nominału nie wystarcza. Jako sprzeczność wpisz tylko cechę, która faktycznie przeczy wybranemu kandydatowi — brak napisu PRÓBA nie jest sprzecznością dla monety regularnej, a dodatkowe cyfry nie przeczą dacie, jeżeli właściwa data również jest czytelna. Jeśli dwa nominały mają podobne stemple i rozstrzyga je masa/średnica, nie zgaduj.
 
@@ -449,10 +449,14 @@ Odpowiadaj po polsku.`;
       candidates,
       measurements,
     );
+    const counterstampedHostConflict = ranked.controlledConflict.blocked &&
+      ranked.controlledConflict.activeFamilies.includes("counterstamped-host-coin");
     // Competitor-style image retrieval: metadata creates a broad shortlist,
     // then Stage 1 independently compares the submitted photographs with legal
     // reference images. Metadata still owns contradiction and chronology gates.
-    const visualReference = await compareWithReferenceImages(apiKey, images, ranked);
+    const visualReference = counterstampedHostConflict
+      ? { status: "controlled-conflict", result: null, comparedCandidateIds: [] }
+      : await compareWithReferenceImages(apiKey, images, ranked);
     if (ranked.selected) {
       raw.decision.selectedCandidateId = ranked.selected.candidate.id;
       raw.decision.candidateFit = Math.max(
@@ -469,12 +473,23 @@ Odpowiadaj po polsku.`;
       const modelSelection = ranked.ranked.find(
         (item) => item.candidate.id === clean(raw.decision.selectedCandidateId),
       );
-      if (!modelSelection || modelSelection.score < 35 || modelSelection.hardConflicts.length) {
+      if (counterstampedHostConflict || !modelSelection || modelSelection.score < 35 || modelSelection.hardConflicts.length) {
         raw.decision.selectedCandidateId = "";
         raw.decision.candidateFit = 0;
       }
     }
+    if (counterstampedHostConflict) {
+      raw.decision.selectedCandidateId = "";
+      raw.decision.candidateFit = 0;
+      raw.decision.contradictions = [
+        ...new Set([
+          ...(raw.decision.contradictions || []),
+          ranked.controlledConflict.reason,
+        ]),
+      ].slice(0, 6);
+    }
     if (
+      !counterstampedHostConflict &&
       visualReference.result?.selectedCandidateId &&
       visualReference.result.candidateFit >= visualRecognitionPolicy.selectionFitThreshold &&
       (!Array.isArray(visualReference.result.contradictions) ||

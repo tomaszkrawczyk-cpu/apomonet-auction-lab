@@ -52,6 +52,19 @@ const MANUAL_DECISIONS = new Map([
     decision: "Strona opisuje miejskie i cechowe znaki/marki z Gdańska, Torunia i Rygi; materiał nadaje się wyłącznie do kolejki negatywnej obiektów podobnych do monet.",
     objectKind: "token",
   }],
+  [143, {
+    status: "REVIEWED_NO_POLISH_COIN_MATCH",
+    confidence: "HIGH",
+    decision: "Trafienie OCR jest kontekstowe: Polska występuje w proweniencji gemmy, nazwy mennic w nocie bibliograficznej, a Portugalia w artykule o antycznym pieniądzu ołowianym. Strona nie zawiera pozycji polskiej monety.",
+    objectKind: "mixed-reference-page",
+  }],
+  [384, {
+    status: "CORROBORATED_EXISTING_TYPE",
+    confidence: "HIGH",
+    decision: "Pozycja 67529 opisuje kolejny egzemplarz dukata 1831 według wzoru niderlandzkiego, przeznaczonego dla Polski. Występujący na tej samej stronie dukat Krzysztofa Batorego z 1580 r. jest emisją siedmiogrodzką i nie może zostać przypisany Stefanowi Batoremu ani polskiemu typowi.",
+    objectKind: "coin",
+    runtimeRecordId: "historical-sale-fact:spink-1900-warsaw-ducat-1831",
+  }],
   [438, {
     status: "CORROBORATED_EXISTING_TYPE",
     confidence: "HIGH",
@@ -188,6 +201,7 @@ async function main() {
       lowConfidencePages: candidates.filter((candidate) => candidate.confidence === "LOW").length,
       corroboratedPages: candidates.filter((candidate) => candidate.status === "CORROBORATED_EXISTING_TYPE").length,
       excludedNonCoinPages: candidates.filter((candidate) => candidate.status === "EXCLUDED_NON_COIN").length,
+      reviewedNoMatchPages: candidates.filter((candidate) => candidate.status === "REVIEWED_NO_POLISH_COIN_MATCH").length,
       runtimeRecordsAdded: new Set(candidates.map((candidate) => candidate.runtimeRecordId).filter(Boolean)).size,
       imagesAdded: 0,
       researchOnlyCandidates: candidates.filter((candidate) => candidate.status === "RESEARCH_ONLY").length,

@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "reviewedAt": "2026-08-29",
+  "reviewedAt": "2026-08-30",
   "purpose": "Indeks dawnych kolekcji, skarbów i katalogów aukcyjnych służący wyłącznie do budowy proweniencji, bibliografii i kolejki weryfikacyjnej APOMONET",
   "policy": {
     "runtimeIdentity": "Katalog aukcyjny lub nazwa kolekcji nie tworzy nowego typu monety. Typ i odmiana muszą wynikać z niezależnie zweryfikowanych faktów.",
     "copyright": "Nie przechowujemy chronionych opisów, tablic ani fotografii. Dla źródeł bez potwierdzonej licencji zachowujemy tylko własny indeks faktów bibliograficznych, zakresy numerów i bezpośrednie linki.",
-    "provenance": "Powiązanie kolekcja–lot–egzemplarz pozostaje REFERENCE_ONLY, dopóki identyfikacja egzemplarza nie zostanie potwierdzona co najmniej numerem inwentarza, zgodnym odwołaniem katalogowym lub kontrolą zdjęć na podstawie licencji.",
+    "provenance": "Zgodny odsyłacz między lotami potwierdza łańcuch katalogowy, ale nie ten sam egzemplarz. Zgodność egzemplarza wymaga numeru inwentarza albo kontrolowanego porównania legalnych zdjęć.",
     "promotion": "Do VERIFIED przechodzą tylko fakty potwierdzone niezależnym źródłem instytucjonalnym albo udokumentowaną korektą; samo powtórzenie informacji przez archiwa aukcyjne nie stanowi niezależnego źródła."
   },
   "collections": [
@@ -194,20 +194,36 @@
     {
       "from": { "collectionId": "collection-karolkiewicz-2000", "lot": "2096" },
       "to": { "collectionId": "collection-chelminski-1904", "lot": "59" },
-      "status": "REFERENCE_ONLY",
-      "use": "candidate provenance edge; requires direct catalogue-page verification"
+      "status": "CATALOGUE_CHAIN_CORROBORATED",
+      "manualReviewId": "manual-karolkiewicz-2096-chelminski-59",
+      "typeMatchStatus": "RESEARCH_ONLY_NO_INSTITUTIONAL_TYPE",
+      "exactSpecimenMatch": false,
+      "runtimeIdentity": false,
+      "use": "verified catalogue-to-catalogue provenance reference; not positive runtime ground truth"
     },
     {
       "from": { "collectionId": "collection-karolkiewicz-2000", "lot": "2139" },
       "to": { "collectionId": "collection-frankiewicz-1930", "lot": "97" },
-      "status": "REFERENCE_ONLY",
-      "use": "candidate provenance edge; requires direct catalogue-page verification"
+      "status": "CATALOGUE_CHAIN_CORROBORATED",
+      "manualReviewId": "manual-karolkiewicz-2139-frankiewicz-97",
+      "typeMatchStatus": "DISTINCT_COUNTERSTAMPED_HOST_TYPE",
+      "exactSpecimenMatch": false,
+      "runtimeIdentity": false,
+      "confusionGuard": "counterstamped-host-coin",
+      "use": "verified catalogue chain and negative confusion evidence; not positive runtime ground truth"
     },
     {
       "from": { "collectionId": "collection-karolkiewicz-2000", "lot": "2326" },
       "to": { "collectionId": "collection-chelminski-1904", "lot": "891" },
-      "status": "REFERENCE_ONLY",
-      "use": "candidate provenance edge; requires direct catalogue-page verification"
+      "status": "CATALOGUE_CHAIN_CORROBORATED",
+      "manualReviewId": "manual-karolkiewicz-2326-chelminski-891",
+      "typeMatchStatus": "EXISTING_TYPE_ONLY",
+      "runtimeRecordId": "mnk:127042",
+      "coinTypeId": "type_7d04f4fd46eddec7",
+      "issueId": "issue_cef8e11a34ea6d42",
+      "exactSpecimenMatch": false,
+      "runtimeIdentity": false,
+      "use": "catalogue chain corroborated; institutional record confirms type only, not the specimen"
     }
   ],
   "stats": {
@@ -215,6 +231,10 @@
     "historicalAuctionCatalogues": 5,
     "numberedAuctionPositionsOrRangeSize": 6948,
     "knownCandidateProvenanceEdges": 3,
+    "manuallyReviewedProvenanceEdges": 3,
+    "catalogueChainsCorroborated": 3,
+    "typeLevelRuntimeLinks": 1,
+    "exactSpecimenLinks": 0,
     "runtimePositiveRecordsAddedDirectly": 0,
     "reasonRuntimePositiveRecordsAddedDirectly": "Brak prawa lub pełnego item-level potwierdzenia; indeks wzmacnia kolejkę badań i proweniencję bez zanieczyszczania identyfikacji."
   }

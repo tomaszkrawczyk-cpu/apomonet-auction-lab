@@ -611,6 +611,26 @@
       "measurements": {}
     },
     {
+      "id": "elective-lithuanian-counterstamped-neapolitan-host-1564",
+      "category": "counterstamped-host-confusion",
+      "expectAbstain": true,
+      "objectKind": "coin",
+      "observations": {
+        "rulerReading": "SIGIS AVG",
+        "yearReading": "1564",
+        "denominationReading": "talar",
+        "mintReading": "Nie ustalono",
+        "metalAppearance": "srebro",
+        "shape": "okrągła",
+        "portrait": "popiersie Filipa II na monecie gospodarzu",
+        "heraldry": ["tarcza neapolitańska"],
+        "mintMarks": ["kontrmarka: ukoronowany monogram SA, data 15-64"],
+        "obverseLegendFragments": ["PHILIPPVS"],
+        "reverseLegendFragments": ["15", "64"]
+      },
+      "measurements": { "weightGrams": 29.04, "diameterMm": 41.25 }
+    },
+    {
       "id": "noncoin-medal",
       "category": "negative-object",
       "expectAbstain": true,

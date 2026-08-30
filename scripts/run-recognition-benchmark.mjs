@@ -59,7 +59,12 @@ for (const entry of fixture.cases) {
   const ranked = orchestration.ranked.slice(0, 5);
   const top = ranked[0]?.candidate || null;
   const top3 = ranked.slice(0, 3).map((item) => item.candidate);
-  const modelSelectedId = orchestration.selected?.candidate?.id || top?.id || "";
+  // The synthetic decision must respect the same abstention gate as runtime.
+  // Falling back to the top candidate hid controlled-family conflicts and made
+  // the benchmark report a confident answer after the orchestrator said stop.
+  const modelSelectedId = orchestration.engineConflict
+    ? ""
+    : orchestration.selected?.candidate?.id || top?.id || "";
   const raw = {
     objectKind: entry.objectKind || "coin",
     observations: entry.observations,

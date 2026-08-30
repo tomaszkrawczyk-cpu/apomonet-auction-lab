@@ -25,7 +25,7 @@
       "allowed": ["OCR", "fakty", "tablice i kadry po zachowaniu adresu strony pliku i oznaczenia praw"],
       "blocked": [],
       "status": "PARTIALLY_PROMOTED",
-      "nextAction": "Ręcznie sprawdzić 75 pozostałych stron kandydujących; promować wyłącznie fakty zgodne z niezależnym katalogiem instytucjonalnym. Obraz promować dopiero po odrębnej kontroli praw konkretnej strony."
+      "nextAction": "Ręcznie sprawdzić 73 pozostałe strony kandydujące; promować wyłącznie fakty zgodne z niezależnym katalogiem instytucjonalnym. Obraz promować dopiero po odrębnej kontroli praw konkretnej strony."
     },
     {
       "id": "spink-circular-1902-nnp",
@@ -141,13 +141,14 @@
     "resultFile": "data/research/spink-1900-selective-extraction-v1.json",
     "pagesScanned": 707,
     "candidatePages": 79,
-    "researchOnlyPages": 75,
+    "researchOnlyPages": 73,
     "excludedNonCoinPages": 2,
-    "corroboratedPages": 2,
+    "corroboratedPages": 3,
+    "reviewedNoMatchPages": 1,
     "runtimeRecordsAdded": 1,
     "imagesAdded": 0,
     "promotedRecordId": "historical-sale-fact:spink-1900-warsaw-ducat-1831",
-    "note": "Dwa notowania tego samego dukata 1831 są jedną krawędzią źródłową, nie dwoma niezależnymi potwierdzeniami."
+    "note": "Trzy notowania tego samego dukata 1831 są jedną krawędzią źródłową, nie trzema niezależnymi potwierdzeniami."
   },
   "researchQueue": [
     {
@@ -206,9 +207,10 @@
     "researchOnlyCoinLeads": 3,
     "excludedNonCoinLeads": 1,
     "spink1900CandidatePages": 79,
-    "spink1900ResearchOnlyPages": 75,
+    "spink1900ResearchOnlyPages": 73,
     "spink1900ExcludedNonCoinPages": 2,
-    "spink1900CorroboratedPages": 2,
+    "spink1900CorroboratedPages": 3,
+    "spink1900ReviewedNoMatchPages": 1,
     "imagesAdded": 0
   }
 }
