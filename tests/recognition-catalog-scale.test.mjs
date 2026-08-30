@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { gunzipSync } from "node:zlib";
 import nbpCatalog from "../data/recognition/nbp-official-catalog-v1.json" with { type: "json" };
+import nbpEliCurrentCatalog from "../data/recognition/nbp-eli-current-catalog-v1.json" with { type: "json" };
 import {
   localReferenceCandidates,
   recognitionCatalogPolicy,
@@ -30,7 +31,7 @@ test("bulk catalogue covers Polish coinage from the medieval period through 2026
   assert.ok(mnkCatalog.records.length >= 5_800);
   assert.equal(mnkCatalog.policy.recordUnit, "public-domain-specimen");
   assert.ok(mnkCatalog.stats.canonicalTypes >= 2_160);
-  assert.ok(recognitionCatalogPolicy.recordCount >= 21_000);
+  assert.ok(recognitionCatalogPolicy.recordCount >= 22_000);
   for (const period of [
     "medieval-piast",
     "jagiellonian",
@@ -42,7 +43,8 @@ test("bulk catalogue covers Polish coinage from the medieval period through 2026
   ]) {
     assert.ok(mnkCatalog.stats.byPeriod[period] > 0, `missing period: ${period}`);
   }
-  assert.equal(nbpCatalog.records.length, 10);
+  assert.equal(nbpCatalog.records.length, 11);
+  assert.equal(nbpEliCurrentCatalog.records.length, 72);
   assert.equal(prlCatalog.records.length, 257);
   assert.equal(prlCatalog.stats.uniqueTypes, 92);
   assert.equal(recognitionCatalogPolicy.peopleRepublicRecordCount, 257);
@@ -52,6 +54,14 @@ test("bulk catalogue covers Polish coinage from the medieval period through 2026
   assert.ok(recognitionCatalogPolicy.historicalFamilyRecordCount >= 10_000);
   assert.ok(recognitionCatalogPolicy.partitionRecordCount >= 445);
   assert.ok(nbpCatalog.records.every((record) => record.year === "2026"));
+  assert.equal(nbpCatalog.policy.asOf, "2026-08-29");
+  assert.equal(nbpCatalog.policy.scheduledIssuesExcluded, true);
+  assert.ok(nbpCatalog.records.every((record) => record.issueDate <= nbpCatalog.policy.asOf));
+  assert.ok(nbpCatalog.records.every((record) => !record.title.includes("Halina Konopacka")));
+  assert.deepEqual(
+    [...new Set(nbpEliCurrentCatalog.records.map((record) => record.year))].sort(),
+    ["2023", "2024", "2025"],
+  );
 });
 
 test("museum images and every source record pass explicit item-level rights gates", () => {
@@ -65,6 +75,10 @@ test("museum images and every source record pass explicit item-level rights gate
     }
   }
   for (const record of nbpCatalog.records) {
+    assert.equal(record.source.rightsCode, "factual-metadata-only");
+    assert.deepEqual(record.images, []);
+  }
+  for (const record of nbpEliCurrentCatalog.records) {
     assert.equal(record.source.rightsCode, "factual-metadata-only");
     assert.deepEqual(record.images, []);
   }
@@ -82,6 +96,8 @@ test("separate NBP denominations sharing one official page are not deduplicated"
   const candidates = localReferenceCandidates();
   assert.ok(candidates.some((record) => record.id === "nbp:2026-hetmani-jan-tarnowski-500-zl"));
   assert.ok(candidates.some((record) => record.id === "nbp:2026-hetmani-jan-tarnowski-10-zl"));
+  assert.ok(candidates.some((record) => record.id === "nbp:2026-rezerwy-zlota-500-zl"));
+  assert.ok(candidates.some((record) => record.id === "nbp:2026-rezerwy-zlota-100-zl"));
 });
 
 test("vision starts without arbitrary local-name anchoring and Stage 1 compares legal reference images", async () => {

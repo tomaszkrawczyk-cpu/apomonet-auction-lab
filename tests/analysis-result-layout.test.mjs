@@ -70,12 +70,12 @@ test("result presentation supports all current languages without mutating identi
   }
   assert.equal(JSON.stringify(analysis), original);
   language = "de";
-  assert.equal(view.stageOneState(analysis).label, "Hohe Übereinstimmung");
+  assert.equal(view.stageOneState(analysis).label, "Typ bestimmt");
 });
 
 test("Stage 2 distinguishes an established variety from an unresolved one", () => {
   const source = read("analysis-result-view.js");
-  assert.match(source, /Odmiana ustalona/);
+  assert.match(source, /Odmiana potwierdzona/);
   assert.match(source, /Typ ustalony — odmiana nierozstrzygnięta/);
   assert.match(source, /confidence >= 80 && diagnostics\.length >= 2/);
   assert.match(read("stage2-literature-request.js"), /compact analysis screen renders Stage 2 itself/);

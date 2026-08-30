@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-28",
+  "updatedAt": "2026-08-29",
   "tiers": {
     "A": "Primary institutional catalogue; may support identity when record rights and provenance pass",
     "B": "Licensed specialist catalogue/API; may support identity under its contract and attribution rules",
@@ -39,13 +39,23 @@
       "url": "https://commons.wikimedia.org/wiki/Category:Coins_of_Poland"
     },
     {
+      "id": "negative-visual-open",
+      "name": "Wikimedia Commons — falsyfikaty, repliki i formy odlewnicze monet",
+      "tier": "B",
+      "status": "separate-open-negative-visual-corpus",
+      "identityRole": "negative-visual-warning-reference-only",
+      "rightsGate": "Accept only files from explicitly negative Commons categories with item-level PD/CC0/CC BY/CC BY-SA metadata; reject NC/ND and keep every record outside the positive identity catalogue",
+      "data": ["negative class", "side and specimen grouping", "source label", "mechanism hints", "file-level licence and attribution", "open image URL"],
+      "url": "https://commons.wikimedia.org/wiki/Category:Counterfeit_coins"
+    },
+    {
       "id": "nbp",
       "name": "Narodowy Bank Polski",
       "tier": "A",
-      "status": "official-facts-current-through-2026-07-21",
+      "status": "official-facts-2023-through-2025-complete-and-2026-reviewed-through-2026-08-29",
       "identityRole": "authoritative-modern-polish-issues",
       "rightsGate": "Follow NBP image-reuse conditions; factual metadata kept separate from image permissions",
-      "data": ["issue catalogues", "mintage", "technical parameters"],
+      "data": ["issue catalogues", "official ELI issuance acts", "issue dates", "mintage", "technical parameters"],
       "url": "https://nbp.pl/banknoty-i-monety/"
     },
     {
@@ -78,6 +88,36 @@
         "open images"
       ],
       "url": "https://pl.wikipedia.org/wiki/Kategoria:Polskie_monety_pr%C3%B3bne"
+    },
+    {
+      "id": "third-republic-open-catalog",
+      "name": "APOMONET — otwarty katalog monet III RP 1995–2024",
+      "tier": "B",
+      "status": "runtime-revision-pinned-open-facts",
+      "identityRole": "modern-circulating-commemorative-collector-and-bullion-candidates",
+      "rightsGate": "CC BY-SA 4.0 revision provenance for structured table facts; page prose, NBP images, auction media and contemporary catalogue numbering excluded",
+      "data": ["denomination", "year", "coin class", "series and subject", "material", "weight", "diameter or dimensions", "mintage", "issue date", "designer", "visual technology notes"],
+      "url": "https://pl.wikipedia.org/wiki/Monety_kolekcjonerskie_III_Rzeczypospolitej"
+    },
+    {
+      "id": "historical-sale-facts",
+      "name": "APOMONET — zweryfikowane fakty z dawnych aukcji i periodyków",
+      "tier": "C",
+      "status": "fact-only-runtime-after-institutional-match",
+      "identityRole": "historical-corroboration-not-standalone-ground-truth",
+      "rightsGate": "Własny zapis faktów wchodzi do runtime tylko po zgodności z niezależnym rekordem instytucjonalnym; tekst, układ, ceny z niepewnego OCR, skany i fotografie pozostają wyłączone",
+      "data": ["ruler", "year", "denomination", "mint", "metal", "historical sale reference", "institutional corroboration identifiers"],
+      "url": "https://www.archive.org/stream/numismaticcircu00songoog/numismaticcircu00songoog_djvu.txt?keepThis=true"
+    },
+    {
+      "id": "public-domain-old-catalogues",
+      "name": "Dawne katalogi i periodyki numizmatyczne — kontrolowany przegląd praw",
+      "tier": "C",
+      "status": "mixed-rights-research-pipeline",
+      "identityRole": "open-scan-extraction-or-reference-only-according-to-item-level-rights",
+      "rightsGate": "Osobna decyzja dla tekstu, układu, fotografii/tablicy, skanu i regulaminu repozytorium; sam wiek publikacji i nieistnienie domu aukcyjnego nie wystarczają",
+      "data": ["bibliographic facts", "lot ranges", "rights decision", "research leads", "open scan queue"],
+      "url": "https://commons.wikimedia.org/wiki/File:Spink_%26_Son%27s_Numismatic_Circular_1900_volume_VIII.djvu"
     },
     {
       "id": "polona",
@@ -199,6 +239,36 @@
       "rightsGate": "Store only independently structured facts, historical legends, measurements, literature identifiers and direct provenance links; never copy protected photos or descriptions",
       "data": ["identity", "historical legends", "measurements", "literature identifiers", "provenance links"],
       "url": ""
+    },
+    {
+      "id": "historical-collection-index",
+      "name": "APOMONET — indeks dawnych kolekcji i katalogów aukcyjnych",
+      "tier": "C",
+      "status": "reference-only-provenance-index",
+      "identityRole": "specimen-provenance-and-research-queue-only",
+      "rightsGate": "Store only bibliographic facts, lot identifiers, section ranges and direct links. No catalogue prose, plates or photographs unless an item carries an independently checked compatible licence.",
+      "data": ["collection aliases", "sale and lot identifiers", "section ranges", "candidate specimen provenance edges", "rights status"],
+      "url": ""
+    },
+    {
+      "id": "mnw-named-collections",
+      "name": "Muzeum Narodowe w Warszawie — kolekcje Potockich i Sobańskiego",
+      "tier": "A",
+      "status": "item-level-public-domain-membership-review",
+      "identityRole": "museum-specimen-provenance-after-item-gate",
+      "rightsGate": "Promote only individual public-domain coin objects that pass the MNW positive-identity filter; copies, casts and counterfeits remain outside the positive catalogue.",
+      "data": ["museum object identifier", "named collection membership", "inventory provenance", "item-level public-domain image"],
+      "url": "https://cyfrowe.mnw.art.pl/"
+    },
+    {
+      "id": "kosice-gold-hoard",
+      "name": "Východoslovenské múzeum — skarb złoty z Koszyc",
+      "tier": "A",
+      "status": "reference-only-until-item-level-catalogue-rights",
+      "identityRole": "hoard-provenance-and-cross-source-corroboration",
+      "rightsGate": "Aggregate facts and bibliography only; no bulk catalogue transcription or photography without item-level permission.",
+      "data": ["aggregate hoard facts", "museum and bibliography links", "reported Polish subset"],
+      "url": "https://www.kosiceregion.com/en/poi/kosice-gold-treasure-exhibit-in-vsm-in-kosice/"
     },
     {
       "id": "auction-archives",

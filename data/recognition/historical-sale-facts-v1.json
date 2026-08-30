@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-29T00:00:00.000Z",
+  "purpose": "Niezależnie przepisane fakty z dawnych sprawozdań aukcyjnych, dopuszczone do runtime wyłącznie po zgodności z rekordem instytucjonalnym",
+  "policy": {
+    "admission": "Każdy rekord musi mieć zgodną tożsamość w co najmniej jednym katalogu instytucjonalnym APOMONET.",
+    "excluded": [
+      "teksty opisów aukcyjnych",
+      "fotografie i tablice bez wyraźnej otwartej licencji",
+      "ceny z niejednoznacznego układu OCR",
+      "medale, żetony i obiekty nienależące do pozytywnego katalogu monet"
+    ],
+    "rights": "Przechowywane są wyłącznie samodzielnie znormalizowane fakty i link do źródła; skan ani OCR nie są redystrybuowane."
+  },
+  "records": [
+    {
+      "id": "historical-sale-fact:spink-1908-riga-ducat-1588",
+      "title": "Zygmunt III Waza, dukat ryski, Ryga, 1588",
+      "objectKind": "coin",
+      "country": "Rzeczpospolita Obojga Narodów / Ryga",
+      "ruler": "Zygmunt III Waza",
+      "year": "1588",
+      "nominal": "Dukat",
+      "metal": "Złoto",
+      "mint": "Ryga",
+      "shape": "round",
+      "diagnosticMarkers": [],
+      "images": [],
+      "evidenceStatus": "CORROBORATED",
+      "corroborates": ["mnk:92168", "mnk:92234", "mnw:586811", "mnw:586813", "mnw:717791"],
+      "source": {
+        "type": "historical-sale-fact",
+        "name": "Spink & Son — The Numismatic Circular, 1908",
+        "recordId": "vol. 16, sprawozdanie z aukcji Hamburgera: Rigaer Ducat 1588",
+        "url": "https://www.archive.org/stream/numismaticcircu00songoog/numismaticcircu00songoog_djvu.txt?keepThis=true",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie własny zapis faktów katalogowych; bez tekstu opisu, cen, skanu i fotografii",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "provenance": [
+          {
+            "role": "historical-sale-corroboration",
+            "name": "Sprawozdanie z aukcji IV części kolekcji Wilmersdorf i I części kolekcji dr. Antoine Feilla",
+            "url": "https://www.archive.org/stream/numismaticcircu00songoog/numismaticcircu00songoog_djvu.txt?keepThis=true"
+          },
+          {
+            "role": "institutional-identity-check",
+            "name": "MNK i MNW — zgodne rekordy dukata ryskiego 1588",
+            "url": "https://zbiory.mnk.pl/pl/katalog/92168"
+          }
+        ]
+      }
+    },
+    {
+      "id": "historical-sale-fact:spink-1908-gdansk-double-ducat-1642",
+      "title": "Władysław IV Waza, dwudukat gdański, Gdańsk, 1642",
+      "objectKind": "coin",
+      "country": "Rzeczpospolita Obojga Narodów",
+      "ruler": "Władysław IV Waza",
+      "year": "1642",
+      "nominal": "Dwudukat",
+      "metal": "Złoto",
+      "mint": "Gdańsk",
+      "shape": "round",
+      "diagnosticMarkers": [],
+      "images": [],
+      "evidenceStatus": "CORROBORATED",
+      "corroborates": ["mnw:587042"],
+      "source": {
+        "type": "historical-sale-fact",
+        "name": "Spink & Son — The Numismatic Circular, 1908",
+        "recordId": "vol. 16, sprawozdanie z aukcji Hamburgera: Danziger Doppelducat 1642",
+        "url": "https://www.archive.org/stream/numismaticcircu00songoog/numismaticcircu00songoog_djvu.txt?keepThis=true",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie własny zapis faktów katalogowych; bez tekstu opisu, cen, skanu i fotografii",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "provenance": [
+          {
+            "role": "historical-sale-corroboration",
+            "name": "Sprawozdanie z aukcji IV części kolekcji Wilmersdorf i I części kolekcji dr. Antoine Feilla",
+            "url": "https://www.archive.org/stream/numismaticcircu00songoog/numismaticcircu00songoog_djvu.txt?keepThis=true"
+          },
+          {
+            "role": "institutional-identity-check",
+            "name": "MNW — dwudukat gdański 1642, NPO 3002 MNW",
+            "url": "https://cyfrowe.mnw.art.pl/pl/zbiory/587042"
+          }
+        ]
+      }
+    },
+    {
+      "id": "historical-sale-fact:spink-1900-warsaw-ducat-1831",
+      "title": "Powstanie listopadowe, dukat warszawski, 1831",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "",
+      "year": "1831",
+      "nominal": "Dukat",
+      "metal": "Złoto",
+      "mint": "Warszawa",
+      "shape": "round",
+      "diagnosticMarkers": [
+        "znak mennicy: orzeł rosyjski",
+        "wzór dukata niderlandzkiego"
+      ],
+      "images": [],
+      "evidenceStatus": "CORROBORATED",
+      "corroborates": [
+        "mnk:88713",
+        "mnk:181951",
+        "mnw:610385"
+      ],
+      "source": {
+        "type": "historical-sale-fact",
+        "name": "Spink & Son — Numismatic Circular, 1900",
+        "recordId": "vol. 9, scan leaves 438 i 665; notowania 69229 i 76701",
+        "url": "https://archive.org/details/spinkcircular1900v08v09",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie własny zapis faktów katalogowych; bez tekstu OCR, skanu, układu strony, ceny i fotografii",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "provenance": [
+          {
+            "role": "historical-sale-corroboration",
+            "name": "Dwa notowania dukata 1831 ze znakiem rosyjskiego orła; drugie notowanie nie jest liczone jako niezależne źródło",
+            "url": "https://archive.org/details/spinkcircular1900v08v09"
+          },
+          {
+            "role": "institutional-identity-check",
+            "name": "MNK — dukat powstania listopadowego, Warszawa, 1831",
+            "url": "https://zbiory.mnk.pl/pl/katalog/88713"
+          },
+          {
+            "role": "institutional-identity-check",
+            "name": "MNW — dukat powstania listopadowego",
+            "url": "https://cyfrowe.mnw.art.pl/pl/zbiory/610385"
+          }
+        ]
+      }
+    }
+  ],
+  "stats": {
+    "reviewedHistoricalCoinMentions": 6,
+    "runtimeRecords": 3,
+    "corroboratedAgainstInstitutionalCatalogues": 3,
+    "researchOnlyCoinMentions": 2,
+    "excludedNonCoinMentions": 1,
+    "imagesImported": 0,
+    "pricesImported": 0
+  }
+}

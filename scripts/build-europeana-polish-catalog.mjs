@@ -231,7 +231,12 @@ function normalizeItem(item) {
   if (/\b(fals de epoc|counterfeit|forgery|imita(?:t|ț)|replika|kopia)\b/i.test(text)) return null;
   if (/^(?:auktions?|versteigerungs?|auctions?)[ -]?katalog|^katalog\s*\/|^sammlung\b.*\bauktion|^band\s+\d/i.test(primaryTitle)) return null;
   const nominal = nominalFrom(text);
-  const year = yearFrom(item, text);
+  const extractedYear = yearFrom(item, text);
+  // Europeana frequently puts the record creation/digitisation date in the
+  // same fields as an object's historical date. PRL and current Polish issues
+  // have dedicated legal/issuer pipelines, therefore a 1949+ Europeana value
+  // is never accepted as a minting year without a separate object-level audit.
+  const year = Number(extractedYear) >= 1949 ? "" : extractedYear;
   const ruler = rulerFrom(text);
   const mint = mintFrom(text);
   const legends = legendFragments(item);
@@ -250,6 +255,7 @@ function normalizeItem(item) {
     country: "Polska / ziemie historycznie polskie",
     ruler,
     year,
+    sourceDateRejectedAsMintYear: year ? "" : extractedYear,
     nominal,
     metal: metalFrom(item, text),
     mint,

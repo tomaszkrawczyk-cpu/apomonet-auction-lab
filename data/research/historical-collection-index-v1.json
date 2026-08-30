@@ -1,0 +1,221 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-08-29",
+  "purpose": "Indeks dawnych kolekcji, skarbów i katalogów aukcyjnych służący wyłącznie do budowy proweniencji, bibliografii i kolejki weryfikacyjnej APOMONET",
+  "policy": {
+    "runtimeIdentity": "Katalog aukcyjny lub nazwa kolekcji nie tworzy nowego typu monety. Typ i odmiana muszą wynikać z niezależnie zweryfikowanych faktów.",
+    "copyright": "Nie przechowujemy chronionych opisów, tablic ani fotografii. Dla źródeł bez potwierdzonej licencji zachowujemy tylko własny indeks faktów bibliograficznych, zakresy numerów i bezpośrednie linki.",
+    "provenance": "Powiązanie kolekcja–lot–egzemplarz pozostaje REFERENCE_ONLY, dopóki identyfikacja egzemplarza nie zostanie potwierdzona co najmniej numerem inwentarza, zgodnym odwołaniem katalogowym lub kontrolą zdjęć na podstawie licencji.",
+    "promotion": "Do VERIFIED przechodzą tylko fakty potwierdzone niezależnym źródłem instytucjonalnym albo udokumentowaną korektą; samo powtórzenie informacji przez archiwa aukcyjne nie stanowi niezależnego źródła."
+  },
+  "collections": [
+    {
+      "id": "collection-chelminski-1904",
+      "canonicalName": "Zygmunt (Sigismund) von Chełmiński",
+      "aliases": ["Sigismund von Chelminski", "Zygmunt Chełmiński"],
+      "kind": "historical-auction-catalogue",
+      "sourceLayer": "REFERENCE_ONLY",
+      "catalogue": {
+        "auctionHouse": "Otto Helbing",
+        "saleDate": "1904-04-25",
+        "numberedLots": 1997,
+        "plates": 17,
+        "illustratedObjectsReported": 187,
+        "url": "https://digi.ub.uni-heidelberg.de/diglit/otto_helbing1904_04_25"
+      },
+      "allowedUse": ["bibliographic facts", "lot identifier", "direct link", "independently verified specimen provenance"],
+      "blockedUse": ["bulk catalogue prose", "unlicensed plates", "automatic rarity or authenticity claims"]
+    },
+    {
+      "id": "collection-kubicki-1908",
+      "canonicalName": "Otto von Kubicki",
+      "aliases": ["Otto v. Kubicki", "Kubicki"],
+      "kind": "historical-auction-catalogue",
+      "sourceLayer": "REFERENCE_ONLY",
+      "catalogue": {
+        "auctionHouse": "Adolph Hess Nachfolger",
+        "saleDate": "1908-03-30",
+        "numberedLots": 2206,
+        "plates": 10,
+        "illustratedObjectsReported": 335,
+        "url": "https://digi.ub.uni-heidelberg.de/diglit/hess_nachf1908_03_30"
+      },
+      "allowedUse": ["bibliographic facts", "lot identifier", "direct link", "independently verified specimen provenance"],
+      "blockedUse": ["bulk catalogue prose", "unlicensed plates", "automatic rarity or authenticity claims"]
+    },
+    {
+      "id": "collection-frankiewicz-1930",
+      "canonicalName": "M. Frankiewicz",
+      "aliases": ["Frankiewicz in Posen", "Frankiewicz"],
+      "kind": "historical-auction-catalogue",
+      "sourceLayer": "REFERENCE_ONLY",
+      "catalogue": {
+        "auctionHouse": "Felix Schlessinger",
+        "saleDate": "1930-09-15",
+        "numberedLots": 957,
+        "plates": 19,
+        "doi": "10.11588/diglit.8087",
+        "url": "https://digi.ub.uni-heidelberg.de/diglit/schlessinger1930_09_15",
+        "rightsNotice": "In Copyright"
+      },
+      "allowedUse": ["bibliographic facts", "lot identifier", "DOI", "direct link", "independently verified specimen provenance"],
+      "blockedUse": ["catalogue prose", "plates", "photographs", "systematic transcription"]
+    },
+    {
+      "id": "collection-chominski-1932",
+      "canonicalName": "Wiktor Chomiński",
+      "aliases": ["Victor Chominski", "Wiktor Chominski"],
+      "disambiguation": "Nie łączyć z kolekcją Zygmunta von Chełmińskiego.",
+      "kind": "historical-auction-catalogue",
+      "sourceLayer": "REFERENCE_ONLY",
+      "catalogue": {
+        "auctionHouse": "Leo Hamburger",
+        "catalogueNumber": "94",
+        "saleDate": "1932-05-09",
+        "numberedLots": 712,
+        "plates": 7,
+        "url": "https://digi.ub.uni-heidelberg.de/diglit/hamburger1932_05_09",
+        "rightsNotice": "In Copyright"
+      },
+      "allowedUse": ["bibliographic facts", "lot identifier", "direct link", "independently verified specimen provenance"],
+      "blockedUse": ["catalogue prose", "plates", "photographs", "systematic transcription"]
+    },
+    {
+      "id": "collection-karolkiewicz-2000",
+      "canonicalName": "Henry V. Karolkiewicz",
+      "aliases": ["Henry Karolkiewicz", "Karolkiewicz Collection"],
+      "kind": "modern-auction-catalogue",
+      "sourceLayer": "REFERENCE_ONLY",
+      "catalogue": {
+        "auctionHouse": "Classical Numismatic Group / Freeman & Sear / Numismatica Ars Classica",
+        "sale": "Triton IV, sessions 3–4",
+        "saleDate": "2000-12-06",
+        "numberedRange": "2001–3076",
+        "reportedLots": 1056,
+        "pagesReported": 168,
+        "colourPlates": 9,
+        "url": "https://archive.org/details/TritonsaleIV2",
+        "rightsNotice": "Modern catalogue; no licence for copying prose or photographs"
+      },
+      "sections": [
+        { "lots": "2001–2010", "label": "Starożytność" },
+        { "lots": "2011–2061", "label": "Mieszko I – Przemysł II" },
+        { "lots": "2062–2089", "label": "Henryk III Piast – Aleksander Jagiellończyk" },
+        { "lots": "2090–2377", "label": "Zygmunt I Stary – Jan III Sobieski" },
+        { "lots": "2378–2497", "label": "August II Mocny – Stanisław August Poniatowski" },
+        { "lots": "2498–2510", "label": "Prusy" },
+        { "lots": "2511–2525", "label": "Kurlandia" },
+        { "lots": "2526–2528", "label": "Galicja i Lodomeria" },
+        { "lots": "2529", "label": "Prusy Południowe" },
+        { "lots": "2530–2535", "label": "Wolne Miasto Gdańsk" },
+        { "lots": "2536–2545", "label": "Księstwo Warszawskie" },
+        { "lots": "2546–2550", "label": "Zamość" },
+        { "lots": "2551–2552", "label": "Wielkie Księstwo Poznańskie" },
+        { "lots": "2553–2556", "label": "Wolne Miasto Kraków" },
+        { "lots": "2557–2592", "label": "Królestwo Polskie" },
+        { "lots": "2593–2602", "label": "Monety rosyjskie bite w Warszawie" },
+        { "lots": "2603–2618", "label": "Medale historyczne związane z Polską", "runtimeIdentity": false },
+        { "lots": "2619–2776", "label": "Monety zagraniczne historycznie związane z Polską", "runtimeIdentity": false },
+        { "lots": "2777–2843", "label": "Medale Karla Goetza", "runtimeIdentity": false },
+        { "lots": "2844–3076", "label": "Polska XX wieku" }
+      ],
+      "allowedUse": ["bibliographic facts", "lot identifier", "section hierarchy", "direct link", "independently verified specimen provenance"],
+      "blockedUse": ["catalogue prose", "photographs", "systematic catalogue-number import as ground truth"]
+    },
+    {
+      "id": "collection-potocki-mnw",
+      "canonicalName": "Zbiory Potockich w MNW",
+      "aliases": ["Potocki", "Andrzej Potocki", "August Potocki"],
+      "kind": "named-museum-provenance",
+      "sourceLayer": "VERIFIED_ITEM_LEVEL",
+      "catalogue": {
+        "institution": "Muzeum Narodowe w Warszawie",
+        "mnwKeywordId": "192861",
+        "publicDomainObjectsObserved": 1705,
+        "currentRuntimeIntersectionObserved": 1095,
+        "outsideCurrentPolishCoinSliceObserved": 610,
+        "url": "https://cyfrowe.mnw.art.pl/"
+      },
+      "promotionRule": "Włączać wyłącznie rekord po rekordzie, gdy obiekt ma status Domena publiczna, jest monetą i przechodzi filtr pozytywny; odlewy i kopie trafiają do korpusu negatywnego.",
+      "exampleObjectLinks": ["https://cyfrowe.mnw.art.pl/pl/zbiory/584070", "https://cyfrowe.mnw.art.pl/pl/zbiory/600796"]
+    },
+    {
+      "id": "collection-sobanski-mnw",
+      "canonicalName": "Kolekcja Kazimierza hr. Sobańskiego w MNW",
+      "aliases": ["Kazimierz Sobański", "Sobański"],
+      "kind": "named-museum-provenance",
+      "sourceLayer": "VERIFIED_ITEM_LEVEL",
+      "catalogue": {
+        "institution": "Muzeum Narodowe w Warszawie",
+        "mnwKeywordId": "196227",
+        "publicDomainObjectsObserved": 187,
+        "currentRuntimeIntersectionObserved": 157,
+        "outsideCurrentPolishCoinSliceObserved": 30,
+        "url": "https://cyfrowe.mnw.art.pl/pl/eseje/365"
+      },
+      "promotionRule": "Włączać wyłącznie rekord po rekordzie po kontroli praw i klasy obiektu. Jeden z obiektów poza bieżącym wycinkiem został oznaczony jako falsyfikat i nie może wejść do katalogu pozytywnego.",
+      "exampleObjectLinks": ["https://cyfrowe.mnw.art.pl/pl/zbiory/585779", "https://cyfrowe.mnw.art.pl/pl/zbiory/832820"]
+    },
+    {
+      "id": "collection-zbichorski",
+      "canonicalName": "Kolekcja Kazimierza Zbichorskiego",
+      "aliases": ["Zbichorski"],
+      "kind": "private-collection-and-modern-auction-provenance",
+      "sourceLayer": "REFERENCE_ONLY",
+      "catalogue": {
+        "reportedNumismaticObjects": ">1500",
+        "reportedPhotographs": ">2000",
+        "reportedNegatives": "około 1600",
+        "url": "https://marciniak.com/moja-przygoda-z-kolekcja-kazimierza-zbichorskiego/",
+        "rightsNotice": "Brak otwartej licencji dla masowego użycia opisów i fotografii"
+      },
+      "allowedUse": ["direct link", "collection name", "independently confirmed provenance"],
+      "blockedUse": ["auction photographs", "catalogue prose", "training corpus without permission"]
+    },
+    {
+      "id": "hoard-kosice-gold",
+      "canonicalName": "Skarb złoty z Koszyc",
+      "aliases": ["Košický zlatý poklad", "Košice Gold Treasure"],
+      "kind": "museum-hoard",
+      "sourceLayer": "REFERENCE_ONLY",
+      "catalogue": {
+        "institution": "Východoslovenské múzeum w Koszycach",
+        "totalGoldCoins": 2920,
+        "polishCoinsReported": 38,
+        "catalogueReference": "Marek Budaj, Košický zlatý poklad / The Košice Gold Treasure, 2007",
+        "url": "https://www.kosiceregion.com/en/poi/kosice-gold-treasure-exhibit-in-vsm-in-kosice/",
+        "rightsNotice": "Dane zbiorcze publiczne; brak otwartej licencji dla pełnego katalogu i fotografii"
+      },
+      "allowedUse": ["aggregate facts", "bibliographic reference", "direct museum/exhibition link"],
+      "blockedUse": ["bulk catalogue transcription", "photographs without item-level licence"]
+    }
+  ],
+  "knownSpecimenLinks": [
+    {
+      "from": { "collectionId": "collection-karolkiewicz-2000", "lot": "2096" },
+      "to": { "collectionId": "collection-chelminski-1904", "lot": "59" },
+      "status": "REFERENCE_ONLY",
+      "use": "candidate provenance edge; requires direct catalogue-page verification"
+    },
+    {
+      "from": { "collectionId": "collection-karolkiewicz-2000", "lot": "2139" },
+      "to": { "collectionId": "collection-frankiewicz-1930", "lot": "97" },
+      "status": "REFERENCE_ONLY",
+      "use": "candidate provenance edge; requires direct catalogue-page verification"
+    },
+    {
+      "from": { "collectionId": "collection-karolkiewicz-2000", "lot": "2326" },
+      "to": { "collectionId": "collection-chelminski-1904", "lot": "891" },
+      "status": "REFERENCE_ONLY",
+      "use": "candidate provenance edge; requires direct catalogue-page verification"
+    }
+  ],
+  "stats": {
+    "indexedCollectionsAndHoard": 9,
+    "historicalAuctionCatalogues": 5,
+    "numberedAuctionPositionsOrRangeSize": 6948,
+    "knownCandidateProvenanceEdges": 3,
+    "runtimePositiveRecordsAddedDirectly": 0,
+    "reasonRuntimePositiveRecordsAddedDirectly": "Brak prawa lub pełnego item-level potwierdzenia; indeks wzmacnia kolejkę badań i proweniencję bez zanieczyszczania identyfikacji."
+  }
+}

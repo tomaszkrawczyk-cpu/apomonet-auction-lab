@@ -1,0 +1,3737 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-29T13:14:32.738Z",
+  "policy": {
+    "purpose": "Potwierdzone urzędowymi aktami polskie emisje monet z lat 2023–2025",
+    "sourceMode": "Monitor Polski / ELI plus techniczne fakty z oficjalnego planu NBP",
+    "rightsGate": "Tylko znormalizowane fakty; bez kopiowania opisów, tabel, układu i ilustracji",
+    "plannedIssuesExcluded": true,
+    "provenanceRequired": true
+  },
+  "stats": {
+    "records": 72,
+    "issueGroups": 60,
+    "legalActs": 60,
+    "withMeasurements": 72,
+    "withImages": 0
+  },
+  "records": [
+    {
+      "id": "nbp-eli:2023-160-rocznica-powstania-styczniowego-20-zl",
+      "title": "160. rocznica Powstania Styczniowego, 20 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "20 zł",
+      "metal": "Srebro Ag 925",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 28.28,
+      "diameterMm": 38.61,
+      "issueDate": "2023-01-16",
+      "mintage": 10000,
+      "portrait": "160. rocznica Powstania Styczniowego",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "160. rocznica Powstania Styczniowego",
+        "20 zł",
+        "Srebro Ag 925",
+        "stempel lustrzany; druk cyfrowy",
+        "średnica 38.61 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/6",
+        "url": "https://eli.gov.pl/eli/MP/2023/6/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/6",
+          "url": "https://eli.gov.pl/eli/MP/2023/6/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-160-rocznica-powstania-styczniowego-200-zl",
+      "title": "160. rocznica Powstania Styczniowego, 200 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "200 zł",
+      "metal": "Złoto Au 900",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 15.5,
+      "diameterMm": 27,
+      "issueDate": "2023-01-16",
+      "mintage": 1200,
+      "portrait": "160. rocznica Powstania Styczniowego",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "160. rocznica Powstania Styczniowego",
+        "200 zł",
+        "Złoto Au 900",
+        "stempel lustrzany",
+        "średnica 27 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/6",
+        "url": "https://eli.gov.pl/eli/MP/2023/6/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/6",
+          "url": "https://eli.gov.pl/eli/MP/2023/6/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-skarby-stanislawa-augusta-stanislaw-leszczynski-50-zl",
+      "title": "Skarby Stanisława Augusta – Stanisław Leszczyński, 50 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "50 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 62.2,
+      "diameterMm": 45,
+      "issueDate": "2023-01-26",
+      "mintage": 6000,
+      "portrait": "Skarby Stanisława Augusta – Stanisław Leszczyński",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Skarby Stanisława Augusta – Stanisław Leszczyński",
+        "50 zł",
+        "Srebro Ag 999",
+        "stempel zwykły",
+        "średnica 45 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/12",
+        "url": "https://eli.gov.pl/eli/MP/2023/12/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/12",
+          "url": "https://eli.gov.pl/eli/MP/2023/12/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-skarby-stanislawa-augusta-stanislaw-leszczynski-500-zl",
+      "title": "Skarby Stanisława Augusta – Stanisław Leszczyński, 500 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "500 zł",
+      "metal": "Złoto Au 999,9",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 62.2,
+      "diameterMm": 45,
+      "issueDate": "2023-01-26",
+      "mintage": 600,
+      "portrait": "Skarby Stanisława Augusta – Stanisław Leszczyński",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Skarby Stanisława Augusta – Stanisław Leszczyński",
+        "500 zł",
+        "Złoto Au 999,9",
+        "stempel zwykły",
+        "średnica 45 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/12",
+        "url": "https://eli.gov.pl/eli/MP/2023/12/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/12",
+          "url": "https://eli.gov.pl/eli/MP/2023/12/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-mikolaj-kopernik-50-zl",
+      "title": "Mikołaj Kopernik, 50 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "50 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 62.2,
+      "diameterMm": 45,
+      "issueDate": "2023-02-09",
+      "mintage": 7000,
+      "portrait": "Mikołaj Kopernik",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Mikołaj Kopernik",
+        "50 zł",
+        "Srebro Ag 999",
+        "stempel zwykły; wysoki relief; bursztyn",
+        "średnica 45 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/140",
+        "url": "https://eli.gov.pl/eli/MP/2023/140/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/140",
+          "url": "https://eli.gov.pl/eli/MP/2023/140/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-wykleci-przez-komunistow-zolnierze-niezlomni-jozef-kuras-ogien-10-zl",
+      "title": "Wyklęci przez komunistów żołnierze niezłomni – Józef Kuraś „Ogień”, 10 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 925",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 14.14,
+      "diameterMm": 32,
+      "issueDate": "2023-03-15",
+      "mintage": 10000,
+      "portrait": "Wyklęci przez komunistów żołnierze niezłomni – Józef Kuraś „Ogień”",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Wyklęci przez komunistów żołnierze niezłomni – Józef Kuraś „Ogień”",
+        "10 zł",
+        "Srebro Ag 925",
+        "stempel lustrzany; tampondruk",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/224",
+        "url": "https://eli.gov.pl/eli/MP/2023/224/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/224",
+          "url": "https://eli.gov.pl/eli/MP/2023/224/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-stanislaw-wojciechowski-10-zl",
+      "title": "Stanisław Wojciechowski, 10 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 925",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 14.14,
+      "diameterMm": 32,
+      "issueDate": "2023-04-04",
+      "mintage": 10000,
+      "portrait": "Stanisław Wojciechowski",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Stanisław Wojciechowski",
+        "10 zł",
+        "Srebro Ag 925",
+        "stempel lustrzany",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/269",
+        "url": "https://eli.gov.pl/eli/MP/2023/269/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/269",
+          "url": "https://eli.gov.pl/eli/MP/2023/269/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-80-rocznica-wybuchu-powstania-w-getcie-warszawskim-10-zl",
+      "title": "80. rocznica wybuchu powstania w getcie warszawskim, 10 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 925",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 14.14,
+      "diameterMm": 32,
+      "issueDate": "2023-04-12",
+      "mintage": 10000,
+      "portrait": "80. rocznica wybuchu powstania w getcie warszawskim",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "80. rocznica wybuchu powstania w getcie warszawskim",
+        "10 zł",
+        "Srebro Ag 925",
+        "stempel lustrzany",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/299",
+        "url": "https://eli.gov.pl/eli/MP/2023/299/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/299",
+          "url": "https://eli.gov.pl/eli/MP/2023/299/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-80-rocznica-wybuchu-powstania-w-getcie-warszawskim-200-zl",
+      "title": "80. rocznica wybuchu powstania w getcie warszawskim, 200 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "200 zł",
+      "metal": "Złoto Au 900",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 15.5,
+      "diameterMm": 27,
+      "issueDate": "2023-04-12",
+      "mintage": 1200,
+      "portrait": "80. rocznica wybuchu powstania w getcie warszawskim",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "80. rocznica wybuchu powstania w getcie warszawskim",
+        "200 zł",
+        "Złoto Au 900",
+        "stempel lustrzany",
+        "średnica 27 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/299",
+        "url": "https://eli.gov.pl/eli/MP/2023/299/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/299",
+          "url": "https://eli.gov.pl/eli/MP/2023/299/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-w-polske-wierze-polska-rodzina-10-zl",
+      "title": "W Polskę wierzę – Polska rodzina, 10 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 925",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 14.14,
+      "diameterMm": 32,
+      "issueDate": "2023-05-10",
+      "mintage": 10000,
+      "portrait": "W Polskę wierzę – Polska rodzina",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "W Polskę wierzę – Polska rodzina",
+        "10 zł",
+        "Srebro Ag 925",
+        "stempel lustrzany; druk UV",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/467",
+        "url": "https://eli.gov.pl/eli/MP/2023/467/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/467",
+          "url": "https://eli.gov.pl/eli/MP/2023/467/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-odkryj-polske-kanal-zeglugowy-przez-mierzeje-wislana-5-zl",
+      "title": "Odkryj Polskę – Kanał Żeglugowy przez Mierzeję Wiślaną, 5 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "5 zł",
+      "metal": "Pierścień MN25, rdzeń CuAl6Ni2",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 6.54,
+      "diameterMm": 24,
+      "issueDate": "2023-05-22",
+      "mintage": 1000000,
+      "portrait": "Odkryj Polskę – Kanał Żeglugowy przez Mierzeję Wiślaną",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Odkryj Polskę – Kanał Żeglugowy przez Mierzeję Wiślaną",
+        "5 zł",
+        "Pierścień MN25, rdzeń CuAl6Ni2",
+        "standard obiegowy",
+        "średnica 24 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/488",
+        "url": "https://eli.gov.pl/eli/MP/2023/488/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/488",
+          "url": "https://eli.gov.pl/eli/MP/2023/488/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-polskie-banknoty-obiegowe-banknot-o-nominale-10-zl-10-zl",
+      "title": "Polskie banknoty obiegowe – Banknot o nominale 10 zł, 10 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Złoto Au 999,9",
+      "mint": "Warszawa",
+      "shape": "rectangular",
+      "weightGrams": 31.1,
+      "diameterMm": null,
+      "dimensionsMm": [
+        50,
+        25
+      ],
+      "issueDate": "2023-06-20",
+      "mintage": 1500,
+      "portrait": "Polskie banknoty obiegowe – Banknot o nominale 10 zł",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Polskie banknoty obiegowe – Banknot o nominale 10 zł",
+        "10 zł",
+        "Złoto Au 999,9",
+        "stempel lustrzany",
+        "wymiary 50 × 25 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/536",
+        "url": "https://eli.gov.pl/eli/MP/2023/536/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/536",
+          "url": "https://eli.gov.pl/eli/MP/2023/536/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-wykleci-przez-komunistow-zolnierze-niezlomni-stanislaw-sojczynski-warszyc-10-zl",
+      "title": "Wyklęci przez komunistów żołnierze niezłomni – Stanisław Sojczyński „Warszyc”, 10 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 925",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 14.14,
+      "diameterMm": 32,
+      "issueDate": "2023-07-18",
+      "mintage": 10000,
+      "portrait": "Wyklęci przez komunistów żołnierze niezłomni – Stanisław Sojczyński „Warszyc”",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Wyklęci przez komunistów żołnierze niezłomni – Stanisław Sojczyński „Warszyc”",
+        "10 zł",
+        "Srebro Ag 925",
+        "stempel lustrzany; tampondruk",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/616",
+        "url": "https://eli.gov.pl/eli/MP/2023/616/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/616",
+          "url": "https://eli.gov.pl/eli/MP/2023/616/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-600-lecie-nadania-lodzi-praw-miejskich-10-zl",
+      "title": "600-lecie nadania Łodzi praw miejskich, 10 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 925",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 14.14,
+      "diameterMm": 32,
+      "issueDate": "2023-07-25",
+      "mintage": 10000,
+      "portrait": "600-lecie nadania Łodzi praw miejskich",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "600-lecie nadania Łodzi praw miejskich",
+        "10 zł",
+        "Srebro Ag 925",
+        "stempel lustrzany",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/699",
+        "url": "https://eli.gov.pl/eli/MP/2023/699/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/699",
+          "url": "https://eli.gov.pl/eli/MP/2023/699/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-polskie-termopile-warszawskie-termopile-20-zl",
+      "title": "Polskie Termopile – Warszawskie Termopile, 20 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "20 zł",
+      "metal": "Srebro Ag 925",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 28.28,
+      "diameterMm": 38.61,
+      "issueDate": "2023-08-17",
+      "mintage": 10000,
+      "portrait": "Polskie Termopile – Warszawskie Termopile",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Polskie Termopile – Warszawskie Termopile",
+        "20 zł",
+        "Srebro Ag 925",
+        "stempel lustrzany",
+        "średnica 38.61 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/737",
+        "url": "https://eli.gov.pl/eli/MP/2023/737/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/737",
+          "url": "https://eli.gov.pl/eli/MP/2023/737/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-przyjazn-i-braterstwo-to-najwieksze-bogactwo-10-zl",
+      "title": "Przyjaźń i braterstwo to największe bogactwo, 10 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "rectangular",
+      "weightGrams": 31.1,
+      "diameterMm": null,
+      "dimensionsMm": [
+        26.42,
+        50
+      ],
+      "issueDate": "2023-08-24",
+      "mintage": 10000,
+      "portrait": "Przyjaźń i braterstwo to największe bogactwo",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Przyjaźń i braterstwo to największe bogactwo",
+        "10 zł",
+        "Srebro Ag 999",
+        "stempel lustrzany; tampondruk; wspólny polsko-ukraiński zestaw",
+        "wymiary 26.42 × 50 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/832",
+        "url": "https://eli.gov.pl/eli/MP/2023/832/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/832",
+          "url": "https://eli.gov.pl/eli/MP/2023/832/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-sowiecka-agresja-na-polske-17-ix-1939-r-20-zl",
+      "title": "Sowiecka agresja na Polskę – 17 IX 1939 r., 20 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "20 zł",
+      "metal": "Srebro Ag 925",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 28.28,
+      "diameterMm": 38.61,
+      "issueDate": "2023-09-05",
+      "mintage": 12000,
+      "portrait": "Sowiecka agresja na Polskę – 17 IX 1939 r.",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Sowiecka agresja na Polskę – 17 IX 1939 r.",
+        "20 zł",
+        "Srebro Ag 925",
+        "stempel zwykły; oksydowanie",
+        "średnica 38.61 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/866",
+        "url": "https://eli.gov.pl/eli/MP/2023/866/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/866",
+          "url": "https://eli.gov.pl/eli/MP/2023/866/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-30-rocznica-wycofania-wojsk-sowieckich-z-polski-10-zl",
+      "title": "30. rocznica wycofania wojsk sowieckich z Polski, 10 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 925",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 14.14,
+      "diameterMm": 32,
+      "issueDate": "2023-09-14",
+      "mintage": 12000,
+      "portrait": "30. rocznica wycofania wojsk sowieckich z Polski",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "30. rocznica wycofania wojsk sowieckich z Polski",
+        "10 zł",
+        "Srebro Ag 925",
+        "stempel lustrzany",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/887",
+        "url": "https://eli.gov.pl/eli/MP/2023/887/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/887",
+          "url": "https://eli.gov.pl/eli/MP/2023/887/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-marsz-niepodleglosci-10-zl",
+      "title": "Marsz Niepodległości, 10 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 925",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 14.14,
+      "diameterMm": 32,
+      "issueDate": "2023-09-26",
+      "mintage": 10000,
+      "portrait": "Marsz Niepodległości",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Marsz Niepodległości",
+        "10 zł",
+        "Srebro Ag 925",
+        "stempel lustrzany; druk UV",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/998",
+        "url": "https://eli.gov.pl/eli/MP/2023/998/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/998",
+          "url": "https://eli.gov.pl/eli/MP/2023/998/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-500-rocznica-urodzin-anny-jagiellonki-50-zl",
+      "title": "500. rocznica urodzin Anny Jagiellonki, 50 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "50 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 62.2,
+      "diameterMm": 45,
+      "issueDate": "2023-10-03",
+      "mintage": 7000,
+      "portrait": "500. rocznica urodzin Anny Jagiellonki",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "500. rocznica urodzin Anny Jagiellonki",
+        "50 zł",
+        "Srebro Ag 999",
+        "stempel zwykły; wysoki relief",
+        "średnica 45 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/1040",
+        "url": "https://eli.gov.pl/eli/MP/2023/1040/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/1040",
+          "url": "https://eli.gov.pl/eli/MP/2023/1040/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-odsiecz-wiedenska-50-zl",
+      "title": "Odsiecz wiedeńska, 50 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "50 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "rectangular",
+      "weightGrams": 62.2,
+      "diameterMm": null,
+      "dimensionsMm": [
+        32,
+        50
+      ],
+      "issueDate": "2023-10-10",
+      "mintage": 6000,
+      "portrait": "Odsiecz wiedeńska",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Odsiecz wiedeńska",
+        "50 zł",
+        "Srebro Ag 999",
+        "stempel zwykły; wysoki relief",
+        "wymiary 32 × 50 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/1042",
+        "url": "https://eli.gov.pl/eli/MP/2023/1042/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/1042",
+          "url": "https://eli.gov.pl/eli/MP/2023/1042/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-odsiecz-wiedenska-100-zl",
+      "title": "Odsiecz wiedeńska, 100 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "100 zł",
+      "metal": "Złoto Au 900",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 8,
+      "diameterMm": 21,
+      "issueDate": "2023-10-10",
+      "mintage": 1200,
+      "portrait": "Odsiecz wiedeńska",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Odsiecz wiedeńska",
+        "100 zł",
+        "Złoto Au 900",
+        "stempel lustrzany",
+        "średnica 21 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/1042",
+        "url": "https://eli.gov.pl/eli/MP/2023/1042/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/1042",
+          "url": "https://eli.gov.pl/eli/MP/2023/1042/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-250-rocznica-powolania-komisji-edukacji-narodowej-10-zl",
+      "title": "250. rocznica powołania Komisji Edukacji Narodowej, 10 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 31.1,
+      "diameterMm": 32,
+      "issueDate": "2023-10-12",
+      "mintage": 10000,
+      "portrait": "250. rocznica powołania Komisji Edukacji Narodowej",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "250. rocznica powołania Komisji Edukacji Narodowej",
+        "10 zł",
+        "Srebro Ag 999",
+        "stempel lustrzany; wysoki relief",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/1059",
+        "url": "https://eli.gov.pl/eli/MP/2023/1059/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/1059",
+          "url": "https://eli.gov.pl/eli/MP/2023/1059/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-odkryj-polske-goscikowo-paradyz-pocysterski-zespol-klasztorny-5-zl",
+      "title": "Odkryj Polskę – Gościkowo-Paradyż – pocysterski zespół klasztorny, 5 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "5 zł",
+      "metal": "Pierścień MN25, rdzeń CuAl6Ni2",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 6.54,
+      "diameterMm": 24,
+      "issueDate": "2023-11-08",
+      "mintage": 1000000,
+      "portrait": "Odkryj Polskę – Gościkowo-Paradyż – pocysterski zespół klasztorny",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Odkryj Polskę – Gościkowo-Paradyż – pocysterski zespół klasztorny",
+        "5 zł",
+        "Pierścień MN25, rdzeń CuAl6Ni2",
+        "standard obiegowy",
+        "średnica 24 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/1134",
+        "url": "https://eli.gov.pl/eli/MP/2023/1134/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/1134",
+          "url": "https://eli.gov.pl/eli/MP/2023/1134/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-skarby-stanislawa-augusta-august-iii-sas-50-zl",
+      "title": "Skarby Stanisława Augusta – August III Sas, 50 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "50 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 62.2,
+      "diameterMm": 45,
+      "issueDate": "2023-12-05",
+      "mintage": 6000,
+      "portrait": "Skarby Stanisława Augusta – August III Sas",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Skarby Stanisława Augusta – August III Sas",
+        "50 zł",
+        "Srebro Ag 999",
+        "stempel zwykły",
+        "średnica 45 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/1238",
+        "url": "https://eli.gov.pl/eli/MP/2023/1238/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/1238",
+          "url": "https://eli.gov.pl/eli/MP/2023/1238/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2023-skarby-stanislawa-augusta-august-iii-sas-500-zl",
+      "title": "Skarby Stanisława Augusta – August III Sas, 500 zł, 2023",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2023",
+      "period": "third-republic",
+      "nominal": "500 zł",
+      "metal": "Złoto Au 999,9",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 62.2,
+      "diameterMm": 45,
+      "issueDate": "2023-12-05",
+      "mintage": 600,
+      "portrait": "Skarby Stanisława Augusta – August III Sas",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2023",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Skarby Stanisława Augusta – August III Sas",
+        "500 zł",
+        "Złoto Au 999,9",
+        "stempel zwykły",
+        "średnica 45 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/1238",
+        "url": "https://eli.gov.pl/eli/MP/2023/1238/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/1238",
+          "url": "https://eli.gov.pl/eli/MP/2023/1238/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2023",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2023-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2024-polskie-banknoty-obiegowe-banknot-o-nominale-20-zl-20-zl",
+      "title": "Polskie banknoty obiegowe – Banknot o nominale 20 zł, 20 zł, 2024",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2024",
+      "period": "third-republic",
+      "nominal": "20 zł",
+      "metal": "Złoto Au 999,9",
+      "mint": "Warszawa",
+      "shape": "rectangular",
+      "weightGrams": 31.1,
+      "diameterMm": null,
+      "dimensionsMm": [
+        50,
+        25
+      ],
+      "issueDate": "2024-01-23",
+      "mintage": 1500,
+      "portrait": "Polskie banknoty obiegowe – Banknot o nominale 20 zł",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2024",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Polskie banknoty obiegowe – Banknot o nominale 20 zł",
+        "20 zł",
+        "Złoto Au 999,9",
+        "stempel lustrzany",
+        "wymiary 50 × 25 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2023/1458",
+        "url": "https://eli.gov.pl/eli/MP/2023/1458/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2023/1458",
+          "url": "https://eli.gov.pl/eli/MP/2023/1458/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2024",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2024-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2024-mjr-henryk-dobrzanski-hubal-10-zl",
+      "title": "Mjr Henryk Dobrzański „Hubal”, 10 zł, 2024",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2024",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 31.1,
+      "diameterMm": 32,
+      "issueDate": "2024-02-13",
+      "mintage": 10000,
+      "portrait": "Mjr Henryk Dobrzański „Hubal”",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2024",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Mjr Henryk Dobrzański „Hubal”",
+        "10 zł",
+        "Srebro Ag 999",
+        "stempel lustrzany; wysoki relief",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2024/81",
+        "url": "https://eli.gov.pl/eli/MP/2024/81/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2024/81",
+          "url": "https://eli.gov.pl/eli/MP/2024/81/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2024",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2024-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2024-pamieci-rodziny-ulmow-50-zl",
+      "title": "Pamięci Rodziny Ulmów, 50 zł, 2024",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2024",
+      "period": "third-republic",
+      "nominal": "50 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 62.2,
+      "diameterMm": 45,
+      "issueDate": "2024-02-22",
+      "mintage": 5000,
+      "portrait": "Pamięci Rodziny Ulmów",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2024",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Pamięci Rodziny Ulmów",
+        "50 zł",
+        "Srebro Ag 999",
+        "stempel zwykły; oksydowanie; bursztyn",
+        "średnica 45 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2024/96",
+        "url": "https://eli.gov.pl/eli/MP/2024/96/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2024/96",
+          "url": "https://eli.gov.pl/eli/MP/2024/96/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2024",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2024-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2024-wykleci-przez-komunistow-zolnierze-niezlomni-zygmunt-szendzielarz-lupaszka-10-zl",
+      "title": "Wyklęci przez komunistów żołnierze niezłomni – Zygmunt Szendzielarz Łupaszka, 10 zł, 2024",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2024",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 925",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 14.14,
+      "diameterMm": 32,
+      "issueDate": "2024-02-27",
+      "mintage": 10000,
+      "portrait": "Wyklęci przez komunistów żołnierze niezłomni – Zygmunt Szendzielarz Łupaszka",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2024",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Wyklęci przez komunistów żołnierze niezłomni – Zygmunt Szendzielarz Łupaszka",
+        "10 zł",
+        "Srebro Ag 925",
+        "stempel lustrzany; tampondruk",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2024/100",
+        "url": "https://eli.gov.pl/eli/MP/2024/100/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2024/100",
+          "url": "https://eli.gov.pl/eli/MP/2024/100/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2024",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2024-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2024-25-rocznica-wstapienia-polski-do-nato-10-zl",
+      "title": "25. rocznica wstąpienia Polski do NATO, 10 zł, 2024",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2024",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 925",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 14.14,
+      "diameterMm": 32,
+      "issueDate": "2024-03-07",
+      "mintage": 10000,
+      "portrait": "25. rocznica wstąpienia Polski do NATO",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2024",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "25. rocznica wstąpienia Polski do NATO",
+        "10 zł",
+        "Srebro Ag 925",
+        "stempel lustrzany",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2024/171",
+        "url": "https://eli.gov.pl/eli/MP/2024/171/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2024/171",
+          "url": "https://eli.gov.pl/eli/MP/2024/171/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2024",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2024-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2024-100-rocznica-utworzenia-banku-polskiego-sa-10-zl",
+      "title": "100. rocznica utworzenia Banku Polskiego SA, 10 zł, 2024",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2024",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 31.1,
+      "diameterMm": 32,
+      "issueDate": "2024-04-11",
+      "mintage": 11000,
+      "portrait": "100. rocznica utworzenia Banku Polskiego SA",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2024",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "100. rocznica utworzenia Banku Polskiego SA",
+        "10 zł",
+        "Srebro Ag 999",
+        "stempel lustrzany; wysoki relief",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2024/236",
+        "url": "https://eli.gov.pl/eli/MP/2024/236/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2024/236",
+          "url": "https://eli.gov.pl/eli/MP/2024/236/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2024",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2024-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2024-100-rocznica-wprowadzenia-zlotego-do-obiegu-1-zl",
+      "title": "100. rocznica wprowadzenia złotego do obiegu, 1 zł, 2024",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2024",
+      "period": "third-republic",
+      "nominal": "1 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "square",
+      "weightGrams": 28.28,
+      "diameterMm": null,
+      "dimensionsMm": [
+        40,
+        40
+      ],
+      "issueDate": "2024-04-25",
+      "mintage": 10000,
+      "portrait": "100. rocznica wprowadzenia złotego do obiegu",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2024",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "100. rocznica wprowadzenia złotego do obiegu",
+        "1 zł",
+        "Srebro Ag 999",
+        "stempel lustrzany; selektywne złocenie",
+        "wymiary 40 × 40 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2024/289",
+        "url": "https://eli.gov.pl/eli/MP/2024/289/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2024/289",
+          "url": "https://eli.gov.pl/eli/MP/2024/289/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2024",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2024-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2024-230-rocznica-insurekcji-kosciuszkowskiej-50-zl",
+      "title": "230. rocznica insurekcji kościuszkowskiej, 50 zł, 2024",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2024",
+      "period": "third-republic",
+      "nominal": "50 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "rectangular",
+      "weightGrams": 62.2,
+      "diameterMm": null,
+      "dimensionsMm": [
+        32,
+        50
+      ],
+      "issueDate": "2024-05-14",
+      "mintage": 6000,
+      "portrait": "230. rocznica insurekcji kościuszkowskiej",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2024",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "230. rocznica insurekcji kościuszkowskiej",
+        "50 zł",
+        "Srebro Ag 999",
+        "stempel lustrzany",
+        "wymiary 32 × 50 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2024/332",
+        "url": "https://eli.gov.pl/eli/MP/2024/332/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2024/332",
+          "url": "https://eli.gov.pl/eli/MP/2024/332/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2024",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2024-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2024-230-rocznica-insurekcji-kosciuszkowskiej-100-zl",
+      "title": "230. rocznica insurekcji kościuszkowskiej, 100 zł, 2024",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2024",
+      "period": "third-republic",
+      "nominal": "100 zł",
+      "metal": "Złoto Au 900",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 8,
+      "diameterMm": 21,
+      "issueDate": "2024-05-14",
+      "mintage": 1200,
+      "portrait": "230. rocznica insurekcji kościuszkowskiej",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2024",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "230. rocznica insurekcji kościuszkowskiej",
+        "100 zł",
+        "Złoto Au 900",
+        "stempel lustrzany",
+        "średnica 21 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2024/332",
+        "url": "https://eli.gov.pl/eli/MP/2024/332/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2024/332",
+          "url": "https://eli.gov.pl/eli/MP/2024/332/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2024",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2024-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2024-odkryj-polske-opactwo-benedyktynow-w-tyncu-5-zl",
+      "title": "Odkryj Polskę – Opactwo Benedyktynów w Tyńcu, 5 zł, 2024",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2024",
+      "period": "third-republic",
+      "nominal": "5 zł",
+      "metal": "Pierścień MN25, rdzeń CuAl6Ni2",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 6.54,
+      "diameterMm": 24,
+      "issueDate": "2024-05-22",
+      "mintage": 1000000,
+      "portrait": "Odkryj Polskę – Opactwo Benedyktynów w Tyńcu",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2024",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Odkryj Polskę – Opactwo Benedyktynów w Tyńcu",
+        "5 zł",
+        "Pierścień MN25, rdzeń CuAl6Ni2",
+        "standard obiegowy",
+        "średnica 24 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2024/333",
+        "url": "https://eli.gov.pl/eli/MP/2024/333/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2024/333",
+          "url": "https://eli.gov.pl/eli/MP/2024/333/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2024",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2024-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2024-w-polske-wierze-polska-wolna-i-suwerenna-10-zl",
+      "title": "W Polskę wierzę – Polska wolna i suwerenna, 10 zł, 2024",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2024",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 925",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 14.14,
+      "diameterMm": 32,
+      "issueDate": "2024-05-28",
+      "mintage": 10000,
+      "portrait": "W Polskę wierzę – Polska wolna i suwerenna",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2024",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "W Polskę wierzę – Polska wolna i suwerenna",
+        "10 zł",
+        "Srebro Ag 925",
+        "stempel lustrzany; druk UV",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2024/349",
+        "url": "https://eli.gov.pl/eli/MP/2024/349/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2024/349",
+          "url": "https://eli.gov.pl/eli/MP/2024/349/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2024",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2024-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2024-slowacka-mniejszosc-narodowa-w-polsce-10-zl",
+      "title": "Słowacka mniejszość narodowa w Polsce, 10 zł, 2024",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2024",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 14.14,
+      "diameterMm": 32,
+      "issueDate": "2024-06-12",
+      "mintage": 10000,
+      "portrait": "Słowacka mniejszość narodowa w Polsce",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2024",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Słowacka mniejszość narodowa w Polsce",
+        "10 zł",
+        "Srebro Ag 999",
+        "stempel lustrzany",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2024/410",
+        "url": "https://eli.gov.pl/eli/MP/2024/410/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2024/410",
+          "url": "https://eli.gov.pl/eli/MP/2024/410/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2024",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2024-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2024-80-rocznica-operacji-armii-krajowej-ostra-brama-10-zl",
+      "title": "80. rocznica operacji Armii Krajowej „Ostra Brama”, 10 zł, 2024",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2024",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 14.14,
+      "diameterMm": 32,
+      "issueDate": "2024-06-25",
+      "mintage": 10000,
+      "portrait": "80. rocznica operacji Armii Krajowej „Ostra Brama”",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2024",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "80. rocznica operacji Armii Krajowej „Ostra Brama”",
+        "10 zł",
+        "Srebro Ag 999",
+        "stempel lustrzany",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2024/464",
+        "url": "https://eli.gov.pl/eli/MP/2024/464/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2024/464",
+          "url": "https://eli.gov.pl/eli/MP/2024/464/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2024",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2024-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2024-160-rocznica-smierci-romualda-traugutta-10-zl",
+      "title": "160. rocznica śmierci Romualda Traugutta, 10 zł, 2024",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2024",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 31.1,
+      "diameterMm": 32,
+      "issueDate": "2024-07-23",
+      "mintage": 10000,
+      "portrait": "160. rocznica śmierci Romualda Traugutta",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2024",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "160. rocznica śmierci Romualda Traugutta",
+        "10 zł",
+        "Srebro Ag 999",
+        "stempel lustrzany",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2024/607",
+        "url": "https://eli.gov.pl/eli/MP/2024/607/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2024/607",
+          "url": "https://eli.gov.pl/eli/MP/2024/607/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2024",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2024-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2024-160-rocznica-smierci-romualda-traugutta-200-zl",
+      "title": "160. rocznica śmierci Romualda Traugutta, 200 zł, 2024",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2024",
+      "period": "third-republic",
+      "nominal": "200 zł",
+      "metal": "Złoto Au 900",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 15.5,
+      "diameterMm": 27,
+      "issueDate": "2024-07-23",
+      "mintage": 1200,
+      "portrait": "160. rocznica śmierci Romualda Traugutta",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2024",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "160. rocznica śmierci Romualda Traugutta",
+        "200 zł",
+        "Złoto Au 900",
+        "stempel lustrzany",
+        "średnica 27 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2024/607",
+        "url": "https://eli.gov.pl/eli/MP/2024/607/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2024/607",
+          "url": "https://eli.gov.pl/eli/MP/2024/607/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2024",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2024-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2024-historia-monety-polskiej-grosz-z-miedzi-krajowej-stanislawa-augusta-20-zl",
+      "title": "Historia monety polskiej – Grosz z miedzi krajowej Stanisława Augusta, 20 zł, 2024",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2024",
+      "period": "third-republic",
+      "nominal": "20 zł",
+      "metal": "Srebro Ag 925",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 28.28,
+      "diameterMm": 38.61,
+      "issueDate": "2024-08-07",
+      "mintage": 10000,
+      "portrait": "Historia monety polskiej – Grosz z miedzi krajowej Stanisława Augusta",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2024",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Historia monety polskiej – Grosz z miedzi krajowej Stanisława Augusta",
+        "20 zł",
+        "Srebro Ag 925",
+        "stempel lustrzany; selektywne platerowanie",
+        "średnica 38.61 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2024/674",
+        "url": "https://eli.gov.pl/eli/MP/2024/674/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2024/674",
+          "url": "https://eli.gov.pl/eli/MP/2024/674/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2024",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2024-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2024-pamieci-wiezniow-warszawskiego-pawiaka-10-zl",
+      "title": "Pamięci więźniów warszawskiego Pawiaka, 10 zł, 2024",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2024",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 14.14,
+      "diameterMm": 32,
+      "issueDate": "2024-08-21",
+      "mintage": 10000,
+      "portrait": "Pamięci więźniów warszawskiego Pawiaka",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2024",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Pamięci więźniów warszawskiego Pawiaka",
+        "10 zł",
+        "Srebro Ag 999",
+        "stempel lustrzany; selektywne złocenie",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2024/725",
+        "url": "https://eli.gov.pl/eli/MP/2024/725/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2024/725",
+          "url": "https://eli.gov.pl/eli/MP/2024/725/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2024",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2024-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2024-ofiarom-obozu-koncentracyjnego-stutthof-10-zl",
+      "title": "Ofiarom obozu koncentracyjnego Stutthof, 10 zł, 2024",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2024",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 14.14,
+      "diameterMm": 32,
+      "issueDate": "2024-08-27",
+      "mintage": 10000,
+      "portrait": "Ofiarom obozu koncentracyjnego Stutthof",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2024",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Ofiarom obozu koncentracyjnego Stutthof",
+        "10 zł",
+        "Srebro Ag 999",
+        "stempel lustrzany",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2024/726",
+        "url": "https://eli.gov.pl/eli/MP/2024/726/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2024/726",
+          "url": "https://eli.gov.pl/eli/MP/2024/726/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2024",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2024-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2024-100-lecie-utworzenia-korpusu-ochrony-pogranicza-10-zl",
+      "title": "100-lecie utworzenia Korpusu Ochrony Pogranicza, 10 zł, 2024",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2024",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 14.14,
+      "diameterMm": 32,
+      "issueDate": "2024-09-10",
+      "mintage": 10000,
+      "portrait": "100-lecie utworzenia Korpusu Ochrony Pogranicza",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2024",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "100-lecie utworzenia Korpusu Ochrony Pogranicza",
+        "10 zł",
+        "Srebro Ag 999",
+        "stempel lustrzany; druk UV",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2024/793",
+        "url": "https://eli.gov.pl/eli/MP/2024/793/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2024/793",
+          "url": "https://eli.gov.pl/eli/MP/2024/793/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2024",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2024-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2024-polskie-termopile-glogow-20-zl",
+      "title": "Polskie Termopile – Głogów, 20 zł, 2024",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2024",
+      "period": "third-republic",
+      "nominal": "20 zł",
+      "metal": "Srebro Ag 925",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 28.28,
+      "diameterMm": 38.61,
+      "issueDate": "2024-10-17",
+      "mintage": 10000,
+      "portrait": "Polskie Termopile – Głogów",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2024",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Polskie Termopile – Głogów",
+        "20 zł",
+        "Srebro Ag 925",
+        "stempel lustrzany",
+        "średnica 38.61 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2024/861",
+        "url": "https://eli.gov.pl/eli/MP/2024/861/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2024/861",
+          "url": "https://eli.gov.pl/eli/MP/2024/861/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2024",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2024-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2024-odkryj-polske-zamek-w-lancucie-5-zl",
+      "title": "Odkryj Polskę – Zamek w Łańcucie, 5 zł, 2024",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2024",
+      "period": "third-republic",
+      "nominal": "5 zł",
+      "metal": "Pierścień MN25, rdzeń CuAl6Ni2",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 6.54,
+      "diameterMm": 24,
+      "issueDate": "2024-11-07",
+      "mintage": 1000000,
+      "portrait": "Odkryj Polskę – Zamek w Łańcucie",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2024",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Odkryj Polskę – Zamek w Łańcucie",
+        "5 zł",
+        "Pierścień MN25, rdzeń CuAl6Ni2",
+        "standard obiegowy",
+        "średnica 24 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2024/868",
+        "url": "https://eli.gov.pl/eli/MP/2024/868/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2024/868",
+          "url": "https://eli.gov.pl/eli/MP/2024/868/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2024",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2024-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2024-wykleci-przez-komunistow-zolnierze-niezlomni-henryk-flame-bartek-10-zl",
+      "title": "Wyklęci przez komunistów żołnierze niezłomni – Henryk Flame Bartek, 10 zł, 2024",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2024",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 925",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 14.14,
+      "diameterMm": 32,
+      "issueDate": "2024-11-14",
+      "mintage": 10000,
+      "portrait": "Wyklęci przez komunistów żołnierze niezłomni – Henryk Flame Bartek",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2024",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Wyklęci przez komunistów żołnierze niezłomni – Henryk Flame Bartek",
+        "10 zł",
+        "Srebro Ag 925",
+        "stempel lustrzany; tampondruk",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2024/898",
+        "url": "https://eli.gov.pl/eli/MP/2024/898/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2024/898",
+          "url": "https://eli.gov.pl/eli/MP/2024/898/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2024",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2024-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2024-wykleci-przez-komunistow-zolnierze-niezlomni-wladyslaw-gurgacz-sem-10-zl",
+      "title": "Wyklęci przez komunistów żołnierze niezłomni – Władysław Gurgacz Sem, 10 zł, 2024",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2024",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 925",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 14.14,
+      "diameterMm": 32,
+      "issueDate": "2024-11-14",
+      "mintage": 10000,
+      "portrait": "Wyklęci przez komunistów żołnierze niezłomni – Władysław Gurgacz Sem",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2024",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Wyklęci przez komunistów żołnierze niezłomni – Władysław Gurgacz Sem",
+        "10 zł",
+        "Srebro Ag 925",
+        "stempel lustrzany; tampondruk",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2024/903",
+        "url": "https://eli.gov.pl/eli/MP/2024/903/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2024/903",
+          "url": "https://eli.gov.pl/eli/MP/2024/903/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2024",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2024-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2025-skarby-sztuki-medalierskiej-stanislaw-malachowski-50-zl",
+      "title": "Skarby sztuki medalierskiej – Stanisław Małachowski, 50 zł, 2025",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2025",
+      "period": "third-republic",
+      "nominal": "50 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 62.2,
+      "diameterMm": 45,
+      "issueDate": "2025-01-16",
+      "mintage": 5000,
+      "portrait": "Skarby sztuki medalierskiej – Stanisław Małachowski",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2025",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Skarby sztuki medalierskiej – Stanisław Małachowski",
+        "50 zł",
+        "Srebro Ag 999",
+        "wysoki relief",
+        "średnica 45 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2024/1073",
+        "url": "https://eli.gov.pl/eli/MP/2024/1073/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2024/1073",
+          "url": "https://eli.gov.pl/eli/MP/2024/1073/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2025",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2025-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2025-100-lecie-zawarcia-konkordatu-miedzy-stolica-apostolska-a-rzeczapospolita-polska-20-zl",
+      "title": "100-lecie zawarcia Konkordatu między Stolicą Apostolską a Rzecząpospolitą Polską, 20 zł, 2025",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2025",
+      "period": "third-republic",
+      "nominal": "20 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "rectangular",
+      "weightGrams": 28.28,
+      "diameterMm": null,
+      "dimensionsMm": [
+        40,
+        28
+      ],
+      "issueDate": "2025-02-06",
+      "mintage": 8000,
+      "portrait": "100-lecie zawarcia Konkordatu między Stolicą Apostolską a Rzecząpospolitą Polską",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2025",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "100-lecie zawarcia Konkordatu między Stolicą Apostolską a Rzecząpospolitą Polską",
+        "20 zł",
+        "Srebro Ag 999",
+        "stempel lustrzany; druk UV",
+        "wymiary 40 × 28 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2025/82",
+        "url": "https://eli.gov.pl/eli/MP/2025/82/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2025/82",
+          "url": "https://eli.gov.pl/eli/MP/2025/82/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2025",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2025-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2025-polskie-banknoty-obiegowe-banknot-o-nominale-50-zl-50-zl",
+      "title": "Polskie banknoty obiegowe – Banknot o nominale 50 zł, 50 zł, 2025",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2025",
+      "period": "third-republic",
+      "nominal": "50 zł",
+      "metal": "Złoto Au 999,9",
+      "mint": "Warszawa",
+      "shape": "rectangular",
+      "weightGrams": 31.1,
+      "diameterMm": null,
+      "dimensionsMm": [
+        50,
+        25
+      ],
+      "issueDate": "2025-03-06",
+      "mintage": 1500,
+      "portrait": "Polskie banknoty obiegowe – Banknot o nominale 50 zł",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2025",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Polskie banknoty obiegowe – Banknot o nominale 50 zł",
+        "50 zł",
+        "Złoto Au 999,9",
+        "stempel lustrzany",
+        "wymiary 50 × 25 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2025/117",
+        "url": "https://eli.gov.pl/eli/MP/2025/117/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2025/117",
+          "url": "https://eli.gov.pl/eli/MP/2025/117/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2025",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2025-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2025-hetmani-rzeczypospolitej-stanislaw-koniecpolski-10-zl",
+      "title": "Hetmani Rzeczypospolitej – Stanisław Koniecpolski, 10 zł, 2025",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2025",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 31.1,
+      "diameterMm": 32,
+      "issueDate": "2025-03-26",
+      "mintage": 8000,
+      "portrait": "Hetmani Rzeczypospolitej – Stanisław Koniecpolski",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2025",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Hetmani Rzeczypospolitej – Stanisław Koniecpolski",
+        "10 zł",
+        "Srebro Ag 999",
+        "stempel lustrzany; wysoki relief",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2025/214",
+        "url": "https://eli.gov.pl/eli/MP/2025/214/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2025/214",
+          "url": "https://eli.gov.pl/eli/MP/2025/214/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2025",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2025-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2025-hetmani-rzeczypospolitej-stanislaw-koniecpolski-500-zl",
+      "title": "Hetmani Rzeczypospolitej – Stanisław Koniecpolski, 500 zł, 2025",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2025",
+      "period": "third-republic",
+      "nominal": "500 zł",
+      "metal": "Złoto Au 999,9",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 31.1,
+      "diameterMm": 32,
+      "issueDate": "2025-03-26",
+      "mintage": 1000,
+      "portrait": "Hetmani Rzeczypospolitej – Stanisław Koniecpolski",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2025",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Hetmani Rzeczypospolitej – Stanisław Koniecpolski",
+        "500 zł",
+        "Złoto Au 999,9",
+        "stempel lustrzany; wysoki relief",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2025/214",
+        "url": "https://eli.gov.pl/eli/MP/2025/214/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2025/214",
+          "url": "https://eli.gov.pl/eli/MP/2025/214/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2025",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2025-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2025-85-rocznica-zbrodni-katynskiej-50-zl",
+      "title": "85. rocznica zbrodni katyńskiej, 50 zł, 2025",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2025",
+      "period": "third-republic",
+      "nominal": "50 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 62.2,
+      "diameterMm": 45,
+      "issueDate": "2025-04-08",
+      "mintage": 5000,
+      "portrait": "85. rocznica zbrodni katyńskiej",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2025",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "85. rocznica zbrodni katyńskiej",
+        "50 zł",
+        "Srebro Ag 999",
+        "stempel lustrzany; wysoki relief; selektywne platerowanie",
+        "średnica 45 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2025/268",
+        "url": "https://eli.gov.pl/eli/MP/2025/268/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2025/268",
+          "url": "https://eli.gov.pl/eli/MP/2025/268/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2025",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2025-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2025-tysiaclecie-koronacji-boleslawa-chrobrego-10-zl",
+      "title": "Tysiąclecie koronacji Bolesława Chrobrego, 10 zł, 2025",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2025",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 14.14,
+      "diameterMm": 32,
+      "issueDate": "2025-04-16",
+      "mintage": 10000,
+      "portrait": "Tysiąclecie koronacji Bolesława Chrobrego",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2025",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Tysiąclecie koronacji Bolesława Chrobrego",
+        "10 zł",
+        "Srebro Ag 999",
+        "stempel lustrzany; selektywne złocenie",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2025/297",
+        "url": "https://eli.gov.pl/eli/MP/2025/297/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2025/297",
+          "url": "https://eli.gov.pl/eli/MP/2025/297/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2025",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2025-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2025-tysiaclecie-koronacji-boleslawa-chrobrego-100-zl",
+      "title": "Tysiąclecie koronacji Bolesława Chrobrego, 100 zł, 2025",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2025",
+      "period": "third-republic",
+      "nominal": "100 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "cuboid",
+      "weightGrams": 311,
+      "diameterMm": null,
+      "dimensionsMm": [
+        29,
+        29,
+        35.5
+      ],
+      "issueDate": "2025-04-16",
+      "mintage": 1025,
+      "portrait": "Tysiąclecie koronacji Bolesława Chrobrego",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2025",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Tysiąclecie koronacji Bolesława Chrobrego",
+        "100 zł",
+        "Srebro Ag 999",
+        "stempel lustrzany i zwykły; matowanie laserowe; wybłyszczenie reliefu",
+        "wymiary 29 × 29 × 35.5 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2025/297",
+        "url": "https://eli.gov.pl/eli/MP/2025/297/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2025/297",
+          "url": "https://eli.gov.pl/eli/MP/2025/297/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2025",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2025-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2025-tysiaclecie-koronacji-boleslawa-chrobrego-500-zl",
+      "title": "Tysiąclecie koronacji Bolesława Chrobrego, 500 zł, 2025",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2025",
+      "period": "third-republic",
+      "nominal": "500 zł",
+      "metal": "Złoto Au 999,9",
+      "mint": "Warszawa",
+      "shape": "square",
+      "weightGrams": 62.2,
+      "diameterMm": null,
+      "dimensionsMm": [
+        40,
+        40
+      ],
+      "issueDate": "2025-04-16",
+      "mintage": 1025,
+      "portrait": "Tysiąclecie koronacji Bolesława Chrobrego",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2025",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Tysiąclecie koronacji Bolesława Chrobrego",
+        "500 zł",
+        "Złoto Au 999,9",
+        "stempel lustrzany; bursztyn",
+        "wymiary 40 × 40 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2025/297",
+        "url": "https://eli.gov.pl/eli/MP/2025/297/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2025/297",
+          "url": "https://eli.gov.pl/eli/MP/2025/297/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2025",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2025-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2025-45-rocznica-powstania-nszz-solidarnosc-10-zl",
+      "title": "45. rocznica powstania NSZZ Solidarność, 10 zł, 2025",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2025",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 14.14,
+      "diameterMm": 32,
+      "issueDate": "2025-04-25",
+      "mintage": 9000,
+      "portrait": "45. rocznica powstania NSZZ Solidarność",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2025",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "45. rocznica powstania NSZZ Solidarność",
+        "10 zł",
+        "Srebro Ag 999",
+        "stempel lustrzany; druk UV",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2025/339",
+        "url": "https://eli.gov.pl/eli/MP/2025/339/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2025/339",
+          "url": "https://eli.gov.pl/eli/MP/2025/339/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2025",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2025-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2025-odkryj-polske-tykocin-5-zl",
+      "title": "Odkryj Polskę – Tykocin, 5 zł, 2025",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2025",
+      "period": "third-republic",
+      "nominal": "5 zł",
+      "metal": "Pierścień MN25, rdzeń CuAl6Ni2",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 6.54,
+      "diameterMm": 24,
+      "issueDate": "2025-05-22",
+      "mintage": 1000000,
+      "portrait": "Odkryj Polskę – Tykocin",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2025",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Odkryj Polskę – Tykocin",
+        "5 zł",
+        "Pierścień MN25, rdzeń CuAl6Ni2",
+        "standard obiegowy",
+        "średnica 24 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2025/384",
+        "url": "https://eli.gov.pl/eli/MP/2025/384/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2025/384",
+          "url": "https://eli.gov.pl/eli/MP/2025/384/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2025",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2025-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2025-w-polske-wierze-jasna-gora-duchowa-stolica-polski-10-zl",
+      "title": "W Polskę wierzę – Jasna Góra – duchowa stolica Polski, 10 zł, 2025",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2025",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 925",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 14.14,
+      "diameterMm": 32,
+      "issueDate": "2025-05-27",
+      "mintage": 9000,
+      "portrait": "W Polskę wierzę – Jasna Góra – duchowa stolica Polski",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2025",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "W Polskę wierzę – Jasna Góra – duchowa stolica Polski",
+        "10 zł",
+        "Srebro Ag 925",
+        "stempel lustrzany; druk UV",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2025/463",
+        "url": "https://eli.gov.pl/eli/MP/2025/463/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2025/463",
+          "url": "https://eli.gov.pl/eli/MP/2025/463/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2025",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2025-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2025-hetmani-rzeczypospolitej-stanislaw-zolkiewski-10-zl",
+      "title": "Hetmani Rzeczypospolitej – Stanisław Żółkiewski, 10 zł, 2025",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2025",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 31.1,
+      "diameterMm": 32,
+      "issueDate": "2025-06-12",
+      "mintage": 8000,
+      "portrait": "Hetmani Rzeczypospolitej – Stanisław Żółkiewski",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2025",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Hetmani Rzeczypospolitej – Stanisław Żółkiewski",
+        "10 zł",
+        "Srebro Ag 999",
+        "stempel lustrzany; wysoki relief",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2025/523",
+        "url": "https://eli.gov.pl/eli/MP/2025/523/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2025/523",
+          "url": "https://eli.gov.pl/eli/MP/2025/523/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2025",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2025-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2025-hetmani-rzeczypospolitej-stanislaw-zolkiewski-500-zl",
+      "title": "Hetmani Rzeczypospolitej – Stanisław Żółkiewski, 500 zł, 2025",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2025",
+      "period": "third-republic",
+      "nominal": "500 zł",
+      "metal": "Złoto Au 999,9",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 31.1,
+      "diameterMm": 32,
+      "issueDate": "2025-06-12",
+      "mintage": 1000,
+      "portrait": "Hetmani Rzeczypospolitej – Stanisław Żółkiewski",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2025",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Hetmani Rzeczypospolitej – Stanisław Żółkiewski",
+        "500 zł",
+        "Złoto Au 999,9",
+        "stempel lustrzany; wysoki relief",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2025/523",
+        "url": "https://eli.gov.pl/eli/MP/2025/523/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2025/523",
+          "url": "https://eli.gov.pl/eli/MP/2025/523/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2025",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2025-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2025-80-rocznica-powrotu-polski-na-ziemie-zachodnie-i-polnocne-10-zl",
+      "title": "80. rocznica powrotu Polski na Ziemie Zachodnie i Północne, 10 zł, 2025",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2025",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "square",
+      "weightGrams": 14.14,
+      "diameterMm": null,
+      "dimensionsMm": [
+        28.2,
+        28.2
+      ],
+      "issueDate": "2025-06-26",
+      "mintage": 8000,
+      "portrait": "80. rocznica powrotu Polski na Ziemie Zachodnie i Północne",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2025",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "80. rocznica powrotu Polski na Ziemie Zachodnie i Północne",
+        "10 zł",
+        "Srebro Ag 999",
+        "stempel lustrzany; druk UV",
+        "wymiary 28.2 × 28.2 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2025/538",
+        "url": "https://eli.gov.pl/eli/MP/2025/538/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2025/538",
+          "url": "https://eli.gov.pl/eli/MP/2025/538/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2025",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2025-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2025-pamieci-ksiedza-franciszka-blachnickiego-10-zl",
+      "title": "Pamięci księdza Franciszka Blachnickiego, 10 zł, 2025",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2025",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 14.14,
+      "diameterMm": 32,
+      "issueDate": "2025-07-17",
+      "mintage": 8000,
+      "portrait": "Pamięci księdza Franciszka Blachnickiego",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2025",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Pamięci księdza Franciszka Blachnickiego",
+        "10 zł",
+        "Srebro Ag 999",
+        "stempel lustrzany",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2025/613",
+        "url": "https://eli.gov.pl/eli/MP/2025/613/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2025/613",
+          "url": "https://eli.gov.pl/eli/MP/2025/613/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2025",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2025-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2025-historia-monety-polskiej-3-grosze-ksiestwa-warszawskiego-20-zl",
+      "title": "Historia monety polskiej – 3 grosze Księstwa Warszawskiego, 20 zł, 2025",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2025",
+      "period": "third-republic",
+      "nominal": "20 zł",
+      "metal": "Srebro Ag 925",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 28.28,
+      "diameterMm": 38.61,
+      "issueDate": "2025-08-21",
+      "mintage": 10000,
+      "portrait": "Historia monety polskiej – 3 grosze Księstwa Warszawskiego",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2025",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Historia monety polskiej – 3 grosze Księstwa Warszawskiego",
+        "20 zł",
+        "Srebro Ag 925",
+        "stempel lustrzany; selektywne platerowanie",
+        "średnica 38.61 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2025/715",
+        "url": "https://eli.gov.pl/eli/MP/2025/715/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2025/715",
+          "url": "https://eli.gov.pl/eli/MP/2025/715/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2025",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2025-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2025-w-polske-wierze-piesn-rota-10-zl",
+      "title": "W Polskę wierzę – Pieśń Rota, 10 zł, 2025",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2025",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 925",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 14.14,
+      "diameterMm": 32,
+      "issueDate": "2025-09-10",
+      "mintage": 9000,
+      "portrait": "W Polskę wierzę – Pieśń Rota",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2025",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "W Polskę wierzę – Pieśń Rota",
+        "10 zł",
+        "Srebro Ag 925",
+        "stempel lustrzany; druk UV",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2025/725",
+        "url": "https://eli.gov.pl/eli/MP/2025/725/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2025/725",
+          "url": "https://eli.gov.pl/eli/MP/2025/725/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2025",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2025-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2025-hetmani-rzeczypospolitej-jan-karol-chodkiewicz-10-zl",
+      "title": "Hetmani Rzeczypospolitej – Jan Karol Chodkiewicz, 10 zł, 2025",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2025",
+      "period": "third-republic",
+      "nominal": "10 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 31.1,
+      "diameterMm": 32,
+      "issueDate": "2025-10-23",
+      "mintage": 8000,
+      "portrait": "Hetmani Rzeczypospolitej – Jan Karol Chodkiewicz",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2025",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Hetmani Rzeczypospolitej – Jan Karol Chodkiewicz",
+        "10 zł",
+        "Srebro Ag 999",
+        "stempel lustrzany; wysoki relief",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2025/1007",
+        "url": "https://eli.gov.pl/eli/MP/2025/1007/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2025/1007",
+          "url": "https://eli.gov.pl/eli/MP/2025/1007/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2025",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2025-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2025-hetmani-rzeczypospolitej-jan-karol-chodkiewicz-500-zl",
+      "title": "Hetmani Rzeczypospolitej – Jan Karol Chodkiewicz, 500 zł, 2025",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2025",
+      "period": "third-republic",
+      "nominal": "500 zł",
+      "metal": "Złoto Au 999,9",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 31.1,
+      "diameterMm": 32,
+      "issueDate": "2025-10-23",
+      "mintage": 1000,
+      "portrait": "Hetmani Rzeczypospolitej – Jan Karol Chodkiewicz",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2025",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Hetmani Rzeczypospolitej – Jan Karol Chodkiewicz",
+        "500 zł",
+        "Złoto Au 999,9",
+        "stempel lustrzany; wysoki relief",
+        "średnica 32 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2025/1007",
+        "url": "https://eli.gov.pl/eli/MP/2025/1007/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2025/1007",
+          "url": "https://eli.gov.pl/eli/MP/2025/1007/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2025",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2025-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2025-odkryj-polske-ratusz-w-brzegu-5-zl",
+      "title": "Odkryj Polskę – Ratusz w Brzegu, 5 zł, 2025",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2025",
+      "period": "third-republic",
+      "nominal": "5 zł",
+      "metal": "Pierścień MN25, rdzeń CuAl6Ni2",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 6.54,
+      "diameterMm": 24,
+      "issueDate": "2025-11-20",
+      "mintage": 1000000,
+      "portrait": "Odkryj Polskę – Ratusz w Brzegu",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2025",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Odkryj Polskę – Ratusz w Brzegu",
+        "5 zł",
+        "Pierścień MN25, rdzeń CuAl6Ni2",
+        "standard obiegowy",
+        "średnica 24 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2025/1129",
+        "url": "https://eli.gov.pl/eli/MP/2025/1129/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2025/1129",
+          "url": "https://eli.gov.pl/eli/MP/2025/1129/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2025",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2025-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2025-historia-monety-polskiej-5-zlotych-z-okresu-powstania-listopadowego-20-zl",
+      "title": "Historia monety polskiej – 5 złotych z okresu powstania listopadowego, 20 zł, 2025",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2025",
+      "period": "third-republic",
+      "nominal": "20 zł",
+      "metal": "Srebro Ag 925",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 28.28,
+      "diameterMm": 38.61,
+      "issueDate": "2025-11-26",
+      "mintage": 10000,
+      "portrait": "Historia monety polskiej – 5 złotych z okresu powstania listopadowego",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2025",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Historia monety polskiej – 5 złotych z okresu powstania listopadowego",
+        "20 zł",
+        "Srebro Ag 925",
+        "stempel lustrzany",
+        "średnica 38.61 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2025/1130",
+        "url": "https://eli.gov.pl/eli/MP/2025/1130/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2025/1130",
+          "url": "https://eli.gov.pl/eli/MP/2025/1130/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2025",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2025-pl.pdf"
+        }
+      ]
+    },
+    {
+      "id": "nbp-eli:2025-skarby-sztuki-medalierskiej-michal-ossowski-50-zl",
+      "title": "Skarby sztuki medalierskiej – Michał Ossowski, 50 zł, 2025",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2025",
+      "period": "third-republic",
+      "nominal": "50 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 62.2,
+      "diameterMm": 45,
+      "issueDate": "2025-12-09",
+      "mintage": 5000,
+      "portrait": "Skarby sztuki medalierskiej – Michał Ossowski",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2025",
+      "reverseLegend": "",
+      "diagnosticMarkers": [
+        "Skarby sztuki medalierskiej – Michał Ossowski",
+        "50 zł",
+        "Srebro Ag 999",
+        "wysoki relief",
+        "średnica 45 mm"
+      ],
+      "images": [],
+      "source": {
+        "type": "official-legal-act",
+        "name": "Monitor Polski / ELI oraz plan emisyjny NBP",
+        "recordId": "MP/2025/1210",
+        "url": "https://eli.gov.pl/eli/MP/2025/1210/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne z urzędowego aktu i planu NBP; bez opisów i ilustracji",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false,
+        "accessMode": "official-act-and-plan-normalized-facts"
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2025/1210",
+          "url": "https://eli.gov.pl/eli/MP/2025/1210/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2025",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2025-pl.pdf"
+        }
+      ]
+    }
+  ]
+}

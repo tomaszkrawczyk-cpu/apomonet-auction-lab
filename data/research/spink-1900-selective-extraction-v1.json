@@ -1,0 +1,2741 @@
+{
+  "schemaVersion": 1,
+  "extractedAt": "2026-08-29",
+  "source": {
+    "id": "spink-circular-1900",
+    "title": "Spink & Son's Numismatic Circular, vol. VIII–IX, 1899–1901",
+    "publicationYear": 1900,
+    "pages": 707,
+    "commonsUrl": "https://commons.wikimedia.org/wiki/File:Spink_%26_Son%27s_Numismatic_Circular_1900_volume_VIII.djvu",
+    "internetArchiveUrl": "https://archive.org/details/spinkcircular1900v08v09",
+    "rightsDecision": "INDEX_FACTS_ONLY",
+    "rightsEvidence": [
+      "Wikimedia Commons oznacza plik jako PD-scan/PD-old-70 i Public Domain Mark 1.0.",
+      "Egzemplarz OCR Internet Archive zawiera prośbę Google o brak redystrybucji i użycia komercyjnego; dlatego wynik przechowuje tylko indeks stron, tokeny trafień i skróty kryptograficzne, bez OCR i obrazów."
+    ]
+  },
+  "extractionPolicy": {
+    "rule": "Trafienie OCR jest tropem, nie gotowym rekordem monety.",
+    "promotionGate": "Niezależne źródło instytucjonalne plus jednoznaczne cechy emitenta, nominału, roku i mennicy.",
+    "storedContent": "Indeks strony, tokeny trafień, wynik ważony i SHA-256 strony; bez przepisywania opisu, OCR, układu katalogu i fotografii."
+  },
+  "queryGroups": [
+    {
+      "id": "poland",
+      "weight": 5,
+      "patterns": [
+        "Poland",
+        "Polish",
+        "Polen",
+        "Pologne",
+        "Polonia"
+      ]
+    },
+    {
+      "id": "polish-mints",
+      "weight": 4,
+      "patterns": [
+        "Danzig",
+        "Thorn",
+        "Elbing",
+        "Warsaw",
+        "Cracow",
+        "Posen",
+        "Bromberg",
+        "Vilna"
+      ]
+    },
+    {
+      "id": "linked-mints",
+      "weight": 2,
+      "patterns": [
+        "Riga",
+        "Livonia"
+      ]
+    },
+    {
+      "id": "polish-rulers",
+      "weight": 3,
+      "patterns": [
+        "Sigismund",
+        "Batory",
+        "Bathory",
+        "Sobieski",
+        "Jagiell",
+        "Jagello",
+        "Ladislaus",
+        "Casimir"
+      ]
+    },
+    {
+      "id": "heavy-gold",
+      "weight": 1,
+      "patterns": [
+        "ducat",
+        "double ducat",
+        "triple ducat",
+        "Portugal",
+        "portugal"
+      ]
+    }
+  ],
+  "stats": {
+    "scannedPages": 707,
+    "candidatePages": 79,
+    "mediumConfidencePages": 3,
+    "lowConfidencePages": 72,
+    "corroboratedPages": 2,
+    "excludedNonCoinPages": 2,
+    "runtimeRecordsAdded": 1,
+    "imagesAdded": 0,
+    "researchOnlyCandidates": 75
+  },
+  "candidates": [
+    {
+      "id": "spink-1900-leaf-031",
+      "status": "EXCLUDED_NON_COIN",
+      "runtimeEligible": false,
+      "scanLeaf": 31,
+      "viewerPage": "31/706",
+      "printedPageCandidate": "3685",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Poland",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Danzig",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "id": "linked-mints",
+          "matches": [
+            {
+              "token": "Riga",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 11,
+      "confidence": "HIGH",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "Wzmianki dotyczą medali Sebastiana Dadlera, w tym medalu Władysława IV z Gdańska z 1642 r.; nie zasilają pozytywnego katalogu monet.",
+      "objectKind": "medal",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "c7aad82dde04cc1ed8d135389a508eede2e9afc8efa80b3c1391d426c1c7d38b",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-304",
+      "status": "EXCLUDED_NON_COIN",
+      "runtimeEligible": false,
+      "scanLeaf": 304,
+      "viewerPage": "304/706",
+      "printedPageCandidate": "476",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Polen",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Danzig",
+              "count": 1
+            },
+            {
+              "token": "Thorn",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "linked-mints",
+          "matches": [
+            {
+              "token": "Riga",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 11,
+      "confidence": "HIGH",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "Strona opisuje miejskie i cechowe znaki/marki z Gdańska, Torunia i Rygi; materiał nadaje się wyłącznie do kolejki negatywnej obiektów podobnych do monet.",
+      "objectKind": "token",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "18060bb38cfa0fc71b700f7bcbc02930f6fabbbf2add8a5d694f8e311e86d4db",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-143",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 143,
+      "viewerPage": "143/706",
+      "printedPageCandidate": "3913",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Poland",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Danzig",
+              "count": 1
+            },
+            {
+              "token": "Thorn",
+              "count": 1
+            },
+            {
+              "token": "Elbing",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "heavy-gold",
+          "matches": [
+            {
+              "token": "Portugal",
+              "count": 1
+            },
+            {
+              "token": "portugal",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 10,
+      "confidence": "MEDIUM",
+      "reviewReason": "Polski kontekst i ciężkie złoto",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "c218c8fd04c32d4f90cc05fe4c0773f6b68f7d03ef174597415aff24b71828ac",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-272",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 272,
+      "viewerPage": "272/706",
+      "printedPageCandidate": "444",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Poland",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Danzig",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 9,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "daf800b99529cbc2258d5cc47cc8561247cc81e95f6927e1f25469c5319372bd",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-384",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 384,
+      "viewerPage": "384/706",
+      "printedPageCandidate": "556",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Poland",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "polish-rulers",
+          "matches": [
+            {
+              "token": "Bathory",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "heavy-gold",
+          "matches": [
+            {
+              "token": "ducat",
+              "count": 19
+            }
+          ]
+        }
+      ],
+      "score": 9,
+      "confidence": "MEDIUM",
+      "reviewReason": "Polski kontekst i ciężkie złoto",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "95c5563614b71cd7302fa9d4404ff29a4cbec7544d31b23b3d178d3c532e63cc",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-456",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 456,
+      "viewerPage": "456/706",
+      "printedPageCandidate": "628",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Poland",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Posen",
+              "count": 3
+            }
+          ]
+        }
+      ],
+      "score": 9,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "68df8a8fe876357362ae8e9de6854d10699b1e292c5056b76e85391e9d9f1fd8",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-081",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 81,
+      "viewerPage": "81/706",
+      "printedPageCandidate": "3793",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Polish",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "polish-rulers",
+          "matches": [
+            {
+              "token": "Casimir",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 8,
+      "confidence": "LOW",
+      "reviewReason": "Władca lub dynastia wymagająca dopasowania do katalogu instytucjonalnego",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "9d16165115f77729b9e41f2bd16b3fdac2f9b2e1b96230ac6a0a3777dd505436",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-509",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 509,
+      "viewerPage": "509/706",
+      "printedPageCandidate": "681",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Poland",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "polish-rulers",
+          "matches": [
+            {
+              "token": "Sigismund",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 8,
+      "confidence": "LOW",
+      "reviewReason": "Władca lub dynastia wymagająca dopasowania do katalogu instytucjonalnego",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "834325d15f2f436848150405f095c7c911a4d557dafedaf8ca61f24f9b504b30",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-644",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 644,
+      "viewerPage": "644/706",
+      "printedPageCandidate": "816",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Poland",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "id": "polish-rulers",
+          "matches": [
+            {
+              "token": "Sigismund",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 8,
+      "confidence": "LOW",
+      "reviewReason": "Władca lub dynastia wymagająca dopasowania do katalogu instytucjonalnego",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "c3b28260607f0f9543b67b095a0b85cb02d4951f232b356079a20e1075ae817e",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-693",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 693,
+      "viewerPage": "693/706",
+      "printedPageCandidate": "865",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Poland",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "polish-rulers",
+          "matches": [
+            {
+              "token": "Sigismund",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 8,
+      "confidence": "LOW",
+      "reviewReason": "Władca lub dynastia wymagająca dopasowania do katalogu instytucjonalnego",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "dde7c88bf5fa696a2f929344c033ec79d937e74b0e81e86eb8cb97ba4dfb4a25",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-694",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 694,
+      "viewerPage": "694/706",
+      "printedPageCandidate": "866",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Poland",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "polish-rulers",
+          "matches": [
+            {
+              "token": "Sigismund",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 8,
+      "confidence": "LOW",
+      "reviewReason": "Władca lub dynastia wymagająca dopasowania do katalogu instytucjonalnego",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "d41b9412d1b9dcdf5b36ce3a7ed80ae38e9749ea96f4a7b25ae9640b74f71ece",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-030",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 30,
+      "viewerPage": "30/706",
+      "printedPageCandidate": "3684",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Danzig",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "id": "polish-rulers",
+          "matches": [
+            {
+              "token": "Sigismund",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 7,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "7b2bd440062fb93f4392a447577ee0523121eccae0f403481dea102ffd30504c",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-427",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 427,
+      "viewerPage": "427/706",
+      "printedPageCandidate": "599",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Danzig",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "polish-rulers",
+          "matches": [
+            {
+              "token": "Sigismund",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 7,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "5296a2fef7d3e9966617acd0b416908e069a40c7233aacde8394485b2efca199",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-653",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 653,
+      "viewerPage": "653/706",
+      "printedPageCandidate": "825",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Danzig",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "id": "linked-mints",
+          "matches": [
+            {
+              "token": "Riga",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "heavy-gold",
+          "matches": [
+            {
+              "token": "Portugal",
+              "count": 1
+            },
+            {
+              "token": "portugal",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 7,
+      "confidence": "MEDIUM",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "6fed5c1848ae1438939de1f74652cb41117df29b9577cf2dd1f10a24ee56f521",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-654",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 654,
+      "viewerPage": "654/706",
+      "printedPageCandidate": "826",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Poland",
+              "count": 1
+            },
+            {
+              "token": "Polish",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "linked-mints",
+          "matches": [
+            {
+              "token": "Riga",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 7,
+      "confidence": "LOW",
+      "reviewReason": "Mennictwo powiązane terytorialnie; konieczne rozdzielenie emitenta i okresu",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "2f13321e70734922ee3a14dd861bf761f7f1559e2609d2df2910aa7e9120be2b",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-068",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 68,
+      "viewerPage": "68/706",
+      "printedPageCandidate": "3765",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Elbing",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "linked-mints",
+          "matches": [
+            {
+              "token": "Riga",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 6,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "93016b576edb2906273c997b09b0c4886440dc4e5cdf52964d2b1643f052029f",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-438",
+      "status": "CORROBORATED_EXISTING_TYPE",
+      "runtimeEligible": true,
+      "scanLeaf": 438,
+      "viewerPage": "438/706",
+      "printedPageCandidate": "610",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Poland",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "heavy-gold",
+          "matches": [
+            {
+              "token": "ducat",
+              "count": 8
+            },
+            {
+              "token": "double ducat",
+              "count": 2
+            }
+          ]
+        }
+      ],
+      "score": 6,
+      "confidence": "HIGH",
+      "reviewReason": "Polski kontekst i ciężkie złoto",
+      "manualDecision": "Dukat 1831 ze znakiem rosyjskiego orła, opisany jako używany w Polsce, odpowiada muzealnym rekordom dukata powstania listopadowego z mennicy warszawskiej.",
+      "objectKind": "",
+      "runtimeRecordId": "historical-sale-fact:spink-1900-warsaw-ducat-1831",
+      "ocrPageSha256": "eeff2c0a2d36df6a6ee963ce89a9729b334c37cbb85004117cbe5f630b2ff356",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-480",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 480,
+      "viewerPage": "480/706",
+      "printedPageCandidate": "652",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Warsaw",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "linked-mints",
+          "matches": [
+            {
+              "token": "Riga",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 6,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "e2b18c3c10fb702bd3526e4f44af405ee4b6ad27d3993ea33196cab293085236",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-665",
+      "status": "CORROBORATED_EXISTING_TYPE",
+      "runtimeEligible": true,
+      "scanLeaf": 665,
+      "viewerPage": "665/706",
+      "printedPageCandidate": "837",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Poland",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "heavy-gold",
+          "matches": [
+            {
+              "token": "ducat",
+              "count": 3
+            }
+          ]
+        }
+      ],
+      "score": 6,
+      "confidence": "HIGH",
+      "reviewReason": "Polski kontekst i ciężkie złoto",
+      "manualDecision": "Powtórne notowanie tego samego typu dukata 1831; nie tworzy drugiego typu ani drugiego niezależnego źródła.",
+      "objectKind": "",
+      "runtimeRecordId": "historical-sale-fact:spink-1900-warsaw-ducat-1831",
+      "ocrPageSha256": "0c0bd43a5adf628bfb7f32efab38a76f21b8e31ef5e00745862d07fcee333f90",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-056",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 56,
+      "viewerPage": "56/706",
+      "printedPageCandidate": "3744",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Poland",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 5,
+      "confidence": "LOW",
+      "reviewReason": "Ogólny polski kontekst numizmatyczny",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "90b870b4b47d0c27a5ed0ee1746f28f778f74948911a06fa208e74969c23c5a7",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-060",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 60,
+      "viewerPage": "60/706",
+      "printedPageCandidate": "3750",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Polen",
+              "count": 2
+            },
+            {
+              "token": "Polonia",
+              "count": 4
+            }
+          ]
+        }
+      ],
+      "score": 5,
+      "confidence": "LOW",
+      "reviewReason": "Ogólny polski kontekst numizmatyczny",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "fac6b83e88c3295635d916432ee271789a2d6d238543195bc653903409fa1d5e",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-082",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 82,
+      "viewerPage": "82/706",
+      "printedPageCandidate": "3796",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Polish",
+              "count": 3
+            }
+          ]
+        }
+      ],
+      "score": 5,
+      "confidence": "LOW",
+      "reviewReason": "Ogólny polski kontekst numizmatyczny",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "769a73bbc7456672a0505dda4121a54b07a8a381491a9d4b2fe893a3764cbd62",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-083",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 83,
+      "viewerPage": "83/706",
+      "printedPageCandidate": "3797",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Poland",
+              "count": 1
+            },
+            {
+              "token": "Polish",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 5,
+      "confidence": "LOW",
+      "reviewReason": "Ogólny polski kontekst numizmatyczny",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "1104ca747d20d2712041801be2a4dbad5069febb2d7738547e61b0e3dc2bf129",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-131",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 131,
+      "viewerPage": "131/706",
+      "printedPageCandidate": "3893",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Poland",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 5,
+      "confidence": "LOW",
+      "reviewReason": "Ogólny polski kontekst numizmatyczny",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "fb6606c0709b0d8a49718de7e1727bbf893779887dbd87d52dc5f32f130d1fcc",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-273",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 273,
+      "viewerPage": "273/706",
+      "printedPageCandidate": "445",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Polish",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 5,
+      "confidence": "LOW",
+      "reviewReason": "Ogólny polski kontekst numizmatyczny",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "2d1d6ce2408e292fbfcfb565bf3cdfdc373ee5a2c53755d407b4291aeac62de0",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-369",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 369,
+      "viewerPage": "369/706",
+      "printedPageCandidate": "541",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Danzig",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "heavy-gold",
+          "matches": [
+            {
+              "token": "Portugal",
+              "count": 1
+            },
+            {
+              "token": "portugal",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 5,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "e6011b08d7d9fd2eb72afb3f644889251f2431d3ca089c82833149a519e72394",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-403",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 403,
+      "viewerPage": "403/706",
+      "printedPageCandidate": "575",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Danzig",
+              "count": 2
+            },
+            {
+              "token": "Warsaw",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "heavy-gold",
+          "matches": [
+            {
+              "token": "Portugal",
+              "count": 1
+            },
+            {
+              "token": "portugal",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 5,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "958915a93befccbea3e01d793dfef01c511329a550a625cf78cb8fbdc6c6d393",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-453",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 453,
+      "viewerPage": "453/706",
+      "printedPageCandidate": "625",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Polish",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 5,
+      "confidence": "LOW",
+      "reviewReason": "Ogólny polski kontekst numizmatyczny",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "f8393be6794606da8f0b37b415bc04d28f3adcf7733eb215d90e11a165ea1c85",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-479",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 479,
+      "viewerPage": "479/706",
+      "printedPageCandidate": "651",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Polish",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 5,
+      "confidence": "LOW",
+      "reviewReason": "Ogólny polski kontekst numizmatyczny",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "060e0eefa79dbda5a179be273496d7d1c9e4b10af069d63c33b2cd37244bfba5",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-481",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 481,
+      "viewerPage": "481/706",
+      "printedPageCandidate": "653",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Elbing",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "heavy-gold",
+          "matches": [
+            {
+              "token": "ducat",
+              "count": 2
+            },
+            {
+              "token": "double ducat",
+              "count": 1
+            },
+            {
+              "token": "Portugal",
+              "count": 1
+            },
+            {
+              "token": "portugal",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 5,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "edc44fad5c01fc5fc1768d1e16a2a2f257f5a7e8022657abd29f7cf7a7ea7d8b",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-503",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 503,
+      "viewerPage": "503/706",
+      "printedPageCandidate": "675",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Polish",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 5,
+      "confidence": "LOW",
+      "reviewReason": "Ogólny polski kontekst numizmatyczny",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "82b8fe9456934e4fb6ace5cdae675e4b687eb92dc9391ae6e41310273093ae10",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-607",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 607,
+      "viewerPage": "607/706",
+      "printedPageCandidate": "779",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Poland",
+              "count": 2
+            }
+          ]
+        }
+      ],
+      "score": 5,
+      "confidence": "LOW",
+      "reviewReason": "Ogólny polski kontekst numizmatyczny",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "9032207ce41a959892e9cc6a336dff004e7269ddc14d627d72f567f2f721d13d",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-620",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 620,
+      "viewerPage": "620/706",
+      "printedPageCandidate": "792",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Poland",
+              "count": 2
+            }
+          ]
+        }
+      ],
+      "score": 5,
+      "confidence": "LOW",
+      "reviewReason": "Ogólny polski kontekst numizmatyczny",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "24c8f38dc9dc6210833cf27367718ed8318c374876e1eca18ea923b8f945194c",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-651",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 651,
+      "viewerPage": "651/706",
+      "printedPageCandidate": "823",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Poland",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 5,
+      "confidence": "LOW",
+      "reviewReason": "Ogólny polski kontekst numizmatyczny",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "3b3157926971eebab361b75cb661461b7ae36cebc14cda6a78b3aca0a14e02f2",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-671",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 671,
+      "viewerPage": "671/706",
+      "printedPageCandidate": "843",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "poland",
+          "matches": [
+            {
+              "token": "Polish",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 5,
+      "confidence": "LOW",
+      "reviewReason": "Ogólny polski kontekst numizmatyczny",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "b2b0a6a510617276c8b5fbf3b8d326f3236fd4e974cfc9ccb42fba3b1e3a2c4d",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-015",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 15,
+      "viewerPage": "15/706",
+      "printedPageCandidate": "1828",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Thorn",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "82224234f4b83047bbba39e702f6ef163fb4619c8059f229a79ff32018447e0c",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-027",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 27,
+      "viewerPage": "27/706",
+      "printedPageCandidate": "3681",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Elbing",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "93fe2c90902c44dddcfa40110a3cc703c64e70cbd9f6ed1afd6b88cda4be714f",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-096",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 96,
+      "viewerPage": "96/706",
+      "printedPageCandidate": "3822",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Warsaw",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "f5e2b8eefc4e47909c9eaefb6d09be13a66a98dc1c79456eaf12a9739d58264b",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-107",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 107,
+      "viewerPage": "107/706",
+      "printedPageCandidate": "3845",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Thorn",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "a2fb1fa0c6bb3f665897a12052b1bf5150247ebfb3eead709ae3c786670e0358",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-188",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 188,
+      "viewerPage": "188/706",
+      "printedPageCandidate": "4002",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Danzig",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "b0afa69944740a2906b630ad07fd283f90afb8d34950cc81ea6eb790ecd95d7e",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-228",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 228,
+      "viewerPage": "228/706",
+      "printedPageCandidate": "4080",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-rulers",
+          "matches": [
+            {
+              "token": "Sigismund",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "heavy-gold",
+          "matches": [
+            {
+              "token": "ducat",
+              "count": 3
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Władca lub dynastia wymagająca dopasowania do katalogu instytucjonalnego",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "fad4d1b9b322026f4e54838946c82974f6d694e53cd901d396c5db973b9df662",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-303",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 303,
+      "viewerPage": "303/706",
+      "printedPageCandidate": "475",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Danzig",
+              "count": 2
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "53f13ad857feb7cf8018666f9b762d69cd3d86a4b4eed76cbea7a9859f754e4b",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-326",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 326,
+      "viewerPage": "326/706",
+      "printedPageCandidate": "498",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Danzig",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "0bb119d3a532676fc490ea811b2e44243269ca84049f915731d64063dd98e8a8",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-330",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 330,
+      "viewerPage": "330/706",
+      "printedPageCandidate": "502",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Warsaw",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "e13ba6db995e0214a0ad7737028596415ceb4e15e189eedcc2b187b43131ce29",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-334",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 334,
+      "viewerPage": "334/706",
+      "printedPageCandidate": "506",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Thorn",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "0140a2398c1676c5bdc2478c950d75186045178bf707fc8921dfd1cc5473fa77",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-336",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 336,
+      "viewerPage": "336/706",
+      "printedPageCandidate": "508",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Danzig",
+              "count": 2
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "14b578acb10aa95c0d4947335565b6ec3ac07ea11c31e79cfed76a6f72469b0c",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-337",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 337,
+      "viewerPage": "337/706",
+      "printedPageCandidate": "509",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Thorn",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "435d90e4ca0458eef8e02c780df767432066c1c2dd315e80300c075565691fb0",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-354",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 354,
+      "viewerPage": "354/706",
+      "printedPageCandidate": "526",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Posen",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "6ba645fcb10ceefc24f8bf09bbabc8fae63e30a2ce22caca687788a8e909eb89",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-370",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 370,
+      "viewerPage": "370/706",
+      "printedPageCandidate": "542",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Warsaw",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "85acdffd0b0a0db688505dbded13704aa5b793412dc3fd70ad2777b43d110396",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-371",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 371,
+      "viewerPage": "371/706",
+      "printedPageCandidate": "543",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Warsaw",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "8607c874e366103dae9960a09de9f50ee4cf5dc8c2c079658d4d1218505890b1",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-373",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 373,
+      "viewerPage": "373/706",
+      "printedPageCandidate": "545",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Posen",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "bbc2bf12c53366f33a632992a7585e694a824d37b3391648c95665e7b151cfbc",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-401",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 401,
+      "viewerPage": "401/706",
+      "printedPageCandidate": "573",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Warsaw",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "d048154cc58e19e436a25fc791a90f60872093adf97ce345cf03d81ae5f3d91a",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-402",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 402,
+      "viewerPage": "402/706",
+      "printedPageCandidate": "574",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Thorn",
+              "count": 1
+            },
+            {
+              "token": "Warsaw",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "d14aa2ee6bc057e0516e63418bb8cf496bc474c076e1fc6aaf672bd4f0875dad",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-404",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 404,
+      "viewerPage": "404/706",
+      "printedPageCandidate": "576",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Thorn",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "28db0b3e70632ab4e48fed10eefbdb2ef2fa35536366cb6cdd9d4f22052dc140",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-424",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 424,
+      "viewerPage": "424/706",
+      "printedPageCandidate": "596",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Thorn",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "1dac0b4cf6363f0b6297b82baedf005492137ac782890f8b52bee387accc8363",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-454",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 454,
+      "viewerPage": "454/706",
+      "printedPageCandidate": "626",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Thorn",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "94bcbfa8ab025048caf08f9218c08a7603ddd1f24454409c0629b67b8061fa2d",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-464",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 464,
+      "viewerPage": "464/706",
+      "printedPageCandidate": "636",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-rulers",
+          "matches": [
+            {
+              "token": "Sigismund",
+              "count": 1
+            },
+            {
+              "token": "Bathory",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "heavy-gold",
+          "matches": [
+            {
+              "token": "ducat",
+              "count": 7
+            },
+            {
+              "token": "double ducat",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Władca lub dynastia wymagająca dopasowania do katalogu instytucjonalnego",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "5b0a6e638da77ed6010d8617d51a419519f2e6481eb1bc56ae0435c09aa76d5d",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-510",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 510,
+      "viewerPage": "510/706",
+      "printedPageCandidate": "682",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-rulers",
+          "matches": [
+            {
+              "token": "Sigismund",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "heavy-gold",
+          "matches": [
+            {
+              "token": "ducat",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Władca lub dynastia wymagająca dopasowania do katalogu instytucjonalnego",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "8683cbf54133421129ec25157ea2e9165277aaa31c8041946e6c51dc201dc39f",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-520",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 520,
+      "viewerPage": "520/706",
+      "printedPageCandidate": "692",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-rulers",
+          "matches": [
+            {
+              "token": "Sigismund",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "heavy-gold",
+          "matches": [
+            {
+              "token": "ducat",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Władca lub dynastia wymagająca dopasowania do katalogu instytucjonalnego",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "4c017a417ed07be9f57b324e75967dad64b2aa571ffa2036f56ccec78eff53c4",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-528",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 528,
+      "viewerPage": "528/706",
+      "printedPageCandidate": "700",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Warsaw",
+              "count": 2
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "e3e9d749a7fa5174b25038cb948fa3be36e01555249c7ff0b21bdde755c8f50c",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-542",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 542,
+      "viewerPage": "542/706",
+      "printedPageCandidate": "714",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Thorn",
+              "count": 2
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "04e8751f56190da01db0f5273197459ac15f28b00b404a0de7773ac55ff7bab5",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-622",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 622,
+      "viewerPage": "622/706",
+      "printedPageCandidate": "794",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Warsaw",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "accaeb92ca6fe78e152299bf74f0a5424f55b63f1d221f20f3cd2a418bdf85d3",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-643",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 643,
+      "viewerPage": "643/706",
+      "printedPageCandidate": "815",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Posen",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "3d5c90f6e56d67769a5fb855a962d706be08d234b94ae9c0eca943347ec84d65",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-655",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 655,
+      "viewerPage": "655/706",
+      "printedPageCandidate": "827",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Posen",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "5889317cf55170aac57676700b0903a3bb4a26a63ab4c04cb894cb363499f5cc",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-676",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 676,
+      "viewerPage": "676/706",
+      "printedPageCandidate": "848",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-mints",
+          "matches": [
+            {
+              "token": "Danzig",
+              "count": 1
+            },
+            {
+              "token": "Elbing",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 4,
+      "confidence": "LOW",
+      "reviewReason": "Mennica polska lub miejska związana z mennictwem Rzeczypospolitej",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "673f4b68421e8c3e88132916df168b8b429edc5d54cf87558220f9cdf554ada2",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-080",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 80,
+      "viewerPage": "80/706",
+      "printedPageCandidate": "3792",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-rulers",
+          "matches": [
+            {
+              "token": "Casimir",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 3,
+      "confidence": "LOW",
+      "reviewReason": "Władca lub dynastia wymagająca dopasowania do katalogu instytucjonalnego",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "ad247688dc7b265504a1abc49527f972cef9a440553830cc684960cd2bee67dc",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-084",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 84,
+      "viewerPage": "84/706",
+      "printedPageCandidate": "3798",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-rulers",
+          "matches": [
+            {
+              "token": "Ladislaus",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 3,
+      "confidence": "LOW",
+      "reviewReason": "Władca lub dynastia wymagająca dopasowania do katalogu instytucjonalnego",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "5d5d5e020ca2fd806e02c1c449f6868f92ec9e0a5bdbfc1273356d5917a9b91b",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-134",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 134,
+      "viewerPage": "134/706",
+      "printedPageCandidate": "3898",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-rulers",
+          "matches": [
+            {
+              "token": "Sigismund",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 3,
+      "confidence": "LOW",
+      "reviewReason": "Władca lub dynastia wymagająca dopasowania do katalogu instytucjonalnego",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "a8938e9ad17c4e06996eae73f10de158899322cd9975231b0d1927b7c6617601",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-223",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 223,
+      "viewerPage": "223/706",
+      "printedPageCandidate": "4075",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-rulers",
+          "matches": [
+            {
+              "token": "Casimir",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 3,
+      "confidence": "LOW",
+      "reviewReason": "Władca lub dynastia wymagająca dopasowania do katalogu instytucjonalnego",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "a53dc08220404f1dbfa83d05b0f65b909d9671d3d3d2b399bba26bcbfb442568",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-297",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 297,
+      "viewerPage": "297/706",
+      "printedPageCandidate": "469",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-rulers",
+          "matches": [
+            {
+              "token": "Sigismund",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 3,
+      "confidence": "LOW",
+      "reviewReason": "Władca lub dynastia wymagająca dopasowania do katalogu instytucjonalnego",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "52bd8482905124da761efd98db9bb4433c703b5f7c5d013893cd94b7dce89050",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-407",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 407,
+      "viewerPage": "407/706",
+      "printedPageCandidate": "579",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-rulers",
+          "matches": [
+            {
+              "token": "Ladislaus",
+              "count": 2
+            }
+          ]
+        }
+      ],
+      "score": 3,
+      "confidence": "LOW",
+      "reviewReason": "Władca lub dynastia wymagająca dopasowania do katalogu instytucjonalnego",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "6280c995e5cdaf3bb72f4cec7ec29a0ca361c670dd50504d0873efde027208d8",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-606",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 606,
+      "viewerPage": "606/706",
+      "printedPageCandidate": "778",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-rulers",
+          "matches": [
+            {
+              "token": "Casimir",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 3,
+      "confidence": "LOW",
+      "reviewReason": "Władca lub dynastia wymagająca dopasowania do katalogu instytucjonalnego",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "ec3db92b129d0c959dcf50ce2ff3a673a3c7f83aa591c8ef5272363eb04421a7",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-621",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 621,
+      "viewerPage": "621/706",
+      "printedPageCandidate": "793",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "polish-rulers",
+          "matches": [
+            {
+              "token": "Casimir",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 3,
+      "confidence": "LOW",
+      "reviewReason": "Władca lub dynastia wymagająca dopasowania do katalogu instytucjonalnego",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "b5fab8969508ca2516f6aad02a62eb6795aef6b9d0daad1a71ec7f8c36ff8dd0",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-114",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 114,
+      "viewerPage": "114/706",
+      "printedPageCandidate": "3858",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "linked-mints",
+          "matches": [
+            {
+              "token": "Riga",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 2,
+      "confidence": "LOW",
+      "reviewReason": "Mennictwo powiązane terytorialnie; konieczne rozdzielenie emitenta i okresu",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "85dbe136e180c3aaae8c8b93b0b50fb54ee9a0e55d0c16550cd939dfc84ad987",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-299",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 299,
+      "viewerPage": "299/706",
+      "printedPageCandidate": "471",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "linked-mints",
+          "matches": [
+            {
+              "token": "Riga",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 2,
+      "confidence": "LOW",
+      "reviewReason": "Mennictwo powiązane terytorialnie; konieczne rozdzielenie emitenta i okresu",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "f8f777fad3f5d58a249003134924d276456963a7fad714f0bfa1ba2ead40b296",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-329",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 329,
+      "viewerPage": "329/706",
+      "printedPageCandidate": "501",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "linked-mints",
+          "matches": [
+            {
+              "token": "Riga",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 2,
+      "confidence": "LOW",
+      "reviewReason": "Mennictwo powiązane terytorialnie; konieczne rozdzielenie emitenta i okresu",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "e1b1f18b1270e12ddec82987e5b11906d431884bb2f04f1e0fd33302a84fa1f5",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-513",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 513,
+      "viewerPage": "513/706",
+      "printedPageCandidate": "685",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "linked-mints",
+          "matches": [
+            {
+              "token": "Riga",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 2,
+      "confidence": "LOW",
+      "reviewReason": "Mennictwo powiązane terytorialnie; konieczne rozdzielenie emitenta i okresu",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "c12ccd3363ecfe96b1267f3f47e57aeed98d0886e04fa95cc39eda524fdfcedd",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-566",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 566,
+      "viewerPage": "566/706",
+      "printedPageCandidate": "738",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "linked-mints",
+          "matches": [
+            {
+              "token": "Riga",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 2,
+      "confidence": "LOW",
+      "reviewReason": "Mennictwo powiązane terytorialnie; konieczne rozdzielenie emitenta i okresu",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "47b23d6509679b6d82ded3b1661626f733ba6c4ea9da32674c3b51eac2bcae12",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    },
+    {
+      "id": "spink-1900-leaf-605",
+      "status": "RESEARCH_ONLY",
+      "runtimeEligible": false,
+      "scanLeaf": 605,
+      "viewerPage": "605/706",
+      "printedPageCandidate": "777",
+      "printedPageConfidence": 0,
+      "groups": [
+        {
+          "id": "linked-mints",
+          "matches": [
+            {
+              "token": "Livonia",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "score": 2,
+      "confidence": "LOW",
+      "reviewReason": "Mennictwo powiązane terytorialnie; konieczne rozdzielenie emitenta i okresu",
+      "manualDecision": "",
+      "objectKind": "",
+      "runtimeRecordId": "",
+      "ocrPageSha256": "95ce945011c9c005b2eb484835a79cc720674a19af8a72602e804d327ec67928",
+      "independentSourceRequired": true,
+      "imagePromoted": false
+    }
+  ]
+}

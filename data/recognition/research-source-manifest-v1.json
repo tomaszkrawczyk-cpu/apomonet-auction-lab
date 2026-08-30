@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "reviewedAt": "2026-08-28",
+  "reviewedAt": "2026-08-29",
   "purpose": "Jawny rejestr źródeł rozpoznania polskich monet i dopuszczalnego sposobu ich użycia",
   "sources": [
     {
@@ -20,6 +20,15 @@
       "role": "licensed-visual-corroboration",
       "mode": "item-level-licence-check-plus-exact-year-denomination-region-match",
       "result": "1072 licensed files reviewed across 22 targeted categories; 63 museum types enriched with 66 images; 90 forbidden groups and 794 ambiguous/incomplete groups rejected"
+    },
+    {
+      "id": "commons-negative-visual-open",
+      "category": "open-negative-image-repository",
+      "name": "Wikimedia Commons — falsyfikaty, repliki i formy odlewnicze monet",
+      "url": "https://commons.wikimedia.org/wiki/Category:Counterfeit_coins",
+      "role": "negative-visual-warning-reference-only",
+      "mode": "explicit-negative-category-plus-item-level-open-licence; never a positive identity or automatic authenticity verdict",
+      "result": "89 legalnych obrazów: 72 falsyfikatów, 11 replik i 6 form odlewniczych; 15 grup z rozpoznaną parą awers–rewers; 37 plików wymagających atrybucji; pliki nieobrazowe odrzucone"
     },
     {
       "id": "nbp-catalog",
@@ -47,6 +56,15 @@
       "role": "positive-identification-pattern-catalog",
       "mode": "CC-BY-SA-revision-pinned-table-facts-without-contemporary-catalogue-numbering-or-auction-images",
       "result": "502 records: 389 nickel patterns, 13 brass patterns and 100 collector patterns; all carry weight and diameter; 13 have item-level open Commons images"
+    },
+    {
+      "id": "third-republic-open-catalog",
+      "category": "open-reference-plus-official-links",
+      "name": "Polskie monety III RP 1995–2024 — otwarty korpus APOMONET",
+      "url": "https://pl.wikipedia.org/wiki/Monety_kolekcjonerskie_III_Rzeczypospolitej",
+      "role": "positive-identification-catalog",
+      "mode": "CC-BY-SA-revision-pinned-table-facts-with-NBP-and-ELI-links-retained-by-source-pages",
+      "result": "896 records: 260 commemorative 2 zł, 16 historical Discover Poland 5 zł, 96 Orzeł Bielik/Bielik year-denomination records and 524 collector coins; every record has metrology and mintage; images and protected catalogue numbering excluded"
     },
     {
       "id": "polona-stronczynski",
@@ -110,6 +128,60 @@
       "role": "diagnostic-leads-and-known-error-cases",
       "mode": "lead-only-requires-independent-verification",
       "result": "never promoted directly to identity ground truth"
+    },
+    {
+      "id": "historical-collection-index",
+      "category": "historical-provenance",
+      "name": "Chełmiński, Kubicki, Frankiewicz, Chomiński i Karolkiewicz — kontrolowany indeks kolekcji",
+      "url": "",
+      "role": "specimen-provenance-and-research-queue-only",
+      "mode": "bibliographic-facts-lot-ranges-and-links-no-protected-content",
+      "result": "5 katalogów aukcyjnych, 6948 numerowanych pozycji lub numerów w zakresach i 3 kandydackie krawędzie proweniencji; 0 rekordów promowanych automatycznie do pozytywnej tożsamości"
+    },
+    {
+      "id": "public-domain-old-catalogue-sweep",
+      "category": "mixed-rights-historical-catalogues",
+      "name": "Spink 1900/1902/1908, Merzbacher 1903, Hess 1906, Cahn 1924, Schlessinger 1929 i Hamburger 1932",
+      "url": "https://commons.wikimedia.org/wiki/File:Spink_%26_Son%27s_Numismatic_Circular_1900_volume_VIII.djvu",
+      "role": "public-domain-extraction-and-historical-corroboration",
+      "mode": "per-item-rights-decision; open scans separated from facts-only and In Copyright material",
+      "result": "8 źródeł sklasyfikowanych: 1 otwarty skan (707 stron), 2 źródła facts-only i 5 In Copyright; 1578 nowych pozycji polskich w zakresach trafiło do kolejki; 2 fakty aukcyjne promowano po zgodności z MNK/MNW, 3 pozostają RESEARCH_ONLY, 0 zdjęć pobrano bez licencji"
+    },
+    {
+      "id": "historical-sale-facts-runtime",
+      "category": "historical-auction-factual-metadata",
+      "name": "Spink & Son — The Numismatic Circular 1908, fakty potwierdzone muzealnie",
+      "url": "https://www.archive.org/stream/numismaticcircu00songoog/numismaticcircu00songoog_djvu.txt?keepThis=true",
+      "role": "multi-source-issue-corroboration",
+      "mode": "own normalized factual transcription after exact institutional match; no prose, price, scan or image import",
+      "result": "Dukat ryski Zygmunta III z 1588 i dwudukat gdański Władysława IV z 1642 dodane jako fakty źródła C; złota odbitka denara 1579 i dwa półtalary 1630 zatrzymane do wyjaśnienia"
+    },
+    {
+      "id": "mnw-potocki-sobanski",
+      "category": "named-museum-provenance",
+      "name": "MNW — kolekcje Potockich i Kazimierza hr. Sobańskiego",
+      "url": "https://cyfrowe.mnw.art.pl/",
+      "role": "item-level-public-domain-specimen-provenance",
+      "mode": "named-collection-membership-after-public-domain-and-object-class-gate",
+      "result": "Potoccy: 1705 public-domain objects observed, 1095 in current runtime intersection; Sobański: 187 observed, 157 in runtime intersection; out-of-slice objects remain queued and counterfeits stay negative"
+    },
+    {
+      "id": "zbichorski-reference",
+      "category": "private-collection-provenance",
+      "name": "Kolekcja Kazimierza Zbichorskiego",
+      "url": "https://marciniak.com/moja-przygoda-z-kolekcja-kazimierza-zbichorskiego/",
+      "role": "provenance-leads-and-permission-target",
+      "mode": "reference-only-no-auction-photos-or-prose",
+      "result": "reported corpus exceeds 1500 numismatic objects, 2000 photographs and about 1600 negatives; no open bulk licence identified"
+    },
+    {
+      "id": "kosice-gold-hoard",
+      "category": "museum-hoard",
+      "name": "Skarb złoty z Koszyc",
+      "url": "https://www.kosiceregion.com/en/poi/kosice-gold-treasure-exhibit-in-vsm-in-kosice/",
+      "role": "hoard-provenance-and-heavy-gold-corroboration",
+      "mode": "aggregate-facts-and-bibliography-until-item-level-rights",
+      "result": "2920 gold coins in the hoard and a reported subset of 38 Polish coins; full catalogue and photographs remain reference-only"
     },
     {
       "id": "auction-archives",

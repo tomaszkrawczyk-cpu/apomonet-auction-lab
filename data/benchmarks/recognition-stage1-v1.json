@@ -1,0 +1,613 @@
+{
+  "schemaVersion": 1,
+  "frozenAt": "2026-08-29",
+  "purpose": "Stały, lokalny benchmark sit i bramki Stage 1. Nie zastępuje testu fotografii na telefonie ani pomiaru kosztu modelu.",
+  "metrics": [
+    "top1CoinType",
+    "top3CoinType",
+    "diagnosticFamily",
+    "correctAbstention",
+    "falseConfidentSelection",
+    "localP50Ms",
+    "localP90Ms"
+  ],
+  "cases": [
+    {
+      "id": "elective-batory-ducat-1587",
+      "category": "elective-monarchy-heavy-gold",
+      "targetId": "curated:batory-ducat-gdansk-1587",
+      "expectedTokens": ["stefan", "dukat", "gdansk"],
+      "observations": {
+        "rulerReading": "STEPHANVS",
+        "yearReading": "1587",
+        "denominationReading": "dukat",
+        "mintReading": "GEDANENSIS",
+        "metalAppearance": "złoto",
+        "shape": "okrągła",
+        "portrait": "portret króla",
+        "heraldry": ["herb Gdańska, dwa lwy"],
+        "mintMarks": [],
+        "obverseLegendFragments": ["STEPHANVS D G REX POL"],
+        "reverseLegendFragments": ["MONE NO AVR CIVI GEDANENSIS", "87"]
+      },
+      "measurements": { "weightGrams": 3.57, "diameterMm": 22 }
+    },
+    {
+      "id": "elective-elblag-double-thaler-1651",
+      "category": "elective-monarchy-metrology",
+      "targetId": "mnk:87323",
+      "expectedTokens": ["dwutalar", "elblag"],
+      "observations": {
+        "rulerReading": "IOAN CASIM",
+        "yearReading": "1651",
+        "denominationReading": "dwutalar",
+        "mintReading": "ELBINGENSIS",
+        "metalAppearance": "srebro",
+        "shape": "kwadratowa klipa",
+        "portrait": "portret Jana Kazimierza",
+        "heraldry": ["herb Elbląga trzymany przez anioła"],
+        "mintMarks": ["W VE"],
+        "obverseLegendFragments": ["IOAN CASIM D G REX POL"],
+        "reverseLegendFragments": ["MONETA ARGENTEA CIVITATIS ELBINGENSIS", "1651"]
+      },
+      "measurements": { "weightGrams": 57.74, "diameterMm": 46.5 }
+    },
+    {
+      "id": "elective-elblag-one-half-thaler-1651",
+      "category": "elective-monarchy-metrology",
+      "targetId": "mnk:87256",
+      "expectedTokens": ["1½", "talara", "elblag"],
+      "observations": {
+        "rulerReading": "Jan Kazimierz",
+        "yearReading": "1651",
+        "denominationReading": "półtoratala",
+        "mintReading": "Elbląg",
+        "metalAppearance": "srebro",
+        "shape": "kwadratowa klipa",
+        "portrait": "portret króla",
+        "heraldry": ["herb Elbląga"],
+        "mintMarks": ["W VE"],
+        "obverseLegendFragments": ["IOAN CASIM"],
+        "reverseLegendFragments": ["ELBINGENSIS"]
+      },
+      "measurements": { "weightGrams": 43.266, "diameterMm": 46.25 }
+    },
+    {
+      "id": "elective-gdansk-siege-thaler-1577",
+      "category": "gdansk-confusion-family",
+      "targetId": "mnk:210590",
+      "expectedTokens": ["talar", "gdansk", "1577"],
+      "observations": {
+        "rulerReading": "Nie ustalono",
+        "yearReading": "1577",
+        "denominationReading": "talar",
+        "mintReading": "GEDANENSIS",
+        "metalAppearance": "srebro",
+        "shape": "okrągła",
+        "portrait": "Chrystus z jabłkiem królewskim",
+        "heraldry": ["herb Gdańska z lwami"],
+        "mintMarks": [],
+        "obverseLegendFragments": ["DEFENDE NOS CHRISTE SALVATOR"],
+        "reverseLegendFragments": ["MONETA NOVA CIVITATIS GEDANENSIS", "1577"]
+      },
+      "measurements": { "weightGrams": 28.4, "diameterMm": 41.2 }
+    },
+    {
+      "id": "elective-riga-trojak-1586",
+      "category": "riga-confusion-family",
+      "targetId": "mnk:751583",
+      "expectedTokens": ["trojak", "ryga"],
+      "observations": {
+        "rulerReading": "Stefan Batory",
+        "yearReading": "1586",
+        "denominationReading": "3 grosze",
+        "mintReading": "RIGA",
+        "metalAppearance": "srebro",
+        "shape": "okrągła",
+        "portrait": "portret władcy",
+        "heraldry": [],
+        "mintMarks": [],
+        "obverseLegendFragments": ["STEPHAN D G REX POL"],
+        "reverseLegendFragments": ["RIGA", "III"]
+      },
+      "measurements": { "weightGrams": 1.64, "diameterMm": 20.6 }
+    },
+    {
+      "id": "heavy-portugal-bydgoszcz-1616",
+      "category": "heavy-gold",
+      "targetId": "mnk:90558",
+      "expectedTokens": ["portugal", "bydgoszcz"],
+      "observations": {
+        "rulerReading": "SIG III",
+        "yearReading": "1616",
+        "denominationReading": "portugał",
+        "mintReading": "Bydgoszcz",
+        "metalAppearance": "złoto",
+        "shape": "okrągła",
+        "portrait": "portret Zygmunta III",
+        "heraldry": [],
+        "mintMarks": [],
+        "obverseLegendFragments": ["SIG III D G REX POL"],
+        "reverseLegendFragments": ["1616"]
+      },
+      "measurements": { "weightGrams": 35.05, "diameterMm": 42.2 }
+    },
+    {
+      "id": "heavy-half-portugal-vilnius-1622",
+      "category": "heavy-gold",
+      "targetId": "mnk:91168",
+      "expectedTokens": ["polportugal", "wilno"],
+      "observations": {
+        "rulerReading": "Zygmunt III Waza",
+        "yearReading": "1622",
+        "denominationReading": "półportugał",
+        "mintReading": "Vilnius",
+        "metalAppearance": "złoto",
+        "shape": "okrągła",
+        "portrait": "portret króla",
+        "heraldry": ["Pogoń"],
+        "mintMarks": [],
+        "obverseLegendFragments": ["SIGIS III"],
+        "reverseLegendFragments": ["M D L", "1622"]
+      },
+      "measurements": { "weightGrams": 17.16, "diameterMm": 35.5 }
+    },
+    {
+      "id": "heavy-ten-ducats-bydgoszcz-1630",
+      "category": "heavy-gold",
+      "targetId": "ikmk:1eda6a28b42a70ff4ad6",
+      "expectedTokens": ["10", "dukat", "bydgoszcz"],
+      "observations": {
+        "rulerReading": "Zygmunt III Waza",
+        "yearReading": "1630",
+        "denominationReading": "10 dukatów",
+        "mintReading": "Bydgoszcz",
+        "metalAppearance": "złoto",
+        "shape": "okrągła",
+        "portrait": "portret króla",
+        "heraldry": [],
+        "mintMarks": [],
+        "obverseLegendFragments": ["SIGIS III"],
+        "reverseLegendFragments": ["1630"]
+      },
+      "measurements": { "weightGrams": 34.86, "diameterMm": 45 }
+    },
+    {
+      "id": "medieval-chrobry-denar",
+      "category": "medieval",
+      "targetId": "mnk:106819",
+      "expectedTokens": ["chrobry", "denar"],
+      "observations": {
+        "rulerReading": "Bolesław Chrobry",
+        "yearReading": "1000",
+        "denominationReading": "denar",
+        "mintReading": "Poznań",
+        "metalAppearance": "srebro",
+        "shape": "okrągła",
+        "portrait": "schematyczna głowa",
+        "heraldry": [],
+        "mintMarks": [],
+        "obverseLegendFragments": [],
+        "reverseLegendFragments": []
+      },
+      "measurements": { "weightGrams": 0.889, "diameterMm": 17.2 }
+    },
+    {
+      "id": "medieval-elblag-bracteate",
+      "category": "medieval-similar-types",
+      "targetId": "mnk:352825",
+      "expectedTokens": ["brakteat", "elblag"],
+      "observations": {
+        "rulerReading": "Nie ustalono",
+        "yearReading": "1457",
+        "denominationReading": "brakteat",
+        "mintReading": "Elbląg",
+        "metalAppearance": "srebro",
+        "shape": "okrągła jednostronna",
+        "portrait": "Nie ustalono",
+        "heraldry": [],
+        "mintMarks": [],
+        "obverseLegendFragments": [],
+        "reverseLegendFragments": []
+      },
+      "measurements": { "weightGrams": 0.14, "diameterMm": 13.5 }
+    },
+    {
+      "id": "partitions-warsaw-dukat-1812",
+      "category": "partitions",
+      "targetId": "mnk:249328",
+      "expectedTokens": ["ksiestwo", "dukat", "warszawa"],
+      "observations": {
+        "rulerReading": "Fryderyk August",
+        "yearReading": "1812",
+        "denominationReading": "dukat",
+        "mintReading": "Warszawa",
+        "metalAppearance": "złoto",
+        "shape": "okrągła",
+        "portrait": "portret Fryderyka Augusta",
+        "heraldry": [],
+        "mintMarks": [],
+        "obverseLegendFragments": [],
+        "reverseLegendFragments": ["1812"]
+      },
+      "measurements": { "weightGrams": 3.49, "diameterMm": 21.9 }
+    },
+    {
+      "id": "uprising-two-zloty-1831",
+      "category": "uprisings",
+      "targetId": "mnk:727142",
+      "expectedTokens": ["powstanie", "2", "warszawa"],
+      "observations": {
+        "rulerReading": "Powstanie listopadowe",
+        "yearReading": "1831",
+        "denominationReading": "2 złote",
+        "mintReading": "Warszawa",
+        "metalAppearance": "srebro",
+        "shape": "okrągła",
+        "portrait": "orzeł i Pogoń",
+        "heraldry": ["orzeł", "Pogoń"],
+        "mintMarks": [],
+        "obverseLegendFragments": ["KRÓLESTWO POLSKIE"],
+        "reverseLegendFragments": ["2 ZŁOTE POLSKIE", "1831"]
+      },
+      "measurements": { "weightGrams": 9.11, "diameterMm": 26.2 }
+    },
+    {
+      "id": "second-republic-zloty-philadelphia-1925",
+      "category": "second-republic-mint",
+      "targetId": "mnk:728303",
+      "expectedTokens": ["1", "filadelfia", "1925"],
+      "observations": {
+        "rulerReading": "Rzeczpospolita Polska",
+        "yearReading": "1925",
+        "denominationReading": "1 złoty",
+        "mintReading": "Filadelfia",
+        "metalAppearance": "srebro",
+        "shape": "okrągła",
+        "portrait": "Nie ustalono",
+        "heraldry": ["orzeł"],
+        "mintMarks": [],
+        "obverseLegendFragments": ["RZECZPOSPOLITA POLSKA"],
+        "reverseLegendFragments": ["1 ZŁOTY", "1925"]
+      },
+      "measurements": { "weightGrams": 5.02, "diameterMm": 23.2 }
+    },
+    {
+      "id": "second-republic-ten-zloty-london-1932",
+      "category": "second-republic-mint",
+      "targetId": "mnk:728525",
+      "expectedTokens": ["10", "londyn", "1932"],
+      "observations": {
+        "rulerReading": "Rzeczpospolita Polska",
+        "yearReading": "1932",
+        "denominationReading": "10 złotych",
+        "mintReading": "Londyn",
+        "metalAppearance": "srebro",
+        "shape": "okrągła",
+        "portrait": "głowa kobiety",
+        "heraldry": ["orzeł"],
+        "mintMarks": [],
+        "obverseLegendFragments": ["RZECZPOSPOLITA POLSKA"],
+        "reverseLegendFragments": ["10 ZŁOTYCH", "1932"]
+      },
+      "measurements": { "weightGrams": 21.83, "diameterMm": 34 }
+    },
+    {
+      "id": "free-city-gdansk-pfennig-1923",
+      "category": "free-city-gdansk",
+      "targetId": "mnk:728538",
+      "expectedTokens": ["gdansk", "fenig", "berlin"],
+      "observations": {
+        "rulerReading": "Wolne Miasto Gdańsk",
+        "yearReading": "1923",
+        "denominationReading": "1 pfennig",
+        "mintReading": "Berlin",
+        "metalAppearance": "miedzionikiel",
+        "shape": "okrągła",
+        "portrait": "Nie ustalono",
+        "heraldry": ["herb Gdańska"],
+        "mintMarks": [],
+        "obverseLegendFragments": ["DANZIG"],
+        "reverseLegendFragments": ["1 PFENNIG", "1923"]
+      },
+      "measurements": { "weightGrams": 1.98, "diameterMm": 17.6 }
+    },
+    {
+      "id": "prl-zloty-1949-alupolon",
+      "category": "prl-metal",
+      "targetId": "prl-open:3ee8e0aeac5fa1a5",
+      "expectedTokens": ["1", "1949", "alupolon"],
+      "observations": {
+        "rulerReading": "Narodowy Bank Polski",
+        "yearReading": "1949",
+        "denominationReading": "1 złoty",
+        "mintReading": "Warszawa",
+        "metalAppearance": "aluminium alupolon",
+        "shape": "okrągła",
+        "portrait": "Nie ustalono",
+        "heraldry": ["orzeł"],
+        "mintMarks": [],
+        "obverseLegendFragments": ["RZECZPOSPOLITA POLSKA", "1949"],
+        "reverseLegendFragments": ["1 ZŁOTY"]
+      },
+      "measurements": { "weightGrams": 2.12, "diameterMm": 25 }
+    },
+    {
+      "id": "prl-zloty-1949-cupro-nickel",
+      "category": "prl-metal",
+      "targetId": "prl-open:387366b3c25c1e08",
+      "expectedTokens": ["1", "1949", "miedzionikiel"],
+      "observations": {
+        "rulerReading": "Narodowy Bank Polski",
+        "yearReading": "1949",
+        "denominationReading": "1 złoty",
+        "mintReading": "Kremnica",
+        "metalAppearance": "miedzionikiel",
+        "shape": "okrągła",
+        "portrait": "Nie ustalono",
+        "heraldry": ["orzeł"],
+        "mintMarks": [],
+        "obverseLegendFragments": ["RZECZPOSPOLITA POLSKA", "1949"],
+        "reverseLegendFragments": ["1 ZŁOTY"]
+      },
+      "measurements": { "weightGrams": 7, "diameterMm": 25 }
+    },
+    {
+      "id": "prl-pattern-zloty-1949-brass",
+      "category": "prl-pattern",
+      "targetId": "pattern-open:ca486bcb83debe7a",
+      "expectedTokens": ["1949", "proba", "mosiadz"],
+      "observations": {
+        "rulerReading": "Narodowy Bank Polski",
+        "yearReading": "1949",
+        "denominationReading": "1 złoty",
+        "mintReading": "Warszawa",
+        "metalAppearance": "mosiądz",
+        "shape": "okrągła",
+        "portrait": "Nie ustalono",
+        "heraldry": ["orzeł"],
+        "mintMarks": ["wklęsły napis PRÓBA"],
+        "obverseLegendFragments": ["RZECZPOSPOLITA POLSKA", "PRÓBA"],
+        "reverseLegendFragments": ["1 ZŁOTY", "1949"]
+      },
+      "measurements": { "weightGrams": 6.7, "diameterMm": 25 }
+    },
+    {
+      "id": "prl-pattern-tree-10-zl-1964",
+      "category": "prl-pattern-design",
+      "targetId": "pattern-open:b426de23861fb58c",
+      "expectedTokens": ["1944", "1964", "drzewo"],
+      "observations": {
+        "rulerReading": "Narodowy Bank Polski",
+        "yearReading": "1964",
+        "denominationReading": "10 złotych",
+        "mintReading": "Warszawa",
+        "metalAppearance": "nikiel",
+        "shape": "okrągła",
+        "portrait": "drzewo",
+        "heraldry": ["orzeł"],
+        "mintMarks": ["wypukły napis PRÓBA"],
+        "obverseLegendFragments": ["POLSKA RZECZPOSPOLITA LUDOWA"],
+        "reverseLegendFragments": ["1944 1964", "10 ZŁ", "PRÓBA"]
+      },
+      "measurements": { "weightGrams": 13.1, "diameterMm": 31 }
+    },
+    {
+      "id": "prl-pattern-woman-10-zl-1964",
+      "category": "prl-pattern-design",
+      "targetId": "pattern-open:d031641c2465f185",
+      "expectedTokens": ["xx", "prl", "kobieta", "zbozem"],
+      "observations": {
+        "rulerReading": "Narodowy Bank Polski",
+        "yearReading": "1964",
+        "denominationReading": "10 złotych",
+        "mintReading": "Warszawa",
+        "metalAppearance": "nikiel",
+        "shape": "okrągła",
+        "portrait": "kobieta ze zbożem",
+        "heraldry": ["orzeł"],
+        "mintMarks": ["wypukły napis PRÓBA"],
+        "obverseLegendFragments": ["POLSKA RZECZPOSPOLITA LUDOWA"],
+        "reverseLegendFragments": ["XX LAT PRL", "10 ZŁ", "PRÓBA"]
+      },
+      "measurements": { "weightGrams": 13.9, "diameterMm": 31 }
+    },
+    {
+      "id": "third-republic-bielik-50-1995",
+      "category": "third-republic-bullion",
+      "targetId": "third-republic-open:2cfe24ebb9d65f2d",
+      "expectedTokens": ["bielik", "50", "1995"],
+      "observations": {
+        "rulerReading": "Narodowy Bank Polski",
+        "yearReading": "1995",
+        "denominationReading": "50 złotych",
+        "mintReading": "Warszawa",
+        "metalAppearance": "złoto",
+        "shape": "okrągła",
+        "portrait": "orzeł bielik",
+        "heraldry": ["orzeł"],
+        "mintMarks": [],
+        "obverseLegendFragments": ["RZECZPOSPOLITA POLSKA", "1995"],
+        "reverseLegendFragments": ["ORZEŁ BIELIK", "50 ZŁ"]
+      },
+      "measurements": { "weightGrams": 3.1, "diameterMm": 18 }
+    },
+    {
+      "id": "third-republic-bielik-500-1995",
+      "category": "third-republic-bullion",
+      "targetId": "third-republic-open:a81b4e7d4bc91821",
+      "expectedTokens": ["bielik", "500", "1995"],
+      "observations": {
+        "rulerReading": "Narodowy Bank Polski",
+        "yearReading": "1995",
+        "denominationReading": "500 złotych",
+        "mintReading": "Warszawa",
+        "metalAppearance": "złoto",
+        "shape": "okrągła",
+        "portrait": "orzeł bielik",
+        "heraldry": ["orzeł"],
+        "mintMarks": [],
+        "obverseLegendFragments": ["RZECZPOSPOLITA POLSKA", "1995"],
+        "reverseLegendFragments": ["ORZEŁ BIELIK", "500 ZŁ"]
+      },
+      "measurements": { "weightGrams": 31.1, "diameterMm": 32 }
+    },
+    {
+      "id": "third-republic-piast-rider-10-2006",
+      "category": "third-republic-collector",
+      "targetId": "third-republic-open:c234191afd8b972b",
+      "expectedTokens": ["jezdziec", "piastowski", "10"],
+      "observations": {
+        "rulerReading": "Narodowy Bank Polski",
+        "yearReading": "2006",
+        "denominationReading": "10 złotych",
+        "mintReading": "Warszawa",
+        "metalAppearance": "srebro Ag 925",
+        "shape": "prostokątna klipa",
+        "portrait": "jeździec piastowski",
+        "heraldry": [],
+        "mintMarks": [],
+        "obverseLegendFragments": ["RZECZPOSPOLITA POLSKA", "2006"],
+        "reverseLegendFragments": ["JEŹDZIEC PIASTOWSKI", "10 ZŁ"]
+      },
+      "measurements": { "weightGrams": 14.14 }
+    },
+    {
+      "id": "third-republic-centenary-zloty-2024",
+      "category": "third-republic-current",
+      "targetId": "nbp-eli:2024-100-rocznica-wprowadzenia-zlotego-do-obiegu-1-zl",
+      "expectedTokens": ["100", "rocznica", "zlotego"],
+      "observations": {
+        "rulerReading": "Narodowy Bank Polski",
+        "yearReading": "2024",
+        "denominationReading": "1 złoty",
+        "mintReading": "Warszawa",
+        "metalAppearance": "srebro Ag 999",
+        "shape": "kwadratowa",
+        "portrait": "Nie ustalono",
+        "heraldry": ["orzeł"],
+        "mintMarks": [],
+        "obverseLegendFragments": ["RZECZPOSPOLITA POLSKA", "2024"],
+        "reverseLegendFragments": ["100 ROCZNICA WPROWADZENIA ZŁOTEGO DO OBIEGU", "1 ZŁ"]
+      },
+      "measurements": { "weightGrams": 28.28, "diameterMm": 40 }
+    },
+    {
+      "id": "ambiguous-elblag-klippe-no-weight",
+      "category": "required-abstention",
+      "expectAbstain": true,
+      "observations": {
+        "rulerReading": "IOAN CASIM",
+        "yearReading": "1651",
+        "denominationReading": "Nie ustalono",
+        "mintReading": "ELBINGENSIS",
+        "metalAppearance": "srebro",
+        "shape": "kwadratowa klipa",
+        "portrait": "portret króla",
+        "heraldry": ["herb Elbląga trzymany przez anioła"],
+        "mintMarks": ["W VE"],
+        "obverseLegendFragments": ["IOAN CASIM"],
+        "reverseLegendFragments": ["ELBINGENSIS", "1651"]
+      },
+      "measurements": {}
+    },
+    {
+      "id": "ambiguous-bielik-no-denomination",
+      "category": "required-abstention",
+      "expectAbstain": true,
+      "observations": {
+        "rulerReading": "Narodowy Bank Polski",
+        "yearReading": "1995",
+        "denominationReading": "Nie ustalono",
+        "mintReading": "Warszawa",
+        "metalAppearance": "złoto",
+        "shape": "okrągła",
+        "portrait": "orzeł bielik",
+        "heraldry": ["orzeł"],
+        "mintMarks": [],
+        "obverseLegendFragments": ["RZECZPOSPOLITA POLSKA", "1995"],
+        "reverseLegendFragments": ["ORZEŁ BIELIK"]
+      },
+      "measurements": {}
+    },
+    {
+      "id": "ambiguous-medieval-bracteate",
+      "category": "required-abstention",
+      "expectAbstain": true,
+      "observations": {
+        "rulerReading": "Nie ustalono",
+        "yearReading": "Nie ustalono",
+        "denominationReading": "brakteat",
+        "mintReading": "Nie ustalono",
+        "metalAppearance": "srebro",
+        "shape": "jednostronna okrągła",
+        "portrait": "schematyczny znak",
+        "heraldry": [],
+        "mintMarks": [],
+        "obverseLegendFragments": [],
+        "reverseLegendFragments": []
+      },
+      "measurements": {}
+    },
+    {
+      "id": "noncoin-medal",
+      "category": "negative-object",
+      "expectAbstain": true,
+      "objectKind": "medal",
+      "observations": {
+        "rulerReading": "Jan III Sobieski",
+        "yearReading": "1683",
+        "denominationReading": "Nie ustalono",
+        "mintReading": "Nie ustalono",
+        "metalAppearance": "srebro",
+        "shape": "okrągła",
+        "portrait": "Jan III Sobieski",
+        "heraldry": [],
+        "mintMarks": [],
+        "obverseLegendFragments": ["IOANNES III"],
+        "reverseLegendFragments": ["VIENNA 1683"]
+      },
+      "measurements": {}
+    },
+    {
+      "id": "negative-copy-labelled",
+      "category": "negative-object",
+      "expectAbstain": true,
+      "objectKind": "copy",
+      "observations": {
+        "rulerReading": "Stefan Batory",
+        "yearReading": "1587",
+        "denominationReading": "dukat",
+        "mintReading": "Gdańsk",
+        "metalAppearance": "złocisty",
+        "shape": "okrągła",
+        "portrait": "portret króla, powierzchnia odlewana",
+        "heraldry": ["herb Gdańska"],
+        "mintMarks": [],
+        "obverseLegendFragments": ["STEPHANVS"],
+        "reverseLegendFragments": ["GEDANENSIS", "1587"]
+      },
+      "measurements": {}
+    },
+    {
+      "id": "noncoin-token",
+      "category": "negative-object",
+      "expectAbstain": true,
+      "objectKind": "token",
+      "observations": {
+        "rulerReading": "Nie ustalono",
+        "yearReading": "2020",
+        "denominationReading": "10 złotych",
+        "mintReading": "Warszawa",
+        "metalAppearance": "mosiądz",
+        "shape": "okrągła",
+        "portrait": "logo prywatne",
+        "heraldry": [],
+        "mintMarks": [],
+        "obverseLegendFragments": ["PAMIĄTKA"],
+        "reverseLegendFragments": ["10 ZŁ"]
+      },
+      "measurements": {}
+    }
+  ]
+}

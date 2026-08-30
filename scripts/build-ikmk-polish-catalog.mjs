@@ -79,6 +79,19 @@ function mapNominal(value) {
     [/\b6\s*gros|\bszostak/i, "Szóstak"], [/\b18\s*gros|\bort\b/i, "Ort"],
     [/\bgroschen|\bgrosz/i, "Grosz"], [/\bschilling|\bsolidus|\bszel/i, "Szeląg"],
     [/\bdenar|\bdenarius|\bpfennig/i, "Denar"], [/\bbracteate|\bbrakteat/i, "Brakteat"],
+    [/\bducato\s*\(\s*ar\s*\)/i, "Ducato srebrne"],
+    [/\b100\s*(?:ducat|dukat)/i, "100 dukatów"],
+    [/\b50\s*(?:ducat|dukat)/i, "50 dukatów"],
+    [/\b40\s*(?:ducat|dukat)/i, "40 dukatów"],
+    [/\b30\s*(?:ducat|dukat)/i, "30 dukatów"],
+    [/\b20\s*(?:ducat|dukat)/i, "20 dukatów"],
+    [/\b12\s*(?:ducat|dukat)/i, "12 dukatów"],
+    [/\b10\s*(?:ducat|dukat)/i, "10 dukatów"],
+    [/\b8\s*(?:ducat|dukat)/i, "8 dukatów"],
+    [/\b6\s*(?:ducat|dukat)/i, "6 dukatów"],
+    [/\b5\s*(?:ducat|dukat)/i, "5 dukatów"],
+    [/\b4\s*(?:ducat|dukat)/i, "4 dukaty"],
+    [/\b3\s*(?:ducat|dukat)/i, "3 dukaty"],
     [/\bdouble\s*(?:ducat|dukat)|\b2\s*(?:ducat|dukat)/i, "Dwudukat"],
     [/\bducat|\bdukat/i, "Dukat"], [/\bdouble\s*(?:taler|thaler)|\b2\s*(?:taler|thaler)/i, "Dwutalar"],
     [/\bhalf\s*(?:taler|thaler)|\b1\/2\s*(?:taler|thaler)/i, "Półtalar"],
@@ -115,7 +128,8 @@ function licensedImages(json) {
 
 function makeRecord(json, fallback = {}) {
   const title = clean(json.title || fallback.title);
-  const nominal = mapNominal(json.nominal?.nominal_en || json.nominal?.nominal_de);
+  const sourceNominal = clean(json.nominal?.nominal_en || json.nominal?.nominal_de);
+  const nominal = mapNominal(sourceNominal);
   const recordYear = year(json.year_start || json.date_verbal || title);
   const ruler = mapRuler(title);
   const mint = clean(first(json.mint)?.mint_name_en || first(json.mint)?.mint_name);
@@ -132,14 +146,19 @@ function makeRecord(json, fallback = {}) {
     year: recordYear,
     yearEnd: year(json.year_end),
     nominal,
+    sourceNominal,
     metal: mapMetal(json.material?.material_name_en || json.material?.material_name_de),
     mint,
     shape: "round",
     weightGrams: number(json.weight),
     diameterMm: number(json.diameter),
     portrait: "",
-    obverseLegend: "",
-    reverseLegend: "",
+    // Legend transcriptions are factual inscriptions and are much more useful
+    // for medieval/early-modern disambiguation than catalogue prose. IKMK
+    // publishes the catalogue text under CC BY-SA 4.0; keep exact record-level
+    // provenance and never import image_description narrative here.
+    obverseLegend: clean(first(json.avers)?.leg_text),
+    reverseLegend: clean(first(json.revers)?.leg_text),
     diagnosticMarkers: [],
     images: licensedImages(json),
     source: {
@@ -149,6 +168,8 @@ function makeRecord(json, fallback = {}) {
       url: sourceUrl,
       rights: "Structured facts and LOD identifiers; descriptions excluded. Image URL retained only for an explicit PDM/CC item.",
       rightsCode: "explicit-open-license",
+      legendRights: "CC BY-SA 4.0",
+      legendRightsUrl: "https://creativecommons.org/licenses/by-sa/4.0/",
       restricted: false,
       retrievedAt: RETRIEVED_AT,
     },
@@ -287,6 +308,7 @@ const catalog = {
   sourcePolicy: {
     metadataLicense: "IKMK structured facts/LOD; catalogue text CC BY-SA 4.0; per-item image rights",
     descriptionsImported: false,
+    factualLegendTranscriptionsImported: true,
     mediaDownloaded: false,
     source: "https://ikmk.net/about?lang=en",
   },
@@ -299,6 +321,10 @@ const catalog = {
     recordsWithOpenImages: uniqueRecords.filter((record) => record.images.length >= 2).length,
     withMint: uniqueRecords.filter((record) => record.mint).length,
     withMetrology: uniqueRecords.filter((record) => record.weightGrams || record.diameterMm).length,
+    withObverseLegend: uniqueRecords.filter((record) => record.obverseLegend).length,
+    withReverseLegend: uniqueRecords.filter((record) => record.reverseLegend).length,
+    multipleDucatRecords: uniqueRecords.filter((record) => /^(?:Dwudukat|\d+ dukat)/.test(record.nominal)).length,
+    silverDucatoRecords: uniqueRecords.filter((record) => record.nominal === "Ducato srebrne").length,
   },
   searches: searchResults.map(({ leads: _leads, ...result }) => result),
   records: uniqueRecords,

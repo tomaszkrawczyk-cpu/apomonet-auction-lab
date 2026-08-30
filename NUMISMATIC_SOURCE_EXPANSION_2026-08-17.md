@@ -2,16 +2,18 @@
 
 ## Wdrożony katalog — aktualizacja 2026-08-28
 
-- aktywne lokalne rekordy rozpoznawcze: **2407** po usunięciu duplikatów źródłowych;
-- katalog MNK: **2139** typów/pozycji z prawem `Domena publiczna`, w tym **2102** z co najmniej dwoma zdjęciami;
+- aktywne lokalne rekordy rozpoznawcze: **22 145** po usunięciu duplikatów źródłowych;
+- katalog MNK: **5810** public-domain egzemplarzy reprezentujących **2168** typów, w tym **5713** egzemplarzy z co najmniej dwoma zdjęciami;
 - dedykowany katalog PRL: **257** rekordów rocznikowo-materiałowych z **92** typów (1949–1989), w tym **244** z odsyłaczem do aktu urzędowego i **15** ze zdjęciem na otwartej licencji sprawdzonej na poziomie pliku;
-- NBP: **10** oficjalnych emisji 2026 wydanych do 21 lipca, zapisanych jako fakty bez kopiowania zdjęć;
+- NBP/ELI: **83** współczesne typy — pełne 26 typów z 2023 r., 23 typy z 2024 r., 23 typy z 2025 r. oraz 11 typów wydanych w 2026 r.; rejestr sprawdzony do 29 sierpnia, a zapowiedziana na 1 września moneta Haliny Konopackiej pozostaje poza aktywnym katalogiem do dnia emisji; wszystkie pozycje potwierdzone aktami emisyjnymi, wyłącznie fakty, bez kopiowania zdjęć i opisów;
+- otwarty katalog III RP 1995–2024: **896** dodatkowych rekordów z wersjonowanych tabel CC BY-SA — **260** okolicznościowych 2 zł, **16** historycznych 5 zł z serii „Odkryj Polskę”, **96** rocznikowo-nominałowych monet bulionowych „Orzeł Bielik/Bielik” i **524** monety kolekcjonerskie; każdy rekord ma masę, wymiar, nakład i provenance, bez kopiowania zdjęć, opisów ani numerów z chronionych katalogów;
+- monety próbne: **502** rekordy otwartego katalogu prób z lat 1949–1994; ewentualne próby po 1994 r. pozostają osobnym zakresem i nie są tworzone przez domysł z aktów dotyczących monet wprowadzonych do obiegu;
 - okresy: średniowiecze piastowskie, Jagiellonowie, monarchia elekcyjna, zabory i powstania, II RP i wojna, PRL oraz III RP;
 - odrzucone automatycznie: medale, żetony, banknoty, kopie, repliki i obiekty jawnie opisane jako fałszywe;
 - pierwszy odczyt zdjęć działa bez listy przypadkowych rekordów lokalnych; dopiero potem uruchamia się ranking po całym katalogu oraz osobne porównanie zdjęć z maksymalnie trzema parami referencyjnymi;
 - sprzeczny odczyt władcy jest twardą blokadą identyfikacji, a brak rozstrzygnięcia kończy się wynikiem `Nie ustalono`.
 
-Powtarzalne importery znajdują się w `scripts/build-mnk-polish-catalog.mjs` i `scripts/build-prl-open-catalog.mjs`; skompresowane wyniki w `data/recognition/mnk-polish-catalog-v1.json.gz` i `data/recognition/prl-open-catalog-v1.json.gz`, bieżące fakty NBP w `data/recognition/nbp-official-catalog-v1.json`, a jawny rejestr przeglądanych źródeł w `data/recognition/research-source-manifest-v1.json`.
+Powtarzalne importery znajdują się w `scripts/build-mnk-polish-catalog.mjs`, `scripts/build-prl-open-catalog.mjs`, `scripts/build-polish-pattern-open-catalog.mjs`, `scripts/build-third-republic-open-catalog.mjs` i `scripts/build-nbp-eli-current-catalog.mjs`; skompresowane wyniki w `data/recognition/mnk-polish-catalog-v1.json.gz`, `data/recognition/prl-open-catalog-v1.json.gz`, `data/recognition/polish-pattern-open-catalog-v1.json.gz` i `data/recognition/third-republic-open-catalog-v1.json.gz`, współczesne fakty w `data/recognition/nbp-eli-current-catalog-v1.json` i `data/recognition/nbp-official-catalog-v1.json`, a jawny rejestr przeglądanych źródeł w `data/recognition/research-source-manifest-v1.json`.
 
 ## Zasada produktowa
 

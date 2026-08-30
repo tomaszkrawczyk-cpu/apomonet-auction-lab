@@ -24,8 +24,9 @@ const batoryObservation = {
 test("the orchestrator coordinates five independent evidence engines", () => {
   assert.equal(recognitionEnginePolicy.version, "multi-engine-orchestrator-v1");
   assert.deepEqual(recognitionEnginePolicy.engines, [
-    "field-index", "legend-token", "chronology", "metrology", "source-consensus",
+    "field-index", "legend-token", "chronology", "metrology", "source-consensus", "controlled-confusion-family",
   ]);
+  assert.equal(recognitionEnginePolicy.confusionFamilies.length, 6);
   assert.equal(recognitionEnginePolicy.abstainsOnConflict, true);
   const result = retrieveCandidatesWithEngines(batoryObservation, candidates, { weightGrams: 3.57 });
   assert.ok(result.shortlist.length > 0);
@@ -44,6 +45,47 @@ test("basic evidence identifies the Batory ducat and does not confuse it with a 
   assert.equal(result.ranked[0].candidate.id, "curated:batory-ducat-gdansk-1587");
   assert.equal(result.ranked[0].candidate.nominal, "Dukat");
   assert.doesNotMatch(result.ranked[0].candidate.nominal, /talar/i);
+});
+
+test("II RP Warsaw mint aliases consolidate source specimens without merging foreign mints", () => {
+  const aliases = [
+    {
+      id: "warsaw-a", title: "5 groszy 1923", ruler: "Rzeczpospolita Polska", year: "1923",
+      nominal: "5 groszy", mint: "Warszawa", objectKind: "coin", sourceName: "Źródło A", images: [],
+    },
+    {
+      id: "warsaw-b", title: "5 groszy 1923", ruler: "Rzeczpospolita Polska", year: "1923",
+      nominal: "5 groszy", mint: "Państwowa (1924-1994)", objectKind: "coin", sourceName: "Źródło B", images: [],
+    },
+    {
+      id: "kings-norton", title: "5 groszy 1923", ruler: "Rzeczpospolita Polska", year: "1923",
+      nominal: "5 groszy", mint: "Kings Norton", objectKind: "coin", sourceName: "Źródło C", images: [],
+    },
+  ];
+  const result = retrieveCandidatesWithEngines({
+    rulerReading: "Rzeczpospolita Polska", yearReading: "1923", denominationReading: "5 groszy",
+    mintReading: "Warszawa", obverseLegendFragments: [], reverseLegendFragments: [],
+  }, aliases);
+  assert.equal(result.shortlist.length, 2);
+  const warsaw = result.shortlist.find((candidate) => candidate.id !== "kings-norton");
+  const foreign = result.shortlist.find((candidate) => candidate.id === "kings-norton");
+  assert.equal(warsaw.sourceConsensus, 2);
+  assert.equal(warsaw.supportingSourceRecords, 2);
+  assert.equal(foreign.sourceConsensus, 1);
+});
+
+test("controlled II RP family abstains when otherwise equal candidates differ by mint", () => {
+  const peers = [
+    { id: "warsaw", coinTypeId: "type-w", issueId: "issue-w", title: "1 złoty 1925", ruler: "Rzeczpospolita Polska", year: "1925", periodId: "second-republic-and-war", nominal: "1 złoty", mint: "Warszawa", metal: "srebro", objectKind: "coin", sourceName: "A", images: [] },
+    { id: "philadelphia", coinTypeId: "type-p", issueId: "issue-p", title: "1 złoty 1925", ruler: "Rzeczpospolita Polska", year: "1925", periodId: "second-republic-and-war", nominal: "1 złoty", mint: "Filadelfia", metal: "srebro", objectKind: "coin", sourceName: "B", images: [] },
+  ];
+  const result = orchestrateRecognitionCandidates({
+    rulerReading: "Rzeczpospolita Polska", yearReading: "1925", denominationReading: "1 złoty",
+    mintReading: "Nie ustalono", metalAppearance: "srebro", obverseLegendFragments: [], reverseLegendFragments: [],
+  }, peers);
+  assert.equal(result.selected, null);
+  assert.equal(result.controlledConflict.blocked, true);
+  assert.ok(result.controlledConflict.activeFamilies.includes("second-republic-mint-mark"));
 });
 
 test("a warm 30k-record local comparison remains below one second", () => {

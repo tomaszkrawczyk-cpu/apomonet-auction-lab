@@ -1,11 +1,13 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-28T00:00:00.000Z",
+  "generatedAt": "2026-08-29T00:00:00.000Z",
   "policy": {
     "purpose": "Authoritative bridge from the museum corpus to current Polish issues",
     "source": "Narodowy Bank Polski",
     "rightsGate": "Factual issue metadata only; NBP images are not stored in this dataset",
-    "provenanceRequired": true
+    "provenanceRequired": true,
+    "asOf": "2026-08-29",
+    "scheduledIssuesExcluded": true
   },
   "records": [
     {
@@ -169,6 +171,51 @@
         "rightsCode": "factual-metadata-only",
         "restricted": false
       }
+    },
+    {
+      "id": "nbp:2026-rezerwy-zlota-100-zl",
+      "title": "Niezależny bank centralny – Rezerwy złota NBP, 100 zł, 2026",
+      "objectKind": "coin",
+      "country": "Polska",
+      "ruler": "Narodowy Bank Polski",
+      "year": "2026",
+      "period": "third-republic",
+      "nominal": "100 zł",
+      "metal": "Srebro Ag 999",
+      "mint": "Warszawa",
+      "shape": "cylindrical",
+      "weightGrams": 311,
+      "diameterMm": 34,
+      "dimensionsMm": [34, 32.8],
+      "issueDate": "2026-04-15",
+      "mintage": 1000,
+      "portrait": "Cylinder nawiązujący do rezerw złota NBP",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA 2026 100 ZŁ",
+      "reverseLegend": "REZERWY ZŁOTA NBP",
+      "diagnosticMarkers": ["kształt cylindryczny", "seria Niezależny bank centralny", "srebro Ag 999", "masa 311 g"],
+      "images": [],
+      "source": {
+        "type": "official-issuer-and-legal-act",
+        "name": "Narodowy Bank Polski / Monitor Polski",
+        "recordId": "MP/2026/347",
+        "url": "https://eli.gov.pl/eli/MP/2026/347/ogl",
+        "retrievedAt": "2026-08-29",
+        "rights": "Wyłącznie znormalizowane fakty emisyjne; bez zdjęć i opisu NBP",
+        "rightsCode": "factual-metadata-only",
+        "restricted": false
+      },
+      "verificationSources": [
+        {
+          "role": "official-issuance-act",
+          "id": "MP/2026/347",
+          "url": "https://eli.gov.pl/eli/MP/2026/347/ogl"
+        },
+        {
+          "role": "official-issue-plan-technical-facts",
+          "id": "NBP plan emisji 2026",
+          "url": "https://static.nbp.pl/publikacje/numizmatyka/plan-2026-pl.pdf"
+        }
+      ]
     },
     {
       "id": "nbp:2026-w-polske-wierze-10-zl",

@@ -1,0 +1,214 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-08-29",
+  "purpose": "Kontrolowany przegląd dawnych katalogów, periodyków i aukcji pod kątem legalnego uzupełniania typologii, zdjęć i proweniencji APOMONET",
+  "legalPolicy": {
+    "rule": "Wiek publikacji ani nieistnienie domu aukcyjnego nie przesądza o wygaśnięciu praw. Osobno oceniamy tekst, układ bazy, fotografię/tablicę, skan oraz regulamin repozytorium.",
+    "facts": "Nominał, emitent, rok, mennica, metal, masa, numer lotu i informacja o sprzedaży mogą być zapisane własnymi słowami jako fakty; nie przejmujemy twórczego opisu ani układu katalogu.",
+    "images": "Obraz trafia do korpusu wyłącznie po jednoznacznym item-level oznaczeniu domeny publicznej albo kompatybilnej licencji.",
+    "promotion": "Dawny katalog aukcyjny jest źródłem klasy C. Do pozytywnego runtime wchodzi tylko rekord zgodny z niezależnym katalogiem instytucjonalnym; pozostałe pozycje są RESEARCH_ONLY.",
+    "sources": [
+      "https://isap.sejm.gov.pl/isap.nsf/download.xsp/WDU20250000024/T/D20250024L.pdf",
+      "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32019L0790"
+    ]
+  },
+  "sources": [
+    {
+      "id": "spink-circular-1900-commons",
+      "title": "Spink & Son's Numismatic Circular, vol. VIII–IX, 1899–1901",
+      "publicationYear": 1900,
+      "repository": "Wikimedia Commons",
+      "url": "https://commons.wikimedia.org/wiki/File:Spink_%26_Son%27s_Numismatic_Circular_1900_volume_VIII.djvu",
+      "pages": 707,
+      "rightsDecision": "OPEN_SCAN",
+      "rightsEvidence": "Commons: PD-scan (PD-old-70), Public Domain Mark 1.0; mechaniczny skan utworu w domenie publicznej",
+      "allowed": ["OCR", "fakty", "tablice i kadry po zachowaniu adresu strony pliku i oznaczenia praw"],
+      "blocked": [],
+      "status": "PARTIALLY_PROMOTED",
+      "nextAction": "Ręcznie sprawdzić 75 pozostałych stron kandydujących; promować wyłącznie fakty zgodne z niezależnym katalogiem instytucjonalnym. Obraz promować dopiero po odrębnej kontroli praw konkretnej strony."
+    },
+    {
+      "id": "spink-circular-1902-nnp",
+      "title": "Spink & Son's Numismatic Circular, vol. X, 1902",
+      "publicationYear": 1902,
+      "repository": "Internet Archive / Newman Numismatic Portal",
+      "url": "https://archive.org/details/spinkcircular1902v10",
+      "pages": 371,
+      "rightsDecision": "FACTS_ONLY",
+      "rightsEvidence": "Publikacja historyczna; brak wystarczającego item-level oznaczenia pozwalającego włączyć skan i obrazy do komercyjnego korpusu APOMONET.",
+      "allowed": ["własny zapis faktów", "bibliografia", "bezpośredni link"],
+      "blocked": ["redystrybucja OCR", "skany", "fotografie"],
+      "status": "RESEARCH_ONLY",
+      "leads": ["Richtstück / wzorzec denara gdańskiego 1558 — wymaga niezależnego potwierdzenia i ustalenia właściwej klasy obiektu"]
+    },
+    {
+      "id": "spink-circular-1908-google",
+      "title": "The Numismatic Circular, vol. XVI, 1908",
+      "publicationYear": 1908,
+      "repository": "Internet Archive — kopia skanu Google",
+      "url": "https://archive.org/details/numismaticcircu00songoog",
+      "rightsDecision": "FACTS_ONLY",
+      "rightsEvidence": "Warstwa faktograficzna jest przepisywana samodzielnie; nie redystrybuujemy skanu ani OCR i nie importujemy niejednoznacznie przypisanych cen.",
+      "allowed": ["własny zapis faktów", "bibliografia", "bezpośredni link"],
+      "blocked": ["redystrybucja OCR", "skany", "fotografie", "ceny o niepewnym wyrównaniu kolumn"],
+      "status": "PARTIALLY_PROMOTED",
+      "reviewedPolishCoinMentions": 4,
+      "promotedAfterInstitutionalMatch": 2,
+      "researchOnly": 2,
+      "excludedNonCoins": 1
+    },
+    {
+      "id": "hess-danzig-collector-1906",
+      "title": "Adolph Hess Nachfolger — polskie monety i medale ze zbioru kolekcjonera gdańskiego",
+      "publicationYear": 1906,
+      "repository": "German Sales / UB Heidelberg",
+      "url": "https://digi.ub.uni-heidelberg.de/diglit/hess_nachf1906_03_05",
+      "doi": "10.11588/diglit.18979",
+      "polishLotRanges": ["2253–2633"],
+      "positionsInRanges": 381,
+      "pagesWithPolishSection": "103–125",
+      "plates": 3,
+      "rightsDecision": "REFERENCE_ONLY_IN_COPYRIGHT",
+      "rightsEvidence": "Repozytorium oznacza digitalizację jako In Copyright.",
+      "allowed": ["fakty bibliograficzne", "numery lotów", "własne fakty potwierdzone drugim źródłem", "bezpośredni link"],
+      "blocked": ["opisy", "tablice", "fotografie", "masowa transkrypcja"],
+      "status": "INDEXED_FOR_TARGETED_REVIEW"
+    },
+    {
+      "id": "schlessinger-north-german-1929",
+      "title": "Felix Schlessinger — Sammlung aus norddeutschem Besitz, część I",
+      "publicationYear": 1929,
+      "repository": "German Sales / UB Heidelberg",
+      "url": "https://digi.ub.uni-heidelberg.de/diglit/schlessinger1929_11_11bd1",
+      "polishLotRanges": ["278–313", "367", "443", "631–632", "639–640", "919–936", "947–949", "1060", "1222", "1271–1275", "1308–1451"],
+      "positionsInRanges": 214,
+      "rightsDecision": "REFERENCE_ONLY_IN_COPYRIGHT",
+      "rightsEvidence": "Brak otwartej licencji; digitalizacje German Sales podlegają oznaczeniu praw na poziomie obiektu.",
+      "allowed": ["fakty bibliograficzne", "numery lotów", "własne fakty potwierdzone drugim źródłem", "bezpośredni link"],
+      "blocked": ["opisy", "tablice", "fotografie", "masowa transkrypcja"],
+      "status": "INDEXED_FOR_TARGETED_REVIEW"
+    },
+    {
+      "id": "merzbacher-polish-collection-1903",
+      "title": "Dr. Eugen Merzbacher Nachf. — Sammlung polnischer Münzen",
+      "publicationYear": 1903,
+      "repository": "German Sales / UB Heidelberg",
+      "url": "https://digi.ub.uni-heidelberg.de/diglit/merzbacher_nachf1903_04_28",
+      "doi": "10.11588/diglit.18876",
+      "polishLotRanges": ["1–740", "741–830"],
+      "positionsInRanges": 830,
+      "sectionNotes": ["Królestwo Polskie", "monety obce związane z historią Polski", "wyróżnione serie Gdańska, Torunia i Elbląga"],
+      "rightsDecision": "REFERENCE_ONLY_IN_COPYRIGHT",
+      "rightsEvidence": "Repozytorium oznacza digitalizację jako In Copyright.",
+      "allowed": ["fakty bibliograficzne", "numery lotów", "własne fakty potwierdzone drugim źródłem", "bezpośredni link"],
+      "blocked": ["opisy", "tablice", "fotografie", "masowa transkrypcja"],
+      "status": "INDEXED_FOR_TARGETED_REVIEW"
+    },
+    {
+      "id": "cahn-freiherr-polish-section-1924",
+      "title": "Adolph E. Cahn — Sammlung Freiherr v. H., dział Polska",
+      "publicationYear": 1924,
+      "repository": "German Sales / UB Heidelberg",
+      "url": "https://digi.ub.uni-heidelberg.de/diglit/cahn1924_03_03",
+      "doi": "10.11588/diglit.18976",
+      "polishLotRanges": ["1050–1202"],
+      "positionsInRanges": 153,
+      "platesInWholeCatalogue": 16,
+      "rightsDecision": "REFERENCE_ONLY_IN_COPYRIGHT",
+      "rightsEvidence": "Repozytorium oznacza digitalizację jako In Copyright.",
+      "allowed": ["fakty bibliograficzne", "numery lotów", "własne fakty potwierdzone drugim źródłem", "bezpośredni link"],
+      "blocked": ["opisy", "tablice", "fotografie", "masowa transkrypcja"],
+      "status": "INDEXED_FOR_TARGETED_REVIEW"
+    },
+    {
+      "id": "hamburger-chominski-1932",
+      "title": "Leo Hamburger — Polnische Münzen: Typensammlung (Wiktor Chomiński)",
+      "publicationYear": 1932,
+      "repository": "German Sales / UB Heidelberg",
+      "url": "https://digi.ub.uni-heidelberg.de/diglit/hamburger1932_05_09",
+      "polishLotRanges": ["1–712"],
+      "positionsInRanges": 712,
+      "plates": 7,
+      "rightsDecision": "REFERENCE_ONLY_IN_COPYRIGHT",
+      "rightsEvidence": "Repozytorium oznacza digitalizację jako In Copyright; źródło było już w indeksie kolekcji APOMONET.",
+      "allowed": ["fakty bibliograficzne", "numery lotów", "bezpośredni link"],
+      "blocked": ["opisy", "tablice", "fotografie", "masowa transkrypcja"],
+      "status": "ALREADY_INDEXED"
+    }
+  ],
+  "selectiveExtraction": {
+    "sourceId": "spink-circular-1900-commons",
+    "resultFile": "data/research/spink-1900-selective-extraction-v1.json",
+    "pagesScanned": 707,
+    "candidatePages": 79,
+    "researchOnlyPages": 75,
+    "excludedNonCoinPages": 2,
+    "corroboratedPages": 2,
+    "runtimeRecordsAdded": 1,
+    "imagesAdded": 0,
+    "promotedRecordId": "historical-sale-fact:spink-1900-warsaw-ducat-1831",
+    "note": "Dwa notowania tego samego dukata 1831 są jedną krawędzią źródłową, nie dwoma niezależnymi potwierdzeniami."
+  },
+  "researchQueue": [
+    {
+      "id": "lead-spink-1908-batory-gold-strike-1579",
+      "status": "RESEARCH_ONLY",
+      "identity": {
+        "ruler": "Stefan Batory",
+        "year": "1579",
+        "nominal": "złota odbitka denara gdańskiego",
+        "mint": "Gdańsk",
+        "metal": "złoto"
+      },
+      "reason": "Nie wolno znormalizować jako zwykły dukat; potrzebne niezależne źródło typologiczne dla odbitki w innym metalu."
+    },
+    {
+      "id": "lead-spink-1908-two-half-thalers-1630",
+      "status": "RESEARCH_ONLY",
+      "identity": {
+        "ruler": "Zygmunt III Waza",
+        "year": "1630",
+        "nominal": "Półtalar",
+        "quantityReported": 2,
+        "mint": ""
+      },
+      "reason": "Cyfra 2 oznacza liczbę egzemplarzy, nie dwutalar. Bez mennicy nie łączymy z półtalarem toruńskim."
+    },
+    {
+      "id": "lead-spink-1902-danzig-denar-standard-1558",
+      "status": "RESEARCH_ONLY",
+      "identity": {
+        "year": "1558",
+        "nominal": "Denar / wzorzec menniczy",
+        "mint": "Gdańsk",
+        "metal": "srebro"
+      },
+      "reason": "Termin Richtstück może oznaczać wzorzec lub próbę; wymaga kontroli specjalistycznej przed utworzeniem typu."
+    },
+    {
+      "id": "excluded-spink-1908-sobieski-bowers-medal-1683",
+      "status": "EXCLUDED_NON_COIN",
+      "identity": {
+        "ruler": "Jan III Sobieski",
+        "year": "1683",
+        "objectKind": "medal"
+      },
+      "reason": "Medal Bowersa na odsiecz Wiednia nie należy do pozytywnego katalogu monet."
+    }
+  ],
+  "stats": {
+    "sourcesReviewed": 8,
+    "openScans": 1,
+    "factsOnlySources": 2,
+    "inCopyrightReferenceOnlySources": 5,
+    "newIndexedPolishPositionsInRestrictedCatalogues": 1578,
+    "runtimeRecordsAdded": 3,
+    "researchOnlyCoinLeads": 3,
+    "excludedNonCoinLeads": 1,
+    "spink1900CandidatePages": 79,
+    "spink1900ResearchOnlyPages": 75,
+    "spink1900ExcludedNonCoinPages": 2,
+    "spink1900CorroboratedPages": 2,
+    "imagesAdded": 0
+  }
+}

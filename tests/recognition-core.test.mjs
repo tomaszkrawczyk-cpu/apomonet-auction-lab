@@ -317,3 +317,16 @@ test("Numista image retrieval stays disabled without a configured server key", a
   const result = await searchNumistaByImage("", ["data:image/jpeg;base64,AA=="]);
   assert.deepEqual(result, { available: false, candidates: [], reason: "missing-key" });
 });
+
+test("medals, tokens and labelled copies cannot enter the positive verdict path", () => {
+  for (const objectKind of ["medal", "token", "copy", "replica", "cast"]) {
+    const raw = batoryDecision();
+    raw.objectKind = objectKind;
+    const result = adjudicateRecognition(raw, candidates, { weightGrams: 3.57 });
+    assert.equal(result.status, "unresolved");
+    assert.equal(result.selected, null);
+    assert.equal(result.confidence, 0);
+    assert.equal(result.partialIdentity.objectKind, objectKind);
+    assert.match(result.cautionNotes.join(" "), /nie został dopasowany|nie pozwala potwierdzić/);
+  }
+});

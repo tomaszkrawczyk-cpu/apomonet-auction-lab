@@ -1,0 +1,345 @@
+{
+  "schemaVersion": 1,
+  "asOf": "2026-08-29",
+  "policy": {
+    "typeDefinition": "strict type = runtime identity (ruler, year, denomination, normalized mint, object kind) plus metal",
+    "multiSourceDefinition": "at least two independent source names in one runtime identity group",
+    "images": "remote item-level open references; files are not bulk-downloaded"
+  },
+  "totals": {
+    "positiveRecords": 22149,
+    "strictTypes": 6291,
+    "runtimeIdentityGroups": 5926,
+    "multiSourceIdentityGroups": 422,
+    "positiveNegativeLeaks": 0,
+    "hierarchy": {
+      "sourceRecords": 22149,
+      "periods": 8,
+      "authorities": 229,
+      "denominations": 140,
+      "coinTypes": 2785,
+      "issues": 5926,
+      "varieties": 6291,
+      "specimens": 22149,
+      "multiSourceCoinTypes": 208,
+      "multiSourceIssues": 422,
+      "multiSourceVarieties": 319,
+      "reviewFlaggedCoinTypes": 287,
+      "recordsWithImages": 14149,
+      "recordsWithImagePair": 6246
+    },
+    "researchCollections": {
+      "indexedCollectionsAndHoard": 9,
+      "historicalAuctionCatalogues": 5,
+      "numberedAuctionPositionsOrRangeSize": 6948,
+      "knownCandidateProvenanceEdges": 3,
+      "runtimePositiveRecordsAddedDirectly": 0,
+      "reasonRuntimePositiveRecordsAddedDirectly": "Brak prawa lub pełnego item-level potwierdzenia; indeks wzmacnia kolejkę badań i proweniencję bez zanieczyszczania identyfikacji."
+    },
+    "oldCatalogueSweep": {
+      "sourcesReviewed": 8,
+      "openScans": 1,
+      "factsOnlySources": 2,
+      "inCopyrightReferenceOnlySources": 5,
+      "newIndexedPolishPositionsInRestrictedCatalogues": 1578,
+      "runtimeRecordsAdded": 3,
+      "researchOnlyCoinLeads": 3,
+      "excludedNonCoinLeads": 1,
+      "spink1900CandidatePages": 79,
+      "spink1900ResearchOnlyPages": 75,
+      "spink1900ExcludedNonCoinPages": 2,
+      "spink1900CorroboratedPages": 2,
+      "imagesAdded": 0
+    }
+  },
+  "areas": {
+    "peopleRepublic": {
+      "records": 715,
+      "coinTypes": 399,
+      "issues": 615,
+      "varieties": 704,
+      "strictTypes": 704,
+      "runtimeIdentityGroups": 615,
+      "withAnyImage": 37,
+      "withImagePair": 10,
+      "withAnyLegend": 257,
+      "withMint": 709
+    },
+    "secondRepublicAndWar": {
+      "records": 272,
+      "coinTypes": 70,
+      "issues": 138,
+      "varieties": 148,
+      "strictTypes": 148,
+      "runtimeIdentityGroups": 138,
+      "withAnyImage": 174,
+      "withImagePair": 171,
+      "withAnyLegend": 0,
+      "withMint": 270,
+      "missingMintRecords": 2,
+      "uncertainMintRecords": 0,
+      "legitimateMultiMintFamilies": 10,
+      "multiMintFamilies": [
+        {
+          "key": "1924|2 zl|rzeczpospolita polska",
+          "mints": [
+            "birmingham",
+            "paryz",
+            "filadelfia",
+            "warszawa"
+          ],
+          "records": 7
+        },
+        {
+          "key": "1923|10 gr|rzeczpospolita polska",
+          "mints": [
+            "kings norton",
+            "le locle"
+          ],
+          "records": 8
+        },
+        {
+          "key": "1923|2 gr|rzeczpospolita polska",
+          "mints": [
+            "warszawa",
+            "kings norton"
+          ],
+          "records": 7
+        },
+        {
+          "key": "1923|20 gr|rzeczpospolita polska",
+          "mints": [
+            "mennica",
+            "warszawa",
+            "kings norton"
+          ],
+          "records": 9
+        },
+        {
+          "key": "1923|5 gr|rzeczpospolita polska",
+          "mints": [
+            "warszawa",
+            "kings norton"
+          ],
+          "records": 5
+        },
+        {
+          "key": "1923|50 gr|rzeczpospolita polska",
+          "mints": [
+            "mennica",
+            "warszawa",
+            "kings norton"
+          ],
+          "records": 6
+        },
+        {
+          "key": "1925|2 zl|rzeczpospolita polska",
+          "mints": [
+            "londyn",
+            "filadelfia"
+          ],
+          "records": 4
+        },
+        {
+          "key": "1928|5 zl|rzeczpospolita polska",
+          "mints": [
+            "bruksela londyn",
+            "warszawa"
+          ],
+          "records": 2
+        },
+        {
+          "key": "1925|1 zl|rzeczpospolita polska",
+          "mints": [
+            "filadelfia",
+            "londyn"
+          ],
+          "records": 3
+        },
+        {
+          "key": "1932|10 zl|rzeczpospolita polska",
+          "mints": [
+            "londyn",
+            "warszawa"
+          ],
+          "records": 4
+        }
+      ]
+    },
+    "medieval": {
+      "records": 896,
+      "coinTypes": 167,
+      "issues": 249,
+      "varieties": 250,
+      "strictTypes": 250,
+      "runtimeIdentityGroups": 249,
+      "withAnyImage": 830,
+      "withImagePair": 803,
+      "withAnyLegend": 54,
+      "withMint": 551
+    },
+    "jagiellonian": {
+      "records": 8714,
+      "coinTypes": 174,
+      "issues": 664,
+      "varieties": 730,
+      "strictTypes": 730,
+      "runtimeIdentityGroups": 664,
+      "withAnyImage": 7827,
+      "withImagePair": 1871,
+      "withAnyLegend": 316,
+      "withMint": 8061
+    },
+    "electiveMonarchy": {
+      "records": 6696,
+      "coinTypes": 523,
+      "issues": 2186,
+      "varieties": 2321,
+      "strictTypes": 2321,
+      "runtimeIdentityGroups": 2186,
+      "withAnyImage": 4248,
+      "withImagePair": 2411,
+      "withAnyLegend": 996,
+      "withMint": 5109
+    },
+    "partitionsAndUprisings": {
+      "records": 1715,
+      "coinTypes": 218,
+      "issues": 620,
+      "varieties": 651,
+      "strictTypes": 651,
+      "runtimeIdentityGroups": 620,
+      "withAnyImage": 827,
+      "withImagePair": 780,
+      "withAnyLegend": 680,
+      "withMint": 1117
+    },
+    "negativeVisual": {
+      "records": 89,
+      "pairedGroups": 15,
+      "byClass": {
+        "counterfeit": 72,
+        "replica": 11,
+        "coin-mould": 6
+      }
+    },
+    "heavyIkmk": {
+      "reviewed": 16,
+      "resolved": 16,
+      "records": [
+        {
+          "sourceId": "18215931",
+          "expectedNominal": "Ducato srebrne",
+          "actualNominal": "Ducato srebrne",
+          "resolved": true,
+          "sourceUrl": "https://ikmk.smb.museum/object?id=18215931"
+        },
+        {
+          "sourceId": "18201941",
+          "expectedNominal": "10 dukatów",
+          "actualNominal": "10 dukatów",
+          "resolved": true,
+          "sourceUrl": "https://ikmk.smb.museum/object?id=18201941"
+        },
+        {
+          "sourceId": "18202240",
+          "expectedNominal": "10 dukatów",
+          "actualNominal": "10 dukatów",
+          "resolved": true,
+          "sourceUrl": "https://ikmk.smb.museum/object?id=18202240"
+        },
+        {
+          "sourceId": "18223471",
+          "expectedNominal": "5 dukatów",
+          "actualNominal": "5 dukatów",
+          "resolved": true,
+          "sourceUrl": "https://ikmk.smb.museum/object?id=18223471"
+        },
+        {
+          "sourceId": "18223427",
+          "expectedNominal": "10 dukatów",
+          "actualNominal": "10 dukatów",
+          "resolved": true,
+          "sourceUrl": "https://ikmk.smb.museum/object?id=18223427"
+        },
+        {
+          "sourceId": "18215922",
+          "expectedNominal": "10 dukatów",
+          "actualNominal": "10 dukatów",
+          "resolved": true,
+          "sourceUrl": "https://ikmk.smb.museum/object?id=18215922"
+        },
+        {
+          "sourceId": "18297149",
+          "expectedNominal": "3 dukaty",
+          "actualNominal": "3 dukaty",
+          "resolved": true,
+          "sourceUrl": "https://ikmk.smb.museum/object?id=18297149"
+        },
+        {
+          "sourceId": "18245473",
+          "expectedNominal": "6 dukatów",
+          "actualNominal": "6 dukatów",
+          "resolved": true,
+          "sourceUrl": "https://ikmk.smb.museum/object?id=18245473"
+        },
+        {
+          "sourceId": "18227317",
+          "expectedNominal": "30 dukatów",
+          "actualNominal": "30 dukatów",
+          "resolved": true,
+          "sourceUrl": "https://ikmk.smb.museum/object?id=18227317"
+        },
+        {
+          "sourceId": "18215924",
+          "expectedNominal": "5 dukatów",
+          "actualNominal": "5 dukatów",
+          "resolved": true,
+          "sourceUrl": "https://ikmk.smb.museum/object?id=18215924"
+        },
+        {
+          "sourceId": "18223440",
+          "expectedNominal": "10 dukatów",
+          "actualNominal": "10 dukatów",
+          "resolved": true,
+          "sourceUrl": "https://ikmk.smb.museum/object?id=18223440"
+        },
+        {
+          "sourceId": "18244673",
+          "expectedNominal": "5 dukatów",
+          "actualNominal": "5 dukatów",
+          "resolved": true,
+          "sourceUrl": "https://ikmk.smb.museum/object?id=18244673"
+        },
+        {
+          "sourceId": "18237022",
+          "expectedNominal": "3 dukaty",
+          "actualNominal": "3 dukaty",
+          "resolved": true,
+          "sourceUrl": "https://ikmk.smb.museum/object?id=18237022"
+        },
+        {
+          "sourceId": "18237019",
+          "expectedNominal": "4 dukaty",
+          "actualNominal": "4 dukaty",
+          "resolved": true,
+          "sourceUrl": "https://ikmk.smb.museum/object?id=18237019"
+        },
+        {
+          "sourceId": "18244668",
+          "expectedNominal": "3 dukaty",
+          "actualNominal": "3 dukaty",
+          "resolved": true,
+          "sourceUrl": "https://ikmk.smb.museum/object?id=18244668"
+        },
+        {
+          "sourceId": "18203617",
+          "expectedNominal": "10 dukatów",
+          "actualNominal": "10 dukatów",
+          "resolved": true,
+          "sourceUrl": "https://ikmk.smb.museum/object?id=18203617"
+        }
+      ]
+    }
+  }
+}
