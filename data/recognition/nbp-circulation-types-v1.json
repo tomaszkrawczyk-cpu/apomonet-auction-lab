@@ -1,0 +1,117 @@
+{
+  "schemaVersion": "apomonet-nbp-circulation-types-v1",
+  "asOf": "2026-08-30",
+  "policy": {
+    "role": "official-type-facts-for-stage1",
+    "yearSemantics": "The year range describes the dated design family, not proof that every year in the range was minted.",
+    "imagePolicy": "No NBP image is copied into this catalogue."
+  },
+  "stats": {
+    "records": 12,
+    "standardDenominations": 9,
+    "designFamilies": 12,
+    "withImages": 0
+  },
+  "records": [
+    {
+      "id": "nbp-circulation:1-gr-1995-family",
+      "title": "1 grosz – wzór obiegowy wprowadzony w 1995 r.",
+      "objectKind": "coin",
+      "coinClass": "circulation-standard",
+      "country": "Polska",
+      "ruler": "Rzeczpospolita Polska",
+      "year": "1990–2013",
+      "yearRange": [1990, 2013],
+      "period": "third-republic",
+      "nominal": "1 grosz",
+      "metal": "Mosiądz manganowy",
+      "mint": "Warszawa",
+      "shape": "round",
+      "weightGrams": 1.64,
+      "diameterMm": 15.5,
+      "portrait": "Godło Rzeczypospolitej Polskiej – orzeł w koronie",
+      "obverseLegend": "RZECZPOSPOLITA POLSKA i rok",
+      "reverseLegend": "1 GROSZ i liść dębu",
+      "diagnosticMarkers": ["cyfra 1", "napis GROSZ", "liść dębu", "jednolita złocista moneta"],
+      "images": [],
+      "source": {"type":"official-issuer","name":"Narodowy Bank Polski","recordId":"coins-images-1995-1-gr","url":"https://nbp.pl/banknoty-i-monety/monety-obiegowe/wizerunki-monet-obiegowych/","retrievedAt":"2026-08-30","rights":"Wyłącznie znormalizowane fakty o typie i parametrach; bez kopiowania fotografii i opisu NBP","rightsCode":"factual-metadata-only","restricted":false,"accessMode":"official-current-circulation-type-facts"}
+    },
+    {
+      "id": "nbp-circulation:2-gr-1995-family",
+      "title": "2 grosze – wzór obiegowy wprowadzony w 1995 r.",
+      "objectKind": "coin", "coinClass": "circulation-standard", "country": "Polska", "ruler": "Rzeczpospolita Polska", "year": "1990–2013", "yearRange": [1990, 2013], "period": "third-republic", "nominal": "2 grosze", "metal": "Mosiądz manganowy", "mint": "Warszawa", "shape": "round", "weightGrams": 2.13, "diameterMm": 17.5,
+      "portrait": "Godło Rzeczypospolitej Polskiej – orzeł w koronie", "obverseLegend": "RZECZPOSPOLITA POLSKA i rok", "reverseLegend": "2 GROSZE i liście dębu", "diagnosticMarkers": ["cyfra 2", "napis GROSZE", "liście dębu", "jednolita złocista moneta"], "images": [],
+      "source": {"type":"official-issuer","name":"Narodowy Bank Polski","recordId":"coins-images-1995-2-gr","url":"https://nbp.pl/banknoty-i-monety/monety-obiegowe/wizerunki-monet-obiegowych/","retrievedAt":"2026-08-30","rights":"Wyłącznie znormalizowane fakty o typie i parametrach; bez kopiowania fotografii i opisu NBP","rightsCode":"factual-metadata-only","restricted":false,"accessMode":"official-current-circulation-type-facts"}
+    },
+    {
+      "id": "nbp-circulation:5-gr-1995-family",
+      "title": "5 groszy – wzór obiegowy wprowadzony w 1995 r.",
+      "objectKind": "coin", "coinClass": "circulation-standard", "country": "Polska", "ruler": "Rzeczpospolita Polska", "year": "1990–2013", "yearRange": [1990, 2013], "period": "third-republic", "nominal": "5 groszy", "metal": "Mosiądz manganowy", "mint": "Warszawa", "shape": "round", "weightGrams": 2.59, "diameterMm": 19.5,
+      "portrait": "Godło Rzeczypospolitej Polskiej – orzeł w koronie", "obverseLegend": "RZECZPOSPOLITA POLSKA i rok", "reverseLegend": "5 GROSZY i liście dębu", "diagnosticMarkers": ["cyfra 5", "napis GROSZY", "liście dębu", "jednolita złocista moneta"], "images": [],
+      "source": {"type":"official-issuer","name":"Narodowy Bank Polski","recordId":"coins-images-1995-5-gr","url":"https://nbp.pl/banknoty-i-monety/monety-obiegowe/wizerunki-monet-obiegowych/","retrievedAt":"2026-08-30","rights":"Wyłącznie znormalizowane fakty o typie i parametrach; bez kopiowania fotografii i opisu NBP","rightsCode":"factual-metadata-only","restricted":false,"accessMode":"official-current-circulation-type-facts"}
+    },
+    {
+      "id": "nbp-circulation:1-gr-2014-family",
+      "title": "1 grosz – wzór obiegowy wprowadzony w 2014 r.",
+      "objectKind": "coin", "coinClass": "circulation-standard", "country": "Polska", "ruler": "Rzeczpospolita Polska", "year": "2013–2026", "yearRange": [2013, 2026], "period": "third-republic", "nominal": "1 grosz", "metal": "Stal pokryta mosiądzem", "mint": "Warszawa", "shape": "round", "weightGrams": 1.64, "diameterMm": 15.5,
+      "portrait": "Godło Rzeczypospolitej Polskiej – orzeł w koronie", "obverseLegend": "RZECZPOSPOLITA POLSKA i rok", "reverseLegend": "1 GROSZ i liść dębu", "diagnosticMarkers": ["cyfra 1", "napis GROSZ", "liść dębu", "złocista stalowa moneta"], "images": [],
+      "source": {"type":"official-issuer","name":"Narodowy Bank Polski","recordId":"coins-images-2014-1-gr","url":"https://nbp.pl/banknoty-i-monety/monety-obiegowe/wizerunki-monet-obiegowych/","retrievedAt":"2026-08-30","rights":"Wyłącznie znormalizowane fakty o typie i parametrach; bez kopiowania fotografii i opisu NBP","rightsCode":"factual-metadata-only","restricted":false,"accessMode":"official-current-circulation-type-facts"}
+    },
+    {
+      "id": "nbp-circulation:2-gr-2014-family",
+      "title": "2 grosze – wzór obiegowy wprowadzony w 2014 r.",
+      "objectKind": "coin", "coinClass": "circulation-standard", "country": "Polska", "ruler": "Rzeczpospolita Polska", "year": "2013–2026", "yearRange": [2013, 2026], "period": "third-republic", "nominal": "2 grosze", "metal": "Stal pokryta mosiądzem", "mint": "Warszawa", "shape": "round", "weightGrams": 2.13, "diameterMm": 17.5,
+      "portrait": "Godło Rzeczypospolitej Polskiej – orzeł w koronie", "obverseLegend": "RZECZPOSPOLITA POLSKA i rok", "reverseLegend": "2 GROSZE i liście dębu", "diagnosticMarkers": ["cyfra 2", "napis GROSZE", "liście dębu", "złocista stalowa moneta"], "images": [],
+      "source": {"type":"official-issuer","name":"Narodowy Bank Polski","recordId":"coins-images-2014-2-gr","url":"https://nbp.pl/banknoty-i-monety/monety-obiegowe/wizerunki-monet-obiegowych/","retrievedAt":"2026-08-30","rights":"Wyłącznie znormalizowane fakty o typie i parametrach; bez kopiowania fotografii i opisu NBP","rightsCode":"factual-metadata-only","restricted":false,"accessMode":"official-current-circulation-type-facts"}
+    },
+    {
+      "id": "nbp-circulation:5-gr-2014-family",
+      "title": "5 groszy – wzór obiegowy wprowadzony w 2014 r.",
+      "objectKind": "coin", "coinClass": "circulation-standard", "country": "Polska", "ruler": "Rzeczpospolita Polska", "year": "2013–2026", "yearRange": [2013, 2026], "period": "third-republic", "nominal": "5 groszy", "metal": "Stal pokryta mosiądzem", "mint": "Warszawa", "shape": "round", "weightGrams": 2.59, "diameterMm": 19.5,
+      "portrait": "Godło Rzeczypospolitej Polskiej – orzeł w koronie", "obverseLegend": "RZECZPOSPOLITA POLSKA i rok", "reverseLegend": "5 GROSZY i liście dębu", "diagnosticMarkers": ["cyfra 5", "napis GROSZY", "liście dębu", "złocista stalowa moneta"], "images": [],
+      "source": {"type":"official-issuer","name":"Narodowy Bank Polski","recordId":"coins-images-2014-5-gr","url":"https://nbp.pl/banknoty-i-monety/monety-obiegowe/wizerunki-monet-obiegowych/","retrievedAt":"2026-08-30","rights":"Wyłącznie znormalizowane fakty o typie i parametrach; bez kopiowania fotografii i opisu NBP","rightsCode":"factual-metadata-only","restricted":false,"accessMode":"official-current-circulation-type-facts"}
+    },
+    {
+      "id": "nbp-circulation:10-gr-1995-family",
+      "title": "10 groszy – standardowy wzór obiegowy III RP",
+      "objectKind": "coin", "coinClass": "circulation-standard", "country": "Polska", "ruler": "Rzeczpospolita Polska", "year": "1990–2026", "yearRange": [1990, 2026], "period": "third-republic", "nominal": "10 groszy", "metal": "Miedzionikiel lub stal pokryta miedzią i niklem", "mint": "Warszawa", "shape": "round", "weightGrams": 2.51, "diameterMm": 16.5,
+      "portrait": "Godło Rzeczypospolitej Polskiej – orzeł w koronie", "obverseLegend": "RZECZPOSPOLITA POLSKA i rok", "reverseLegend": "10 GROSZY i wieniec", "diagnosticMarkers": ["liczba 10", "napis GROSZY", "wieniec", "srebrzysta moneta"], "images": [],
+      "source": {"type":"official-issuer","name":"Narodowy Bank Polski","recordId":"coins-images-1995-10-gr","url":"https://nbp.pl/banknoty-i-monety/monety-obiegowe/wizerunki-monet-obiegowych/","retrievedAt":"2026-08-30","rights":"Wyłącznie znormalizowane fakty o typie i parametrach; bez kopiowania fotografii i opisu NBP","rightsCode":"factual-metadata-only","restricted":false,"accessMode":"official-current-circulation-type-facts"}
+    },
+    {
+      "id": "nbp-circulation:20-gr-1995-family",
+      "title": "20 groszy – standardowy wzór obiegowy III RP",
+      "objectKind": "coin", "coinClass": "circulation-standard", "country": "Polska", "ruler": "Rzeczpospolita Polska", "year": "1990–2026", "yearRange": [1990, 2026], "period": "third-republic", "nominal": "20 groszy", "metal": "Miedzionikiel lub stal pokryta miedzią i niklem", "mint": "Warszawa", "shape": "round", "weightGrams": 3.22, "diameterMm": 18.5,
+      "portrait": "Godło Rzeczypospolitej Polskiej – orzeł w koronie", "obverseLegend": "RZECZPOSPOLITA POLSKA i rok", "reverseLegend": "20 GROSZY i wieniec", "diagnosticMarkers": ["liczba 20", "napis GROSZY", "wieniec", "srebrzysta moneta"], "images": [],
+      "source": {"type":"official-issuer","name":"Narodowy Bank Polski","recordId":"coins-images-1995-20-gr","url":"https://nbp.pl/banknoty-i-monety/monety-obiegowe/wizerunki-monet-obiegowych/","retrievedAt":"2026-08-30","rights":"Wyłącznie znormalizowane fakty o typie i parametrach; bez kopiowania fotografii i opisu NBP","rightsCode":"factual-metadata-only","restricted":false,"accessMode":"official-current-circulation-type-facts"}
+    },
+    {
+      "id": "nbp-circulation:50-gr-1995-family",
+      "title": "50 groszy – standardowy wzór obiegowy III RP",
+      "objectKind": "coin", "coinClass": "circulation-standard", "country": "Polska", "ruler": "Rzeczpospolita Polska", "year": "1990–2026", "yearRange": [1990, 2026], "period": "third-republic", "nominal": "50 groszy", "metal": "Miedzionikiel lub stal pokryta miedzią i niklem", "mint": "Warszawa", "shape": "round", "weightGrams": 3.94, "diameterMm": 20.5,
+      "portrait": "Godło Rzeczypospolitej Polskiej – orzeł w koronie", "obverseLegend": "RZECZPOSPOLITA POLSKA i rok", "reverseLegend": "50 GROSZY i wieniec", "diagnosticMarkers": ["liczba 50", "napis GROSZY", "wieniec", "srebrzysta moneta"], "images": [],
+      "source": {"type":"official-issuer","name":"Narodowy Bank Polski","recordId":"coins-images-1995-50-gr","url":"https://nbp.pl/banknoty-i-monety/monety-obiegowe/wizerunki-monet-obiegowych/","retrievedAt":"2026-08-30","rights":"Wyłącznie znormalizowane fakty o typie i parametrach; bez kopiowania fotografii i opisu NBP","rightsCode":"factual-metadata-only","restricted":false,"accessMode":"official-current-circulation-type-facts"}
+    },
+    {
+      "id": "nbp-circulation:1-zl-1995-family",
+      "title": "1 złoty – standardowy wzór obiegowy III RP",
+      "objectKind": "coin", "coinClass": "circulation-standard", "country": "Polska", "ruler": "Rzeczpospolita Polska", "year": "1990–2026", "yearRange": [1990, 2026], "period": "third-republic", "nominal": "1 złoty", "metal": "Miedzionikiel lub stal pokryta miedzią i niklem", "mint": "Warszawa", "shape": "round", "weightGrams": 5, "diameterMm": 23,
+      "portrait": "Godło Rzeczypospolitej Polskiej – orzeł w koronie", "obverseLegend": "RZECZPOSPOLITA POLSKA i rok", "reverseLegend": "1 ZŁOTY i wieniec", "diagnosticMarkers": ["cyfra 1", "napis ZŁOTY", "wieniec", "srebrzysta moneta"], "images": [],
+      "source": {"type":"official-issuer","name":"Narodowy Bank Polski","recordId":"coins-images-1995-1-zl","url":"https://nbp.pl/banknoty-i-monety/monety-obiegowe/wizerunki-monet-obiegowych/","retrievedAt":"2026-08-30","rights":"Wyłącznie znormalizowane fakty o typie i parametrach; bez kopiowania fotografii i opisu NBP","rightsCode":"factual-metadata-only","restricted":false,"accessMode":"official-current-circulation-type-facts"}
+    },
+    {
+      "id": "nbp-circulation:2-zl-1995-family",
+      "title": "2 złote – standardowy wzór obiegowy III RP",
+      "objectKind": "coin", "coinClass": "circulation-standard", "country": "Polska", "ruler": "Rzeczpospolita Polska", "year": "1994–2026", "yearRange": [1994, 2026], "period": "third-republic", "nominal": "2 złote", "metal": "Pierścień z brązu aluminiowego, rdzeń z miedzioniklu", "mint": "Warszawa", "shape": "round", "weightGrams": 5.21, "diameterMm": 21.5,
+      "portrait": "Godło Rzeczypospolitej Polskiej – orzeł w koronie", "obverseLegend": "RZECZPOSPOLITA POLSKA i rok", "reverseLegend": "2 ZŁOTE", "diagnosticMarkers": ["cyfra 2", "napis ZŁOTE", "złocisty pierścień", "srebrzysty rdzeń", "moneta bimetaliczna"], "images": [],
+      "source": {"type":"official-issuer","name":"Narodowy Bank Polski","recordId":"coins-images-1995-2-zl","url":"https://nbp.pl/banknoty-i-monety/monety-obiegowe/wizerunki-monet-obiegowych/","retrievedAt":"2026-08-30","rights":"Wyłącznie znormalizowane fakty o typie i parametrach; bez kopiowania fotografii i opisu NBP","rightsCode":"factual-metadata-only","restricted":false,"accessMode":"official-current-circulation-type-facts"}
+    },
+    {
+      "id": "nbp-circulation:5-zl-1995-family",
+      "title": "5 złotych – standardowy wzór obiegowy III RP",
+      "objectKind": "coin", "coinClass": "circulation-standard", "country": "Polska", "ruler": "Rzeczpospolita Polska", "year": "1994–2026", "yearRange": [1994, 2026], "period": "third-republic", "nominal": "5 złotych", "metal": "Pierścień z miedzioniklu, rdzeń z brązu aluminiowego", "mint": "Warszawa", "shape": "round", "weightGrams": 6.54, "diameterMm": 24,
+      "portrait": "Godło Rzeczypospolitej Polskiej – orzeł w koronie", "obverseLegend": "RZECZPOSPOLITA POLSKA i rok", "reverseLegend": "5 ZŁOTYCH", "diagnosticMarkers": ["cyfra 5", "napis ZŁOTYCH", "srebrzysty pierścień", "złocisty rdzeń", "moneta bimetaliczna"], "images": [],
+      "source": {"type":"official-issuer","name":"Narodowy Bank Polski","recordId":"coins-images-1995-5-zl","url":"https://nbp.pl/banknoty-i-monety/monety-obiegowe/wizerunki-monet-obiegowych/","retrievedAt":"2026-08-30","rights":"Wyłącznie znormalizowane fakty o typie i parametrach; bez kopiowania fotografii i opisu NBP","rightsCode":"factual-metadata-only","restricted":false,"accessMode":"official-current-circulation-type-facts"}
+    }
+  ]
+}

@@ -5,8 +5,10 @@ import test from 'node:test';
 const analyze=readFileSync(new URL('../analyze.html',import.meta.url),'utf8');
 const card=readFileSync(new URL('../coin.html',import.meta.url),'utf8');
 
-test('analysis save persists current id and then adopts returned coin id',()=>{
-  assert.match(analyze,/id:\s*id\s*\|\|\s*undefined/);
+test('analysis save reuses an id only when the current photos still match that record',()=>{
+  assert.match(analyze,/ApoAnalysisRecordIdentity\?\.reusableId/);
+  assert.match(analyze,/id:\s*reusableId/);
+  assert.match(analyze,/savedPhotoSignature\s*=\s*window\.ApoAnalysisRecordIdentity/);
   assert.match(analyze,/id\s*=\s*c\.id/);
 });
 

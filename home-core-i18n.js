@@ -57,6 +57,11 @@
     );
   }
 
+  const normalizeText = (value) => String(value || "").replace(/\s+/g, " ").trim();
+  const normalizedTranslations = new Map(
+    Object.entries(translations).map(([source, values]) => [normalizeText(source), values]),
+  );
+
   function render() {
     if (!location.pathname.endsWith("/") && !location.pathname.endsWith("index.html")) return;
     const active = language();
@@ -65,11 +70,18 @@
     let node;
     while ((node = walker.nextNode())) {
       if (!node.parentElement || ["SCRIPT", "STYLE"].includes(node.parentElement.tagName)) continue;
-      const source = node.nodeValue.trim();
-      const translated = translations[source]?.[active];
-      if (translated) node.nodeValue = node.nodeValue.replace(source, translated);
+      const raw = node.nodeValue;
+      const source = normalizeText(raw);
+      const translated = normalizedTranslations.get(source)?.[active];
+      if (translated) {
+        const leading = raw.match(/^\s*/)?.[0] || "";
+        const trailing = raw.match(/\s*$/)?.[0] || "";
+        node.nodeValue = `${leading}${translated}${trailing}`;
+      }
     }
   }
+
+  window.ApoHomeCoreI18n = Object.freeze({ normalizeText, render });
 
   document.readyState === "loading"
     ? document.addEventListener("DOMContentLoaded", render)
