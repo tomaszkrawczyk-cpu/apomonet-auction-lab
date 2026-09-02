@@ -22,9 +22,9 @@ test('focused catalog pass persists only an unconfirmed candidate onto the curre
 
 test('identity correction invalidates old candidates while Stage 2 gate keeps candidate separate from confirmed Kopicki',()=>{
   assert.match(gate,/"catalogCandidate"/);
-  assert.match(gate,/output\.catalogCandidate=\{reference:/);
-  assert.match(gate,/output\.kopickiReference=""/);
-  assert.match(gate,/output\.catalogEvidenceStatus="unconfirmed"/);
+  assert.match(gate,/output\.catalogCandidate\s*=\s*\{/);
+  assert.match(gate,/output\.kopickiReference\s*=\s*""/);
+  assert.match(gate,/output\.catalogEvidenceStatus\s*=\s*"unconfirmed"/);
 });
 
 test('coin card visibly surfaces an unconfirmed catalog candidate',()=>{

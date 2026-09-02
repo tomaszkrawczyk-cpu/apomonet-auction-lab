@@ -34,6 +34,12 @@
       de: "Der Münzrand wurde nicht sicher erkannt; das Foto wurde nicht verändert. Verwenden Sie einen einfarbigen, kontrastreichen Hintergrund und versuchen Sie es erneut.",
       fr: "Le bord de la monnaie n’a pas été détecté avec certitude ; la photo n’a pas été modifiée. Utilisez un fond uni et contrasté, puis réessayez.",
     },
+    fallback: {
+      pl: "Nie udało się bezpiecznie usunąć tła. Zachowuję oba oryginalne zdjęcia i przechodzę do wyboru albumu.",
+      en: "The background could not be removed safely. Both original photos will be kept and album selection will continue.",
+      de: "Der Hintergrund konnte nicht sicher entfernt werden. Beide Originalfotos bleiben erhalten; die Albumauswahl wird fortgesetzt.",
+      fr: "Le fond n’a pas pu être supprimé en toute sécurité. Les deux photos originales sont conservées et la sélection de l’album continue.",
+    },
     success: {
       pl: "Tło usunięte. Sprawdź jeszcze rant przed zapisaniem.",
       en: "Background removed. Check the rim before saving.",
@@ -458,9 +464,15 @@
           circleCut(reverseSource),
         ]);
         if (!obverse.removed || !reverse.removed) {
-          dialog.cut.disabled = false;
-          dialog.cut.textContent = "✂️ Tak — usuń tło";
-          dialog.status.textContent = msg("failed");
+          setPending({
+            mode: "original",
+            coinId,
+            backgroundRemovalFailed: true,
+          });
+          dialog.status.textContent = msg("fallback");
+          const status = document.getElementById("status");
+          if (status) status.textContent = msg("fallback");
+          finish();
           return;
         }
         dialog.status.textContent = msg("success");

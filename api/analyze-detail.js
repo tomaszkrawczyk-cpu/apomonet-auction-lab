@@ -157,7 +157,9 @@ INICJAŁY I ZNAKI: potraktuj każdą odseparowaną literę, parę liter, monogra
 
 STANDARD OPISU PROFESJONALNEGO: pracuj jak numizmatyk przygotowujący kartę do domu aukcyjnego, ale NIE kopiuj cudzych opisów i nie naśladuj konkretnego katalogu zdanie po zdaniu. W fullDescription zachowaj logiczną kolejność: (1) emitent/władca, nominał, rok, mennica i metal wynikające z danych bazowych; (2) konkretna odmiana tylko jeśli da się ją obronić; (3) awers — co rzeczywiście widać; (4) rewers — co rzeczywiście widać; (5) cechy diagnostyczne odróżniające wariant; (6) ostrożna ocena stanu. NIE umieszczaj w fullDescription ceny, liczby notowań, mediany rynku ani niepotwierdzonych numerów katalogowych. Katalog i rzadkość mają pozostać osobnymi polami. Nie używaj pustych ozdobników typu „interesujący egzemplarz” albo „rzadka moneta”, jeżeli nie wynika to z danych.
 
-KOPICKI: kopickiReference i kopickiRarity podawaj WYŁĄCZNIE wtedy, gdy rozpoznanie konkretnego wariantu ma wiarygodną podstawę w cechach diagnostycznych oraz polityka literatury dopuszcza id „kopicki”. Sam władca + rok + nominał nie wystarczają. Jeśli nie masz podstawy, pozostaw oba pola puste. Rzadkość nie może być wnioskowana z wyglądu monety ani z przewidywanej ceny.
+KOPICKI — DWA POZIOMY DOWODU:
+1. kopickiReference i kopickiRarity podawaj WYŁĄCZNIE wtedy, gdy rozpoznanie konkretnego wariantu ma wiarygodną podstawę w cechach diagnostycznych oraz polityka literatury dopuszcza id „kopicki”. Sam władca + rok + nominał nie wystarczają. Jeśli nie masz podstawy, pozostaw oba pola puste.
+2. Jeżeli typ/emisja są dobrze rozpoznane i masz konkretną podstawę do wskazania pozycji, ale zdjęcia nie rozstrzygają odmiany, możesz zwrócić kopickiCandidateReference i kopickiCandidateRarity jako WYRAŹNIE NIEPOTWIERDZONEGO kandydata oraz krótko opisać podstawę w kopickiCandidateBasis. Nie wpisuj kandydata na podstawie samego podobieństwa epoki lub metalu i nie zgaduj numeru z pamięci bez konkretnej podstawy. Jeśli nie masz konkretnego numeru albo literatura Kopickiego nie jest dopuszczona, pozostaw wszystkie trzy pola kandydata puste. Rzadkość nie może być wnioskowana z wyglądu monety ani z przewidywanej ceny.
 
 STAN: gradeAssessment ma być konserwatywną oceną widocznego zużycia i jakości bicia. Nie przypisuj precyzyjnych stopni slabowych typu AU55/MS63 na podstawie dwóch zwykłych zdjęć. Jeżeli potrzebne są dodatkowe kąty, waga, średnica, rant, magnes albo makro konkretnego detalu, dodaj je do recommendedChecks.
 
@@ -216,6 +218,9 @@ Zbuduj fingerprint geometryczno-diagnostyczny. Każda cecha fingerprintu ma wart
         variant: { type: "string" },
         kopickiReference: { type: "string" },
         kopickiRarity: { type: "string" },
+        kopickiCandidateReference: { type: "string" },
+        kopickiCandidateRarity: { type: "string" },
+        kopickiCandidateBasis: { type: "string" },
         tyszkiewiczReference: { type: "string" },
         tyszkiewiczValue: { type: "string" },
         parchimowiczReference: { type: "string" },
@@ -281,6 +286,9 @@ Zbuduj fingerprint geometryczno-diagnostyczny. Każda cecha fingerprintu ma wart
         "variant",
         "kopickiReference",
         "kopickiRarity",
+        "kopickiCandidateReference",
+        "kopickiCandidateRarity",
+        "kopickiCandidateBasis",
         "tyszkiewiczReference",
         "tyszkiewiczValue",
         "parchimowiczReference",
@@ -385,6 +393,9 @@ Zbuduj fingerprint geometryczno-diagnostyczny. Każda cecha fingerprintu ma wart
     if (!allowedLiterature.has("kopicki")) {
       detail.kopickiReference = "";
       detail.kopickiRarity = "";
+      detail.kopickiCandidateReference = "";
+      detail.kopickiCandidateRarity = "";
+      detail.kopickiCandidateBasis = "";
     }
     if (!allowedLiterature.has("tyszkiewicz")) {
       detail.tyszkiewiczReference = "";

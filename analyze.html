@@ -929,6 +929,23 @@
           fact.append(label, value);
           detailFacts.appendChild(fact);
         });
+        const catalogCandidate = detail.catalogCandidate;
+        if (catalogCandidate?.reference) {
+          [
+            ["Kandydat Kopicki — do weryfikacji", catalogCandidate.reference],
+            ["Kandydat rzadkości — niepotwierdzony", catalogCandidate.rarity],
+          ].forEach(([labelText, fieldValue]) => {
+            if (!fieldValue) return;
+            const fact = document.createElement("div");
+            fact.className = "fact";
+            const label = document.createElement("span");
+            label.textContent = labelText;
+            const value = document.createElement("strong");
+            value.textContent = fieldValue;
+            fact.append(label, value);
+            detailFacts.appendChild(fact);
+          });
+        }
 
         const add = (label, value) => {
           if (!view?.known?.(value) && !(Array.isArray(value) && value.length)) return;
@@ -947,6 +964,7 @@
               .join(" · ")
           : detail.visibleDateReading;
         add(view?.text?.("dateReading") || "Data — odczyt cyfr", digitReading);
+        add("Podstawa kandydata katalogowego", catalogCandidate?.basis);
         add(view?.text?.("obverseLegend") || "Legenda awersu", detail.obverseLegend);
         add(view?.text?.("reverseLegend") || "Legenda rewersu", detail.reverseLegend);
         add(view?.text?.("mintmaster") || "Mincerz / znak urzędnika", detail.mintmaster);
@@ -1034,6 +1052,21 @@
           const paragraph = document.createElement("p");
           paragraph.textContent = shown.title || selected.title;
           box.appendChild(paragraph);
+        }
+        const historicalHypothesis =
+          shown.historicalHypothesis || recognition.historicalHypothesis;
+        if (historicalHypothesis?.label) {
+          const hypothesis = document.createElement("p");
+          const confidence = Number(historicalHypothesis.confidence) || 0;
+          hypothesis.textContent =
+            `Hipoteza ikonograficzna — niepotwierdzona katalogiem: ${historicalHypothesis.label}` +
+            (confidence ? ` (${confidence}%).` : ".");
+          box.appendChild(hypothesis);
+          if (historicalHypothesis.evidence?.length) {
+            const evidence = document.createElement("p");
+            evidence.textContent = `Widoczne podstawy: ${historicalHypothesis.evidence.join("; ")}.`;
+            box.appendChild(evidence);
+          }
         }
         const questions = shown.followUpQuestions || [];
         if (questions.length) {
@@ -1179,17 +1212,35 @@
           savedSignature: savedPhotoSignature,
           images: imgs,
         });
-        const c = ApoMonet.upsertCoin({
-          id: reusableId,
-          ...a,
-          description: a.fullDescription || a.description,
-          analysisLevel: a.detail ? "detailed" : "basic",
-          obverseImage: imgs[0],
-          reverseImage: imgs[1],
-        });
-        id = c.id;
-        savedPhotoSignature = window.ApoAnalysisRecordIdentity?.photoSignature?.(imgs) || null;
-        return c;
+        try {
+          const c = ApoMonet.upsertCoin({
+            id: reusableId,
+            ...a,
+            description: a.fullDescription || a.description,
+            analysisLevel: a.detail ? "detailed" : "basic",
+            obverseImage: imgs[0],
+            reverseImage: imgs[1],
+          });
+          const stored = c?.id ? ApoMonet.getCoin(c.id) : null;
+          const storedImages = [stored?.obverseImage || null, stored?.reverseImage || null];
+          if (
+            !stored ||
+            !identity.hasPhotoPair(storedImages) ||
+            identity.photoSignature(storedImages) !== identity.photoSignature(imgs)
+          ) {
+            throw new Error("Zapis nie został potwierdzony w pamięci urządzenia.");
+          }
+          id = c.id;
+          savedPhotoSignature =
+            window.ApoAnalysisRecordIdentity?.photoSignature?.(imgs) || null;
+          persistAnalysisSession({ light: true });
+          return stored;
+        } catch (error) {
+          console.error("[analysis-save]", error);
+          $("status").textContent = error?.message ||
+            "Nie udało się zapisać monety. Dane analizy i zdjęcia pozostają na tym ekranie.";
+          return null;
+        }
       }
       function showSavedActions(c, message) {
         if (!c) return;
@@ -1298,9 +1349,18 @@
           .forEach(
             (b) =>
               (b.onclick = () => {
-                ApoMonet.assignCoinToAlbum(c.id, b.dataset.id);
-                $("albumModal").classList.add("hidden");
-                showSavedActions(c, "Moneta zapisana i dodana do albumu.");
+                try {
+                  const assigned = ApoMonet.assignCoinToAlbum(c.id, b.dataset.id);
+                  if (!assigned?.albumIds?.includes(b.dataset.id)) {
+                    throw new Error("Nie udało się potwierdzić dodania monety do wybranego albumu.");
+                  }
+                  $("albumModal").classList.add("hidden");
+                  showSavedActions(assigned, "Moneta zapisana i dodana do albumu.");
+                } catch (error) {
+                  console.error("[album-save]", error);
+                  $("status").textContent = error?.message ||
+                    "Nie udało się dodać monety do albumu. Moneta pozostaje zapisana w kolekcji.";
+                }
               }),
           );
         $("albumModal").classList.remove("hidden");
