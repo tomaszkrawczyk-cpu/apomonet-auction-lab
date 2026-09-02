@@ -102,6 +102,23 @@ test("Stage 1 skips a slow visual rerank when close contenders share the same ba
   assert.equal(shouldCompareVisualReferences(ranked), false);
 });
 
+test("a high-margin evidence leader stays partial and skips catalogue confirmation", () => {
+  const ranked = {
+    selected: null,
+    gap: 30,
+    ranked: [
+      { score: 69, hardConflicts: [], candidate: { id: "august", images: ["https://example.test/august.jpg"] } },
+      { score: 39, hardConflicts: [], candidate: { id: "other", images: [] } },
+    ],
+  };
+  assert.equal(shouldCompareVisualReferences(ranked), false);
+
+  ranked.gap = 2;
+  ranked.ranked[0].score = 61;
+  ranked.ranked[1].score = 59;
+  assert.equal(shouldCompareVisualReferences(ranked), true);
+});
+
 test("a coin observation hard-rejects a pattern candidate", () => {
   const observations = {
     objectKind: "coin",
@@ -170,7 +187,7 @@ test("mobile flow keeps original previews and rejects stale analysis responses b
   assert.match(api, /objectKind: raw\.objectKind/);
   assert.match(api, /decision\.rejectedCandidateIds/);
   assert.match(api, /decision\.blockedIdentityFields/);
-  assert.match(api, /APOMONET_ANALYSIS_SERVICE_TIER \|\| "fast"/);
+  assert.match(api, /APOMONET_ANALYSIS_SERVICE_TIER \|\| "auto"/);
   assert.equal((api.match(/service_tier: ANALYSIS_SERVICE_TIER/g) || []).length, 2);
   assert.match(api, /visualReferenceMs: visualReference\.elapsedMs/);
 });

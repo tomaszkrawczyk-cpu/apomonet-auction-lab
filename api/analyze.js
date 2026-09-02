@@ -15,10 +15,10 @@ const REFERENCE_COMPARE_TIMEOUT_MS = 36_000;
 const JOB_TTL_MS = 10 * 60_000;
 const RUNTIME_SOURCE_GRACE_MS = 1_200;
 const ANALYSIS_SERVICE_TIER = ["auto", "default", "fast"].includes(
-  clean(process.env.APOMONET_ANALYSIS_SERVICE_TIER || "fast"),
+  clean(process.env.APOMONET_ANALYSIS_SERVICE_TIER || "auto"),
 )
-  ? clean(process.env.APOMONET_ANALYSIS_SERVICE_TIER || "fast")
-  : "fast";
+  ? clean(process.env.APOMONET_ANALYSIS_SERVICE_TIER || "auto")
+  : "auto";
 
 const basicJobs =
   globalThis.__apomonetBasicJobs ||
