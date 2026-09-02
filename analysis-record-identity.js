@@ -16,9 +16,18 @@
       .map(value=>`${clean(value).length}:${hash(value)}`)
       .join('|');
   }
+  function hasPhotoPair(images){
+    return Array.isArray(images)&&images.slice(0,2).length===2&&images.slice(0,2).every(value=>{
+      const source=clean(value);
+      return source.startsWith('data:image/')||source.startsWith('https://')||source.startsWith('http://');
+    });
+  }
+  function analysisMatchesPhotos({analysisSignature,images}={}){
+    return Boolean(analysisSignature&&hasPhotoPair(images)&&analysisSignature===photoSignature(images));
+  }
   function reusableId({id,savedSignature,images}={}){
-    if(!id||!savedSignature)return undefined;
+    if(!id||!savedSignature||!hasPhotoPair(images))return undefined;
     return savedSignature===photoSignature(images)?id:undefined;
   }
-  window.ApoAnalysisRecordIdentity=Object.freeze({photoSignature,reusableId});
+  window.ApoAnalysisRecordIdentity=Object.freeze({photoSignature,hasPhotoPair,analysisMatchesPhotos,reusableId});
 })();

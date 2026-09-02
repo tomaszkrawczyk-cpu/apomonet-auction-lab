@@ -193,6 +193,24 @@ const referenceComparisonSchema = {
             maxItems: 4,
             items: { type: "string" },
           },
+          conflictingFields: {
+            type: "array",
+            maxItems: 6,
+            items: {
+              type: "string",
+              enum: [
+                "country",
+                "issuer",
+                "ruler",
+                "depictedPerson",
+                "year",
+                "nominal",
+                "mint",
+                "metal",
+                "design",
+              ],
+            },
+          },
           specimenDifferences: {
             type: "array",
             maxItems: 4,
@@ -212,6 +230,7 @@ const referenceComparisonSchema = {
           "matchedSides",
           "decisiveFeatures",
           "contradictions",
+          "conflictingFields",
           "specimenDifferences",
           "limitations",
         ],
@@ -250,7 +269,7 @@ Najpierw porównaj niezależnie: postać/portret, heraldykę, układ legendy, cz
 
 Dla KAŻDEGO przedstawionego kandydata dodaj dokładnie jeden wpis comparisons z jego dokładnym ID. Oceniaj visualFit bez porównywania jakości zdjęć: 0 oznacza inny projekt monety, 100 oznacza ten sam egzemplarz lub praktycznie identyczny stempel. sameType oznacza ten sam podstawowy typ monety; sameSpecimen ustaw true tylko wtedy, gdy układ stempla, zużycie i drobne ślady pokazują, że to dokładnie ten sam egzemplarz mimo kadru, skali lub tła. matchedSides mówi, które strony mają realne potwierdzenie.
 
-Ściśle rozdzielaj trzy klasy uwag. contradictions zawiera WYŁĄCZNIE sprzeczności podstawowego typu: inny władca, data, nominał, mennica, legenda, herb albo projekt. Różnice zużycia, obrysu krążka, rys, patyny i powierzchni wpisuj tylko do specimenDifferences — mogą wykluczyć ten sam egzemplarz, ale nie ten sam typ. Brak rewersu referencji, inny kadr, skala lub jakość zdjęcia wpisuj tylko do limitations; ograniczenie nie jest sprzecznością. Puste tablice są prawidłowe.
+Ściśle rozdzielaj trzy klasy uwag. contradictions zawiera WYŁĄCZNIE sprzeczności podstawowego typu: inny władca, data, nominał, mennica, legenda, herb albo projekt. Dla każdej takiej sprzeczności wpisz jej pola również do conflictingFields, używając wyłącznie dozwolonych nazw; np. inny władca i data to ["ruler","depictedPerson","year"]. Różnice zużycia, obrysu krążka, rys, patyny i powierzchni wpisuj tylko do specimenDifferences — mogą wykluczyć ten sam egzemplarz, ale nie ten sam typ. Brak rewersu referencji, inny kadr, skala lub jakość zdjęcia wpisuj tylko do limitations; ograniczenie nie jest sprzecznością. Puste tablice są prawidłowe.
 
 Jedno dokładnie zgodne zdjęcie referencyjne może rozstrzygnąć podstawowy typ, jeśli przedstawia ten sam egzemplarz lub jednoznacznie ten sam stempel; druga strona użytkownika nadal musi być zgodna z metadanymi i nie może im przeczyć. Wybierz dokładne id tylko wtedy, gdy obraz potwierdza ten sam podstawowy typ monety i nie ma widocznej sprzeczności daty, nominału, portretu lub herbu. candidateFit 80+ oznacza rozstrzygające dopasowanie typu. Jeśli żaden rekord nie spełnia tego warunku, zwróć pusty selectedCandidateId.`,
     },
@@ -326,7 +345,6 @@ async function runAnalysis(apiKey, images, measurements) {
   const {
     adjudicateRecognition,
     analysisFromRecognition,
-    candidatePrompt,
     conditionFromRaw,
     localReferenceCandidates,
     searchMnkByEvidence,
@@ -343,11 +361,11 @@ async function runAnalysis(apiKey, images, measurements) {
     process.env.NUMISTA_API_KEY,
     images,
   );
-  // The first vision pass must describe the photographs without being anchored
-  // by an arbitrary slice of the large local catalogue. Numista candidates are
-  // allowed here only because they were retrieved from the submitted images.
+  // The first vision pass describes the photographs without catalogue
+  // anchoring. Candidate retrieval and selection happen deterministically only
+  // after the visible evidence has been returned.
   let candidates = [];
-  const prompt = `ETAP 1 APOMONET — analiza dowodów i wybór wyłącznie z katalogu kandydatów.
+  const prompt = `ETAP 1 APOMONET — niezależny odczyt dowodów ze zdjęć.
 
 Najpierw oceń, czy oba zdjęcia nadają się do identyfikacji i czy pokazują dwie strony tego samego obiektu. Rozpoznaj wyłącznie rodzaj obiektu: regularna moneta obiegowa, emisja próbna/wzorcowa (PRÓBA/PROBA/ESSAI/PATTERN), medal, żeton, możliwa kopia albo obiekt niepewny. Uwzględnij widoczny napis „PRÓBA”, nietypowy metal, talar próbny oraz sygnatur projektanta/medaliera. Zdjęcie samo w sobie nie potwierdza autentyczności. Użyj objectKind „copy” wyłącznie wtedy, gdy widać konkretną cechę techniki wykonania wskazującą kopię lub odlew; nie oznaczaj tak obiektu tylko dlatego, że zdjęcie pochodzi z galerii, aukcji, ekranu albo jest podobne do fotografii referencyjnej.
 
@@ -355,12 +373,9 @@ IDENTYFIKACJA I STAN TO DWA ODDZIELNE ZADANIA. W observations zapisz tylko to, c
 
 Przy legendach nowożytnych rozróżniaj podstawowe imiona: STEPHAN/STEPHANVS wskazuje Stefana (w polskim materiale zwykle Stefana Batorego), SIGIS/SIGISM — Zygmunta, SIGIS razem z AVG/AVGVSTVS — Zygmunta II Augusta, a IOAN razem z CASIM — Jana Kazimierza. Pole rulerReading służy wyłącznie odczytowi imienia lub tytulatury władcy: jeśli widać STEPHANVS, wpisz STEPHANVS lub Stefan Batory; nigdy nie wpisuj tam uwag o skali, linijce ani średnicy. Jeżeli portretowa hipoteza przeczy czytelnej legendzie, przepisz legendę i nie broń hipotezy. GEDAN/GEDANENSIS oznacza Gdańsk, AVR/AUREA wskazuje złoto, ARG/ARGENTEA wskazuje srebro. Widoczną kontrmarkę lub kontrsygnaturę zapisz w mintMarks, łącznie z odczytanym monogramem i datą; nie utożsamiaj automatycznie emitenta monety gospodarza z emitentem kontrmarki. Masa około 3,4–3,7 g przy złotym wyglądzie jest skalą dukata; nie jest skalą srebrnego talara ani dwutalara. To są wskazówki językowe i metrologiczne, ale ostatecznie muszą zgadzać się również portret, herb i druga strona.
 
-W decision wolno wybrać TYLKO dokładne id z listy KANDYDACI albo pusty tekst. Nie wolno wymyślić nowej tożsamości. Kandydat musi zgadzać się z obiema stronami. Portret bez zgodnego rewersu, mennicy, legendy lub nominału nie wystarcza. Jako sprzeczność wpisz tylko cechę, która faktycznie przeczy wybranemu kandydatowi — brak napisu PRÓBA nie jest sprzecznością dla monety regularnej, a dodatkowe cyfry nie przeczą dacie, jeżeli właściwa data również jest czytelna. Jeśli dwa nominały mają podobne stemple i rozstrzyga je masa/średnica, nie zgaduj.
+W tej pierwszej obserwacji nie ma jeszcze kandydatów. Ustaw decision.selectedCandidateId na pusty tekst, candidateFit na 0 oraz puste supportingFeatures i contradictions. Nie wymyślaj ID ani tożsamości katalogowej. Dopasowanie wykona później osobny silnik dowodowy. Jeśli dwa nominały mają podobne stemple i rozstrzyga je masa/średnica, nie zgaduj.
 
 W condition niezależnie oceń wyłącznie szeroki stan zachowania. Oddziel zużycie obiegowe od słabego bicia, korozji, czyszczenia, rys i uszkodzeń. Nie podawaj gradingu liczbowego i nie używaj tożsamości monety do zawyżania stanu.
-
-KANDYDACI:
-${candidatePrompt(candidates)}
 
 POMIARY WŁAŚCICIELA (mogą być puste):
 ${JSON.stringify(measurements || {})}
@@ -408,6 +423,10 @@ Odpowiadaj po polsku.`;
     const text = responseText(data);
     if (!text) throw new Error("Analiza wstępna zwróciła pusty wynik.");
     const raw = JSON.parse(text);
+    raw.observations = {
+      ...(raw.observations || {}),
+      objectKind: raw.objectKind,
+    };
     if (raw.imageUsable === false || raw.sameObject === false) {
       return {
         status: 422,
@@ -510,6 +529,10 @@ Odpowiadaj po polsku.`;
       raw.decision.selectedCandidateId = "";
       raw.decision.candidateFit = 0;
       raw.decision.contradictions = visualReference.result.contradictions;
+      raw.decision.rejectedCandidateIds =
+        visualReference.result.rejectedCandidateIds || [];
+      raw.decision.blockedIdentityFields =
+        visualReference.result.blockedIdentityFields || [];
     } else if (visualReference.result?.contradictions?.length) {
       raw.decision.contradictions = [
         ...(raw.decision.contradictions || []),
