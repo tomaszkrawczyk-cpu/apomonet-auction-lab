@@ -14,6 +14,11 @@ const VISION_TIMEOUT_MS = 32_000;
 const REFERENCE_COMPARE_TIMEOUT_MS = 36_000;
 const JOB_TTL_MS = 10 * 60_000;
 const RUNTIME_SOURCE_GRACE_MS = 1_200;
+const ANALYSIS_SERVICE_TIER = ["auto", "default", "fast"].includes(
+  clean(process.env.APOMONET_ANALYSIS_SERVICE_TIER || "auto"),
+)
+  ? clean(process.env.APOMONET_ANALYSIS_SERVICE_TIER || "auto")
+  : "auto";
 
 const basicJobs =
   globalThis.__apomonetBasicJobs ||
@@ -79,6 +84,14 @@ const schema = {
         metalAppearance: { type: "string" },
         shape: { type: "string" },
         portrait: { type: "string" },
+        periodReading: { type: "string" },
+        historicalTypeHypothesis: { type: "string" },
+        historicalTypeConfidence: { type: "integer", minimum: 0, maximum: 95 },
+        historicalEvidence: {
+          type: "array",
+          maxItems: 6,
+          items: { type: "string" },
+        },
         heraldry: { type: "array", maxItems: 6, items: { type: "string" } },
         mintMarks: { type: "array", maxItems: 6, items: { type: "string" } },
         obverseLegendFragments: {
@@ -101,6 +114,10 @@ const schema = {
         "metalAppearance",
         "shape",
         "portrait",
+        "periodReading",
+        "historicalTypeHypothesis",
+        "historicalTypeConfidence",
+        "historicalEvidence",
         "heraldry",
         "mintMarks",
         "obverseLegendFragments",
@@ -193,6 +210,24 @@ const referenceComparisonSchema = {
             maxItems: 4,
             items: { type: "string" },
           },
+          conflictingFields: {
+            type: "array",
+            maxItems: 6,
+            items: {
+              type: "string",
+              enum: [
+                "country",
+                "issuer",
+                "ruler",
+                "depictedPerson",
+                "year",
+                "nominal",
+                "mint",
+                "metal",
+                "design",
+              ],
+            },
+          },
           specimenDifferences: {
             type: "array",
             maxItems: 4,
@@ -212,6 +247,7 @@ const referenceComparisonSchema = {
           "matchedSides",
           "decisiveFeatures",
           "contradictions",
+          "conflictingFields",
           "specimenDifferences",
           "limitations",
         ],
@@ -228,6 +264,7 @@ const referenceComparisonSchema = {
 };
 
 async function compareWithReferenceImages(apiKey, userImages, ranked) {
+  const startedAt = Date.now();
   const {
     resolveVisualComparison,
     shouldCompareVisualReferences,
@@ -236,7 +273,13 @@ async function compareWithReferenceImages(apiKey, userImages, ranked) {
   const shortlist = visualReferenceShortlist(ranked);
   const comparedCandidateIds = shortlist.map((item) => item.candidate.id);
   if (!shouldCompareVisualReferences(ranked, shortlist)) {
-    return { status: "not-needed", result: null, comparedCandidateIds: [] };
+    return {
+      status: "not-needed",
+      result: null,
+      comparedCandidateIds: [],
+      elapsedMs: Date.now() - startedAt,
+      serviceTier: null,
+    };
   }
 
   const content = [
@@ -250,7 +293,7 @@ Najpierw porównaj niezależnie: postać/portret, heraldykę, układ legendy, cz
 
 Dla KAŻDEGO przedstawionego kandydata dodaj dokładnie jeden wpis comparisons z jego dokładnym ID. Oceniaj visualFit bez porównywania jakości zdjęć: 0 oznacza inny projekt monety, 100 oznacza ten sam egzemplarz lub praktycznie identyczny stempel. sameType oznacza ten sam podstawowy typ monety; sameSpecimen ustaw true tylko wtedy, gdy układ stempla, zużycie i drobne ślady pokazują, że to dokładnie ten sam egzemplarz mimo kadru, skali lub tła. matchedSides mówi, które strony mają realne potwierdzenie.
 
-Ściśle rozdzielaj trzy klasy uwag. contradictions zawiera WYŁĄCZNIE sprzeczności podstawowego typu: inny władca, data, nominał, mennica, legenda, herb albo projekt. Różnice zużycia, obrysu krążka, rys, patyny i powierzchni wpisuj tylko do specimenDifferences — mogą wykluczyć ten sam egzemplarz, ale nie ten sam typ. Brak rewersu referencji, inny kadr, skala lub jakość zdjęcia wpisuj tylko do limitations; ograniczenie nie jest sprzecznością. Puste tablice są prawidłowe.
+Ściśle rozdzielaj trzy klasy uwag. contradictions zawiera WYŁĄCZNIE sprzeczności podstawowego typu: inny władca, data, nominał, mennica, legenda, herb albo projekt. Dla każdej takiej sprzeczności wpisz jej pola również do conflictingFields, używając wyłącznie dozwolonych nazw; np. inny władca i data to ["ruler","depictedPerson","year"]. Różnice zużycia, obrysu krążka, rys, patyny i powierzchni wpisuj tylko do specimenDifferences — mogą wykluczyć ten sam egzemplarz, ale nie ten sam typ. Brak rewersu referencji, inny kadr, skala lub jakość zdjęcia wpisuj tylko do limitations; ograniczenie nie jest sprzecznością. Puste tablice są prawidłowe.
 
 Jedno dokładnie zgodne zdjęcie referencyjne może rozstrzygnąć podstawowy typ, jeśli przedstawia ten sam egzemplarz lub jednoznacznie ten sam stempel; druga strona użytkownika nadal musi być zgodna z metadanymi i nie może im przeczyć. Wybierz dokładne id tylko wtedy, gdy obraz potwierdza ten sam podstawowy typ monety i nie ma widocznej sprzeczności daty, nominału, portretu lub herbu. candidateFit 80+ oznacza rozstrzygające dopasowanie typu. Jeśli żaden rekord nie spełnia tego warunku, zwróć pusty selectedCandidateId.`,
     },
@@ -287,6 +330,7 @@ Jedno dokładnie zgodne zdjęcie referencyjne może rozstrzygnąć podstawowy ty
       body: JSON.stringify({
         model: "gpt-5.6",
         reasoning: { effort: "low" },
+        service_tier: ANALYSIS_SERVICE_TIER,
         input: [{ role: "user", content }],
         text: {
           format: {
@@ -304,17 +348,33 @@ Jedno dokładnie zgodne zdjęcie referencyjne może rozstrzygnąć podstawowy ty
         status: `error-${response.status}`,
         result: null,
         comparedCandidateIds,
+        elapsedMs: Date.now() - startedAt,
+        serviceTier: data?.service_tier || null,
       };
     }
     const text = responseText(data);
-    if (!text) return { status: "empty", result: null, comparedCandidateIds };
+    if (!text) return {
+      status: "empty",
+      result: null,
+      comparedCandidateIds,
+      elapsedMs: Date.now() - startedAt,
+      serviceTier: data?.service_tier || null,
+    };
     const result = resolveVisualComparison(JSON.parse(text), shortlist);
-    return { status: "ok", result, comparedCandidateIds };
+    return {
+      status: "ok",
+      result,
+      comparedCandidateIds,
+      elapsedMs: Date.now() - startedAt,
+      serviceTier: data?.service_tier || null,
+    };
   } catch (error) {
     return {
       status: error?.name === "AbortError" ? "timeout" : "error",
       result: null,
       comparedCandidateIds,
+      elapsedMs: Date.now() - startedAt,
+      serviceTier: null,
     };
   } finally {
     clearTimeout(timeout);
@@ -326,7 +386,6 @@ async function runAnalysis(apiKey, images, measurements) {
   const {
     adjudicateRecognition,
     analysisFromRecognition,
-    candidatePrompt,
     conditionFromRaw,
     localReferenceCandidates,
     searchMnkByEvidence,
@@ -343,24 +402,23 @@ async function runAnalysis(apiKey, images, measurements) {
     process.env.NUMISTA_API_KEY,
     images,
   );
-  // The first vision pass must describe the photographs without being anchored
-  // by an arbitrary slice of the large local catalogue. Numista candidates are
-  // allowed here only because they were retrieved from the submitted images.
+  // The first vision pass describes the photographs without catalogue
+  // anchoring. Candidate retrieval and selection happen deterministically only
+  // after the visible evidence has been returned.
   let candidates = [];
-  const prompt = `ETAP 1 APOMONET — analiza dowodów i wybór wyłącznie z katalogu kandydatów.
+  const prompt = `ETAP 1 APOMONET — niezależny odczyt dowodów ze zdjęć.
 
 Najpierw oceń, czy oba zdjęcia nadają się do identyfikacji i czy pokazują dwie strony tego samego obiektu. Rozpoznaj wyłącznie rodzaj obiektu: regularna moneta obiegowa, emisja próbna/wzorcowa (PRÓBA/PROBA/ESSAI/PATTERN), medal, żeton, możliwa kopia albo obiekt niepewny. Uwzględnij widoczny napis „PRÓBA”, nietypowy metal, talar próbny oraz sygnatur projektanta/medaliera. Zdjęcie samo w sobie nie potwierdza autentyczności. Użyj objectKind „copy” wyłącznie wtedy, gdy widać konkretną cechę techniki wykonania wskazującą kopię lub odlew; nie oznaczaj tak obiektu tylko dlatego, że zdjęcie pochodzi z galerii, aukcji, ekranu albo jest podobne do fotografii referencyjnej.
 
 IDENTYFIKACJA I STAN TO DWA ODDZIELNE ZADANIA. W observations zapisz tylko to, co faktycznie widać: fragmenty legend, portret, herby, datę/cyfry, oznaczenie nominału, mennicę lub znaki, kształt i wygląd metalu. Nie dopasowuj obserwacji do oczekiwanego wyniku. Gdy czegoś nie widać, wpisz „Nie ustalono” albo pustą tablicę. Traktuj listę kandydatów wyłącznie jako materiał do późniejszego porównania, a nie jako podpowiedź do odczytu obrazu.
 
+MONETY STAROŻYTNE I ŚREDNIOWIECZNE: nie wymagaj nowożytnego portretu, pełnej daty ani cyfrowego nominału. Odczytuj stylizowaną legendę znak po znaku, także gdy część liter jest niepewna, i zapisuj osobno widoczne motywy: krzyż, świątynię/fasadę, monogram, popiersie, koronę, orła, tarczę, wieżę lub znak menniczy. W periodReading wpisz tylko szeroką epokę widoczną w stylistyce. Jeżeli połączenie legendy i co najmniej dwóch motywów jest charakterystyczne, możesz podać ostrożną hipotezę typu w historicalTypeHypothesis, jej pewność w historicalTypeConfidence i konkretne widoczne podstawy w historicalEvidence. To pole jest hipotezą ikonograficzną, nie przypisaniem katalogowym: nie wpisuj numeru katalogowego, a przy samym podobieństwie stylu pozostaw hipotezę pustą i pewność 0.
+
 Przy legendach nowożytnych rozróżniaj podstawowe imiona: STEPHAN/STEPHANVS wskazuje Stefana (w polskim materiale zwykle Stefana Batorego), SIGIS/SIGISM — Zygmunta, SIGIS razem z AVG/AVGVSTVS — Zygmunta II Augusta, a IOAN razem z CASIM — Jana Kazimierza. Pole rulerReading służy wyłącznie odczytowi imienia lub tytulatury władcy: jeśli widać STEPHANVS, wpisz STEPHANVS lub Stefan Batory; nigdy nie wpisuj tam uwag o skali, linijce ani średnicy. Jeżeli portretowa hipoteza przeczy czytelnej legendzie, przepisz legendę i nie broń hipotezy. GEDAN/GEDANENSIS oznacza Gdańsk, AVR/AUREA wskazuje złoto, ARG/ARGENTEA wskazuje srebro. Widoczną kontrmarkę lub kontrsygnaturę zapisz w mintMarks, łącznie z odczytanym monogramem i datą; nie utożsamiaj automatycznie emitenta monety gospodarza z emitentem kontrmarki. Masa około 3,4–3,7 g przy złotym wyglądzie jest skalą dukata; nie jest skalą srebrnego talara ani dwutalara. To są wskazówki językowe i metrologiczne, ale ostatecznie muszą zgadzać się również portret, herb i druga strona.
 
-W decision wolno wybrać TYLKO dokładne id z listy KANDYDACI albo pusty tekst. Nie wolno wymyślić nowej tożsamości. Kandydat musi zgadzać się z obiema stronami. Portret bez zgodnego rewersu, mennicy, legendy lub nominału nie wystarcza. Jako sprzeczność wpisz tylko cechę, która faktycznie przeczy wybranemu kandydatowi — brak napisu PRÓBA nie jest sprzecznością dla monety regularnej, a dodatkowe cyfry nie przeczą dacie, jeżeli właściwa data również jest czytelna. Jeśli dwa nominały mają podobne stemple i rozstrzyga je masa/średnica, nie zgaduj.
+W tej pierwszej obserwacji nie ma jeszcze kandydatów. Ustaw decision.selectedCandidateId na pusty tekst, candidateFit na 0 oraz puste supportingFeatures i contradictions. Nie wymyślaj ID ani tożsamości katalogowej. Dopasowanie wykona później osobny silnik dowodowy. Jeśli dwa nominały mają podobne stemple i rozstrzyga je masa/średnica, nie zgaduj.
 
 W condition niezależnie oceń wyłącznie szeroki stan zachowania. Oddziel zużycie obiegowe od słabego bicia, korozji, czyszczenia, rys i uszkodzeń. Nie podawaj gradingu liczbowego i nie używaj tożsamości monety do zawyżania stanu.
-
-KANDYDACI:
-${candidatePrompt(candidates)}
 
 POMIARY WŁAŚCICIELA (mogą być puste):
 ${JSON.stringify(measurements || {})}
@@ -373,6 +431,7 @@ Odpowiadaj po polsku.`;
   ];
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), VISION_TIMEOUT_MS);
+  const visionStartedAt = Date.now();
   try {
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
@@ -384,6 +443,7 @@ Odpowiadaj po polsku.`;
       body: JSON.stringify({
         model: "gpt-5.6",
         reasoning: { effort: "low" },
+        service_tier: ANALYSIS_SERVICE_TIER,
         input: [{ role: "user", content }],
         text: {
           format: {
@@ -396,6 +456,7 @@ Odpowiadaj po polsku.`;
       }),
     });
     const data = await response.json();
+    const visionElapsedMs = Date.now() - visionStartedAt;
     if (!response.ok) {
       return {
         status: response.status,
@@ -408,6 +469,10 @@ Odpowiadaj po polsku.`;
     const text = responseText(data);
     if (!text) throw new Error("Analiza wstępna zwróciła pusty wynik.");
     const raw = JSON.parse(text);
+    raw.observations = {
+      ...(raw.observations || {}),
+      objectKind: raw.objectKind,
+    };
     if (raw.imageUsable === false || raw.sameObject === false) {
       return {
         status: 422,
@@ -510,6 +575,10 @@ Odpowiadaj po polsku.`;
       raw.decision.selectedCandidateId = "";
       raw.decision.candidateFit = 0;
       raw.decision.contradictions = visualReference.result.contradictions;
+      raw.decision.rejectedCandidateIds =
+        visualReference.result.rejectedCandidateIds || [];
+      raw.decision.blockedIdentityFields =
+        visualReference.result.blockedIdentityFields || [];
     } else if (visualReference.result?.contradictions?.length) {
       raw.decision.contradictions = [
         ...(raw.decision.contradictions || []),
@@ -529,6 +598,8 @@ Odpowiadaj po polsku.`;
         nominal: clean(raw.observations?.denominationReading),
         mint: clean(raw.observations?.mintReading),
         metal: clean(raw.observations?.metalAppearance),
+        historicalType: clean(raw.observations?.historicalTypeHypothesis),
+        historicalTypeConfidence: Number(raw.observations?.historicalTypeConfidence) || 0,
       },
       objectKind: clean(raw.objectKind),
       authenticityConcern: recognition.authenticityConcern || null,
@@ -587,9 +658,12 @@ Odpowiadaj po polsku.`;
           visualReferenceSelectedCandidateId:
             visualReference.result?.selectedCandidateId || null,
           recognitionEngine: recognitionEnginePolicy.version,
+          analysisServiceTier: ANALYSIS_SERVICE_TIER,
           engineDiagnostics: ranked.retrieval.diagnostics,
         },
         timings: {
+          visionMs: visionElapsedMs,
+          visualReferenceMs: visualReference.elapsedMs || 0,
           localRetrievalMs: localOrchestration.timings.totalLocalMs,
           finalOrchestrationMs: ranked.timings.totalLocalMs,
           totalMs: Date.now() - analysisStartedAt,
@@ -597,6 +671,8 @@ Odpowiadaj po polsku.`;
         usage: {
           inputTokens: data.usage?.input_tokens || 0,
           outputTokens: data.usage?.output_tokens || 0,
+          serviceTier: data?.service_tier || null,
+          visualServiceTier: visualReference.serviceTier || null,
         },
       },
     };

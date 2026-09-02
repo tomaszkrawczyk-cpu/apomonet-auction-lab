@@ -593,6 +593,10 @@
         photoDiagnostics = [null, null],
         id = null,
         savedPhotoSignature = null,
+        analyzedPhotoSignature = null,
+        photoRevision = 0,
+        activeBasicController = null,
+        activeDetailController = null,
         localizedA = null,
         detailJobId = null;
       const $ = (x) => document.getElementById(x);
@@ -730,6 +734,12 @@
             de: "Der Münzrand ist nicht klar. Legen Sie die Münze flach auf einen einfarbigen Hintergrund und fotografieren Sie sie von oben.",
             fr: "Le bord est peu visible. Posez la monnaie à plat sur un fond uni et photographiez-la du dessus.",
           },
+          inconsistent: {
+            pl: "Zdjęcia mają wyraźnie różną skalę albo położenie monety. Zachowuję oba oryginały, ale dla pewniejszego wyniku zrób awers i rewers z podobnej odległości, bez ucinania krążka.",
+            en: "The coin scale or position differs clearly between the two photos. Both originals are kept, but retake both sides from a similar distance without cutting off the coin for a more reliable result.",
+            de: "Maßstab oder Lage der Münze unterscheiden sich deutlich zwischen den Fotos. Beide Originale bleiben erhalten; fotografieren Sie beide Seiten für ein zuverlässigeres Ergebnis aus ähnlicher Entfernung, ohne die Münze abzuschneiden.",
+            fr: "L’échelle ou la position de la monnaie diffère nettement entre les deux photos. Les deux originaux sont conservés ; reprenez les deux faces à une distance similaire sans couper la monnaie pour un résultat plus fiable.",
+          },
         };
         return messages[key]?.[language] || messages[key]?.pl || "";
       }
@@ -741,7 +751,21 @@
           return;
         }
         const reasons = present.map((item) => item.qualityReason);
-        const key = reasons.includes("textured-background")
+        const coverages = present
+          .map((item) => Number(item.coinCoverage))
+          .filter((value) => value > 0);
+        const coverageRatio = coverages.length === 2
+          ? Math.max(...coverages) / Math.min(...coverages)
+          : 1;
+        const inconsistentPair = present.length === 2 && (
+          coverageRatio > 1.55 ||
+          present.some((item) =>
+            Number(item.coinCoverage) < 0.32 || Number(item.centerOffset) > 0.22,
+          )
+        );
+        const key = inconsistentPair
+          ? "inconsistent"
+          : reasons.includes("textured-background")
           ? "textured"
           : present.some((item) => item.quality !== "good")
             ? "uncertain"
@@ -752,8 +776,14 @@
       }
       function resetRecordForNewPhotos() {
         if ($("albumPhotoPrep")) return;
+        photoRevision += 1;
+        activeBasicController?.abort();
+        activeDetailController?.abort();
+        activeBasicController = null;
+        activeDetailController = null;
         id = null;
         savedPhotoSignature = null;
+        analyzedPhotoSignature = null;
         a = null;
         localizedA = null;
         detailJobId = null;
@@ -770,6 +800,7 @@
       async function take(input, index, imgId, placeholderId, name) {
         const f = input.files && input.files[0];
         if (!f) return;
+        const preservesCurrentRecord = Boolean($("albumPhotoPrep"));
         try {
           resetRecordForNewPhotos();
           $("status").textContent =
@@ -782,7 +813,16 @@
             quality: p.quality || "good",
             qualityReason: p.qualityReason || "clear-edge",
             cropMode: p.cropMode || "full",
+            previewMode: p.previewMode || "original-full-frame",
+            coinCoverage: Number(p.coinCoverage) || 0,
+            centerOffset: Number(p.centerOffset) || 0,
           };
+          if (preservesCurrentRecord) {
+            const currentSignature =
+              window.ApoAnalysisRecordIdentity?.photoSignature?.(imgs) || null;
+            analyzedPhotoSignature = currentSignature;
+            savedPhotoSignature = currentSignature;
+          }
           preview(imgs[index], imgId, placeholderId);
           updatePhotoQuality();
           $("status").textContent = ready()
@@ -889,6 +929,23 @@
           fact.append(label, value);
           detailFacts.appendChild(fact);
         });
+        const catalogCandidate = detail.catalogCandidate;
+        if (catalogCandidate?.reference) {
+          [
+            ["Kandydat Kopicki — do weryfikacji", catalogCandidate.reference],
+            ["Kandydat rzadkości — niepotwierdzony", catalogCandidate.rarity],
+          ].forEach(([labelText, fieldValue]) => {
+            if (!fieldValue) return;
+            const fact = document.createElement("div");
+            fact.className = "fact";
+            const label = document.createElement("span");
+            label.textContent = labelText;
+            const value = document.createElement("strong");
+            value.textContent = fieldValue;
+            fact.append(label, value);
+            detailFacts.appendChild(fact);
+          });
+        }
 
         const add = (label, value) => {
           if (!view?.known?.(value) && !(Array.isArray(value) && value.length)) return;
@@ -907,6 +964,7 @@
               .join(" · ")
           : detail.visibleDateReading;
         add(view?.text?.("dateReading") || "Data — odczyt cyfr", digitReading);
+        add("Podstawa kandydata katalogowego", catalogCandidate?.basis);
         add(view?.text?.("obverseLegend") || "Legenda awersu", detail.obverseLegend);
         add(view?.text?.("reverseLegend") || "Legenda rewersu", detail.reverseLegend);
         add(view?.text?.("mintmaster") || "Mincerz / znak urzędnika", detail.mintmaster);
@@ -994,6 +1052,21 @@
           const paragraph = document.createElement("p");
           paragraph.textContent = shown.title || selected.title;
           box.appendChild(paragraph);
+        }
+        const historicalHypothesis =
+          shown.historicalHypothesis || recognition.historicalHypothesis;
+        if (historicalHypothesis?.label) {
+          const hypothesis = document.createElement("p");
+          const confidence = Number(historicalHypothesis.confidence) || 0;
+          hypothesis.textContent =
+            `Hipoteza ikonograficzna — niepotwierdzona katalogiem: ${historicalHypothesis.label}` +
+            (confidence ? ` (${confidence}%).` : ".");
+          box.appendChild(hypothesis);
+          if (historicalHypothesis.evidence?.length) {
+            const evidence = document.createElement("p");
+            evidence.textContent = `Widoczne podstawy: ${historicalHypothesis.evidence.join("; ")}.`;
+            box.appendChild(evidence);
+          }
         }
         const questions = shown.followUpQuestions || [];
         if (questions.length) {
@@ -1120,22 +1193,54 @@
       }
       function save() {
         if (!a) return null;
+        const identity = window.ApoAnalysisRecordIdentity;
+        if (!identity?.hasPhotoPair?.(imgs)) {
+          $("status").textContent =
+            "Nie zapisano: dodaj właściwy awers i rewers tej monety.";
+          return null;
+        }
+        if (!identity?.analysisMatchesPhotos?.({
+          analysisSignature: analyzedPhotoSignature,
+          images: imgs,
+        })) {
+          $("status").textContent =
+            "Nie zapisano: te zdjęcia nie należą do widocznego wyniku. Uruchom analizę dla bieżącej pary.";
+          return null;
+        }
         const reusableId = window.ApoAnalysisRecordIdentity?.reusableId?.({
           id,
           savedSignature: savedPhotoSignature,
           images: imgs,
         });
-        const c = ApoMonet.upsertCoin({
-          id: reusableId,
-          ...a,
-          description: a.fullDescription || a.description,
-          analysisLevel: a.detail ? "detailed" : "basic",
-          obverseImage: imgs[0],
-          reverseImage: imgs[1],
-        });
-        id = c.id;
-        savedPhotoSignature = window.ApoAnalysisRecordIdentity?.photoSignature?.(imgs) || null;
-        return c;
+        try {
+          const c = ApoMonet.upsertCoin({
+            id: reusableId,
+            ...a,
+            description: a.fullDescription || a.description,
+            analysisLevel: a.detail ? "detailed" : "basic",
+            obverseImage: imgs[0],
+            reverseImage: imgs[1],
+          });
+          const stored = c?.id ? ApoMonet.getCoin(c.id) : null;
+          const storedImages = [stored?.obverseImage || null, stored?.reverseImage || null];
+          if (
+            !stored ||
+            !identity.hasPhotoPair(storedImages) ||
+            identity.photoSignature(storedImages) !== identity.photoSignature(imgs)
+          ) {
+            throw new Error("Zapis nie został potwierdzony w pamięci urządzenia.");
+          }
+          id = c.id;
+          savedPhotoSignature =
+            window.ApoAnalysisRecordIdentity?.photoSignature?.(imgs) || null;
+          persistAnalysisSession({ light: true });
+          return stored;
+        } catch (error) {
+          console.error("[analysis-save]", error);
+          $("status").textContent = error?.message ||
+            "Nie udało się zapisać monety. Dane analizy i zdjęcia pozostają na tym ekranie.";
+          return null;
+        }
       }
       function showSavedActions(c, message) {
         if (!c) return;
@@ -1147,7 +1252,16 @@
         $("savedActions").scrollIntoView({ behavior: "smooth", block: "start" });
       }
       function persistAnalysisSession({ light = false } = {}) {
-        const session = { id, a, imgs, photoDiagnostics, savedPhotoSignature, at: Date.now(), version: 6 };
+        const session = {
+          id,
+          a,
+          imgs,
+          photoDiagnostics,
+          savedPhotoSignature,
+          analyzedPhotoSignature,
+          at: Date.now(),
+          version: 7,
+        };
         if (!light) session.analysisImgs = analysisImgs;
         try {
           sessionStorage.setItem("apomonetAnalysisSession", JSON.stringify(session));
@@ -1160,13 +1274,35 @@
         try {
           const raw = sessionStorage.getItem("apomonetAnalysisSession");
           if (!raw) return;
-          const s = JSON.parse(raw),
-            c = s?.id ? ApoMonet.getCoin(s.id) : null;
+          const s = JSON.parse(raw);
+          const identity = window.ApoAnalysisRecordIdentity;
+          const sessionImages = Array.isArray(s?.imgs) ? s.imgs : [null, null];
+          const reusableSessionId = identity?.reusableId?.({
+            id: s?.id,
+            savedSignature: s?.savedPhotoSignature,
+            images: sessionImages,
+          });
+          const candidateCoin = reusableSessionId
+            ? ApoMonet.getCoin(reusableSessionId)
+            : null;
+          const coinImages = [
+            candidateCoin?.obverseImage || null,
+            candidateCoin?.reverseImage || null,
+          ];
+          const c = candidateCoin && identity?.hasPhotoPair?.(coinImages) &&
+            identity.photoSignature(coinImages) === identity.photoSignature(sessionImages)
+            ? candidateCoin
+            : null;
           if (!s?.a && !c) return;
-          id = s.id || c?.id || null;
-          imgs = s.imgs || [c?.obverseImage || null, c?.reverseImage || null];
-          savedPhotoSignature = s.savedPhotoSignature ||
-            (id ? window.ApoAnalysisRecordIdentity?.photoSignature?.(imgs) || null : null);
+          id = c?.id || null;
+          imgs = sessionImages;
+          savedPhotoSignature = id ? identity?.photoSignature?.(imgs) || null : null;
+          const restoredSignature = identity?.photoSignature?.(imgs) || null;
+          analyzedPhotoSignature = s.analyzedPhotoSignature === restoredSignature
+            ? restoredSignature
+            : s?.a && s.savedPhotoSignature === restoredSignature
+              ? restoredSignature
+              : null;
           analysisImgs = s.analysisImgs || imgs;
           photoDiagnostics = Array.isArray(s.photoDiagnostics)
             ? s.photoDiagnostics
@@ -1213,9 +1349,18 @@
           .forEach(
             (b) =>
               (b.onclick = () => {
-                ApoMonet.assignCoinToAlbum(c.id, b.dataset.id);
-                $("albumModal").classList.add("hidden");
-                showSavedActions(c, "Moneta zapisana i dodana do albumu.");
+                try {
+                  const assigned = ApoMonet.assignCoinToAlbum(c.id, b.dataset.id);
+                  if (!assigned?.albumIds?.includes(b.dataset.id)) {
+                    throw new Error("Nie udało się potwierdzić dodania monety do wybranego albumu.");
+                  }
+                  $("albumModal").classList.add("hidden");
+                  showSavedActions(assigned, "Moneta zapisana i dodana do albumu.");
+                } catch (error) {
+                  console.error("[album-save]", error);
+                  $("status").textContent = error?.message ||
+                    "Nie udało się dodać monety do albumu. Moneta pozostaje zapisana w kolekcji.";
+                }
               }),
           );
         $("albumModal").classList.remove("hidden");
@@ -1223,6 +1368,11 @@
       $("go").onclick = async () => {
         if (!ready()) return;
         const controller = new AbortController();
+        activeBasicController?.abort();
+        activeBasicController = controller;
+        const requestRevision = photoRevision;
+        const requestPhotoSignature =
+          window.ApoAnalysisRecordIdentity?.photoSignature?.(imgs) || null;
         const progressTimers = [
           setTimeout(() => {
             $("status").textContent = "Odczytuję podstawowe cechy obu stron…";
@@ -1264,7 +1414,13 @@
             throw Error("Serwer nie zwrócił poprawnej odpowiedzi.");
           }
           if (!r.ok) throw Error(apiError(d, "Błąd serwera HTTP " + r.status));
+          if (
+            requestRevision !== photoRevision ||
+            requestPhotoSignature !==
+              window.ApoAnalysisRecordIdentity?.photoSignature?.(imgs)
+          ) return;
           a = d.analysis;
+          analyzedPhotoSignature = requestPhotoSignature;
           detailJobId = null;
           localizedA = null;
           render();
@@ -1279,6 +1435,7 @@
           }
         } catch (e) {
           console.error(e);
+          if (requestRevision !== photoRevision) return;
           $("status").textContent =
             e.name === "AbortError"
               ? "Analiza wstępna trwała zbyt długo. Zdjęcia są bezpieczne — spróbuj ponownie."
@@ -1288,10 +1445,16 @@
           clearTimeout(requestTimeout);
           $("go").disabled = false;
           $("go").removeAttribute("aria-busy");
+          if (activeBasicController === controller) activeBasicController = null;
         }
       };
       $("deep").onclick = async () => {
         const controller = new AbortController();
+        activeDetailController?.abort();
+        activeDetailController = controller;
+        const requestRevision = photoRevision;
+        const requestPhotoSignature =
+          window.ApoAnalysisRecordIdentity?.photoSignature?.(imgs) || null;
         detailJobId ||= `apo-detail-${crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`}`;
         const progressTimers = [
           setTimeout(() => {
@@ -1326,7 +1489,13 @@
             throw Error("Serwer nie zwrócił poprawnej odpowiedzi.");
           }
           if (!r.ok) throw Error(apiError(d, "Błąd serwera HTTP " + r.status));
+          if (
+            requestRevision !== photoRevision ||
+            requestPhotoSignature !==
+              window.ApoAnalysisRecordIdentity?.photoSignature?.(imgs)
+          ) return;
           a = { ...a, ...d.detail, detail: d.detail };
+          analyzedPhotoSignature = requestPhotoSignature;
           localizedA = null;
           $("deepConf").textContent = `Pewność ${d.detail.confidence || 0}%`;
           renderDetail(d.detail);
@@ -1354,6 +1523,7 @@
           }
         } catch (e) {
           console.error("[analyze-detail]", e);
+          if (requestRevision !== photoRevision) return;
           $("status").textContent =
             e.name === "AbortError"
               ? "Analiza trwała zbyt długo. Zdjęcia i poprawione dane są bezpieczne — spróbuj ponownie."
@@ -1363,6 +1533,7 @@
           clearTimeout(requestTimeout);
           $("deep").disabled = false;
           $("deep").removeAttribute("aria-busy");
+          if (activeDetailController === controller) activeDetailController = null;
         }
       };
       $("save").onclick = () => {
@@ -1390,8 +1561,9 @@
       $("createAlbum").onclick = () => {
         const name = $("newAlbumName").value.trim();
         if (!name) return alert("Wpisz nazwę albumu.");
-        const c = save(),
-          al = ApoMonet.createAlbum(name);
+        const c = save();
+        if (!c) return;
+        const al = ApoMonet.createAlbum(name);
         ApoMonet.assignCoinToAlbum(c.id, al.id);
         $("albumModal").classList.add("hidden");
         $("newAlbumName").value = "";
