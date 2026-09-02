@@ -102,12 +102,13 @@ test("Stage 1 skips a slow visual rerank when close contenders share the same ba
   assert.equal(shouldCompareVisualReferences(ranked), false);
 });
 
-test("a high-margin evidence leader stays partial and skips catalogue confirmation", () => {
+test("a high-margin evidence leader skips extra visual catalogue confirmation", () => {
+  const top = { score: 69, hardConflicts: [], candidate: { id: "august", images: ["https://example.test/august.jpg"] } };
   const ranked = {
-    selected: null,
+    selected: top,
     gap: 30,
     ranked: [
-      { score: 69, hardConflicts: [], candidate: { id: "august", images: ["https://example.test/august.jpg"] } },
+      top,
       { score: 39, hardConflicts: [], candidate: { id: "other", images: [] } },
     ],
   };
