@@ -170,4 +170,7 @@ test("mobile flow keeps original previews and rejects stale analysis responses b
   assert.match(api, /objectKind: raw\.objectKind/);
   assert.match(api, /decision\.rejectedCandidateIds/);
   assert.match(api, /decision\.blockedIdentityFields/);
+  assert.match(api, /APOMONET_ANALYSIS_SERVICE_TIER \|\| "fast"/);
+  assert.equal((api.match(/service_tier: ANALYSIS_SERVICE_TIER/g) || []).length, 2);
+  assert.match(api, /visualReferenceMs: visualReference\.elapsedMs/);
 });

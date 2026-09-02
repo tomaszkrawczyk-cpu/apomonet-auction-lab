@@ -14,6 +14,11 @@ const VISION_TIMEOUT_MS = 32_000;
 const REFERENCE_COMPARE_TIMEOUT_MS = 36_000;
 const JOB_TTL_MS = 10 * 60_000;
 const RUNTIME_SOURCE_GRACE_MS = 1_200;
+const ANALYSIS_SERVICE_TIER = ["auto", "default", "fast"].includes(
+  clean(process.env.APOMONET_ANALYSIS_SERVICE_TIER || "fast"),
+)
+  ? clean(process.env.APOMONET_ANALYSIS_SERVICE_TIER || "fast")
+  : "fast";
 
 const basicJobs =
   globalThis.__apomonetBasicJobs ||
@@ -247,6 +252,7 @@ const referenceComparisonSchema = {
 };
 
 async function compareWithReferenceImages(apiKey, userImages, ranked) {
+  const startedAt = Date.now();
   const {
     resolveVisualComparison,
     shouldCompareVisualReferences,
@@ -255,7 +261,13 @@ async function compareWithReferenceImages(apiKey, userImages, ranked) {
   const shortlist = visualReferenceShortlist(ranked);
   const comparedCandidateIds = shortlist.map((item) => item.candidate.id);
   if (!shouldCompareVisualReferences(ranked, shortlist)) {
-    return { status: "not-needed", result: null, comparedCandidateIds: [] };
+    return {
+      status: "not-needed",
+      result: null,
+      comparedCandidateIds: [],
+      elapsedMs: Date.now() - startedAt,
+      serviceTier: null,
+    };
   }
 
   const content = [
@@ -306,6 +318,7 @@ Jedno dokładnie zgodne zdjęcie referencyjne może rozstrzygnąć podstawowy ty
       body: JSON.stringify({
         model: "gpt-5.6",
         reasoning: { effort: "low" },
+        service_tier: ANALYSIS_SERVICE_TIER,
         input: [{ role: "user", content }],
         text: {
           format: {
@@ -323,17 +336,33 @@ Jedno dokładnie zgodne zdjęcie referencyjne może rozstrzygnąć podstawowy ty
         status: `error-${response.status}`,
         result: null,
         comparedCandidateIds,
+        elapsedMs: Date.now() - startedAt,
+        serviceTier: data?.service_tier || null,
       };
     }
     const text = responseText(data);
-    if (!text) return { status: "empty", result: null, comparedCandidateIds };
+    if (!text) return {
+      status: "empty",
+      result: null,
+      comparedCandidateIds,
+      elapsedMs: Date.now() - startedAt,
+      serviceTier: data?.service_tier || null,
+    };
     const result = resolveVisualComparison(JSON.parse(text), shortlist);
-    return { status: "ok", result, comparedCandidateIds };
+    return {
+      status: "ok",
+      result,
+      comparedCandidateIds,
+      elapsedMs: Date.now() - startedAt,
+      serviceTier: data?.service_tier || null,
+    };
   } catch (error) {
     return {
       status: error?.name === "AbortError" ? "timeout" : "error",
       result: null,
       comparedCandidateIds,
+      elapsedMs: Date.now() - startedAt,
+      serviceTier: null,
     };
   } finally {
     clearTimeout(timeout);
@@ -388,6 +417,7 @@ Odpowiadaj po polsku.`;
   ];
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), VISION_TIMEOUT_MS);
+  const visionStartedAt = Date.now();
   try {
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
@@ -399,6 +429,7 @@ Odpowiadaj po polsku.`;
       body: JSON.stringify({
         model: "gpt-5.6",
         reasoning: { effort: "low" },
+        service_tier: ANALYSIS_SERVICE_TIER,
         input: [{ role: "user", content }],
         text: {
           format: {
@@ -411,6 +442,7 @@ Odpowiadaj po polsku.`;
       }),
     });
     const data = await response.json();
+    const visionElapsedMs = Date.now() - visionStartedAt;
     if (!response.ok) {
       return {
         status: response.status,
@@ -610,9 +642,12 @@ Odpowiadaj po polsku.`;
           visualReferenceSelectedCandidateId:
             visualReference.result?.selectedCandidateId || null,
           recognitionEngine: recognitionEnginePolicy.version,
+          analysisServiceTier: ANALYSIS_SERVICE_TIER,
           engineDiagnostics: ranked.retrieval.diagnostics,
         },
         timings: {
+          visionMs: visionElapsedMs,
+          visualReferenceMs: visualReference.elapsedMs || 0,
           localRetrievalMs: localOrchestration.timings.totalLocalMs,
           finalOrchestrationMs: ranked.timings.totalLocalMs,
           totalMs: Date.now() - analysisStartedAt,
@@ -620,6 +655,8 @@ Odpowiadaj po polsku.`;
         usage: {
           inputTokens: data.usage?.input_tokens || 0,
           outputTokens: data.usage?.output_tokens || 0,
+          serviceTier: data?.service_tier || null,
+          visualServiceTier: visualReference.serviceTier || null,
         },
       },
     };
