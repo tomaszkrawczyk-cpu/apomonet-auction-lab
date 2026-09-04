@@ -120,10 +120,11 @@ test("a high-margin evidence leader skips extra visual catalogue confirmation", 
   assert.equal(shouldCompareVisualReferences(ranked), true);
 });
 
-test("a coin observation hard-rejects a pattern candidate", () => {
+test("coin versus pattern remains soft without a visible PROBA mark", () => {
   const observations = {
     objectKind: "coin",
-    rulerReading: "Narodowy Bank Polski",
+    issuerReading: "Narodowy Bank Polski",
+    rulerReading: "Nie dotyczy — emisja państwowa",
     yearReading: "1949",
     denominationReading: "10 gr",
     mintReading: "Nie ustalono",
@@ -134,7 +135,8 @@ test("a coin observation hard-rejects a pattern candidate", () => {
     id: "pattern",
     objectKind: "pattern",
     country: "Polska",
-    ruler: "Narodowy Bank Polski",
+    issuer: "Narodowy Bank Polski",
+    ruler: "",
     year: "1949",
     nominal: "10 gr",
     shape: "okrągła",
@@ -150,6 +152,44 @@ test("a coin observation hard-rejects a pattern candidate", () => {
   };
 
   const recognition = adjudicateRecognition(raw, [pattern], {});
+  assert.notEqual(recognition.status, "unresolved");
+  assert.equal(recognition.selected.id, "pattern");
+});
+
+test("a visible PROBA mark hard-rejects a regular-coin candidate", () => {
+  const observations = {
+    objectKind: "pattern",
+    rulerReading: "Nie dotyczy — emisja państwowa",
+    yearReading: "1949",
+    denominationReading: "10 gr",
+    mintReading: "Nie ustalono",
+    metalAppearance: "Nie ustalono",
+    shape: "okrągła",
+    obverseLegendFragments: ["PRÓBA"],
+    reverseLegendFragments: [],
+    mintMarks: [],
+  };
+  const regular = {
+    id: "regular",
+    objectKind: "coin",
+    country: "Polska",
+    issuer: "Narodowy Bank Polski",
+    ruler: "",
+    year: "1949",
+    nominal: "10 gr",
+    shape: "okrągła",
+    sourceType: "open-data",
+    sourceName: "test",
+  };
+  const raw = {
+    imageUsable: true,
+    objectKind: "pattern",
+    observations,
+    decision: { selectedCandidateId: "regular", candidateFit: 90, supportingFeatures: [], contradictions: [] },
+    condition: { band: "uncertain", confidence: 0 },
+  };
+
+  const recognition = adjudicateRecognition(raw, [regular], {});
   assert.equal(recognition.status, "unresolved");
   assert.equal(recognition.selected, null);
 });

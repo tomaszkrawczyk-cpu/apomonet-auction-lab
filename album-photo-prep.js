@@ -429,82 +429,16 @@
     if (!button || button.dataset.photoPrepHook === "1") return;
     button.dataset.photoPrepHook = "1";
     const original = button.onclick;
-    button.onclick = async (event) => {
+    button.onclick = (event) => {
       event?.preventDefault?.();
       clearPending();
-      const dialog = modal();
       const coin = currentCoin();
       const coinId = coin?.id || null;
-      const finish = () => {
-        dialog.background.remove();
-        if (typeof original === "function") original.call(button, event);
-      };
-      dialog.cancel.onclick = () => {
-        clearPending();
-        dialog.background.remove();
-      };
-      dialog.keep.onclick = () => {
-        setPending({ mode: "original", coinId });
-        finish();
-      };
-      dialog.none.onclick = () => {
-        setPending({ mode: "none", coinId });
-        finish();
-      };
-      dialog.cut.onclick = async () => {
-        dialog.cut.disabled = true;
-        dialog.cut.textContent = msg("cutting");
-        dialog.status.textContent = msg("cutting");
-        const obverseSource =
-          document.getElementById("oi")?.src || coin?.obverseImage || "";
-        const reverseSource =
-          document.getElementById("ri")?.src || coin?.reverseImage || "";
-        const [obverse, reverse] = await Promise.all([
-          circleCut(obverseSource),
-          circleCut(reverseSource),
-        ]);
-        if (!obverse.removed || !reverse.removed) {
-          setPending({
-            mode: "original",
-            coinId,
-            backgroundRemovalFailed: true,
-          });
-          dialog.status.textContent = msg("fallback");
-          const status = document.getElementById("status");
-          if (status) status.textContent = msg("fallback");
-          finish();
-          return;
-        }
-        dialog.status.textContent = msg("success");
-        const choice = await reviewCut(obverse, reverse);
-        if (choice === "back") {
-          dialog.cut.disabled = false;
-          dialog.cut.textContent = "✂️ Tak — usuń tło";
-          dialog.status.textContent = "";
-          return;
-        }
-        if (choice === "original") {
-          setPending({ mode: "original", coinId });
-          finish();
-          return;
-        }
-        const obverseMode = choice === "accept" || choice === "obverse" ? "cut" : "original";
-        const reverseMode = choice === "accept" || choice === "reverse" ? "cut" : "original";
-        setPending({
-          mode: obverseMode === "cut" && reverseMode === "cut" ? "cut" : "mixed",
-          coinId,
-          obverse: obverseMode === "cut" ? obverse.data : null,
-          reverse: reverseMode === "cut" ? reverse.data : null,
-          obverseMode,
-          reverseMode,
-          cutVersion: CUT_VERSION,
-          confidence: Math.min(
-            obverse.confidence || 100,
-            reverse.confidence || 100,
-          ),
-        });
-        finish();
-      };
+      // „Zapisz i wybierz album” musi wykonać dokładnie tę akcję jednym
+      // kliknięciem. Przygotowanie fotografii jest niezależną opcją na karcie
+      // albumu i nie może zatrzymywać zapisu ani otwarcia listy albumów.
+      setPending({ mode: "original", coinId });
+      if (typeof original === "function") original.call(button, event);
     };
   }
 
