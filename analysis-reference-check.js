@@ -51,8 +51,11 @@
       content.id = "referenceEvidenceContent";
       content.style.marginTop = "10px";
       details.append(summary, content);
-      const actions = panel.querySelector(".actions-grid") || panel.lastElementChild;
-      panel.insertBefore(details, actions || null);
+      const nestedActions = panel.querySelector(".actions-grid");
+      const actions = nestedActions?.parentElement === panel
+        ? nestedActions
+        : panel.lastElementChild;
+      panel.insertBefore(details, actions?.parentElement === panel ? actions : null);
     }
     return $("referenceEvidenceContent");
   }

@@ -1214,7 +1214,7 @@
         });
         try {
           const c = ApoMonet.upsertCoin({
-            id: reusableId,
+            ...(reusableId ? { id: reusableId } : {}),
             ...a,
             description: a.fullDescription || a.description,
             analysisLevel: a.detail ? "detailed" : "basic",
@@ -1228,7 +1228,19 @@
             !identity.hasPhotoPair(storedImages) ||
             identity.photoSignature(storedImages) !== identity.photoSignature(imgs)
           ) {
-            throw new Error("Zapis nie został potwierdzony w pamięci urządzenia.");
+            const reason = !stored
+              ? "rekord nie ma poprawnego identyfikatora"
+              : !identity.hasPhotoPair(storedImages)
+                ? "rekord nie zawiera obu zdjęć"
+                : "zapisane zdjęcia nie odpowiadają bieżącej parze";
+            console.error("[analysis-save-verification]", {
+              reason,
+              coinId: c?.id || null,
+              stored: Boolean(stored),
+              storedImageLengths: storedImages.map((image) => String(image || "").length),
+              currentImageLengths: imgs.map((image) => String(image || "").length),
+            });
+            throw new Error(`Zapis nie został potwierdzony w pamięci urządzenia: ${reason}.`);
           }
           id = c.id;
           savedPhotoSignature =

@@ -269,7 +269,7 @@ const referenceComparisonSchema = {
   ],
 };
 
-async function compareWithReferenceImages(apiKey, userImages, ranked) {
+async function compareWithReferenceImages(apiKey, userImages, ranked, { force = false } = {}) {
   const startedAt = Date.now();
   const {
     resolveVisualComparison,
@@ -278,7 +278,7 @@ async function compareWithReferenceImages(apiKey, userImages, ranked) {
   } = await recognitionVisualPromise;
   const shortlist = visualReferenceShortlist(ranked);
   const comparedCandidateIds = shortlist.map((item) => item.candidate.id);
-  if (!shouldCompareVisualReferences(ranked, shortlist)) {
+  if (!force && !shouldCompareVisualReferences(ranked, shortlist)) {
     return {
       status: "not-needed",
       result: null,
@@ -527,9 +527,18 @@ Odpowiadaj po polsku.`;
     // Competitor-style image retrieval: metadata creates a broad shortlist,
     // then Stage 1 independently compares the submitted photographs with legal
     // reference images. Metadata still owns contradiction and chronology gates.
+    const forceObjectKindReview = ["medal", "token", "zeton"].includes(
+      clean(raw.objectKind).toLowerCase(),
+    ) && ranked.ranked.some((item) =>
+      ["coin", "pattern", "pattern-coin"].includes(
+        clean(item.candidate?.objectKind).toLowerCase(),
+      ),
+    );
     const visualReference = counterstampedHostConflict
       ? { status: "controlled-conflict", result: null, comparedCandidateIds: [] }
-      : await compareWithReferenceImages(apiKey, images, ranked);
+      : await compareWithReferenceImages(apiKey, images, ranked, {
+          force: forceObjectKindReview,
+        });
     if (ranked.selected) {
       raw.decision.selectedCandidateId = ranked.selected.candidate.id;
       raw.decision.candidateFit = Math.max(
@@ -570,7 +579,10 @@ Odpowiadaj po polsku.`;
     ) {
       raw.decision.selectedCandidateId = visualReference.result.selectedCandidateId;
       raw.decision.candidateFit = visualReference.result.candidateFit;
-      raw.decision.supportingFeatures = visualReference.result.supportingFeatures;
+      raw.decision.supportingFeatures = [
+        `visual-reference:${visualReference.result.selectionBasis || "verified"}`,
+        ...(visualReference.result.supportingFeatures || []),
+      ].slice(0, 8);
       raw.decision.contradictions = visualReference.result.contradictions;
       const reconciled = reconcileObservationsWithExactVisualMatch(
         raw.observations,
