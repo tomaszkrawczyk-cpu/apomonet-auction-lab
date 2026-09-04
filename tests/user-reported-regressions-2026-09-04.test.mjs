@@ -145,8 +145,44 @@ test("medieval evidence preserves a cautious broad identity without a catalogue 
   assert.equal(result.country, "Cesarstwo Karolińskie");
   assert.equal(result.issuer, "Państwo Franków");
   assert.match(result.ruler, /Ludwik Pobożny/);
+  assert.equal(result.depictedPerson, "Nie ustalono");
   assert.equal(result.nominal, "Nie ustalono");
   assert.equal(result.historicalHypothesis.status, "unconfirmed-iconographic-hypothesis");
+});
+
+test("a negative portrait observation never copies the ruler into depicted person", () => {
+  const raw = {
+    imageUsable: true,
+    objectKind: "coin",
+    observations: {
+      objectKind: "coin",
+      countryReading: "Państwo Franków / imperium karolińskie",
+      issuerReading: "Imperium karolińskie",
+      rulerReading: "HLVDOVVICVS / Ludwik",
+      depictedPersonReading: "Nie ustalono — brak przedstawienia konkretnej osoby",
+      yearReading: "Nie ustalono",
+      denominationReading: "Nie ustalono",
+      mintReading: "Nie ustalono",
+      metalAppearance: "srebro",
+      shape: "okrągła",
+      portrait: "Brak portretu. Krzyż i stylizowana fasada świątyni.",
+      periodReading: "Wczesne średniowiecze, stylistyka karolińska",
+      historicalTypeHypothesis: "Typ Christiana Religio",
+      historicalTypeConfidence: 88,
+      historicalEvidence: ["HLVDOVVICVS IMP", "krzyż", "fasada świątyni"],
+      obverseLegendFragments: ["HLVDOVVICVS IMP"],
+      reverseLegendFragments: ["XPISTIANA RELIGIO"],
+      mintMarks: [],
+    },
+    decision: { selectedCandidateId: "", candidateFit: 0, supportingFeatures: [], contradictions: [] },
+    condition,
+  };
+
+  const recognition = adjudicateRecognition(raw, [], {});
+  const result = card(raw, recognition);
+
+  assert.equal(result.depictedPerson, "Nie dotyczy — brak przedstawienia osoby");
+  assert.notEqual(result.depictedPerson, result.ruler);
 });
 
 test("modern state issue never copies NBP into ruler or depicted person", () => {
