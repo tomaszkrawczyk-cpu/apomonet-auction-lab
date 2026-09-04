@@ -1336,34 +1336,19 @@
       function openAlbums() {
         const c = save();
         if (!c) return;
-        const albums = ApoMonet.load().albums || [];
-        $("albumList").innerHTML =
-          albums
-            .map(
-              (x) =>
-                `<button class="album-option" data-id="${x.id}"><b>${x.name}</b><br><span>${x.description || "Bez opisu"}</span></button>`,
-            )
-            .join("") || '<div class="empty">Nie masz jeszcze albumów.</div>';
-        $("albumList")
-          .querySelectorAll("[data-id]")
-          .forEach(
-            (b) =>
-              (b.onclick = () => {
-                try {
-                  const assigned = ApoMonet.assignCoinToAlbum(c.id, b.dataset.id);
-                  if (!assigned?.albumIds?.includes(b.dataset.id)) {
-                    throw new Error("Nie udało się potwierdzić dodania monety do wybranego albumu.");
-                  }
-                  $("albumModal").classList.add("hidden");
-                  showSavedActions(assigned, "Moneta zapisana i dodana do albumu.");
-                } catch (error) {
-                  console.error("[album-save]", error);
-                  $("status").textContent = error?.message ||
-                    "Nie udało się dodać monety do albumu. Moneta pozostaje zapisana w kolekcji.";
-                }
-              }),
-          );
-        $("albumModal").classList.remove("hidden");
+        window.ApoAnalysisAlbumFlow?.open?.({
+          coin: c,
+          store: ApoMonet,
+          list: $("albumList"),
+          modal: $("albumModal"),
+          onSuccess: (assigned) =>
+            showSavedActions(assigned, "Moneta zapisana i dodana do albumu."),
+          onError: (error) => {
+            console.error("[album-save]", error);
+            $("status").textContent = error?.message ||
+              "Nie udało się dodać monety do albumu. Moneta pozostaje zapisana w kolekcji.";
+          },
+        });
       }
       $("go").onclick = async () => {
         if (!ready()) return;
@@ -1563,11 +1548,21 @@
         if (!name) return alert("Wpisz nazwę albumu.");
         const c = save();
         if (!c) return;
-        const al = ApoMonet.createAlbum(name);
-        ApoMonet.assignCoinToAlbum(c.id, al.id);
-        $("albumModal").classList.add("hidden");
-        $("newAlbumName").value = "";
-        showSavedActions(c, `Moneta dodana do nowego albumu „${al.name}”.`);
+        try {
+          const al = ApoMonet.createAlbum(name);
+          const assigned = window.ApoAnalysisAlbumFlow.assignAndVerify({
+            coin: c,
+            albumId: al.id,
+            store: ApoMonet,
+          });
+          $("albumModal").classList.add("hidden");
+          $("newAlbumName").value = "";
+          showSavedActions(assigned, `Moneta dodana do nowego albumu „${al.name}”.`);
+        } catch (error) {
+          console.error("[album-create-save]", error);
+          $("status").textContent = error?.message ||
+            "Nie udało się utworzyć albumu i zapisać w nim monety.";
+        }
       };
       addEventListener("apomonet:language-change", () => {
         if (!a) return;

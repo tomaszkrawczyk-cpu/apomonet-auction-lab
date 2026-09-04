@@ -54,11 +54,17 @@ test("album selection is not blocked by background removal", async () => {
 });
 
 test("album success is shown only after the stored assignment is verified", async () => {
-  const source = await readFile(new URL("../analyze.html", import.meta.url), "utf8");
-  assert.match(source, /const stored = c\?\.id \? ApoMonet\.getCoin\(c\.id\) : null/);
-  assert.match(source, /identity\.photoSignature\(storedImages\) !== identity\.photoSignature\(imgs\)/);
-  assert.match(source, /assigned\?\.albumIds\?\.includes\(b\.dataset\.id\)/);
-  assert.match(source, /\[album-save\]/);
+  const [page, flow] = await Promise.all([
+    readFile(new URL("../analyze.html", import.meta.url), "utf8"),
+    readFile(new URL("../analysis-album-flow.js", import.meta.url), "utf8"),
+  ]);
+  assert.match(page, /const stored = c\?\.id \? ApoMonet\.getCoin\(c\.id\) : null/);
+  assert.match(page, /identity\.photoSignature\(storedImages\) !== identity\.photoSignature\(imgs\)/);
+  assert.match(page, /ApoAnalysisAlbumFlow\?\.open/);
+  assert.match(page, /\[album-save\]/);
+  assert.match(flow, /function assignAndVerify/);
+  assert.match(flow, /const verified = store\.getCoin\?\.\(coin\.id\) \|\| assigned/);
+  assert.match(flow, /verified\?\.albumIds\?\.includes\(String\(albumId\)\)/);
 });
 
 test("Stage 2 separates a Kopicki candidate from a confirmed reference", async () => {
