@@ -63,8 +63,10 @@ test("Jan Kazimierz exact visual match keeps country and authority while weight 
   assert.equal(result.country, "Rzeczpospolita Obojga Narodów");
   assert.equal(result.issuer, "Rzeczpospolita Obojga Narodów");
   assert.equal(result.ruler, "Jan II Kazimierz");
+  assert.equal(result.depictedPerson, "Jan II Kazimierz");
   assert.equal(result.mint, "Gdańsk");
   assert.equal(result.nominal, "Nie ustalono");
+  assert.equal(doubleThaler.depictedPerson, "");
 });
 
 test("Jan III Sobieski 1685 is not discarded by an unsupported pattern guess", () => {
