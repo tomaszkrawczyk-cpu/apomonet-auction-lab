@@ -76,7 +76,10 @@ const schema = {
       type: "object",
       additionalProperties: false,
       properties: {
+        countryReading: { type: "string" },
+        issuerReading: { type: "string" },
         rulerReading: { type: "string" },
+        depictedPersonReading: { type: "string" },
         yearReading: { type: "string" },
         denominationReading: { type: "string" },
         denominationEvidence: { type: "string" },
@@ -106,7 +109,10 @@ const schema = {
         },
       },
       required: [
+        "countryReading",
+        "issuerReading",
         "rulerReading",
+        "depictedPersonReading",
         "yearReading",
         "denominationReading",
         "denominationEvidence",
@@ -412,7 +418,9 @@ Najpierw oceń, czy oba zdjęcia nadają się do identyfikacji i czy pokazują d
 
 IDENTYFIKACJA I STAN TO DWA ODDZIELNE ZADANIA. W observations zapisz tylko to, co faktycznie widać: fragmenty legend, portret, herby, datę/cyfry, oznaczenie nominału, mennicę lub znaki, kształt i wygląd metalu. Nie dopasowuj obserwacji do oczekiwanego wyniku. Gdy czegoś nie widać, wpisz „Nie ustalono” albo pustą tablicę. Traktuj listę kandydatów wyłącznie jako materiał do późniejszego porównania, a nie jako podpowiedź do odczytu obrazu.
 
-MONETY STAROŻYTNE I ŚREDNIOWIECZNE: nie wymagaj nowożytnego portretu, pełnej daty ani cyfrowego nominału. Odczytuj stylizowaną legendę znak po znaku, także gdy część liter jest niepewna, i zapisuj osobno widoczne motywy: krzyż, świątynię/fasadę, monogram, popiersie, koronę, orła, tarczę, wieżę lub znak menniczy. W periodReading wpisz tylko szeroką epokę widoczną w stylistyce. Jeżeli połączenie legendy i co najmniej dwóch motywów jest charakterystyczne, możesz podać ostrożną hipotezę typu w historicalTypeHypothesis, jej pewność w historicalTypeConfidence i konkretne widoczne podstawy w historicalEvidence. To pole jest hipotezą ikonograficzną, nie przypisaniem katalogowym: nie wpisuj numeru katalogowego, a przy samym podobieństwie stylu pozostaw hipotezę pustą i pewność 0.
+ROZDZIELAJ ROLE. countryReading oznacza kraj lub obszar emisji, issuerReading — państwo, miasto albo instytucję emitującą, rulerReading — wyłącznie rzeczywistego monarchę, a depictedPersonReading — konkretną osobę przedstawioną na monecie. Narodowy Bank Polski, Polska Rzeczpospolita Ludowa ani Rzeczpospolita Polska nie są władcą i nigdy nie mogą trafić do rulerReading ani depictedPersonReading. Dla emisji państwowej bez monarchy wpisz w rulerReading „Nie dotyczy — emisja państwowa”. Jeżeli portret przedstawia Mikołaja Kopernika, Tadeusza Kościuszkę lub inną rozpoznawalną postać, wpisz jej imię wyłącznie do depictedPersonReading. Nie kopiuj emitenta do pola postaci.
+
+MONETY STAROŻYTNE I ŚREDNIOWIECZNE: nie wymagaj nowożytnego portretu, pełnej daty ani cyfrowego nominału. Odczytuj stylizowaną legendę znak po znaku, także gdy część liter jest niepewna, i zapisuj osobno widoczne motywy: krzyż, świątynię/fasadę, monogram, popiersie, koronę, orła, tarczę, wieżę lub znak menniczy. W periodReading wpisz tylko szeroką epokę widoczną w stylistyce. Jeżeli legenda pozwala odczytać władcę lub obszar emisji, zachowaj go w rulerReading/countryReading nawet wtedy, gdy dokładnego typu i numeru katalogowego nie da się ustalić. Jeżeli połączenie legendy i co najmniej dwóch motywów jest charakterystyczne, możesz podać ostrożną hipotezę typu w historicalTypeHypothesis, jej pewność w historicalTypeConfidence i konkretne widoczne podstawy w historicalEvidence. To pole jest hipotezą ikonograficzną, nie przypisaniem katalogowym: nie wpisuj numeru katalogowego, a przy samym podobieństwie stylu pozostaw hipotezę pustą i pewność 0.
 
 Przy legendach nowożytnych rozróżniaj podstawowe imiona: STEPHAN/STEPHANVS wskazuje Stefana (w polskim materiale zwykle Stefana Batorego), SIGIS/SIGISM — Zygmunta, SIGIS razem z AVG/AVGVSTVS — Zygmunta II Augusta, a IOAN razem z CASIM — Jana Kazimierza. Pole rulerReading służy wyłącznie odczytowi imienia lub tytulatury władcy: jeśli widać STEPHANVS, wpisz STEPHANVS lub Stefan Batory; nigdy nie wpisuj tam uwag o skali, linijce ani średnicy. Jeżeli portretowa hipoteza przeczy czytelnej legendzie, przepisz legendę i nie broń hipotezy. GEDAN/GEDANENSIS oznacza Gdańsk, AVR/AUREA wskazuje złoto, ARG/ARGENTEA wskazuje srebro. Widoczną kontrmarkę lub kontrsygnaturę zapisz w mintMarks, łącznie z odczytanym monogramem i datą; nie utożsamiaj automatycznie emitenta monety gospodarza z emitentem kontrmarki. Masa około 3,4–3,7 g przy złotym wyglądzie jest skalą dukata; nie jest skalą srebrnego talara ani dwutalara. To są wskazówki językowe i metrologiczne, ale ostatecznie muszą zgadzać się również portret, herb i druga strona.
 
@@ -593,7 +601,10 @@ Odpowiadaj po polsku.`;
     );
     console.log("[recognition-stage1] decision", {
       observations: {
+        country: clean(raw.observations?.countryReading),
+        issuer: clean(raw.observations?.issuerReading),
         ruler: clean(raw.observations?.rulerReading),
+        depictedPerson: clean(raw.observations?.depictedPersonReading),
         year: clean(raw.observations?.yearReading),
         nominal: clean(raw.observations?.denominationReading),
         mint: clean(raw.observations?.mintReading),

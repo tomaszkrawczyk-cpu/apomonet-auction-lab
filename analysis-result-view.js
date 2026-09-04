@@ -265,6 +265,8 @@
     const item = normalized(value).replace(/[.]+$/g, "");
     return Boolean(item) && !/^(?:nie ustalono|brak|unknown|not determined|undetermined|nicht bestimmt|unbestimmt|non determine|indetermine|—|-)$/.test(item);
   };
+  const institutionalIssuer = (value) =>
+    /^(?:narodowy bank polski|bank polski|polska rzeczpospolita ludowa|rzeczpospolita polska|ii rzeczpospolita)$/.test(normalized(value));
 
   function inferredIssuer(analysis) {
     if (known(analysis?.issuer)) return analysis.issuer;
@@ -279,7 +281,7 @@
     ) {
       return mint;
     }
-    return known(analysis?.ruler) ? analysis.ruler : "";
+    return "";
   }
 
   function inferredDepictedPerson(analysis) {
@@ -291,6 +293,7 @@
     }
     if (
       known(analysis?.ruler) &&
+      !institutionalIssuer(analysis.ruler) &&
       /popiers|portret|profil|twarz|glow|bust|portrait|head|kopf/.test(normalizedPortrait)
     ) {
       return analysis.ruler;
