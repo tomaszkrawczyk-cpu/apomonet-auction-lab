@@ -6,7 +6,11 @@ const recognitionOrchestratorPromise = import("../lib/recognition-orchestrator.m
 const recognitionVisualPromise = import("../lib/recognition-visual.mjs");
 
 const BASIC_TIMEOUT_MS = 45_000;
-const VISION_TIMEOUT_MS = 32_000;
+// Real gpt-5.6 image requests occasionally cross 32 s even for a clear royal
+// thaler.  The shorter limit converted a valid run into a 504 before evidence
+// ranking began.  Keep this below the combined mobile request budget while
+// allowing normal provider latency variance.
+const VISION_TIMEOUT_MS = 40_000;
 const MEDIEVAL_REVIEW_TIMEOUT_MS = 18_000;
 // A cold production invocation can spend a little over 24 seconds comparing
 // two submitted sides with five museum types.  Cutting the request at 24 s

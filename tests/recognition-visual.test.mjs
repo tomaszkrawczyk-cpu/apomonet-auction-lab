@@ -28,8 +28,9 @@ test("production and mobile budgets allow the five-type visual comparison to fin
     readFile(new URL("../api/analyze.js", import.meta.url), "utf8"),
     readFile(new URL("../analyze.html", import.meta.url), "utf8"),
   ]);
+  assert.match(api, /VISION_TIMEOUT_MS = 40_000/);
   assert.match(api, /REFERENCE_COMPARE_TIMEOUT_MS = 36_000/);
-  assert.match(page, /requestTimeout = setTimeout\(\(\) => controller\.abort\(\), 78_000\)/);
+  assert.match(page, /requestTimeout = setTimeout\(\(\) => controller\.abort\(\), 90_000\)/);
 });
 
 test("Stage 1 visual shortlist accepts a legal record with one reference image", () => {
