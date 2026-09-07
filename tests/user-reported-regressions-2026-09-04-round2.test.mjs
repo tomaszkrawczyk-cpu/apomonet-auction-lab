@@ -250,7 +250,7 @@ test("a blurred 1-zloty reading cannot remove the exact 5-zloty 1936 klippe", ()
     denominationReading: "Prawdopodobnie 1 złoty",
     mintReading: "Nie ustalono",
     metalAppearance: "srebro",
-    shape: "kwadratowa klipa",
+    shape: "rombowa czworokątna forma",
     portrait: "żaglowiec w romboidalnym polu",
     heraldry: ["orzeł państwowy"],
     historicalTypeHypothesis: "Polska klipa próbna z żaglowcem, 1936",

@@ -755,6 +755,7 @@ Odpowiadaj po polsku.`;
         year: clean(raw.observations?.yearReading),
         nominal: clean(raw.observations?.denominationReading),
         mint: clean(raw.observations?.mintReading),
+        shape: clean(raw.observations?.shape),
         metal: clean(raw.observations?.metalAppearance),
         historicalType: clean(raw.observations?.historicalTypeHypothesis),
         historicalTypeConfidence: Number(raw.observations?.historicalTypeConfidence) || 0,
