@@ -28,8 +28,9 @@ test("production and mobile budgets allow the five-type visual comparison to fin
     readFile(new URL("../api/analyze.js", import.meta.url), "utf8"),
     readFile(new URL("../analyze.html", import.meta.url), "utf8"),
   ]);
-  assert.match(api, /REFERENCE_COMPARE_TIMEOUT_MS = 36_000/);
-  assert.match(page, /requestTimeout = setTimeout\(\(\) => controller\.abort\(\), 78_000\)/);
+  assert.match(api, /VISION_TIMEOUT_MS = 40_000/);
+  assert.match(api, /REFERENCE_COMPARE_TIMEOUT_MS = 44_000/);
+  assert.match(page, /requestTimeout = setTimeout\(\(\) => controller\.abort\(\), 90_000\)/);
 });
 
 test("Stage 1 visual shortlist accepts a legal record with one reference image", () => {
@@ -62,6 +63,30 @@ test("visual challenger keeps the fifth metadata candidate within a five-type fi
   assert.equal(shortlist.length, visualRecognitionPolicy.maxReferenceTypes);
   assert.ok(shortlist.some((item) => item.candidate.id === "candidate-5"));
   assert.ok(!shortlist.some((item) => item.candidate.id === "candidate-9"));
+});
+
+test("visual budget keeps alternate museum variants without exceeding ten images", () => {
+  const top = rankedItem("multi-specimen", 82, ["https://museum.example/a-1.jpg"]);
+  top.candidate.visualReferenceImages = Array.from(
+    { length: 8 },
+    (_, index) => `https://museum.example/a-${index + 1}.jpg`,
+  );
+  const rival = rankedItem("rival", 81, [
+    "https://museum.example/b-1.jpg",
+    "https://museum.example/b-2.jpg",
+  ]);
+  const shortlist = visualReferenceShortlist({
+    ranked: [top, rival],
+    selected: null,
+    engineConflict: true,
+    gap: 1,
+  });
+  assert.equal(shortlist[0].referenceImages.length, 8);
+  assert.equal(shortlist[1].referenceImages.length, 2);
+  assert.equal(
+    shortlist.reduce((total, item) => total + item.referenceImages.length, 0),
+    visualRecognitionPolicy.maxReferenceImagesTotal,
+  );
 });
 
 test("visual challenger rejects conflicting, weak and non-https references", () => {
@@ -142,6 +167,66 @@ test("visual score gate abstains when similar types have no decisive margin", ()
   }, shortlist);
   assert.equal(result.selectedCandidateId, "");
   assert.equal(result.selectionBasis, "abstained");
+});
+
+test("rejected unrelated references do not erase independently read medieval identity", () => {
+  const shortlist = [{
+    candidate: {
+      id: "unrelated",
+      country: "Polska",
+      ruler: "Kazimierz III Wielki",
+      year: "1360",
+    },
+  }];
+  const result = resolveVisualComparison({
+    selectedCandidateId: "",
+    candidateFit: 0,
+    comparisons: [{
+      candidateId: "unrelated",
+      visualFit: 4,
+      sameType: false,
+      sameSpecimen: false,
+      matchedSides: "uncertain",
+      decisiveFeatures: [],
+      conflictingFields: ["country", "ruler", "year", "design"],
+      contradictions: ["inny władca, epoka i projekt"],
+    }],
+  }, shortlist, {
+    countryReading: "Cesarstwo Karolińskie",
+    rulerReading: "HLVDOVVICVS IMP — Ludwik Pobożny",
+    yearReading: "Nie ustalono — brak widocznej daty",
+  });
+  assert.deepEqual(result.blockedIdentityFields, []);
+});
+
+test("a rejected candidate still blocks an OCR identity copied from that candidate", () => {
+  const shortlist = [{
+    candidate: {
+      id: "batory",
+      country: "Polska",
+      ruler: "Stefan Batory",
+      year: "1583",
+    },
+  }];
+  const result = resolveVisualComparison({
+    selectedCandidateId: "",
+    candidateFit: 0,
+    comparisons: [{
+      candidateId: "batory",
+      visualFit: 0,
+      sameType: false,
+      sameSpecimen: false,
+      matchedSides: "both",
+      decisiveFeatures: [],
+      conflictingFields: ["ruler", "year", "design"],
+      contradictions: ["SIGIS AVG zamiast STEPHANVS"],
+    }],
+  }, shortlist, {
+    countryReading: "Polska",
+    rulerReading: "STEPHANVS / Stefan Batory",
+    yearReading: "1583",
+  });
+  assert.deepEqual(result.blockedIdentityFields, ["ruler", "year"]);
 });
 
 test("a high-margin dated type is selected despite specimen-only differences", () => {

@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "policy": {
+    "purpose": "Source-backed, distinctive legend signatures that may correct noisy OCR without replacing the catalogue identity gate",
+    "minimumRequiredFragments": 4,
+    "singleIdentityRequired": true,
+    "imagesImported": false
+  },
+  "signatures": [
+    {
+      "id": "legend:brandtalar-thorvnia-1629",
+      "targetCandidateId": "mnk:447205",
+      "label": "Brandtalar — talar toruński z panoramą płonącego miasta, 1629",
+      "requiredFragments": [
+        "THORVNIA",
+        "HOSTILITER",
+        "OPPVGNATA",
+        "CIVIB",
+        "DEFENSA"
+      ],
+      "minimumMatches": 4,
+      "reviewTrigger": {
+        "requiredLegendFragments": [
+          "THORVNIA"
+        ],
+        "visualTerms": [
+          "panorama",
+          "widok miasta",
+          "ufortyfikowane miasto",
+          "fortyfikacje miejskie"
+        ],
+        "minimumVisualTerms": 1
+      },
+      "corrects": [
+        "objectKind",
+        "country",
+        "issuer",
+        "ruler",
+        "year",
+        "nominal",
+        "mint"
+      ],
+      "overrides": {
+        "objectKind": "coin",
+        "country": "Rzeczpospolita Obojga Narodów",
+        "issuer": "Miasto Toruń"
+      },
+      "source": {
+        "rightsCode": "factual-metadata-only",
+        "retrievedAt": "2026-09-07",
+        "provenance": [
+          {
+            "role": "type-and-legend",
+            "name": "WCN — Aukcja 80e",
+            "url": "https://files.wcn.pl/katalogi/WCN80.pdf"
+          },
+          {
+            "role": "type-and-metrology",
+            "name": "Coinstrail — Talar 1629 HL Oblężenie Torunia",
+            "url": "https://coinstrail.com/pl/catalog/poland/sigismund-iii/silver-thaler/63fc9c99dfd6f922c540c812"
+          },
+          {
+            "role": "museum-type-corroboration",
+            "name": "Muzeum Narodowe w Krakowie",
+            "url": "https://zbiory.mnk.pl/pl/katalog/447205"
+          }
+        ]
+      }
+    }
+  ]
+}

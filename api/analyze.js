@@ -6,12 +6,18 @@ const recognitionOrchestratorPromise = import("../lib/recognition-orchestrator.m
 const recognitionVisualPromise = import("../lib/recognition-visual.mjs");
 
 const BASIC_TIMEOUT_MS = 45_000;
-const VISION_TIMEOUT_MS = 32_000;
+// Real gpt-5.6 image requests occasionally cross 32 s even for a clear royal
+// thaler.  The shorter limit converted a valid run into a 504 before evidence
+// ranking began.  Keep this below the combined mobile request budget while
+// allowing normal provider latency variance.
+const VISION_TIMEOUT_MS = 40_000;
+const MEDIEVAL_REVIEW_TIMEOUT_MS = 18_000;
+const EVIDENCE_SIGNATURE_REVIEW_TIMEOUT_MS = 18_000;
 // A cold production invocation can spend a little over 24 seconds comparing
 // two submitted sides with five museum types.  Cutting the request at 24 s
 // turned a correct 1577 thaler shortlist into an empty/unresolved result.
 // Keep the visual gate conservative, but give it enough time to finish.
-const REFERENCE_COMPARE_TIMEOUT_MS = 36_000;
+const REFERENCE_COMPARE_TIMEOUT_MS = 44_000;
 const JOB_TTL_MS = 10 * 60_000;
 const RUNTIME_SOURCE_GRACE_MS = 1_200;
 const ANALYSIS_SERVICE_TIER = ["auto", "default", "fast"].includes(
@@ -269,7 +275,60 @@ const referenceComparisonSchema = {
   ],
 };
 
-async function compareWithReferenceImages(apiKey, userImages, ranked) {
+const medievalReviewSchema = {
+  type: "object",
+  additionalProperties: false,
+  properties: {
+    countryReading: { type: "string" },
+    issuerReading: { type: "string" },
+    rulerReading: { type: "string" },
+    periodReading: { type: "string" },
+    historicalTypeHypothesis: { type: "string" },
+    historicalTypeConfidence: { type: "integer", minimum: 0, maximum: 95 },
+    historicalEvidence: { type: "array", maxItems: 6, items: { type: "string" } },
+    heraldry: { type: "array", maxItems: 6, items: { type: "string" } },
+    mintMarks: { type: "array", maxItems: 6, items: { type: "string" } },
+    obverseLegendFragments: { type: "array", maxItems: 8, items: { type: "string" } },
+    reverseLegendFragments: { type: "array", maxItems: 8, items: { type: "string" } },
+  },
+  required: [
+    "countryReading",
+    "issuerReading",
+    "rulerReading",
+    "periodReading",
+    "historicalTypeHypothesis",
+    "historicalTypeConfidence",
+    "historicalEvidence",
+    "heraldry",
+    "mintMarks",
+    "obverseLegendFragments",
+    "reverseLegendFragments",
+  ],
+};
+
+const evidenceSignatureReviewSchema = {
+  type: "object",
+  additionalProperties: false,
+  properties: {
+    obverseLegendFragments: { type: "array", maxItems: 12, items: { type: "string" } },
+    reverseLegendFragments: { type: "array", maxItems: 12, items: { type: "string" } },
+    visibleMotifs: { type: "array", maxItems: 6, items: { type: "string" } },
+    limitations: { type: "array", maxItems: 4, items: { type: "string" } },
+  },
+  required: [
+    "obverseLegendFragments",
+    "reverseLegendFragments",
+    "visibleMotifs",
+    "limitations",
+  ],
+};
+
+async function compareWithReferenceImages(
+  apiKey,
+  userImages,
+  ranked,
+  { force = false, observations = null } = {},
+) {
   const startedAt = Date.now();
   const {
     resolveVisualComparison,
@@ -278,7 +337,7 @@ async function compareWithReferenceImages(apiKey, userImages, ranked) {
   } = await recognitionVisualPromise;
   const shortlist = visualReferenceShortlist(ranked);
   const comparedCandidateIds = shortlist.map((item) => item.candidate.id);
-  if (!shouldCompareVisualReferences(ranked, shortlist)) {
+  if (!force && !shouldCompareVisualReferences(ranked, shortlist)) {
     return {
       status: "not-needed",
       result: null,
@@ -293,7 +352,7 @@ async function compareWithReferenceImages(apiKey, userImages, ranked) {
       type: "input_text",
       text: `APOMONET — niezależny wizualny reranking krótkiej listy katalogowej.
 
-Pierwsze dwa obrazy to awers i rewers monety użytkownika. Dalej są podpisane obrazy legalnych rekordów referencyjnych. Rekord może mieć dwa osobne zdjęcia albo tylko jedno zdjęcie przedstawiające jedną lub obie strony — brak drugiego obrazu nie jest sprzecznością.
+Pierwsze dwa obrazy to awers i rewers monety użytkownika. Dalej są podpisane obrazy legalnych rekordów referencyjnych. Jeden kandydat podstawowej tożsamości może zawierać zdjęcia kilku legalnych egzemplarzy lub wariantów muzealnych. Oceniaj wtedy najlepiej pasującą parę tego kandydata; odmienny wariant w tej samej grupie nie unieważnia zgodnej pary. Rekord może mieć dwa osobne zdjęcia albo tylko jedno zdjęcie przedstawiające jedną lub obie strony — brak drugiego obrazu nie jest sprzecznością.
 
 Najpierw porównaj niezależnie: postać/portret, heraldykę, układ legendy, czytelne fragmenty napisów, cyfry daty, znaki mennicy lub mincerza oraz geometrię stempla. Potem sprawdź zgodność obu stron jako jednej monety. Metadane kandydata służą wyłącznie do kontroli, nie mogą zastąpić obrazu. Podobny styl epoki, ten sam władca albo ta sama mennica nie wystarczają. Nie oceniaj stanu zachowania i nie wybieraj „najbliższego” na siłę.
 
@@ -366,7 +425,7 @@ Jedno dokładnie zgodne zdjęcie referencyjne może rozstrzygnąć podstawowy ty
       elapsedMs: Date.now() - startedAt,
       serviceTier: data?.service_tier || null,
     };
-    const result = resolveVisualComparison(JSON.parse(text), shortlist);
+    const result = resolveVisualComparison(JSON.parse(text), shortlist, observations);
     return {
       status: "ok",
       result,
@@ -387,13 +446,166 @@ Jedno dokładnie zgodne zdjęcie referencyjne może rozstrzygnąć podstawowy ty
   }
 }
 
+async function reviewMedievalEvidence(apiKey, images, initialObservations) {
+  const startedAt = Date.now();
+  const content = [
+    {
+      type: "input_text",
+      text: `SPECJALISTYCZNY PONOWNY ODCZYT MONETY ŚREDNIOWIECZNEJ.
+
+Pierwszy przebieg rozpoznał średniowieczny lub karoliński charakter obiektu, ale nie zebrał dość stabilnych danych. Obejrzyj oba zdjęcia od nowa, bez dopasowywania do katalogu i bez przepisywania niepewnego wyniku. Najpierw przepisz osobno fragmenty obu legend znak po znaku. Zwróć uwagę na średniowieczne odmiany liter V/U, I/L, ligatury oraz legendy HLVDOVVICVS/HLUDOVICUS i XPISTIANA/CHRISTIANA RELIGIO. Następnie opisz widoczne motywy, zwłaszcza krzyż oraz fasadę/świątynię.
+
+Władcę wpisz tylko wtedy, gdy potwierdza go czytelny fragment legendy. Dla Ludwika Pobożnego wymagaj fragmentu imienia w rodzaju HLVDOVVICVS albo HLUDOVICUS; sam styl karoliński nie wystarcza. Hipotezę typu podaj tylko przy co najmniej dwóch niezależnych cechach widocznych na zdjęciach. Nie podawaj numeru katalogowego i nie wymyślaj mennicy, daty ani nominału.
+
+Pierwsza, NIEPEWNA obserwacja służy wyłącznie jako informacja, czego nie udało się ustalić:
+${JSON.stringify(initialObservations || {})}
+
+Odpowiadaj po polsku.`,
+    },
+    { type: "input_text", text: "AWERS — ponowny odczyt legendy i motywów" },
+    { type: "input_image", image_url: images[0], detail: "high" },
+    { type: "input_text", text: "REWERS — ponowny odczyt legendy i motywów" },
+    { type: "input_image", image_url: images[1], detail: "high" },
+  ];
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), MEDIEVAL_REVIEW_TIMEOUT_MS);
+  try {
+    const response = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
+      signal: controller.signal,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-5.6",
+        reasoning: { effort: "low" },
+        service_tier: ANALYSIS_SERVICE_TIER,
+        input: [{ role: "user", content }],
+        text: {
+          format: {
+            type: "json_schema",
+            name: "medieval_coin_evidence_review_v1",
+            strict: true,
+            schema: medievalReviewSchema,
+          },
+        },
+      }),
+    });
+    const data = await response.json();
+    if (!response.ok || data.status === "incomplete") {
+      return {
+        status: response.ok ? "incomplete" : `error-${response.status}`,
+        observations: null,
+        elapsedMs: Date.now() - startedAt,
+        serviceTier: data?.service_tier || null,
+      };
+    }
+    const text = responseText(data);
+    return {
+      status: text ? "ok" : "empty",
+      observations: text ? JSON.parse(text) : null,
+      elapsedMs: Date.now() - startedAt,
+      serviceTier: data?.service_tier || null,
+    };
+  } catch (error) {
+    return {
+      status: error?.name === "AbortError" ? "timeout" : "error",
+      observations: null,
+      elapsedMs: Date.now() - startedAt,
+      serviceTier: null,
+    };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function reviewEvidenceSignature(apiKey, images, initialObservations) {
+  const startedAt = Date.now();
+  const content = [
+    {
+      type: "input_text",
+      text: `APOMONET — CELOWANY, NIEZALEŻNY PONOWNY ODCZYT LEGENDY.
+
+Pierwsza analiza zauważyła charakterystyczny napis i kompozycję, ale nie przepisała dostatecznie dużo legendy. Obejrzyj oba zdjęcia od nowa. Twoim jedynym zadaniem jest transkrypcja faktycznie widocznych wyrazów i skrótów — nie identyfikuj monety, nie podawaj władcy, daty, nominału ani numeru katalogowego i nie dopasowuj tekstu do znanego typu.
+
+Przepisuj każdy czytelny fragment osobno, w kolejności od góry do dołu lub zgodnie z ruchem legendy. Zachowaj pisownię z V/U, skróty i znaki interpunkcyjne. Nie rozwijaj skrótów, nie poprawiaj łaciny i pomijaj słowa, których nie da się naprawdę odczytać. visibleMotifs ma zawierać wyłącznie elementy widoczne na obrazie. W limitations zapisz, których części legendy nie dało się odczytać.
+
+Pierwsza obserwacja służy tylko do wskazania braków i nie jest wzorcem odpowiedzi:
+${JSON.stringify(initialObservations || {})}
+
+Odpowiadaj po polsku.`,
+    },
+    { type: "input_text", text: "AWERS — dosłowna transkrypcja legendy" },
+    { type: "input_image", image_url: images[0], detail: "high" },
+    { type: "input_text", text: "REWERS — dosłowna transkrypcja legendy" },
+    { type: "input_image", image_url: images[1], detail: "high" },
+  ];
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), EVIDENCE_SIGNATURE_REVIEW_TIMEOUT_MS);
+  try {
+    const response = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
+      signal: controller.signal,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-5.6",
+        reasoning: { effort: "low" },
+        service_tier: ANALYSIS_SERVICE_TIER,
+        input: [{ role: "user", content }],
+        text: {
+          format: {
+            type: "json_schema",
+            name: "coin_legend_evidence_review_v1",
+            strict: true,
+            schema: evidenceSignatureReviewSchema,
+          },
+        },
+      }),
+    });
+    const data = await response.json();
+    if (!response.ok || data.status === "incomplete") {
+      return {
+        status: response.ok ? "incomplete" : `error-${response.status}`,
+        observations: null,
+        elapsedMs: Date.now() - startedAt,
+        serviceTier: data?.service_tier || null,
+      };
+    }
+    const text = responseText(data);
+    return {
+      status: text ? "ok" : "empty",
+      observations: text ? JSON.parse(text) : null,
+      elapsedMs: Date.now() - startedAt,
+      serviceTier: data?.service_tier || null,
+    };
+  } catch (error) {
+    return {
+      status: error?.name === "AbortError" ? "timeout" : "error",
+      observations: null,
+      elapsedMs: Date.now() - startedAt,
+      serviceTier: null,
+    };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 async function runAnalysis(apiKey, images, measurements) {
   const analysisStartedAt = Date.now();
   const {
+    applyEvidenceSignature,
     adjudicateRecognition,
     analysisFromRecognition,
     conditionFromRaw,
     localReferenceCandidates,
+    mergeEvidenceSignatureReview,
+    mergeMedievalSpecialistObservations,
+    needsEvidenceSignatureReview,
+    needsMedievalSpecialistReview,
     searchMnkByEvidence,
     searchNumistaByImage,
   } = await recognitionCorePromise;
@@ -495,6 +707,73 @@ Odpowiadaj po polsku.`;
         },
       };
     }
+    let medievalReview = {
+      status: "not-needed",
+      observations: null,
+      elapsedMs: 0,
+      serviceTier: null,
+      improvedFields: [],
+    };
+    if (needsMedievalSpecialistReview(raw.observations)) {
+      medievalReview = await reviewMedievalEvidence(apiKey, images, raw.observations);
+      if (medievalReview.observations) {
+        const merged = mergeMedievalSpecialistObservations(
+          raw.observations,
+          medievalReview.observations,
+        );
+        raw.observations = merged.observations;
+        medievalReview.improvedFields = merged.improvedFields;
+      }
+      console.log("[recognition-medieval-review]", {
+        status: medievalReview.status,
+        elapsedMs: medievalReview.elapsedMs,
+        improvedFields: medievalReview.improvedFields,
+      });
+    }
+    let evidenceSignature = applyEvidenceSignature(raw.observations, localCandidates);
+    let evidenceSignatureReview = {
+      status: "not-needed",
+      observations: null,
+      elapsedMs: 0,
+      serviceTier: null,
+      improvedFields: [],
+    };
+    if (!evidenceSignature.matched && needsEvidenceSignatureReview(raw.observations)) {
+      evidenceSignatureReview = await reviewEvidenceSignature(
+        apiKey,
+        images,
+        raw.observations,
+      );
+      if (evidenceSignatureReview.observations) {
+        const merged = mergeEvidenceSignatureReview(
+          raw.observations,
+          evidenceSignatureReview.observations,
+        );
+        raw.observations = merged.observations;
+        evidenceSignatureReview.improvedFields = merged.improvedFields;
+        evidenceSignature = applyEvidenceSignature(raw.observations, localCandidates);
+      }
+      console.log("[recognition-evidence-signature-review]", {
+        status: evidenceSignatureReview.status,
+        elapsedMs: evidenceSignatureReview.elapsedMs,
+        improvedFields: evidenceSignatureReview.improvedFields,
+        matched: evidenceSignature.matched,
+      });
+    }
+    if (evidenceSignature.matched) {
+      raw.observations = evidenceSignature.observations;
+      raw.objectKind = evidenceSignature.observations.objectKind || raw.objectKind;
+      raw.decision.supportingFeatures = [
+        `catalog-signature:${evidenceSignature.signatureId}`,
+        ...(raw.decision.supportingFeatures || []),
+      ].slice(0, 8);
+      console.log("[recognition-evidence-signature]", {
+        signatureId: evidenceSignature.signatureId,
+        candidateId: evidenceSignature.candidate.id,
+        correctedFields: evidenceSignature.correctedFields,
+        matchedFragments: evidenceSignature.matchedFragments,
+      });
+    }
     const localOrchestration = orchestrateRecognitionCandidates(
       raw.observations,
       localCandidates,
@@ -527,9 +806,19 @@ Odpowiadaj po polsku.`;
     // Competitor-style image retrieval: metadata creates a broad shortlist,
     // then Stage 1 independently compares the submitted photographs with legal
     // reference images. Metadata still owns contradiction and chronology gates.
+    const forceObjectKindReview = ["medal", "token", "zeton"].includes(
+      clean(raw.objectKind).toLowerCase(),
+    ) && ranked.ranked.some((item) =>
+      ["coin", "pattern", "pattern-coin"].includes(
+        clean(item.candidate?.objectKind).toLowerCase(),
+      ),
+    );
     const visualReference = counterstampedHostConflict
       ? { status: "controlled-conflict", result: null, comparedCandidateIds: [] }
-      : await compareWithReferenceImages(apiKey, images, ranked);
+      : await compareWithReferenceImages(apiKey, images, ranked, {
+          force: forceObjectKindReview,
+          observations: raw.observations,
+        });
     if (ranked.selected) {
       raw.decision.selectedCandidateId = ranked.selected.candidate.id;
       raw.decision.candidateFit = Math.max(
@@ -570,7 +859,10 @@ Odpowiadaj po polsku.`;
     ) {
       raw.decision.selectedCandidateId = visualReference.result.selectedCandidateId;
       raw.decision.candidateFit = visualReference.result.candidateFit;
-      raw.decision.supportingFeatures = visualReference.result.supportingFeatures;
+      raw.decision.supportingFeatures = [
+        `visual-reference:${visualReference.result.selectionBasis || "verified"}`,
+        ...(visualReference.result.supportingFeatures || []),
+      ].slice(0, 8);
       raw.decision.contradictions = visualReference.result.contradictions;
       const reconciled = reconcileObservationsWithExactVisualMatch(
         raw.observations,
@@ -608,6 +900,7 @@ Odpowiadaj po polsku.`;
         year: clean(raw.observations?.yearReading),
         nominal: clean(raw.observations?.denominationReading),
         mint: clean(raw.observations?.mintReading),
+        shape: clean(raw.observations?.shape),
         metal: clean(raw.observations?.metalAppearance),
         historicalType: clean(raw.observations?.historicalTypeHypothesis),
         historicalTypeConfidence: Number(raw.observations?.historicalTypeConfidence) || 0,
@@ -670,10 +963,21 @@ Odpowiadaj po polsku.`;
             visualReference.result?.selectedCandidateId || null,
           recognitionEngine: recognitionEnginePolicy.version,
           analysisServiceTier: ANALYSIS_SERVICE_TIER,
+          medievalReview: medievalReview.status,
+          medievalReviewImprovedFields: medievalReview.improvedFields || [],
+          evidenceSignature: evidenceSignature.matched
+            ? evidenceSignature.signatureId
+            : null,
+          evidenceSignatureCorrectedFields: evidenceSignature.correctedFields || [],
+          evidenceSignatureReview: evidenceSignatureReview.status,
+          evidenceSignatureReviewImprovedFields:
+            evidenceSignatureReview.improvedFields || [],
           engineDiagnostics: ranked.retrieval.diagnostics,
         },
         timings: {
           visionMs: visionElapsedMs,
+          medievalReviewMs: medievalReview.elapsedMs || 0,
+          evidenceSignatureReviewMs: evidenceSignatureReview.elapsedMs || 0,
           visualReferenceMs: visualReference.elapsedMs || 0,
           localRetrievalMs: localOrchestration.timings.totalLocalMs,
           finalOrchestrationMs: ranked.timings.totalLocalMs,
@@ -683,6 +987,9 @@ Odpowiadaj po polsku.`;
           inputTokens: data.usage?.input_tokens || 0,
           outputTokens: data.usage?.output_tokens || 0,
           serviceTier: data?.service_tier || null,
+          medievalReviewServiceTier: medievalReview.serviceTier || null,
+          evidenceSignatureReviewServiceTier:
+            evidenceSignatureReview.serviceTier || null,
           visualServiceTier: visualReference.serviceTier || null,
         },
       },

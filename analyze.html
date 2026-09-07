@@ -1214,7 +1214,7 @@
         });
         try {
           const c = ApoMonet.upsertCoin({
-            id: reusableId,
+            ...(reusableId ? { id: reusableId } : {}),
             ...a,
             description: a.fullDescription || a.description,
             analysisLevel: a.detail ? "detailed" : "basic",
@@ -1228,7 +1228,19 @@
             !identity.hasPhotoPair(storedImages) ||
             identity.photoSignature(storedImages) !== identity.photoSignature(imgs)
           ) {
-            throw new Error("Zapis nie został potwierdzony w pamięci urządzenia.");
+            const reason = !stored
+              ? "rekord nie ma poprawnego identyfikatora"
+              : !identity.hasPhotoPair(storedImages)
+                ? "rekord nie zawiera obu zdjęć"
+                : "zapisane zdjęcia nie odpowiadają bieżącej parze";
+            console.error("[analysis-save-verification]", {
+              reason,
+              coinId: c?.id || null,
+              stored: Boolean(stored),
+              storedImageLengths: storedImages.map((image) => String(image || "").length),
+              currentImageLengths: imgs.map((image) => String(image || "").length),
+            });
+            throw new Error(`Zapis nie został potwierdzony w pamięci urządzenia: ${reason}.`);
           }
           id = c.id;
           savedPhotoSignature =
@@ -1334,21 +1346,38 @@
         }
       }
       function openAlbums() {
-        const c = save();
-        if (!c) return;
-        window.ApoAnalysisAlbumFlow?.open?.({
-          coin: c,
-          store: ApoMonet,
-          list: $("albumList"),
-          modal: $("albumModal"),
-          onSuccess: (assigned) =>
-            showSavedActions(assigned, "Moneta zapisana i dodana do albumu."),
-          onError: (error) => {
-            console.error("[album-save]", error);
-            $("status").textContent = error?.message ||
-              "Nie udało się dodać monety do albumu. Moneta pozostaje zapisana w kolekcji.";
-          },
-        });
+        const showAlbumError = (error) => {
+          console.error("[album-save]", error);
+          const message = error?.message ||
+            "Nie udało się dodać monety do albumu. Moneta pozostaje zapisana w kolekcji.";
+          $("status").textContent = message;
+          window.ApoActionFeedback?.flash?.(message, 6500);
+        };
+        try {
+          if (!window.ApoAnalysisAlbumFlow?.open) {
+            throw new Error("Nie udało się uruchomić wyboru albumu. Odśwież stronę i spróbuj ponownie — zdjęcia oraz wynik pozostają na ekranie.");
+          }
+          const c = save();
+          if (!c) {
+            window.ApoActionFeedback?.flash?.(
+              $("status").textContent || "Nie udało się zapisać monety przed wyborem albumu.",
+              6500,
+            );
+            return;
+          }
+          const opened = window.ApoAnalysisAlbumFlow.open({
+            coin: c,
+            store: ApoMonet,
+            list: $("albumList"),
+            modal: $("albumModal"),
+            onSuccess: (assigned) =>
+              showSavedActions(assigned, "Moneta zapisana i dodana do albumu."),
+            onError: showAlbumError,
+          });
+          if (!opened) throw new Error("Nie udało się otworzyć listy albumów.");
+        } catch (error) {
+          showAlbumError(error);
+        }
       }
       $("go").onclick = async () => {
         if (!ready()) return;
@@ -1373,7 +1402,7 @@
         // Stage 1 may perform a second, independent museum-image comparison.
         // The browser timeout must remain above the server-side visual budget,
         // including mobile upload and cold-start time.
-        const requestTimeout = setTimeout(() => controller.abort(), 78_000);
+        const requestTimeout = setTimeout(() => controller.abort(), 90_000);
         const jobId = `apo-${crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`}`;
         try {
           $("go").disabled = true;

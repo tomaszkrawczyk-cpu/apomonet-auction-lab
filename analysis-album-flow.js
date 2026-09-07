@@ -26,7 +26,13 @@
       onError(new Error("Nie udało się przygotować wyboru albumu."));
       return false;
     }
-    const state = store.load?.();
+    let state;
+    try {
+      state = store.load?.();
+    } catch (error) {
+      onError(error);
+      return false;
+    }
     const albums = Array.isArray(state?.albums) ? state.albums : [];
     list.replaceChildren();
     if (!albums.length) {

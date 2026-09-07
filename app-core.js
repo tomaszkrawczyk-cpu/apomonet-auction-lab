@@ -1,23 +1,54 @@
 const ApoMonet=(()=>{
   const KEY='apomonet_state_v2';
+  const PHOTO_FIELDS=['obverseImage','reverseImage','albumObverseImage','albumReverseImage'];
+  const PHOTO_REF='apo-photo:';
   const defaults={coins:[],albums:[],watchlist:[],events:[],settings:{currency:'PLN'},history:[]};
   const clone=x=>JSON.parse(JSON.stringify(x));
+  const storedPhoto=value=>typeof value==='string'&&(value.startsWith('data:image/')||value.startsWith('http://')||value.startsWith('https://'));
+  function photoHash(value){
+    const source=String(value||'');let result=2166136261;
+    for(let index=0;index<source.length;index++){result^=source.charCodeAt(index);result=Math.imul(result,16777619)}
+    return `${source.length.toString(36)}-${(result>>>0).toString(36)}`;
+  }
+  function hydrateCoin(coin,photos){
+    const hydrated={...coin};
+    for(const field of PHOTO_FIELDS){
+      const value=hydrated[field];
+      if(typeof value==='string'&&value.startsWith(PHOTO_REF))hydrated[field]=photos[value.slice(PHOTO_REF.length)]||null;
+    }
+    return hydrated;
+  }
+  function compactState(state){
+    const photos={},coins=(state.coins||[]).map(coin=>{
+      const compacted={...coin};
+      for(const field of PHOTO_FIELDS){
+        const value=compacted[field];
+        if(!storedPhoto(value))continue;
+        const base=photoHash(value);let key=base,suffix=1;
+        while(photos[key]&&photos[key]!==value)key=`${base}-${suffix++}`;
+        photos[key]=value;compacted[field]=PHOTO_REF+key;
+      }
+      return compacted;
+    });
+    return {...state,storageVersion:9,coins,photos};
+  }
   function load(){
     try{
       const raw=JSON.parse(localStorage.getItem(KEY)||'{}');
       return {
         ...clone(defaults),...raw,
-        coins:Array.isArray(raw.coins)?raw.coins:[],
+        coins:Array.isArray(raw.coins)?raw.coins.map(coin=>hydrateCoin(coin,raw.photos||{})):[],
         albums:Array.isArray(raw.albums)?raw.albums:[],
         watchlist:Array.isArray(raw.watchlist)?raw.watchlist:[],
         events:Array.isArray(raw.events)?raw.events:[],
         history:Array.isArray(raw.history)?raw.history:[],
-        settings:{...defaults.settings,...(raw.settings&&typeof raw.settings==='object'?raw.settings:{})}
+        settings:{...defaults.settings,...(raw.settings&&typeof raw.settings==='object'?raw.settings:{})},
+        photos:undefined
       };
     }catch(e){return clone(defaults)}
   }
   function save(s){
-    try{localStorage.setItem(KEY,JSON.stringify(s));return true}
+    try{localStorage.setItem(KEY,JSON.stringify(compactState(s)));return true}
     catch(cause){
       const quota=cause?.name==='QuotaExceededError'||cause?.code===22;
       const error=new Error(quota?'Brakuje miejsca na zapis zdjęć. Dane nie zostały nadpisane. Utwórz kopię zapasową i usuń zbędne duże zdjęcia.':'Nie udało się bezpiecznie zapisać danych lokalnie. Spróbuj ponownie.');
@@ -26,8 +57,8 @@ const ApoMonet=(()=>{
   }
   function uid(p='id'){return `${p}_${Date.now()}_${Math.random().toString(36).slice(2,8)}`}
   function pushHistory(s,e){s.history=s.history||[];s.history.unshift({id:uid('h'),at:new Date().toISOString(),...e});s.history=s.history.slice(0,200)}
-  function seed(){const s=load();if(!Array.isArray(s.albums)||!s.albums.length){s.albums=[{id:'polska-krolewska',name:'Polska królewska',description:'Monety władców Polski'},{id:'srebro',name:'Srebro',description:'Monety srebrne'},{id:'do-opracowania',name:'Do opracowania',description:'Monety wymagające identyfikacji'}];save(s)}return s}
-  function upsertCoin(c){const s=load(),old=c.id?s.coins.find(x=>x.id===c.id):null,item={...(old||{}),id:c.id||uid('coin'),createdAt:old?.createdAt||c.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString(),...c};const i=s.coins.findIndex(x=>x.id===item.id);if(i>=0)s.coins[i]=item;else s.coins.unshift(item);pushHistory(s,{type:i>=0?'coin_updated':'coin_created',coinId:item.id,title:item.title||'Moneta'});save(s);return item}
+  function seed(){const s=load();let changed=false;if(!Array.isArray(s.albums)||!s.albums.length){s.albums=[{id:'polska-krolewska',name:'Polska królewska',description:'Monety władców Polski'},{id:'srebro',name:'Srebro',description:'Monety srebrne'},{id:'do-opracowania',name:'Do opracowania',description:'Monety wymagające identyfikacji'}];changed=true}s.coins=(s.coins||[]).map(c=>{if(String(c?.id||'').trim())return c;changed=true;return{...c,id:uid('coin'),updatedAt:new Date().toISOString()}});if(changed)save(s);return s}
+  function upsertCoin(c){const s=load(),requestedId=String(c?.id||'').trim(),old=requestedId?s.coins.find(x=>x.id===requestedId):null,item={...(old||{}),...c,id:requestedId||uid('coin'),createdAt:old?.createdAt||c?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};const i=s.coins.findIndex(x=>x.id===item.id);if(i>=0)s.coins[i]=item;else s.coins.unshift(item);pushHistory(s,{type:i>=0?'coin_updated':'coin_created',coinId:item.id,title:item.title||'Moneta'});save(s);return item}
   function getCoin(id){return load().coins.find(x=>x.id===id)||null}
   function deleteCoin(id){const s=load();s.coins=s.coins.filter(x=>x.id!==id);save(s)}
   function addToWatchlist(item){const s=load();s.watchlist=s.watchlist||[];if(!s.watchlist.some(x=>x.id===item.id))s.watchlist.unshift(item);save(s)}
@@ -35,7 +66,7 @@ const ApoMonet=(()=>{
   function assignCoinToAlbum(coinId,albumId){const s=load(),i=s.coins.findIndex(x=>x.id===coinId);if(i<0)return null;const ids=Array.isArray(s.coins[i].albumIds)?[...s.coins[i].albumIds]:[];if(!ids.includes(albumId))ids.push(albumId);s.coins[i]={...s.coins[i],albumIds:ids,updatedAt:new Date().toISOString()};save(s);return s.coins[i]}
   function removeCoinFromAlbum(coinId,albumId){const s=load(),i=s.coins.findIndex(x=>x.id===coinId);if(i<0)return null;s.coins[i]={...s.coins[i],albumIds:(s.coins[i].albumIds||[]).filter(x=>x!==albumId)};save(s);return s.coins[i]}
   function moveCoinBetweenAlbums(coinId,fromAlbumId,toAlbumId){const s=load(),i=s.coins.findIndex(x=>x.id===coinId);if(i<0)return null;let ids=Array.isArray(s.coins[i].albumIds)?[...s.coins[i].albumIds]:[];if(fromAlbumId)ids=ids.filter(x=>x!==fromAlbumId);if(toAlbumId&&!ids.includes(toAlbumId))ids.push(toAlbumId);s.coins[i]={...s.coins[i],albumIds:ids,updatedAt:new Date().toISOString()};save(s);return s.coins[i]}
-  return {load,save,seed,uid,upsertCoin,getCoin,deleteCoin,addToWatchlist,createAlbum,assignCoinToAlbum,removeCoinFromAlbum,moveCoinBetweenAlbums};
+  return {load,save,seed,uid,upsertCoin,getCoin,deleteCoin,addToWatchlist,createAlbum,assignCoinToAlbum,removeCoinFromAlbum,moveCoinBetweenAlbums,compactState};
 })();
 window.ApoMonet=ApoMonet;
 
