@@ -425,3 +425,34 @@ test("a partial 193? year and wrong 10-zloty OCR retain the exact 5-zloty 1936 k
   const visual = visualReferenceShortlist(ranked, { limit: 5, minimumScore: 35 });
   assert.ok(visual.some((entry) => entry.candidate.id === exact.candidate.id));
 });
+
+test("a wrong 1933 and 15-zloty OCR still sends the ship klippe to the exact 5-zloty image gate", () => {
+  const observations = {
+    objectKind: "pattern",
+    countryReading: "Polska",
+    issuerReading: "Rzeczpospolita Polska",
+    rulerReading: "Nie dotyczy — emisja państwowa",
+    depictedPersonReading: "Nie ustalono",
+    yearReading: "1933 (odczyt niepewny z powodu rozmycia)",
+    denominationReading: "15 złotych",
+    mintReading: "Nie ustalono",
+    metalAppearance: "Srebrzystoszary metal",
+    shape: "Kwadratowa klipa ustawiona narożnikiem ku górze",
+    portrait: "Żaglowiec jako główny motyw",
+    heraldry: ["Orzeł państwowy"],
+    historicalTypeHypothesis: "Polska wzorcowa klipa z żaglowcem",
+    historicalTypeConfidence: 78,
+    historicalEvidence: ["kwadratowa klipa", "żaglowiec", "orzeł państwowy"],
+    obverseLegendFragments: ["15 ZŁOTYCH"],
+    reverseLegendFragments: ["RZECZPOSPOLITA POLSKA"],
+    mintMarks: [],
+  };
+  const ranked = orchestrateRecognitionCandidates(observations, catalog);
+  const exact = ranked.ranked.find((entry) => entry.candidate.id === "mnk:89516");
+  assert.ok(exact);
+  assert.ok(exact.selectionConflicts.some((item) => /roku/i.test(item)));
+  assert.ok(exact.selectionConflicts.some((item) => /nominału/i.test(item)));
+  assert.equal(ranked.selected?.candidate.id === exact.candidate.id, false);
+  const visual = visualReferenceShortlist(ranked);
+  assert.ok(visual.some((entry) => entry.candidate.id === exact.candidate.id));
+});
