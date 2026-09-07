@@ -505,6 +505,7 @@ Odpowiadaj po polsku.`,
 async function runAnalysis(apiKey, images, measurements) {
   const analysisStartedAt = Date.now();
   const {
+    applyEvidenceSignature,
     adjudicateRecognition,
     analysisFromRecognition,
     conditionFromRaw,
@@ -633,6 +634,21 @@ Odpowiadaj po polsku.`;
         status: medievalReview.status,
         elapsedMs: medievalReview.elapsedMs,
         improvedFields: medievalReview.improvedFields,
+      });
+    }
+    const evidenceSignature = applyEvidenceSignature(raw.observations, localCandidates);
+    if (evidenceSignature.matched) {
+      raw.observations = evidenceSignature.observations;
+      raw.objectKind = evidenceSignature.observations.objectKind || raw.objectKind;
+      raw.decision.supportingFeatures = [
+        `catalog-signature:${evidenceSignature.signatureId}`,
+        ...(raw.decision.supportingFeatures || []),
+      ].slice(0, 8);
+      console.log("[recognition-evidence-signature]", {
+        signatureId: evidenceSignature.signatureId,
+        candidateId: evidenceSignature.candidate.id,
+        correctedFields: evidenceSignature.correctedFields,
+        matchedFragments: evidenceSignature.matchedFragments,
       });
     }
     const localOrchestration = orchestrateRecognitionCandidates(
@@ -826,6 +842,10 @@ Odpowiadaj po polsku.`;
           analysisServiceTier: ANALYSIS_SERVICE_TIER,
           medievalReview: medievalReview.status,
           medievalReviewImprovedFields: medievalReview.improvedFields || [],
+          evidenceSignature: evidenceSignature.matched
+            ? evidenceSignature.signatureId
+            : null,
+          evidenceSignatureCorrectedFields: evidenceSignature.correctedFields || [],
           engineDiagnostics: ranked.retrieval.diagnostics,
         },
         timings: {

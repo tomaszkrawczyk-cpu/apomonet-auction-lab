@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  applyEvidenceSignature,
   adjudicateRecognition,
   analysisFromRecognition,
   conditionFromRaw,
@@ -186,6 +187,70 @@ test("THORVNIA siege evidence keeps the 1629 brandtalar in visual review despite
   assert.equal(exact.candidate.visualReferenceImages.length, 8);
   assert.equal(exactVisual.referenceImages.length, 8);
   assert.ok(exactVisual.referenceImages.some((url) => url.includes("6e7140e8430f66ce939d473dc06cd8d3")));
+});
+
+test("the unique Brandtalar legend corrects a noisy 1658 OCR reading without an image guess", () => {
+  const observations = {
+    objectKind: "medal",
+    countryReading: "Toruń",
+    issuerReading: "Toruń (THORVNIA)",
+    rulerReading: "Nie dotyczy — emisja miejska/medalowa",
+    depictedPersonReading: "Nie ustalono; brak portretu",
+    yearReading: "Prawdopodobnie 1658",
+    denominationReading: "Nie ustalono",
+    mintReading: "Nie ustalono",
+    metalAppearance: "srebro",
+    shape: "okrągła",
+    historicalTypeHypothesis: "Medal związany z oblężeniem Torunia",
+    historicalTypeConfidence: 78,
+    historicalEvidence: [
+      "THORVNIA",
+      "HOSTILITER OPPVGNATA",
+      "FORTITER A CIVIBVS DEFENSA",
+      "panorama płonącego miasta",
+    ],
+    obverseLegendFragments: ["THORVNIA", "HOSTILITER OPPVGNATA"],
+    reverseLegendFragments: ["CIVIB DEFENSA", "1658"],
+    heraldry: ["herb Torunia"],
+    mintMarks: [],
+  };
+  const signature = applyEvidenceSignature(observations, catalog);
+  assert.equal(signature.matched, true);
+  assert.equal(signature.signatureId, "legend:brandtalar-thorvnia-1629");
+  assert.equal(signature.observations.objectKind, "coin");
+  assert.equal(signature.observations.rulerReading, "Zygmunt III Waza");
+  assert.equal(signature.observations.yearReading, "1629");
+  assert.equal(signature.observations.denominationReading, "Talar");
+  assert.equal(signature.observations.mintReading, "Toruń");
+
+  const ranked = orchestrateRecognitionCandidates(signature.observations, catalog);
+  assert.ok(ranked.selected);
+  const raw = rawFrom(signature.observations, {
+    selectedCandidateId: ranked.selected.candidate.id,
+    candidateFit: Math.min(100, ranked.selected.score),
+    supportingFeatures: [`catalog-signature:${signature.signatureId}`],
+  });
+  raw.objectKind = signature.observations.objectKind;
+  const result = card(raw, adjudicateRecognition(
+    raw,
+    ranked.ranked.map((entry) => entry.candidate),
+    {},
+  ));
+  assert.equal(result.ruler, "Zygmunt III Waza");
+  assert.equal(result.year, "1629");
+  assert.equal(result.nominal, "Talar");
+  assert.equal(result.mint, "Toruń");
+  assert.match(result.title, /talar toruński oblężniczy|brandtalar/i);
+});
+
+test("a generic Torun siege mention cannot trigger the Brandtalar signature", () => {
+  const result = applyEvidenceSignature({
+    historicalEvidence: ["THORVNIA", "oblężenie miasta"],
+    obverseLegendFragments: ["THORVNIA"],
+    reverseLegendFragments: [],
+  }, catalog);
+  assert.equal(result.matched, false);
+  assert.deepEqual(result.correctedFields, []);
 });
 
 test("a focused medieval reread upgrades Ludwik only with explicit legend evidence", () => {
