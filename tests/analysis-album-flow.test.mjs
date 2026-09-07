@@ -33,6 +33,26 @@ async function runtime() {
   return { flow: context.ApoAnalysisAlbumFlow, document };
 }
 
+async function fullStorageRuntime() {
+  const [flowSource, completeCoreSource] = await Promise.all([
+    readFile(new URL("../analysis-album-flow.js", import.meta.url), "utf8"),
+    readFile(new URL("../app-core.js", import.meta.url), "utf8"),
+  ]);
+  const coreSource = `${completeCoreSource.split("window.ApoMonet=ApoMonet;")[0]}this.ApoMonet=ApoMonet;`;
+  const values = new Map();
+  const localStorage = {
+    getItem: (key) => values.get(key) || null,
+    setItem: (key, value) => values.set(key, String(value)),
+  };
+  const document = { createElement: (tagName) => new Element(tagName), getElementById: () => null };
+  const context = { window: null, document, localStorage, addEventListener: () => {}, console };
+  context.window = context;
+  vm.runInNewContext(coreSource, context);
+  vm.runInNewContext(flowSource, context);
+  context.ApoMonet.seed();
+  return { store: context.ApoMonet, flow: context.ApoAnalysisAlbumFlow, document };
+}
+
 test("save-and-choose-album opens, assigns, verifies and returns the same coin", async () => {
   const { flow, document } = await runtime();
   const coin = { id: "coin-current", albumIds: [] };
@@ -110,4 +130,40 @@ test("new-album assignment returns the freshly reloaded record", async () => {
     },
   });
   assert.equal(result, reloaded);
+});
+
+test("a real new analysis without an id persists both photos and can be chosen into an album", async () => {
+  const { store, flow, document } = await fullStorageRuntime();
+  const saved = store.upsertCoin({
+    id: undefined,
+    title: "Jan III Sobieski, Gdańsk, 1685",
+    ruler: "Jan III Sobieski",
+    obverseImage: "data:image/jpeg;base64,AWERS",
+    reverseImage: "data:image/jpeg;base64,REWERS",
+  });
+  assert.match(saved.id, /^coin_/);
+  const target = store.load().albums[0];
+  const list = new Element("div");
+  const modal = new Element("div");
+  let confirmed = null;
+  const opened = flow.open({
+    coin: saved,
+    store,
+    list,
+    modal,
+    documentRef: document,
+    onSuccess: (value) => { confirmed = value; },
+    onError: (error) => { throw error; },
+  });
+  assert.equal(opened, true);
+  const targetButton = list.children.find((item) => item.dataset.id === target.id);
+  assert.ok(targetButton);
+  targetButton.onclick();
+  assert.equal(confirmed.id, saved.id);
+  assert.deepEqual(Array.from(confirmed.albumIds), [target.id]);
+  assert.equal(confirmed.obverseImage, "data:image/jpeg;base64,AWERS");
+  assert.equal(confirmed.reverseImage, "data:image/jpeg;base64,REWERS");
+  const reloaded = store.getCoin(saved.id);
+  assert.deepEqual(Array.from(reloaded.albumIds), [target.id]);
+  assert.equal(reloaded.title, "Jan III Sobieski, Gdańsk, 1685");
 });

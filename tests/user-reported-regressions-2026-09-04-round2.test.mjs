@@ -5,11 +5,14 @@ import {
   analysisFromRecognition,
   conditionFromRaw,
   localReferenceCandidates,
+  mergeMedievalSpecialistObservations,
+  needsMedievalSpecialistReview,
 } from "../lib/recognition-core.mjs";
 import {
   orchestrateRecognitionCandidates,
   retrieveCandidatesWithEngines,
 } from "../lib/recognition-orchestrator.mjs";
+import { visualReferenceShortlist } from "../lib/recognition-visual.mjs";
 
 const catalog = localReferenceCandidates();
 const condition = { band: "vf", confidence: 70 };
@@ -142,6 +145,96 @@ test("THORVNIA 1629 and a missing nominal retrieve the exact Torun siege thaler"
   assert.equal(result.nominal, "Talar");
   assert.equal(result.mint, "Toruń");
   assert.match(result.title, /talar toruński oblężniczy/i);
+});
+
+test("THORVNIA siege evidence keeps the 1629 brandtalar in visual review despite OCR year 1658", () => {
+  const observations = {
+    objectKind: "medal",
+    countryReading: "Toruń / Rzeczpospolita Obojga Narodów",
+    issuerReading: "Nie ustalono",
+    rulerReading: "Nie ustalono",
+    depictedPersonReading: "Nie dotyczy — brak przedstawienia osoby",
+    yearReading: "1658",
+    denominationReading: "Brak oznaczenia nominału",
+    mintReading: "Nie ustalono",
+    metalAppearance: "srebro",
+    shape: "okrągła",
+    portrait: "napis THORVNIA oraz panorama miasta",
+    historicalTypeHypothesis: "Medal lub moneta odnosząca się do oblężenia Torunia",
+    historicalTypeConfidence: 82,
+    historicalEvidence: ["THORVNIA", "panorama miasta", "motyw oblężenia"],
+    obverseLegendFragments: ["THORVNIA"],
+    reverseLegendFragments: ["FIDES"],
+    mintMarks: [],
+  };
+  const ranked = orchestrateRecognitionCandidates(observations, catalog);
+  const exact = ranked.ranked.find((entry) => entry.candidate.id === "mnk:447205");
+  assert.ok(exact, "1629 Toruń siege thaler must survive chronology filtering");
+  assert.ok(exact.selectionConflicts.some((item) => /roku/i.test(item)));
+  assert.equal(ranked.selected?.candidate.id === exact.candidate.id, false);
+  const visual = visualReferenceShortlist(ranked, { limit: 5, minimumScore: 35 });
+  assert.ok(visual.some((entry) => entry.candidate.id === "mnk:447205"));
+});
+
+test("a focused medieval reread upgrades Ludwik only with explicit legend evidence", () => {
+  const base = {
+    objectKind: "coin",
+    countryReading: "Państwo Franków / obszar karoliński",
+    issuerReading: "Nie ustalono",
+    rulerReading: "Nie ustalono",
+    periodReading: "wczesne średniowiecze, okres karoliński",
+    historicalTypeHypothesis: "Karolińska moneta z krzyżem i fasadą świątyni",
+    historicalTypeConfidence: 72,
+    historicalEvidence: ["krzyż", "fasada świątyni"],
+    obverseLegendFragments: ["nieczytelne"],
+    reverseLegendFragments: ["RELIGIO"],
+  };
+  assert.equal(needsMedievalSpecialistReview(base), true);
+  const merged = mergeMedievalSpecialistObservations(base, {
+    countryReading: "Państwo Frankijskie / imperium karolińskie",
+    issuerReading: "Władza cesarska imperium karolińskiego",
+    rulerReading: "Ludwik Pobożny / HLVDOVVICVS IMP",
+    periodReading: "wczesne średniowiecze, epoka karolińska",
+    historicalTypeHypothesis: "Typ Christiana Religio Ludwika Pobożnego",
+    historicalTypeConfidence: 91,
+    historicalEvidence: ["HLVDOVVICVS IMP", "XPISTIANA RELIGIO", "krzyż", "fasada świątyni"],
+    heraldry: ["krzyż"],
+    mintMarks: [],
+    obverseLegendFragments: ["HLVDOVVICVS IMP"],
+    reverseLegendFragments: ["XPISTIANA RELIGIO"],
+  });
+  assert.equal(merged.observations.rulerReading, "Ludwik Pobożny / HLVDOVVICVS IMP");
+  assert.equal(merged.observations.historicalTypeConfidence, 91);
+  assert.ok(merged.improvedFields.includes("rulerReading"));
+  assert.equal(needsMedievalSpecialistReview(merged.observations), false);
+});
+
+test("a generic Ludwik or Ludwik III result remains eligible for the focused medieval reread", () => {
+  assert.equal(needsMedievalSpecialistReview({
+    objectKind: "coin",
+    rulerReading: "Ludwik III",
+    periodReading: "wczesne średniowiecze, okres karoliński",
+    historicalTypeHypothesis: "moneta karolińska z krzyżem i świątynią",
+    historicalTypeConfidence: 91,
+    historicalEvidence: ["krzyż", "fasada świątyni", "RELIGIO"],
+    obverseLegendFragments: ["LVD..."],
+    reverseLegendFragments: ["RELIGIO"],
+  }), true);
+});
+
+test("a medieval reread without legend proof cannot invent Ludwik", () => {
+  const merged = mergeMedievalSpecialistObservations({
+    rulerReading: "Nie ustalono",
+    historicalTypeConfidence: 72,
+    historicalEvidence: ["krzyż", "fasada świątyni"],
+  }, {
+    rulerReading: "Ludwik Pobożny",
+    historicalTypeConfidence: 90,
+    historicalEvidence: ["krzyż", "fasada świątyni"],
+    obverseLegendFragments: [],
+    reverseLegendFragments: [],
+  });
+  assert.equal(merged.observations.rulerReading, "Nie ustalono");
 });
 
 test("a blurred 1-zloty reading cannot remove the exact 5-zloty 1936 klippe", () => {

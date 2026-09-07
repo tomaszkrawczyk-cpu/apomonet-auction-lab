@@ -7,6 +7,7 @@ const recognitionVisualPromise = import("../lib/recognition-visual.mjs");
 
 const BASIC_TIMEOUT_MS = 45_000;
 const VISION_TIMEOUT_MS = 32_000;
+const MEDIEVAL_REVIEW_TIMEOUT_MS = 18_000;
 // A cold production invocation can spend a little over 24 seconds comparing
 // two submitted sides with five museum types.  Cutting the request at 24 s
 // turned a correct 1577 thaler shortlist into an empty/unresolved result.
@@ -269,6 +270,37 @@ const referenceComparisonSchema = {
   ],
 };
 
+const medievalReviewSchema = {
+  type: "object",
+  additionalProperties: false,
+  properties: {
+    countryReading: { type: "string" },
+    issuerReading: { type: "string" },
+    rulerReading: { type: "string" },
+    periodReading: { type: "string" },
+    historicalTypeHypothesis: { type: "string" },
+    historicalTypeConfidence: { type: "integer", minimum: 0, maximum: 95 },
+    historicalEvidence: { type: "array", maxItems: 6, items: { type: "string" } },
+    heraldry: { type: "array", maxItems: 6, items: { type: "string" } },
+    mintMarks: { type: "array", maxItems: 6, items: { type: "string" } },
+    obverseLegendFragments: { type: "array", maxItems: 8, items: { type: "string" } },
+    reverseLegendFragments: { type: "array", maxItems: 8, items: { type: "string" } },
+  },
+  required: [
+    "countryReading",
+    "issuerReading",
+    "rulerReading",
+    "periodReading",
+    "historicalTypeHypothesis",
+    "historicalTypeConfidence",
+    "historicalEvidence",
+    "heraldry",
+    "mintMarks",
+    "obverseLegendFragments",
+    "reverseLegendFragments",
+  ],
+};
+
 async function compareWithReferenceImages(apiKey, userImages, ranked, { force = false } = {}) {
   const startedAt = Date.now();
   const {
@@ -387,6 +419,80 @@ Jedno dokładnie zgodne zdjęcie referencyjne może rozstrzygnąć podstawowy ty
   }
 }
 
+async function reviewMedievalEvidence(apiKey, images, initialObservations) {
+  const startedAt = Date.now();
+  const content = [
+    {
+      type: "input_text",
+      text: `SPECJALISTYCZNY PONOWNY ODCZYT MONETY ŚREDNIOWIECZNEJ.
+
+Pierwszy przebieg rozpoznał średniowieczny lub karoliński charakter obiektu, ale nie zebrał dość stabilnych danych. Obejrzyj oba zdjęcia od nowa, bez dopasowywania do katalogu i bez przepisywania niepewnego wyniku. Najpierw przepisz osobno fragmenty obu legend znak po znaku. Zwróć uwagę na średniowieczne odmiany liter V/U, I/L, ligatury oraz legendy HLVDOVVICVS/HLUDOVICUS i XPISTIANA/CHRISTIANA RELIGIO. Następnie opisz widoczne motywy, zwłaszcza krzyż oraz fasadę/świątynię.
+
+Władcę wpisz tylko wtedy, gdy potwierdza go czytelny fragment legendy. Dla Ludwika Pobożnego wymagaj fragmentu imienia w rodzaju HLVDOVVICVS albo HLUDOVICUS; sam styl karoliński nie wystarcza. Hipotezę typu podaj tylko przy co najmniej dwóch niezależnych cechach widocznych na zdjęciach. Nie podawaj numeru katalogowego i nie wymyślaj mennicy, daty ani nominału.
+
+Pierwsza, NIEPEWNA obserwacja służy wyłącznie jako informacja, czego nie udało się ustalić:
+${JSON.stringify(initialObservations || {})}
+
+Odpowiadaj po polsku.`,
+    },
+    { type: "input_text", text: "AWERS — ponowny odczyt legendy i motywów" },
+    { type: "input_image", image_url: images[0], detail: "high" },
+    { type: "input_text", text: "REWERS — ponowny odczyt legendy i motywów" },
+    { type: "input_image", image_url: images[1], detail: "high" },
+  ];
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), MEDIEVAL_REVIEW_TIMEOUT_MS);
+  try {
+    const response = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
+      signal: controller.signal,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-5.6",
+        reasoning: { effort: "low" },
+        service_tier: ANALYSIS_SERVICE_TIER,
+        input: [{ role: "user", content }],
+        text: {
+          format: {
+            type: "json_schema",
+            name: "medieval_coin_evidence_review_v1",
+            strict: true,
+            schema: medievalReviewSchema,
+          },
+        },
+      }),
+    });
+    const data = await response.json();
+    if (!response.ok || data.status === "incomplete") {
+      return {
+        status: response.ok ? "incomplete" : `error-${response.status}`,
+        observations: null,
+        elapsedMs: Date.now() - startedAt,
+        serviceTier: data?.service_tier || null,
+      };
+    }
+    const text = responseText(data);
+    return {
+      status: text ? "ok" : "empty",
+      observations: text ? JSON.parse(text) : null,
+      elapsedMs: Date.now() - startedAt,
+      serviceTier: data?.service_tier || null,
+    };
+  } catch (error) {
+    return {
+      status: error?.name === "AbortError" ? "timeout" : "error",
+      observations: null,
+      elapsedMs: Date.now() - startedAt,
+      serviceTier: null,
+    };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 async function runAnalysis(apiKey, images, measurements) {
   const analysisStartedAt = Date.now();
   const {
@@ -394,6 +500,8 @@ async function runAnalysis(apiKey, images, measurements) {
     analysisFromRecognition,
     conditionFromRaw,
     localReferenceCandidates,
+    mergeMedievalSpecialistObservations,
+    needsMedievalSpecialistReview,
     searchMnkByEvidence,
     searchNumistaByImage,
   } = await recognitionCorePromise;
@@ -494,6 +602,29 @@ Odpowiadaj po polsku.`;
           retryable: false,
         },
       };
+    }
+    let medievalReview = {
+      status: "not-needed",
+      observations: null,
+      elapsedMs: 0,
+      serviceTier: null,
+      improvedFields: [],
+    };
+    if (needsMedievalSpecialistReview(raw.observations)) {
+      medievalReview = await reviewMedievalEvidence(apiKey, images, raw.observations);
+      if (medievalReview.observations) {
+        const merged = mergeMedievalSpecialistObservations(
+          raw.observations,
+          medievalReview.observations,
+        );
+        raw.observations = merged.observations;
+        medievalReview.improvedFields = merged.improvedFields;
+      }
+      console.log("[recognition-medieval-review]", {
+        status: medievalReview.status,
+        elapsedMs: medievalReview.elapsedMs,
+        improvedFields: medievalReview.improvedFields,
+      });
     }
     const localOrchestration = orchestrateRecognitionCandidates(
       raw.observations,
@@ -682,10 +813,13 @@ Odpowiadaj po polsku.`;
             visualReference.result?.selectedCandidateId || null,
           recognitionEngine: recognitionEnginePolicy.version,
           analysisServiceTier: ANALYSIS_SERVICE_TIER,
+          medievalReview: medievalReview.status,
+          medievalReviewImprovedFields: medievalReview.improvedFields || [],
           engineDiagnostics: ranked.retrieval.diagnostics,
         },
         timings: {
           visionMs: visionElapsedMs,
+          medievalReviewMs: medievalReview.elapsedMs || 0,
           visualReferenceMs: visualReference.elapsedMs || 0,
           localRetrievalMs: localOrchestration.timings.totalLocalMs,
           finalOrchestrationMs: ranked.timings.totalLocalMs,
@@ -695,6 +829,7 @@ Odpowiadaj po polsku.`;
           inputTokens: data.usage?.input_tokens || 0,
           outputTokens: data.usage?.output_tokens || 0,
           serviceTier: data?.service_tier || null,
+          medievalReviewServiceTier: medievalReview.serviceTier || null,
           visualServiceTier: visualReference.serviceTier || null,
         },
       },
