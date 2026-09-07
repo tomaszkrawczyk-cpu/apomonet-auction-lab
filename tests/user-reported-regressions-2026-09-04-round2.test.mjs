@@ -180,7 +180,12 @@ test("THORVNIA siege evidence keeps the 1629 brandtalar in visual review despite
   assert.ok(exact.selectionConflicts.some((item) => /roku/i.test(item)));
   assert.equal(ranked.selected?.candidate.id === exact.candidate.id, false);
   const visual = visualReferenceShortlist(ranked, { limit: 5, minimumScore: 35 });
-  assert.ok(visual.some((entry) => entry.candidate.id === "mnk:447205"));
+  const exactVisual = visual.find((entry) => entry.candidate.id === "mnk:447205");
+  assert.ok(exactVisual);
+  assert.equal(exact.candidate.visualReferenceSpecimenCount, 4);
+  assert.equal(exact.candidate.visualReferenceImages.length, 8);
+  assert.equal(exactVisual.referenceImages.length, 8);
+  assert.ok(exactVisual.referenceImages.some((url) => url.includes("6e7140e8430f66ce939d473dc06cd8d3")));
 });
 
 test("a focused medieval reread upgrades Ludwik only with explicit legend evidence", () => {

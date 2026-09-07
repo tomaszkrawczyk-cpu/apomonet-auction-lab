@@ -65,6 +65,30 @@ test("visual challenger keeps the fifth metadata candidate within a five-type fi
   assert.ok(!shortlist.some((item) => item.candidate.id === "candidate-9"));
 });
 
+test("visual budget keeps alternate museum variants without exceeding ten images", () => {
+  const top = rankedItem("multi-specimen", 82, ["https://museum.example/a-1.jpg"]);
+  top.candidate.visualReferenceImages = Array.from(
+    { length: 8 },
+    (_, index) => `https://museum.example/a-${index + 1}.jpg`,
+  );
+  const rival = rankedItem("rival", 81, [
+    "https://museum.example/b-1.jpg",
+    "https://museum.example/b-2.jpg",
+  ]);
+  const shortlist = visualReferenceShortlist({
+    ranked: [top, rival],
+    selected: null,
+    engineConflict: true,
+    gap: 1,
+  });
+  assert.equal(shortlist[0].referenceImages.length, 8);
+  assert.equal(shortlist[1].referenceImages.length, 2);
+  assert.equal(
+    shortlist.reduce((total, item) => total + item.referenceImages.length, 0),
+    visualRecognitionPolicy.maxReferenceImagesTotal,
+  );
+});
+
 test("visual challenger rejects conflicting, weak and non-https references", () => {
   const ranked = {
     ranked: [

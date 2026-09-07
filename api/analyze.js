@@ -334,7 +334,7 @@ async function compareWithReferenceImages(
       type: "input_text",
       text: `APOMONET — niezależny wizualny reranking krótkiej listy katalogowej.
 
-Pierwsze dwa obrazy to awers i rewers monety użytkownika. Dalej są podpisane obrazy legalnych rekordów referencyjnych. Rekord może mieć dwa osobne zdjęcia albo tylko jedno zdjęcie przedstawiające jedną lub obie strony — brak drugiego obrazu nie jest sprzecznością.
+Pierwsze dwa obrazy to awers i rewers monety użytkownika. Dalej są podpisane obrazy legalnych rekordów referencyjnych. Jeden kandydat podstawowej tożsamości może zawierać zdjęcia kilku legalnych egzemplarzy lub wariantów muzealnych. Oceniaj wtedy najlepiej pasującą parę tego kandydata; odmienny wariant w tej samej grupie nie unieważnia zgodnej pary. Rekord może mieć dwa osobne zdjęcia albo tylko jedno zdjęcie przedstawiające jedną lub obie strony — brak drugiego obrazu nie jest sprzecznością.
 
 Najpierw porównaj niezależnie: postać/portret, heraldykę, układ legendy, czytelne fragmenty napisów, cyfry daty, znaki mennicy lub mincerza oraz geometrię stempla. Potem sprawdź zgodność obu stron jako jednej monety. Metadane kandydata służą wyłącznie do kontroli, nie mogą zastąpić obrazu. Podobny styl epoki, ten sam władca albo ta sama mennica nie wystarczają. Nie oceniaj stanu zachowania i nie wybieraj „najbliższego” na siłę.
 
