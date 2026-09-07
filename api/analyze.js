@@ -16,7 +16,7 @@ const MEDIEVAL_REVIEW_TIMEOUT_MS = 18_000;
 // two submitted sides with five museum types.  Cutting the request at 24 s
 // turned a correct 1577 thaler shortlist into an empty/unresolved result.
 // Keep the visual gate conservative, but give it enough time to finish.
-const REFERENCE_COMPARE_TIMEOUT_MS = 36_000;
+const REFERENCE_COMPARE_TIMEOUT_MS = 44_000;
 const JOB_TTL_MS = 10 * 60_000;
 const RUNTIME_SOURCE_GRACE_MS = 1_200;
 const ANALYSIS_SERVICE_TIER = ["auto", "default", "fast"].includes(

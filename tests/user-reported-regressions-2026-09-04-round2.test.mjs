@@ -276,3 +276,33 @@ test("a blurred 1-zloty reading cannot remove the exact 5-zloty 1936 klippe", ()
   assert.equal(result.year, "1936");
   assert.equal(result.objectKind, "pattern");
 });
+
+test("a partial 193? year and wrong 10-zloty OCR retain the exact 5-zloty 1936 klippe for images", () => {
+  const observations = {
+    objectKind: "pattern",
+    countryReading: "Polska",
+    issuerReading: "Rzeczpospolita Polska",
+    rulerReading: "Nie dotyczy — emisja państwowa",
+    depictedPersonReading: "Nie ustalono",
+    yearReading: "193?; ostatnia cyfra nieczytelna",
+    denominationReading: "10 ZŁOTYCH",
+    mintReading: "Nie ustalono",
+    metalAppearance: "srebrzystoszary metal",
+    shape: "kwadratowa klipa",
+    portrait: "żaglowiec w romboidalnym polu",
+    heraldry: ["orzeł państwowy"],
+    historicalTypeHypothesis: "Polska próbna emisja klipowa z żaglowcem",
+    historicalTypeConfidence: 78,
+    historicalEvidence: ["kwadratowa klipa", "żaglowiec", "orzeł", "193?"],
+    obverseLegendFragments: ["ZŁOTYCH", "żaglowiec"],
+    reverseLegendFragments: ["RZECZPOSPOLITA POLSKA", "193?"],
+    mintMarks: [],
+  };
+  const ranked = orchestrateRecognitionCandidates(observations, catalog);
+  const exact = ranked.ranked.find((entry) => entry.candidate.id === "mnk:89516");
+  assert.ok(exact);
+  assert.ok(exact.selectionConflicts.some((item) => /nominału/i.test(item)));
+  assert.equal(ranked.selected?.candidate.id === exact.candidate.id, false);
+  const visual = visualReferenceShortlist(ranked, { limit: 5, minimumScore: 35 });
+  assert.ok(visual.some((entry) => entry.candidate.id === exact.candidate.id));
+});
