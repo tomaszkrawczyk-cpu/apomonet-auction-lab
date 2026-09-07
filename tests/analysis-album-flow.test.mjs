@@ -50,8 +50,26 @@ async function fullStorageRuntime() {
   vm.runInNewContext(coreSource, context);
   vm.runInNewContext(flowSource, context);
   context.ApoMonet.seed();
-  return { store: context.ApoMonet, flow: context.ApoAnalysisAlbumFlow, document };
+  return {
+    store: context.ApoMonet,
+    flow: context.ApoAnalysisAlbumFlow,
+    document,
+    rawState: () => values.get("apomonet_state_v2") || null,
+  };
 }
+
+test("photo storage deduplicates repeated originals and hydrates them without changing bytes", async () => {
+  const { store, rawState } = await fullStorageRuntime();
+  const photo = "data:image/webp;base64,TA-SAMA-FOTOGRAFIA";
+  const first = store.upsertCoin({ title: "Pierwsza", obverseImage: photo, reverseImage: photo });
+  const second = store.upsertCoin({ title: "Druga", obverseImage: photo, reverseImage: photo });
+  const raw = JSON.parse(rawState());
+
+  assert.equal(store.getCoin(first.id).obverseImage, photo);
+  assert.equal(store.getCoin(second.id).reverseImage, photo);
+  assert.equal(Object.keys(raw.photos || {}).length, 1);
+  assert.equal(raw.coins.every((coin) => coin.obverseImage.startsWith("apo-photo:")), true);
+});
 
 test("save-and-choose-album opens, assigns, verifies and returns the same coin", async () => {
   const { flow, document } = await runtime();

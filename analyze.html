@@ -1346,21 +1346,38 @@
         }
       }
       function openAlbums() {
-        const c = save();
-        if (!c) return;
-        window.ApoAnalysisAlbumFlow?.open?.({
-          coin: c,
-          store: ApoMonet,
-          list: $("albumList"),
-          modal: $("albumModal"),
-          onSuccess: (assigned) =>
-            showSavedActions(assigned, "Moneta zapisana i dodana do albumu."),
-          onError: (error) => {
-            console.error("[album-save]", error);
-            $("status").textContent = error?.message ||
-              "Nie udało się dodać monety do albumu. Moneta pozostaje zapisana w kolekcji.";
-          },
-        });
+        const showAlbumError = (error) => {
+          console.error("[album-save]", error);
+          const message = error?.message ||
+            "Nie udało się dodać monety do albumu. Moneta pozostaje zapisana w kolekcji.";
+          $("status").textContent = message;
+          window.ApoActionFeedback?.flash?.(message, 6500);
+        };
+        try {
+          if (!window.ApoAnalysisAlbumFlow?.open) {
+            throw new Error("Nie udało się uruchomić wyboru albumu. Odśwież stronę i spróbuj ponownie — zdjęcia oraz wynik pozostają na ekranie.");
+          }
+          const c = save();
+          if (!c) {
+            window.ApoActionFeedback?.flash?.(
+              $("status").textContent || "Nie udało się zapisać monety przed wyborem albumu.",
+              6500,
+            );
+            return;
+          }
+          const opened = window.ApoAnalysisAlbumFlow.open({
+            coin: c,
+            store: ApoMonet,
+            list: $("albumList"),
+            modal: $("albumModal"),
+            onSuccess: (assigned) =>
+              showSavedActions(assigned, "Moneta zapisana i dodana do albumu."),
+            onError: showAlbumError,
+          });
+          if (!opened) throw new Error("Nie udało się otworzyć listy albumów.");
+        } catch (error) {
+          showAlbumError(error);
+        }
       }
       $("go").onclick = async () => {
         if (!ready()) return;
