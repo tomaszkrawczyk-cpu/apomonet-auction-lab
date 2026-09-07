@@ -305,7 +305,12 @@ const medievalReviewSchema = {
   ],
 };
 
-async function compareWithReferenceImages(apiKey, userImages, ranked, { force = false } = {}) {
+async function compareWithReferenceImages(
+  apiKey,
+  userImages,
+  ranked,
+  { force = false, observations = null } = {},
+) {
   const startedAt = Date.now();
   const {
     resolveVisualComparison,
@@ -402,7 +407,7 @@ Jedno dokładnie zgodne zdjęcie referencyjne może rozstrzygnąć podstawowy ty
       elapsedMs: Date.now() - startedAt,
       serviceTier: data?.service_tier || null,
     };
-    const result = resolveVisualComparison(JSON.parse(text), shortlist);
+    const result = resolveVisualComparison(JSON.parse(text), shortlist, observations);
     return {
       status: "ok",
       result,
@@ -673,6 +678,7 @@ Odpowiadaj po polsku.`;
       ? { status: "controlled-conflict", result: null, comparedCandidateIds: [] }
       : await compareWithReferenceImages(apiKey, images, ranked, {
           force: forceObjectKindReview,
+          observations: raw.observations,
         });
     if (ranked.selected) {
       raw.decision.selectedCandidateId = ranked.selected.candidate.id;

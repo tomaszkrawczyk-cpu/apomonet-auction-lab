@@ -150,26 +150,33 @@ test("THORVNIA 1629 and a missing nominal retrieve the exact Torun siege thaler"
 test("THORVNIA siege evidence keeps the 1629 brandtalar in visual review despite OCR year 1658", () => {
   const observations = {
     objectKind: "medal",
-    countryReading: "Toruń / Rzeczpospolita Obojga Narodów",
+    countryReading: "Toruń; historycznie obszar Rzeczypospolitej Obojga Narodów",
     issuerReading: "Nie ustalono",
-    rulerReading: "Nie ustalono",
-    depictedPersonReading: "Nie dotyczy — brak przedstawienia osoby",
-    yearReading: "1658",
-    denominationReading: "Brak oznaczenia nominału",
+    rulerReading: "Nie dotyczy — brak widocznej tytulatury monarchy",
+    depictedPersonReading: "Nie dotyczy — brak portretu konkretnej osoby",
+    yearReading: "ANNO 1658",
+    denominationReading: "Nie ustalono",
     mintReading: "Nie ustalono",
-    metalAppearance: "srebro",
-    shape: "okrągła",
-    portrait: "napis THORVNIA oraz panorama miasta",
-    historicalTypeHypothesis: "Medal lub moneta odnosząca się do oblężenia Torunia",
-    historicalTypeConfidence: 82,
-    historicalEvidence: ["THORVNIA", "panorama miasta", "motyw oblężenia"],
-    obverseLegendFragments: ["THORVNIA"],
-    reverseLegendFragments: ["FIDES"],
+    metalAppearance: "Srebrzystoszary metal z brunatną patyną/tonowaniem",
+    shape: "Okrągły",
+    portrait: "Brak portretu; napis THORVNIA i panorama miasta",
+    historicalTypeHypothesis: "Medal związany z oblężeniem lub odzyskaniem Torunia w 1658 roku",
+    historicalTypeConfidence: 88,
+    historicalEvidence: [
+      "Czytelna nazwa THORVNIA",
+      "Czytelna data ANNO 1658",
+      "Panorama ufortyfikowanego miasta otoczonego działaniami wojennymi",
+      "Herb lub emblemat miasta umieszczony nad inskrypcją",
+      "Brak oznaczenia nominału i rozbudowana kompozycja pamiątkowa",
+    ],
+    obverseLegendFragments: ["THORVNIA", "ANNO 1658"],
+    reverseLegendFragments: [],
     mintMarks: [],
   };
   const ranked = orchestrateRecognitionCandidates(observations, catalog);
   const exact = ranked.ranked.find((entry) => entry.candidate.id === "mnk:447205");
   assert.ok(exact, "1629 Toruń siege thaler must survive chronology filtering");
+  assert.ok(exact.score >= 35, "exact brandtalar must reach the five-image visual gate");
   assert.ok(exact.selectionConflicts.some((item) => /roku/i.test(item)));
   assert.equal(ranked.selected?.candidate.id === exact.candidate.id, false);
   const visual = visualReferenceShortlist(ranked, { limit: 5, minimumScore: 35 });

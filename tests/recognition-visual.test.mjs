@@ -145,6 +145,66 @@ test("visual score gate abstains when similar types have no decisive margin", ()
   assert.equal(result.selectionBasis, "abstained");
 });
 
+test("rejected unrelated references do not erase independently read medieval identity", () => {
+  const shortlist = [{
+    candidate: {
+      id: "unrelated",
+      country: "Polska",
+      ruler: "Kazimierz III Wielki",
+      year: "1360",
+    },
+  }];
+  const result = resolveVisualComparison({
+    selectedCandidateId: "",
+    candidateFit: 0,
+    comparisons: [{
+      candidateId: "unrelated",
+      visualFit: 4,
+      sameType: false,
+      sameSpecimen: false,
+      matchedSides: "uncertain",
+      decisiveFeatures: [],
+      conflictingFields: ["country", "ruler", "year", "design"],
+      contradictions: ["inny władca, epoka i projekt"],
+    }],
+  }, shortlist, {
+    countryReading: "Cesarstwo Karolińskie",
+    rulerReading: "HLVDOVVICVS IMP — Ludwik Pobożny",
+    yearReading: "Nie ustalono — brak widocznej daty",
+  });
+  assert.deepEqual(result.blockedIdentityFields, []);
+});
+
+test("a rejected candidate still blocks an OCR identity copied from that candidate", () => {
+  const shortlist = [{
+    candidate: {
+      id: "batory",
+      country: "Polska",
+      ruler: "Stefan Batory",
+      year: "1583",
+    },
+  }];
+  const result = resolveVisualComparison({
+    selectedCandidateId: "",
+    candidateFit: 0,
+    comparisons: [{
+      candidateId: "batory",
+      visualFit: 0,
+      sameType: false,
+      sameSpecimen: false,
+      matchedSides: "both",
+      decisiveFeatures: [],
+      conflictingFields: ["ruler", "year", "design"],
+      contradictions: ["SIGIS AVG zamiast STEPHANVS"],
+    }],
+  }, shortlist, {
+    countryReading: "Polska",
+    rulerReading: "STEPHANVS / Stefan Batory",
+    yearReading: "1583",
+  });
+  assert.deepEqual(result.blockedIdentityFields, ["ruler", "year"]);
+});
+
 test("a high-margin dated type is selected despite specimen-only differences", () => {
   const shortlist = [
     { candidate: { id: "exact-1551" } },
