@@ -19,6 +19,18 @@
         "DEFENSA"
       ],
       "minimumMatches": 4,
+      "reviewTrigger": {
+        "requiredLegendFragments": [
+          "THORVNIA"
+        ],
+        "visualTerms": [
+          "panorama",
+          "widok miasta",
+          "ufortyfikowane miasto",
+          "fortyfikacje miejskie"
+        ],
+        "minimumVisualTerms": 1
+      },
       "corrects": [
         "objectKind",
         "country",

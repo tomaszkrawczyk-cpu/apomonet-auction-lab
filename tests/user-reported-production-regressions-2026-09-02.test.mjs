@@ -229,8 +229,10 @@ test("mobile flow keeps original previews and rejects stale analysis responses b
   assert.match(api, /decision\.rejectedCandidateIds/);
   assert.match(api, /decision\.blockedIdentityFields/);
   assert.match(api, /APOMONET_ANALYSIS_SERVICE_TIER \|\| "auto"/);
-  assert.equal((api.match(/service_tier: ANALYSIS_SERVICE_TIER/g) || []).length, 3);
+  assert.equal((api.match(/service_tier: ANALYSIS_SERVICE_TIER/g) || []).length, 4);
   assert.match(api, /needsMedievalSpecialistReview\(raw\.observations\)/);
   assert.match(api, /medieval_coin_evidence_review_v1/);
+  assert.match(api, /needsEvidenceSignatureReview\(raw\.observations\)/);
+  assert.match(api, /coin_legend_evidence_review_v1/);
   assert.match(api, /visualReferenceMs: visualReference\.elapsedMs/);
 });

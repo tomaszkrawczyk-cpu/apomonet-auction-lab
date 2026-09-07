@@ -6,7 +6,9 @@ import {
   analysisFromRecognition,
   conditionFromRaw,
   localReferenceCandidates,
+  mergeEvidenceSignatureReview,
   mergeMedievalSpecialistObservations,
+  needsEvidenceSignatureReview,
   needsMedievalSpecialistReview,
 } from "../lib/recognition-core.mjs";
 import {
@@ -251,6 +253,46 @@ test("a generic Torun siege mention cannot trigger the Brandtalar signature", ()
   }, catalog);
   assert.equal(result.matched, false);
   assert.deepEqual(result.correctedFields, []);
+});
+
+test("THORVNIA plus a visible city panorama requests one evidence-only legend reread", () => {
+  const observations = {
+    portrait: "Brak portretu; rozbudowana panorama ufortyfikowanego miasta",
+    historicalTypeHypothesis: "Medal pamiątkowy związany z Toruniem",
+    historicalEvidence: ["Czytelny centralny napis THORVNIA", "panorama miasta"],
+    obverseLegendFragments: ["THORVNIA"],
+    reverseLegendFragments: [],
+  };
+  assert.equal(needsEvidenceSignatureReview(observations), true);
+  assert.equal(needsEvidenceSignatureReview({
+    ...observations,
+    portrait: "Nie ustalono",
+    historicalTypeHypothesis: "Nie ustalono",
+    historicalEvidence: ["THORVNIA"],
+  }), false);
+});
+
+test("a focused legend reread can complete the signature but cannot alter identity fields itself", () => {
+  const base = {
+    objectKind: "medal",
+    rulerReading: "Nie ustalono",
+    yearReading: "Nie ustalono",
+    denominationReading: "Nie ustalono",
+    obverseLegendFragments: ["THORVNIA"],
+    reverseLegendFragments: [],
+  };
+  const merged = mergeEvidenceSignatureReview(base, {
+    obverseLegendFragments: ["HOSTILITER", "OPPVGNATA", "CIVIB", "DEFENSA"],
+    reverseLegendFragments: [],
+  });
+  assert.equal(merged.observations.rulerReading, "Nie ustalono");
+  assert.equal(merged.observations.yearReading, "Nie ustalono");
+  assert.equal(merged.observations.denominationReading, "Nie ustalono");
+  const signature = applyEvidenceSignature(merged.observations, catalog);
+  assert.equal(signature.matched, true);
+  assert.equal(signature.observations.rulerReading, "Zygmunt III Waza");
+  assert.equal(signature.observations.yearReading, "1629");
+  assert.equal(signature.observations.denominationReading, "Talar");
 });
 
 test("a focused medieval reread upgrades Ludwik only with explicit legend evidence", () => {

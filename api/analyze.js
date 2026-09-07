@@ -12,6 +12,7 @@ const BASIC_TIMEOUT_MS = 45_000;
 // allowing normal provider latency variance.
 const VISION_TIMEOUT_MS = 40_000;
 const MEDIEVAL_REVIEW_TIMEOUT_MS = 18_000;
+const EVIDENCE_SIGNATURE_REVIEW_TIMEOUT_MS = 18_000;
 // A cold production invocation can spend a little over 24 seconds comparing
 // two submitted sides with five museum types.  Cutting the request at 24 s
 // turned a correct 1577 thaler shortlist into an empty/unresolved result.
@@ -305,6 +306,23 @@ const medievalReviewSchema = {
   ],
 };
 
+const evidenceSignatureReviewSchema = {
+  type: "object",
+  additionalProperties: false,
+  properties: {
+    obverseLegendFragments: { type: "array", maxItems: 12, items: { type: "string" } },
+    reverseLegendFragments: { type: "array", maxItems: 12, items: { type: "string" } },
+    visibleMotifs: { type: "array", maxItems: 6, items: { type: "string" } },
+    limitations: { type: "array", maxItems: 4, items: { type: "string" } },
+  },
+  required: [
+    "obverseLegendFragments",
+    "reverseLegendFragments",
+    "visibleMotifs",
+    "limitations",
+  ],
+};
+
 async function compareWithReferenceImages(
   apiKey,
   userImages,
@@ -502,6 +520,80 @@ Odpowiadaj po polsku.`,
   }
 }
 
+async function reviewEvidenceSignature(apiKey, images, initialObservations) {
+  const startedAt = Date.now();
+  const content = [
+    {
+      type: "input_text",
+      text: `APOMONET — CELOWANY, NIEZALEŻNY PONOWNY ODCZYT LEGENDY.
+
+Pierwsza analiza zauważyła charakterystyczny napis i kompozycję, ale nie przepisała dostatecznie dużo legendy. Obejrzyj oba zdjęcia od nowa. Twoim jedynym zadaniem jest transkrypcja faktycznie widocznych wyrazów i skrótów — nie identyfikuj monety, nie podawaj władcy, daty, nominału ani numeru katalogowego i nie dopasowuj tekstu do znanego typu.
+
+Przepisuj każdy czytelny fragment osobno, w kolejności od góry do dołu lub zgodnie z ruchem legendy. Zachowaj pisownię z V/U, skróty i znaki interpunkcyjne. Nie rozwijaj skrótów, nie poprawiaj łaciny i pomijaj słowa, których nie da się naprawdę odczytać. visibleMotifs ma zawierać wyłącznie elementy widoczne na obrazie. W limitations zapisz, których części legendy nie dało się odczytać.
+
+Pierwsza obserwacja służy tylko do wskazania braków i nie jest wzorcem odpowiedzi:
+${JSON.stringify(initialObservations || {})}
+
+Odpowiadaj po polsku.`,
+    },
+    { type: "input_text", text: "AWERS — dosłowna transkrypcja legendy" },
+    { type: "input_image", image_url: images[0], detail: "high" },
+    { type: "input_text", text: "REWERS — dosłowna transkrypcja legendy" },
+    { type: "input_image", image_url: images[1], detail: "high" },
+  ];
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), EVIDENCE_SIGNATURE_REVIEW_TIMEOUT_MS);
+  try {
+    const response = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
+      signal: controller.signal,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-5.6",
+        reasoning: { effort: "low" },
+        service_tier: ANALYSIS_SERVICE_TIER,
+        input: [{ role: "user", content }],
+        text: {
+          format: {
+            type: "json_schema",
+            name: "coin_legend_evidence_review_v1",
+            strict: true,
+            schema: evidenceSignatureReviewSchema,
+          },
+        },
+      }),
+    });
+    const data = await response.json();
+    if (!response.ok || data.status === "incomplete") {
+      return {
+        status: response.ok ? "incomplete" : `error-${response.status}`,
+        observations: null,
+        elapsedMs: Date.now() - startedAt,
+        serviceTier: data?.service_tier || null,
+      };
+    }
+    const text = responseText(data);
+    return {
+      status: text ? "ok" : "empty",
+      observations: text ? JSON.parse(text) : null,
+      elapsedMs: Date.now() - startedAt,
+      serviceTier: data?.service_tier || null,
+    };
+  } catch (error) {
+    return {
+      status: error?.name === "AbortError" ? "timeout" : "error",
+      observations: null,
+      elapsedMs: Date.now() - startedAt,
+      serviceTier: null,
+    };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 async function runAnalysis(apiKey, images, measurements) {
   const analysisStartedAt = Date.now();
   const {
@@ -510,7 +602,9 @@ async function runAnalysis(apiKey, images, measurements) {
     analysisFromRecognition,
     conditionFromRaw,
     localReferenceCandidates,
+    mergeEvidenceSignatureReview,
     mergeMedievalSpecialistObservations,
+    needsEvidenceSignatureReview,
     needsMedievalSpecialistReview,
     searchMnkByEvidence,
     searchNumistaByImage,
@@ -636,7 +730,36 @@ Odpowiadaj po polsku.`;
         improvedFields: medievalReview.improvedFields,
       });
     }
-    const evidenceSignature = applyEvidenceSignature(raw.observations, localCandidates);
+    let evidenceSignature = applyEvidenceSignature(raw.observations, localCandidates);
+    let evidenceSignatureReview = {
+      status: "not-needed",
+      observations: null,
+      elapsedMs: 0,
+      serviceTier: null,
+      improvedFields: [],
+    };
+    if (!evidenceSignature.matched && needsEvidenceSignatureReview(raw.observations)) {
+      evidenceSignatureReview = await reviewEvidenceSignature(
+        apiKey,
+        images,
+        raw.observations,
+      );
+      if (evidenceSignatureReview.observations) {
+        const merged = mergeEvidenceSignatureReview(
+          raw.observations,
+          evidenceSignatureReview.observations,
+        );
+        raw.observations = merged.observations;
+        evidenceSignatureReview.improvedFields = merged.improvedFields;
+        evidenceSignature = applyEvidenceSignature(raw.observations, localCandidates);
+      }
+      console.log("[recognition-evidence-signature-review]", {
+        status: evidenceSignatureReview.status,
+        elapsedMs: evidenceSignatureReview.elapsedMs,
+        improvedFields: evidenceSignatureReview.improvedFields,
+        matched: evidenceSignature.matched,
+      });
+    }
     if (evidenceSignature.matched) {
       raw.observations = evidenceSignature.observations;
       raw.objectKind = evidenceSignature.observations.objectKind || raw.objectKind;
@@ -846,11 +969,15 @@ Odpowiadaj po polsku.`;
             ? evidenceSignature.signatureId
             : null,
           evidenceSignatureCorrectedFields: evidenceSignature.correctedFields || [],
+          evidenceSignatureReview: evidenceSignatureReview.status,
+          evidenceSignatureReviewImprovedFields:
+            evidenceSignatureReview.improvedFields || [],
           engineDiagnostics: ranked.retrieval.diagnostics,
         },
         timings: {
           visionMs: visionElapsedMs,
           medievalReviewMs: medievalReview.elapsedMs || 0,
+          evidenceSignatureReviewMs: evidenceSignatureReview.elapsedMs || 0,
           visualReferenceMs: visualReference.elapsedMs || 0,
           localRetrievalMs: localOrchestration.timings.totalLocalMs,
           finalOrchestrationMs: ranked.timings.totalLocalMs,
@@ -861,6 +988,8 @@ Odpowiadaj po polsku.`;
           outputTokens: data.usage?.output_tokens || 0,
           serviceTier: data?.service_tier || null,
           medievalReviewServiceTier: medievalReview.serviceTier || null,
+          evidenceSignatureReviewServiceTier:
+            evidenceSignatureReview.serviceTier || null,
           visualServiceTier: visualReference.serviceTier || null,
         },
       },
