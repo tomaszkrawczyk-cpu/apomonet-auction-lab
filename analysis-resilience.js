@@ -3,7 +3,7 @@
   window.__apoAnalysisResilienceInstalled = true;
 
   const KEY = 'apomonetAnalysisResilienceV1';
-  const MAX_RETRIES = 1;
+  const MAX_RETRIES = Object.freeze({ stage1: 0, stage2: 1 });
   let hiddenDuringActiveRequest = false;
   let activeTrackedRequests = 0;
   const originalFetch = window.fetch.bind(window);
@@ -84,7 +84,7 @@
           return response;
         } catch (error) {
           const suspended = hiddenDuringActiveRequest || document.visibilityState === 'hidden';
-          const retryable = attempt < MAX_RETRIES && suspended && (error?.name === 'AbortError' || error instanceof TypeError);
+          const retryable = attempt < MAX_RETRIES[stage] && suspended && (error?.name === 'AbortError' || error instanceof TypeError);
           if (!retryable) throw error;
           await sleep(900);
           options = { ...options };

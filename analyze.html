@@ -1119,7 +1119,7 @@
         facts.replaceChildren();
         rows.forEach((row, index) => {
           const fact = document.createElement("div");
-          fact.className = `fact${index === 4 || index === 5 ? " highlight" : ""}`;
+          fact.className = `fact${["nominal", "mint"].includes(row[2]) ? " highlight" : ""}`;
           const label = document.createElement("span");
           const value = document.createElement("strong");
           label.textContent = row[0];
@@ -1392,17 +1392,16 @@
             $("status").textContent = "Odczytuję podstawowe cechy obu stron…";
           }, 8_000),
           setTimeout(() => {
-            $("status").textContent = "Porównuję rok, władcę i nominał…";
+            $("status").textContent = "Kończę kontrolę roku i nominału…";
           }, 20_000),
           setTimeout(() => {
             $("status").textContent =
-              "Analiza nadal trwa. Zdjęcia są bezpieczne — proszę nie zamykać tej karty.";
-          }, 35_000),
+              "Analiza przekroczyła zwykły czas. Zdjęcia są bezpieczne.";
+          }, 30_000),
         ];
-        // Stage 1 may perform a second, independent museum-image comparison.
-        // The browser timeout must remain above the server-side visual budget,
-        // including mobile upload and cold-start time.
-        const requestTimeout = setTimeout(() => controller.abort(), 90_000);
+        // One Stage 1 model call plus upload/cold-start margin.  Specialist
+        // rereads and museum-image comparisons run only in the detailed stage.
+        const requestTimeout = setTimeout(() => controller.abort(), 40_000);
         const jobId = `apo-${crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`}`;
         try {
           $("go").disabled = true;

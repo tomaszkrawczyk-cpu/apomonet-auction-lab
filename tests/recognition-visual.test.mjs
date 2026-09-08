@@ -23,14 +23,15 @@ function rankedItem(id, score, images, hardConflicts = []) {
   };
 }
 
-test("production and mobile budgets allow the five-type visual comparison to finish", async () => {
+test("Stage 1 has one short model budget and defers the visual comparison", async () => {
   const [api, page] = await Promise.all([
     readFile(new URL("../api/analyze.js", import.meta.url), "utf8"),
     readFile(new URL("../analyze.html", import.meta.url), "utf8"),
   ]);
-  assert.match(api, /VISION_TIMEOUT_MS = 40_000/);
-  assert.match(api, /REFERENCE_COMPARE_TIMEOUT_MS = 44_000/);
-  assert.match(page, /requestTimeout = setTimeout\(\(\) => controller\.abort\(\), 90_000\)/);
+  assert.match(api, /BASIC_TIMEOUT_MS = 32_000/);
+  assert.match(api, /VISION_TIMEOUT_MS = BASIC_TIMEOUT_MS/);
+  assert.match(api, /status: "deferred-to-detail"/);
+  assert.match(page, /requestTimeout = setTimeout\(\(\) => controller\.abort\(\), 40_000\)/);
 });
 
 test("Stage 1 visual shortlist accepts a legal record with one reference image", () => {

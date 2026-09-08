@@ -226,10 +226,14 @@ test("mobile flow keeps original previews and rejects stale analysis responses b
   assert.match(page, /hasPhotoPair/);
   assert.match(page, /analyzedPhotoSignature/);
   assert.match(api, /objectKind: raw\.objectKind/);
-  assert.match(api, /decision\.rejectedCandidateIds/);
-  assert.match(api, /decision\.blockedIdentityFields/);
   assert.match(api, /APOMONET_ANALYSIS_SERVICE_TIER \|\| "auto"/);
-  assert.equal((api.match(/service_tier: ANALYSIS_SERVICE_TIER/g) || []).length, 4);
+  const stageOne = api.slice(
+    api.indexOf("async function runAnalysis"),
+    api.indexOf("export default async function handler"),
+  );
+  assert.equal((stageOne.match(/https:\/\/api\.openai\.com\/v1\/responses/g) || []).length, 1);
+  assert.doesNotMatch(stageOne, /await reviewMedievalEvidence|await reviewEvidenceSignature|await compareWithReferenceImages/);
+  assert.match(stageOne, /stage1ModelCalls: STAGE1_MODEL_CALL_LIMIT/);
   assert.match(api, /needsMedievalSpecialistReview\(raw\.observations\)/);
   assert.match(api, /medieval_coin_evidence_review_v1/);
   assert.match(api, /needsEvidenceSignatureReview\(raw\.observations\)/);
