@@ -3,14 +3,14 @@
 // Native dynamic import keeps the recognition core as ESM in production.
 const recognitionCorePromise = import("../lib/recognition-core.mjs");
 const recognitionOrchestratorPromise = import("../lib/recognition-orchestrator.mjs");
-const recognitionVisualPromise = import("../lib/recognition-visual.mjs");
+const recognitionVisual = () => import("../lib/recognition-visual.mjs");
 
-const BASIC_TIMEOUT_MS = 45_000;
-// Real gpt-5.6 image requests occasionally cross 32 s even for a clear royal
-// thaler.  The shorter limit converted a valid run into a 504 before evidence
-// ranking began.  Keep this below the combined mobile request budget while
-// allowing normal provider latency variance.
-const VISION_TIMEOUT_MS = 40_000;
+// Stage 1 is a single bounded image-model call.  Specialist rereads and
+// catalogue-image comparisons belong to Stage 2; otherwise one tap can turn
+// into four serial model calls and return mutually revised verdicts.
+const BASIC_TIMEOUT_MS = 32_000;
+const VISION_TIMEOUT_MS = BASIC_TIMEOUT_MS;
+const STAGE1_MODEL_CALL_LIMIT = 1;
 const MEDIEVAL_REVIEW_TIMEOUT_MS = 18_000;
 const EVIDENCE_SIGNATURE_REVIEW_TIMEOUT_MS = 18_000;
 // A cold production invocation can spend a little over 24 seconds comparing
@@ -334,7 +334,7 @@ async function compareWithReferenceImages(
     resolveVisualComparison,
     shouldCompareVisualReferences,
     visualReferenceShortlist,
-  } = await recognitionVisualPromise;
+  } = await recognitionVisual();
   const shortlist = visualReferenceShortlist(ranked);
   const comparedCandidateIds = shortlist.map((item) => item.candidate.id);
   if (!force && !shouldCompareVisualReferences(ranked, shortlist)) {
@@ -602,19 +602,14 @@ async function runAnalysis(apiKey, images, measurements) {
     analysisFromRecognition,
     conditionFromRaw,
     localReferenceCandidates,
-    mergeEvidenceSignatureReview,
-    mergeMedievalSpecialistObservations,
     needsEvidenceSignatureReview,
     needsMedievalSpecialistReview,
+    reconcileDirectDenominationEvidence,
     searchMnkByEvidence,
     searchNumistaByImage,
   } = await recognitionCorePromise;
   const { orchestrateRecognitionCandidates, recognitionEnginePolicy } =
     await recognitionOrchestratorPromise;
-  const {
-    reconcileObservationsWithExactVisualMatch,
-    visualRecognitionPolicy,
-  } = await recognitionVisualPromise;
   const localCandidates = localReferenceCandidates();
   const numistaPromise = searchNumistaByImage(
     process.env.NUMISTA_API_KEY,
@@ -624,13 +619,17 @@ async function runAnalysis(apiKey, images, measurements) {
   // anchoring. Candidate retrieval and selection happen deterministically only
   // after the visible evidence has been returned.
   let candidates = [];
-  const prompt = `ETAP 1 APOMONET — niezależny odczyt dowodów ze zdjęć.
+  const prompt = `ETAP 1 APOMONET — jeden szybki, niezależny odczyt dowodów ze zdjęć.
 
-Najpierw oceń, czy oba zdjęcia nadają się do identyfikacji i czy pokazują dwie strony tego samego obiektu. Rozpoznaj wyłącznie rodzaj obiektu: regularna moneta obiegowa, emisja próbna/wzorcowa (PRÓBA/PROBA/ESSAI/PATTERN), medal, żeton, możliwa kopia albo obiekt niepewny. Uwzględnij widoczny napis „PRÓBA”, nietypowy metal, talar próbny oraz sygnatur projektanta/medaliera. Zdjęcie samo w sobie nie potwierdza autentyczności. Użyj objectKind „copy” wyłącznie wtedy, gdy widać konkretną cechę techniki wykonania wskazującą kopię lub odlew; nie oznaczaj tak obiektu tylko dlatego, że zdjęcie pochodzi z galerii, aukcji, ekranu albo jest podobne do fotografii referencyjnej.
+Najpierw oceń, czy oba zdjęcia nadają się do identyfikacji i czy pokazują dwie strony tego samego obiektu. Rozpoznaj wyłącznie rodzaj obiektu: regularna moneta obiegowa, emisja próbna/wzorcowa (PRÓBA/PROBA/ESSAI/PATTERN), medal, żeton albo obiekt niepewny. Uwzględnij widoczny napis „PRÓBA”, nietypowy metal, talar próbny oraz sygnatur projektanta/medaliera. W Etapie 1 nie oceniaj autentyczności, nie rozważaj falsyfikatu i nie używaj objectKind „copy” — to oddzielne zadanie analizy szczegółowej.
 
 IDENTYFIKACJA I STAN TO DWA ODDZIELNE ZADANIA. W observations zapisz tylko to, co faktycznie widać: fragmenty legend, portret, herby, datę/cyfry, oznaczenie nominału, mennicę lub znaki, kształt i wygląd metalu. Nie dopasowuj obserwacji do oczekiwanego wyniku. Gdy czegoś nie widać, wpisz „Nie ustalono” albo pustą tablicę. Traktuj listę kandydatów wyłącznie jako materiał do późniejszego porównania, a nie jako podpowiedź do odczytu obrazu.
 
 ROZDZIELAJ ROLE. countryReading oznacza kraj lub obszar emisji, issuerReading — państwo, miasto albo instytucję emitującą, rulerReading — wyłącznie rzeczywistego monarchę, a depictedPersonReading — konkretną osobę przedstawioną na monecie. Narodowy Bank Polski, Polska Rzeczpospolita Ludowa ani Rzeczpospolita Polska nie są władcą i nigdy nie mogą trafić do rulerReading ani depictedPersonReading. Dla emisji państwowej bez monarchy wpisz w rulerReading „Nie dotyczy — emisja państwowa”. Jeżeli portret przedstawia Mikołaja Kopernika, Tadeusza Kościuszkę lub inną rozpoznawalną postać, wpisz jej imię wyłącznie do depictedPersonReading. Nie kopiuj emitenta do pola postaci.
+
+NOMINAŁ ODCZYTAJ OSOBNO, zanim rozpoznasz postać lub typ. Dla monet z cyfrą przepisz znak po znaku dokładny napis nominału z fotografii (np. „5 ZŁOTYCH” albo „10 ZŁOTYCH”) do denominationReading, a dosłowny fragment wraz z informacją, na której stronie go widać, do denominationEvidence i odpowiedniej tablicy legendy. Widoczny nominał zawsze ma pierwszeństwo przed pamięcią o podobnym typie lub portrecie. W szczególności portret Józefa Piłsudskiego występuje na różnych nominałach: „5 ZŁOTYCH” oznacza 5 zł, nigdy 10 zł. Jeśli cyfry nie da się odczytać, nie wybieraj nominału z samego portretu.
+
+Dla starszych monet bez wypisanego nominału spróbuj ustalić rodzinę nominału z układu obu stempli. Wpisz ją do denominationReading tylko wtedy, gdy co najmniej dwie konkretne cechy projektu odróżniają ją od podobnych nominałów, a cechy wymień w denominationEvidence i historicalEvidence. Przy srebrnych emisjach Stefana Batorego z 1580 sprawdź osobno, czy układ popiersia, tarcz i Pogoni odpowiada talarowi koronnemu oraz czy znaki wskazują Olkusz; nie pozostawiaj tych pól pustych mechanicznie. Jeżeli talar i dwutalar są wizualnie nierozróżnialne bez masy, pozostaw nominał nieustalony zamiast zgadywać.
 
 MONETY STAROŻYTNE I ŚREDNIOWIECZNE: nie wymagaj nowożytnego portretu, pełnej daty ani cyfrowego nominału. Odczytuj stylizowaną legendę znak po znaku, także gdy część liter jest niepewna, i zapisuj osobno widoczne motywy: krzyż, świątynię/fasadę, monogram, popiersie, koronę, orła, tarczę, wieżę lub znak menniczy. W periodReading wpisz tylko szeroką epokę widoczną w stylistyce. Jeżeli legenda pozwala odczytać władcę lub obszar emisji, zachowaj go w rulerReading/countryReading nawet wtedy, gdy dokładnego typu i numeru katalogowego nie da się ustalić. Jeżeli połączenie legendy i co najmniej dwóch motywów jest charakterystyczne, możesz podać ostrożną hipotezę typu w historicalTypeHypothesis, jej pewność w historicalTypeConfidence i konkretne widoczne podstawy w historicalEvidence. To pole jest hipotezą ikonograficzną, nie przypisaniem katalogowym: nie wpisuj numeru katalogowego, a przy samym podobieństwie stylu pozostaw hipotezę pustą i pewność 0.
 
@@ -690,7 +689,7 @@ Odpowiadaj po polsku.`;
     if (!text) throw new Error("Analiza wstępna zwróciła pusty wynik.");
     const raw = JSON.parse(text);
     raw.observations = {
-      ...(raw.observations || {}),
+      ...reconcileDirectDenominationEvidence(raw.observations || {}),
       objectKind: raw.objectKind,
     };
     if (raw.imageUsable === false || raw.sameObject === false) {
@@ -707,59 +706,25 @@ Odpowiadaj po polsku.`;
         },
       };
     }
-    let medievalReview = {
-      status: "not-needed",
+    const medievalReview = {
+      status: needsMedievalSpecialistReview(raw.observations)
+        ? "deferred-to-detail"
+        : "not-needed",
       observations: null,
       elapsedMs: 0,
       serviceTier: null,
       improvedFields: [],
     };
-    if (needsMedievalSpecialistReview(raw.observations)) {
-      medievalReview = await reviewMedievalEvidence(apiKey, images, raw.observations);
-      if (medievalReview.observations) {
-        const merged = mergeMedievalSpecialistObservations(
-          raw.observations,
-          medievalReview.observations,
-        );
-        raw.observations = merged.observations;
-        medievalReview.improvedFields = merged.improvedFields;
-      }
-      console.log("[recognition-medieval-review]", {
-        status: medievalReview.status,
-        elapsedMs: medievalReview.elapsedMs,
-        improvedFields: medievalReview.improvedFields,
-      });
-    }
     let evidenceSignature = applyEvidenceSignature(raw.observations, localCandidates);
-    let evidenceSignatureReview = {
-      status: "not-needed",
+    const evidenceSignatureReview = {
+      status: !evidenceSignature.matched && needsEvidenceSignatureReview(raw.observations)
+        ? "deferred-to-detail"
+        : "not-needed",
       observations: null,
       elapsedMs: 0,
       serviceTier: null,
       improvedFields: [],
     };
-    if (!evidenceSignature.matched && needsEvidenceSignatureReview(raw.observations)) {
-      evidenceSignatureReview = await reviewEvidenceSignature(
-        apiKey,
-        images,
-        raw.observations,
-      );
-      if (evidenceSignatureReview.observations) {
-        const merged = mergeEvidenceSignatureReview(
-          raw.observations,
-          evidenceSignatureReview.observations,
-        );
-        raw.observations = merged.observations;
-        evidenceSignatureReview.improvedFields = merged.improvedFields;
-        evidenceSignature = applyEvidenceSignature(raw.observations, localCandidates);
-      }
-      console.log("[recognition-evidence-signature-review]", {
-        status: evidenceSignatureReview.status,
-        elapsedMs: evidenceSignatureReview.elapsedMs,
-        improvedFields: evidenceSignatureReview.improvedFields,
-        matched: evidenceSignature.matched,
-      });
-    }
     if (evidenceSignature.matched) {
       raw.observations = evidenceSignature.observations;
       raw.objectKind = evidenceSignature.observations.objectKind || raw.objectKind;
@@ -803,22 +768,13 @@ Odpowiadaj po polsku.`;
     );
     const counterstampedHostConflict = ranked.controlledConflict.blocked &&
       ranked.controlledConflict.activeFamilies.includes("counterstamped-host-coin");
-    // Competitor-style image retrieval: metadata creates a broad shortlist,
-    // then Stage 1 independently compares the submitted photographs with legal
-    // reference images. Metadata still owns contradiction and chronology gates.
-    const forceObjectKindReview = ["medal", "token", "zeton"].includes(
-      clean(raw.objectKind).toLowerCase(),
-    ) && ranked.ranked.some((item) =>
-      ["coin", "pattern", "pattern-coin"].includes(
-        clean(item.candidate?.objectKind).toLowerCase(),
-      ),
-    );
+    // Stage 1 returns after the first visual observation plus deterministic
+    // local adjudication.  An independent reference-image comparison may still
+    // be useful, but it is deliberately deferred to the detailed stage so it
+    // cannot revise the basic result after another long model call.
     const visualReference = counterstampedHostConflict
-      ? { status: "controlled-conflict", result: null, comparedCandidateIds: [] }
-      : await compareWithReferenceImages(apiKey, images, ranked, {
-          force: forceObjectKindReview,
-          observations: raw.observations,
-        });
+      ? { status: "controlled-conflict", result: null, comparedCandidateIds: [], elapsedMs: 0 }
+      : { status: "deferred-to-detail", result: null, comparedCandidateIds: [], elapsedMs: 0 };
     if (ranked.selected) {
       raw.decision.selectedCandidateId = ranked.selected.candidate.id;
       raw.decision.candidateFit = Math.max(
@@ -848,41 +804,6 @@ Odpowiadaj po polsku.`;
           ...(raw.decision.contradictions || []),
           ranked.controlledConflict.reason,
         ]),
-      ].slice(0, 6);
-    }
-    if (
-      !counterstampedHostConflict &&
-      visualReference.result?.selectedCandidateId &&
-      visualReference.result.candidateFit >= visualRecognitionPolicy.selectionFitThreshold &&
-      (!Array.isArray(visualReference.result.contradictions) ||
-        visualReference.result.contradictions.length === 0)
-    ) {
-      raw.decision.selectedCandidateId = visualReference.result.selectedCandidateId;
-      raw.decision.candidateFit = visualReference.result.candidateFit;
-      raw.decision.supportingFeatures = [
-        `visual-reference:${visualReference.result.selectionBasis || "verified"}`,
-        ...(visualReference.result.supportingFeatures || []),
-      ].slice(0, 8);
-      raw.decision.contradictions = visualReference.result.contradictions;
-      const reconciled = reconcileObservationsWithExactVisualMatch(
-        raw.observations,
-        visualReference.result,
-        ranked,
-      );
-      raw.observations = reconciled.observations;
-      visualReference.correctedObservationFields = reconciled.correctedFields;
-    } else if (visualReference.status === "ok" && visualReference.result) {
-      raw.decision.selectedCandidateId = "";
-      raw.decision.candidateFit = 0;
-      raw.decision.contradictions = visualReference.result.contradictions;
-      raw.decision.rejectedCandidateIds =
-        visualReference.result.rejectedCandidateIds || [];
-      raw.decision.blockedIdentityFields =
-        visualReference.result.blockedIdentityFields || [];
-    } else if (visualReference.result?.contradictions?.length) {
-      raw.decision.contradictions = [
-        ...(raw.decision.contradictions || []),
-        ...visualReference.result.contradictions,
       ].slice(0, 6);
     }
     const orderedCandidates = ranked.ranked.map((item) => item.candidate);
@@ -957,12 +878,13 @@ Odpowiadaj po polsku.`;
           mnk: { available: mnk.available, reason: mnk.reason },
           localReferenceCount: localCandidates.length,
           visualReferenceComparison: visualReference.status,
-          visualReferencePolicy: visualRecognitionPolicy.version,
+          visualReferencePolicy: "deferred-to-detail-v1",
           visualReferenceCandidateCount: visualReference.comparedCandidateIds?.length || 0,
           visualReferenceSelectedCandidateId:
             visualReference.result?.selectedCandidateId || null,
           recognitionEngine: recognitionEnginePolicy.version,
           analysisServiceTier: ANALYSIS_SERVICE_TIER,
+          stage1ModelCalls: STAGE1_MODEL_CALL_LIMIT,
           medievalReview: medievalReview.status,
           medievalReviewImprovedFields: medievalReview.improvedFields || [],
           evidenceSignature: evidenceSignature.matched

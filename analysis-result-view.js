@@ -263,7 +263,7 @@
       .replace(/ł/g, "l");
   const known = (value) => {
     const item = normalized(value).replace(/[.]+$/g, "");
-    return Boolean(item) && !/^(?:nie ustalono|brak|unknown|not determined|undetermined|nicht bestimmt|unbestimmt|non determine|indetermine|—|-)$/.test(item);
+    return Boolean(item) && !/^(?:nie ustalono|nie dotyczy(?:\b.*)?|brak|unknown|not applicable|not determined|undetermined|nicht zutreffend|nicht bestimmt|unbestimmt|sans objet|non determine|indetermine|—|-)$/.test(item);
   };
   const institutionalIssuer = (value) =>
     /^(?:narodowy bank polski|bank polski|polska rzeczpospolita ludowa|rzeczpospolita polska|ii rzeczpospolita)$/.test(normalized(value));
@@ -307,21 +307,53 @@
   }
 
   function value(value) {
-    return known(value) ? String(value).trim() : text("unknown");
+    return known(value) ? String(value).trim() : "—";
+  }
+
+  function periodProfile(analysis) {
+    const candidate = analysis?.recognition?.selectedCandidate || {};
+    const partial = analysis?.recognition?.partialIdentity || {};
+    const observations = analysis?.recognition?.observations || {};
+    const period = normalized(
+      candidate.period || partial.period || observations.periodReading,
+    );
+    const issuer = inferredIssuer(analysis);
+    const year = Number(String(analysis?.year || candidate.year || "").match(/\b\d{4}\b/)?.[0]);
+    const country = normalized(analysis?.country || candidate.country);
+    const stateIssue =
+      institutionalIssuer(issuer) ||
+      /(?:republic|rzeczpospolit|people republic|second republic|third republic|prl|wspolczes|modern|current)/.test(period) ||
+      (country.includes("polsk") && Number.isFinite(year) && year >= 1918);
+    return {
+      stateIssue,
+      monarchy: !stateIssue && known(analysis?.ruler),
+    };
   }
 
   function rows(analysis) {
-    return [
-      [text("country"), analysis?.country],
-      [text("issuer"), inferredIssuer(analysis)],
-      [text("ruler"), analysis?.ruler],
-      [text("depictedPerson"), inferredDepictedPerson(analysis)],
-      [text("year"), analysis?.year],
-      [text("nominal"), analysis?.nominal],
-      [text("mint"), analysis?.mint],
-      [text("metal"), analysis?.metal],
-      [text("grade"), grade(analysis?.grade)],
-    ];
+    const profile = periodProfile(analysis);
+    const issuer = inferredIssuer(analysis);
+    const depictedPerson = inferredDepictedPerson(analysis);
+    const ruler = analysis?.ruler;
+    const result = [[text("country"), analysis?.country, "country"]];
+    if (known(issuer)) result.push([text("issuer"), issuer, "issuer"]);
+    if (profile.monarchy && known(ruler)) {
+      result.push([text("ruler"), ruler, "ruler"]);
+    }
+    if (
+      known(depictedPerson) &&
+      (!known(ruler) || normalized(depictedPerson) !== normalized(ruler))
+    ) {
+      result.push([text("depictedPerson"), depictedPerson, "depictedPerson"]);
+    }
+    result.push(
+      [text("year"), analysis?.year, "year"],
+      [text("nominal"), analysis?.nominal, "nominal"],
+      [text("mint"), analysis?.mint, "mint"],
+      [text("metal"), analysis?.metal, "metal"],
+      [text("grade"), grade(analysis?.grade), "grade"],
+    );
+    return result;
   }
 
   function stageOneState(analysis) {
@@ -419,6 +451,7 @@
     stageTwoState,
     inferredIssuer,
     inferredDepictedPerson,
+    periodProfile,
     applyStaticCopy,
     adoptExtras,
   });

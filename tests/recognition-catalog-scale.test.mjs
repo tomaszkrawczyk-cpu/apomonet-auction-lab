@@ -100,15 +100,16 @@ test("separate NBP denominations sharing one official page are not deduplicated"
   assert.ok(candidates.some((record) => record.id === "nbp:2026-rezerwy-zlota-100-zl"));
 });
 
-test("vision starts without arbitrary local-name anchoring and Stage 1 compares legal reference images", async () => {
+test("vision starts without arbitrary local-name anchoring and Stage 1 defers reference images", async () => {
   const source = await readFile(new URL("../api/analyze.js", import.meta.url), "utf8");
+  const stageOne = source.slice(
+    source.indexOf("async function runAnalysis"),
+    source.indexOf("export default async function handler"),
+  );
   assert.match(source, /let candidates = \[\]/);
   assert.doesNotMatch(source, /\[\.\.\.numista\.candidates, \.\.\.localCandidates\]\.slice/);
-  assert.match(source, /compareWithReferenceImages/);
-  assert.doesNotMatch(source, /deferred-to-stage2/);
-  assert.match(source, /visualReferenceShortlist/);
-  assert.match(source, /item\.referenceImages/);
-  assert.match(source, /image_url: imageUrl, detail: "low"/);
-  assert.match(source, /image_url: userImages\[0\], detail: "high"/);
-  assert.match(source, /visualReference\.result\.contradictions\.length === 0/);
+  assert.match(stageOne, /status: "deferred-to-detail"/);
+  assert.doesNotMatch(stageOne, /await compareWithReferenceImages/);
+  assert.doesNotMatch(stageOne, /await recognitionVisual/);
+  assert.equal((stageOne.match(/https:\/\/api\.openai\.com\/v1\/responses/g) || []).length, 1);
 });

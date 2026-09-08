@@ -22,7 +22,8 @@ test('recovery cache stores a compact image fingerprint instead of duplicating f
 });
 
 test('analysis recovery keeps retry count bounded and only retries suspension failures', () => {
-  assert.match(source, /const MAX_RETRIES = 1/);
+  assert.match(source, /stage1: 0, stage2: 1/);
+  assert.match(source, /attempt < MAX_RETRIES\[stage\]/);
   assert.match(source, /hiddenDuringActiveRequest \|\| document\.visibilityState === 'hidden'/);
   assert.match(source, /error\?\.name === 'AbortError' \|\| error instanceof TypeError/);
 });

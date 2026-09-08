@@ -65,12 +65,51 @@ test("result presentation supports all current languages without mutating identi
   for (const code of ["pl", "en", "de", "fr"]) {
     language = code;
     const rows = view.rows(analysis);
-    assert.equal(rows.length, 9);
+    assert.equal(rows.length, 7);
     assert.ok(rows.every(([label]) => label && typeof label === "string"));
+    assert.ok(rows.some((row) => row[2] === "ruler"));
+    assert.ok(!rows.some((row) => row[2] === "depictedPerson"));
   }
   assert.equal(JSON.stringify(analysis), original);
   language = "de";
   assert.equal(view.stageOneState(analysis).label, "Typ bestimmt");
+});
+
+test("state issues hide the ruler field, keep the depicted person, and display blanks as dashes", () => {
+  const source = read("analysis-result-view.js");
+  let language = "pl";
+  const sandbox = {
+    window: { ApoLanguageRegistry: { current: () => language } },
+    location: { pathname: "/analyze.html" },
+    localStorage: { getItem: () => language },
+    document: {
+      readyState: "loading",
+      addEventListener() {},
+      getElementById() { return null; },
+      body: {},
+    },
+    MutationObserver: class { observe() {} },
+    addEventListener() {},
+    setTimeout,
+  };
+  vm.runInNewContext(source, sandbox, { filename: "analysis-result-view.js" });
+  const view = sandbox.window.ApoAnalysisResultView;
+  const rows = view.rows({
+    country: "Polska",
+    issuer: "Rzeczpospolita Polska",
+    ruler: "Nie dotyczy — emisja państwowa",
+    depictedPerson: "Józef Piłsudski",
+    year: "1934",
+    nominal: "5 zł",
+    mint: "Warszawa",
+    metal: "srebro",
+    grade: "Nie ustalono",
+    recognition: { selectedCandidate: { period: "second-republic-and-war" } },
+  });
+  assert.ok(!rows.some((row) => row[2] === "ruler"));
+  assert.ok(rows.some((row) => row[2] === "depictedPerson" && row[1] === "Józef Piłsudski"));
+  assert.equal(view.value("Nie ustalono"), "—");
+  assert.equal(view.value("Nie dotyczy — emisja państwowa"), "—");
 });
 
 test("Stage 2 distinguishes an established variety from an unresolved one", () => {

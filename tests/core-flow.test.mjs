@@ -27,7 +27,8 @@ test('Stage 1 requires two bounded images and exposes structured confidence',()=
   assert.match(api,/image\.length > 1_800_000/);
   assert.match(api,/confidence: \{ type: "integer", minimum: 0, maximum: 95 \}/);
   assert.match(api,/needsDetailedAnalysis/);
-  assert.match(api,/BASIC_TIMEOUT_MS = 45_000/);
+  assert.match(api,/BASIC_TIMEOUT_MS = 32_000/);
+  assert.match(api,/STAGE1_MODEL_CALL_LIMIT = 1/);
 });
 
 test('Stage 2 stays bounded and receives a canonical base rather than saved photos',()=>{
