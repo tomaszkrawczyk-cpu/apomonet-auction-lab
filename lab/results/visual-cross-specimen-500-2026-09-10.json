@@ -1,0 +1,1310 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-10",
+  "purpose": "Cross-specimen visual and hybrid retrieval benchmark; no production wiring.",
+  "corpus": {
+    "manifest_types": 500,
+    "requested_images": 1988,
+    "removed_contaminated_urls": 0,
+    "usable_types": 490,
+    "usable_by_period": {
+      "contemporary": 28,
+      "medieval": 70,
+      "partitions": 73,
+      "royal": 280,
+      "second-republic-and-war": 39
+    },
+    "query_reference_record_separation": true,
+    "exact_url_leakage_removed": true
+  },
+  "download": {
+    "requested_unique_urls": 1988,
+    "downloaded": 1960,
+    "failed": 28,
+    "bytes": 131623653,
+    "elapsed_seconds": 264.35,
+    "by_host": {
+      "cdn-zbiory.mnk.pl": {
+        "ok": 1794
+      },
+      "ikmk.smb.museum": {
+        "ok": 154,
+        "failed": 16
+      },
+      "upload.wikimedia.org": {
+        "failed": 12
+      },
+      "www.virtuelles-muenzkabinett.de": {
+        "ok": 12
+      }
+    },
+    "failure_examples": [
+      {
+        "host": "ikmk.smb.museum",
+        "error": "ConnectTimeout: HTTPSConnectionPool(host='ikmk.smb.museum', port=443): Max retries exceeded with url: /image/18229471/vs_opt.jpg (Caused by ConnectTimeoutError(<HTTPSConnection"
+      },
+      {
+        "host": "ikmk.smb.museum",
+        "error": "ConnectTimeout: HTTPSConnectionPool(host='ikmk.smb.museum', port=443): Max retries exceeded with url: /image/18227365/rs_opt.jpg (Caused by ConnectTimeoutError(<HTTPSConnection"
+      },
+      {
+        "host": "ikmk.smb.museum",
+        "error": "ConnectTimeout: HTTPSConnectionPool(host='ikmk.smb.museum', port=443): Max retries exceeded with url: /image/18229505/vs_opt.jpg (Caused by ConnectTimeoutError(<HTTPSConnection"
+      },
+      {
+        "host": "ikmk.smb.museum",
+        "error": "ConnectTimeout: HTTPSConnectionPool(host='ikmk.smb.museum', port=443): Max retries exceeded with url: /image/18229505/rs_opt.jpg (Caused by ConnectTimeoutError(<HTTPSConnection"
+      },
+      {
+        "host": "ikmk.smb.museum",
+        "error": "ConnectTimeout: HTTPSConnectionPool(host='ikmk.smb.museum', port=443): Max retries exceeded with url: /image/18251418/vs_opt.jpg (Caused by ConnectTimeoutError(<HTTPSConnection"
+      },
+      {
+        "host": "ikmk.smb.museum",
+        "error": "ConnectTimeout: HTTPSConnectionPool(host='ikmk.smb.museum', port=443): Max retries exceeded with url: /image/18251418/rs_opt.jpg (Caused by ConnectTimeoutError(<HTTPSConnection"
+      },
+      {
+        "host": "ikmk.smb.museum",
+        "error": "ConnectTimeout: HTTPSConnectionPool(host='ikmk.smb.museum', port=443): Max retries exceeded with url: /image/18306089/vs_opt.jpg (Caused by ConnectTimeoutError(<HTTPSConnection"
+      },
+      {
+        "host": "ikmk.smb.museum",
+        "error": "ConnectTimeout: HTTPSConnectionPool(host='ikmk.smb.museum', port=443): Max retries exceeded with url: /image/18306079/vs_opt.jpg (Caused by ConnectTimeoutError(<HTTPSConnection"
+      },
+      {
+        "host": "upload.wikimedia.org",
+        "error": "HTTPError: 429 Client Error: Too many requests - please contact noc@wikimedia.org to discuss a less disruptive approach or instead use thumbnail images in sizes listed on "
+      },
+      {
+        "host": "upload.wikimedia.org",
+        "error": "HTTPError: 429 Client Error: Too many requests - please contact noc@wikimedia.org to discuss a less disruptive approach or instead use thumbnail images in sizes listed on "
+      }
+    ]
+  },
+  "timing": {
+    "classical_feature_p50_ms_per_image": 18.47,
+    "classical_feature_p90_ms_per_image": 19.19,
+    "resnet_batch_seconds": 40.65,
+    "resnet_batch_ms_per_image": 20.74,
+    "decode_failures": 0,
+    "decode_failure_examples": []
+  },
+  "visual_summaries": [
+    {
+      "strategy": "phash",
+      "queries": 490,
+      "top1_accuracy": 2.0,
+      "top5_accuracy": 6.7,
+      "calibrated_margin_threshold": null,
+      "evaluation_queries": 392,
+      "confirmed_correct_coverage": 0.0,
+      "unsafe_high_confidence_rate": 0.0,
+      "abstention_rate": 100.0,
+      "no_candidate_rate": 0.0,
+      "p50_ranking_ms": 6.04,
+      "p90_ranking_ms": 6.13
+    },
+    {
+      "strategy": "hog",
+      "queries": 490,
+      "top1_accuracy": 27.6,
+      "top5_accuracy": 49.0,
+      "calibrated_margin_threshold": 0.05287,
+      "evaluation_queries": 392,
+      "confirmed_correct_coverage": 2.3,
+      "unsafe_high_confidence_rate": 2.3,
+      "abstention_rate": 95.4,
+      "no_candidate_rate": 0.0,
+      "p50_ranking_ms": 10.98,
+      "p90_ranking_ms": 11.22
+    },
+    {
+      "strategy": "resnet18",
+      "queries": 490,
+      "top1_accuracy": 27.1,
+      "top5_accuracy": 52.4,
+      "calibrated_margin_threshold": 0.03987,
+      "evaluation_queries": 392,
+      "confirmed_correct_coverage": 4.3,
+      "unsafe_high_confidence_rate": 1.3,
+      "abstention_rate": 94.4,
+      "no_candidate_rate": 0.0,
+      "p50_ranking_ms": 6.21,
+      "p90_ranking_ms": 6.36
+    },
+    {
+      "strategy": "global_fusion",
+      "queries": 490,
+      "top1_accuracy": 29.8,
+      "top5_accuracy": 54.1,
+      "calibrated_margin_threshold": 1.09775,
+      "evaluation_queries": 392,
+      "confirmed_correct_coverage": 1.5,
+      "unsafe_high_confidence_rate": 1.0,
+      "abstention_rate": 97.4,
+      "no_candidate_rate": 0.0,
+      "p50_ranking_ms": 23.27,
+      "p90_ranking_ms": 23.65
+    },
+    {
+      "strategy": "sift_rerank",
+      "queries": 490,
+      "top1_accuracy": 30.6,
+      "top5_accuracy": 54.9,
+      "calibrated_margin_threshold": 1.74528,
+      "evaluation_queries": 392,
+      "confirmed_correct_coverage": 7.1,
+      "unsafe_high_confidence_rate": 3.8,
+      "abstention_rate": 89.0,
+      "no_candidate_rate": 0.0,
+      "p50_ranking_ms": 35.42,
+      "p90_ranking_ms": 35.85
+    }
+  ],
+  "hybrid_summaries": [
+    {
+      "strategy": "visual_hard_filters",
+      "queries": 490,
+      "top1_accuracy": 72.7,
+      "top5_accuracy": 74.3,
+      "calibrated_margin_threshold": 0.54789,
+      "evaluation_queries": 392,
+      "confirmed_correct_coverage": 0.8,
+      "unsafe_high_confidence_rate": 1.3,
+      "abstention_rate": 98.0,
+      "no_candidate_rate": 25.0,
+      "scenario": "clean"
+    },
+    {
+      "strategy": "visual_soft_metadata",
+      "queries": 490,
+      "top1_accuracy": 47.6,
+      "top5_accuracy": 71.2,
+      "calibrated_margin_threshold": 1.9639,
+      "evaluation_queries": 392,
+      "confirmed_correct_coverage": 15.3,
+      "unsafe_high_confidence_rate": 2.6,
+      "abstention_rate": 82.1,
+      "no_candidate_rate": 0.0,
+      "scenario": "clean"
+    },
+    {
+      "strategy": "visual_period_metadata",
+      "queries": 490,
+      "top1_accuracy": 47.6,
+      "top5_accuracy": 70.6,
+      "calibrated_margin_threshold": 2.1097,
+      "evaluation_queries": 392,
+      "confirmed_correct_coverage": 14.5,
+      "unsafe_high_confidence_rate": 2.0,
+      "abstention_rate": 83.4,
+      "no_candidate_rate": 0.0,
+      "scenario": "clean"
+    },
+    {
+      "strategy": "visual_hard_filters",
+      "queries": 490,
+      "top1_accuracy": 0.0,
+      "top5_accuracy": 0.0,
+      "calibrated_margin_threshold": null,
+      "evaluation_queries": 392,
+      "confirmed_correct_coverage": 0.0,
+      "unsafe_high_confidence_rate": 0.0,
+      "abstention_rate": 100.0,
+      "no_candidate_rate": 99.2,
+      "scenario": "wrong-nominal"
+    },
+    {
+      "strategy": "visual_soft_metadata",
+      "queries": 490,
+      "top1_accuracy": 46.7,
+      "top5_accuracy": 69.4,
+      "calibrated_margin_threshold": 1.96513,
+      "evaluation_queries": 392,
+      "confirmed_correct_coverage": 12.5,
+      "unsafe_high_confidence_rate": 2.6,
+      "abstention_rate": 84.9,
+      "no_candidate_rate": 0.0,
+      "scenario": "wrong-nominal"
+    },
+    {
+      "strategy": "visual_period_metadata",
+      "queries": 490,
+      "top1_accuracy": 47.3,
+      "top5_accuracy": 70.0,
+      "calibrated_margin_threshold": 2.0567,
+      "evaluation_queries": 392,
+      "confirmed_correct_coverage": 12.2,
+      "unsafe_high_confidence_rate": 1.8,
+      "abstention_rate": 86.0,
+      "no_candidate_rate": 0.0,
+      "scenario": "wrong-nominal"
+    },
+    {
+      "strategy": "visual_hard_filters",
+      "queries": 490,
+      "top1_accuracy": 4.1,
+      "top5_accuracy": 4.5,
+      "calibrated_margin_threshold": null,
+      "evaluation_queries": 392,
+      "confirmed_correct_coverage": 0.0,
+      "unsafe_high_confidence_rate": 0.0,
+      "abstention_rate": 100.0,
+      "no_candidate_rate": 93.9,
+      "scenario": "wrong-mint"
+    },
+    {
+      "strategy": "visual_soft_metadata",
+      "queries": 490,
+      "top1_accuracy": 48.2,
+      "top5_accuracy": 70.8,
+      "calibrated_margin_threshold": 1.79264,
+      "evaluation_queries": 392,
+      "confirmed_correct_coverage": 16.6,
+      "unsafe_high_confidence_rate": 4.3,
+      "abstention_rate": 79.1,
+      "no_candidate_rate": 0.0,
+      "scenario": "wrong-mint"
+    },
+    {
+      "strategy": "visual_period_metadata",
+      "queries": 490,
+      "top1_accuracy": 47.3,
+      "top5_accuracy": 69.6,
+      "calibrated_margin_threshold": 1.98954,
+      "evaluation_queries": 392,
+      "confirmed_correct_coverage": 14.3,
+      "unsafe_high_confidence_rate": 1.5,
+      "abstention_rate": 84.2,
+      "no_candidate_rate": 0.0,
+      "scenario": "wrong-mint"
+    },
+    {
+      "strategy": "visual_hard_filters",
+      "queries": 490,
+      "top1_accuracy": 0.0,
+      "top5_accuracy": 0.0,
+      "calibrated_margin_threshold": null,
+      "evaluation_queries": 392,
+      "confirmed_correct_coverage": 0.0,
+      "unsafe_high_confidence_rate": 0.0,
+      "abstention_rate": 100.0,
+      "no_candidate_rate": 99.7,
+      "scenario": "wrong-year"
+    },
+    {
+      "strategy": "visual_soft_metadata",
+      "queries": 490,
+      "top1_accuracy": 39.2,
+      "top5_accuracy": 64.9,
+      "calibrated_margin_threshold": 2.37881,
+      "evaluation_queries": 392,
+      "confirmed_correct_coverage": 6.9,
+      "unsafe_high_confidence_rate": 1.5,
+      "abstention_rate": 91.6,
+      "no_candidate_rate": 0.0,
+      "scenario": "wrong-year"
+    },
+    {
+      "strategy": "visual_period_metadata",
+      "queries": 490,
+      "top1_accuracy": 40.4,
+      "top5_accuracy": 66.3,
+      "calibrated_margin_threshold": 2.21253,
+      "evaluation_queries": 392,
+      "confirmed_correct_coverage": 7.9,
+      "unsafe_high_confidence_rate": 2.0,
+      "abstention_rate": 90.1,
+      "no_candidate_rate": 0.0,
+      "scenario": "wrong-year"
+    }
+  ],
+  "period_summaries": [
+    {
+      "strategy": "phash",
+      "period": "contemporary",
+      "queries": 28,
+      "top1_accuracy": 7.1,
+      "top5_accuracy": 17.9
+    },
+    {
+      "strategy": "phash",
+      "period": "medieval",
+      "queries": 70,
+      "top1_accuracy": 1.4,
+      "top5_accuracy": 2.9
+    },
+    {
+      "strategy": "phash",
+      "period": "partitions",
+      "queries": 73,
+      "top1_accuracy": 1.4,
+      "top5_accuracy": 9.6
+    },
+    {
+      "strategy": "phash",
+      "period": "royal",
+      "queries": 280,
+      "top1_accuracy": 2.1,
+      "top5_accuracy": 5.4
+    },
+    {
+      "strategy": "phash",
+      "period": "second-republic-and-war",
+      "queries": 39,
+      "top1_accuracy": 0.0,
+      "top5_accuracy": 10.3
+    },
+    {
+      "strategy": "hog",
+      "period": "contemporary",
+      "queries": 28,
+      "top1_accuracy": 46.4,
+      "top5_accuracy": 64.3
+    },
+    {
+      "strategy": "hog",
+      "period": "medieval",
+      "queries": 70,
+      "top1_accuracy": 4.3,
+      "top5_accuracy": 14.3
+    },
+    {
+      "strategy": "hog",
+      "period": "partitions",
+      "queries": 73,
+      "top1_accuracy": 38.4,
+      "top5_accuracy": 76.7
+    },
+    {
+      "strategy": "hog",
+      "period": "royal",
+      "queries": 280,
+      "top1_accuracy": 26.8,
+      "top5_accuracy": 46.1
+    },
+    {
+      "strategy": "hog",
+      "period": "second-republic-and-war",
+      "queries": 39,
+      "top1_accuracy": 41.0,
+      "top5_accuracy": 69.2
+    },
+    {
+      "strategy": "resnet18",
+      "period": "contemporary",
+      "queries": 28,
+      "top1_accuracy": 42.9,
+      "top5_accuracy": 64.3
+    },
+    {
+      "strategy": "resnet18",
+      "period": "medieval",
+      "queries": 70,
+      "top1_accuracy": 15.7,
+      "top5_accuracy": 41.4
+    },
+    {
+      "strategy": "resnet18",
+      "period": "partitions",
+      "queries": 73,
+      "top1_accuracy": 27.4,
+      "top5_accuracy": 57.5
+    },
+    {
+      "strategy": "resnet18",
+      "period": "royal",
+      "queries": 280,
+      "top1_accuracy": 26.4,
+      "top5_accuracy": 49.3
+    },
+    {
+      "strategy": "resnet18",
+      "period": "second-republic-and-war",
+      "queries": 39,
+      "top1_accuracy": 41.0,
+      "top5_accuracy": 76.9
+    },
+    {
+      "strategy": "global_fusion",
+      "period": "contemporary",
+      "queries": 28,
+      "top1_accuracy": 42.9,
+      "top5_accuracy": 67.9
+    },
+    {
+      "strategy": "global_fusion",
+      "period": "medieval",
+      "queries": 70,
+      "top1_accuracy": 15.7,
+      "top5_accuracy": 35.7
+    },
+    {
+      "strategy": "global_fusion",
+      "period": "partitions",
+      "queries": 73,
+      "top1_accuracy": 35.6,
+      "top5_accuracy": 60.3
+    },
+    {
+      "strategy": "global_fusion",
+      "period": "royal",
+      "queries": 280,
+      "top1_accuracy": 28.2,
+      "top5_accuracy": 52.1
+    },
+    {
+      "strategy": "global_fusion",
+      "period": "second-republic-and-war",
+      "queries": 39,
+      "top1_accuracy": 46.2,
+      "top5_accuracy": 79.5
+    },
+    {
+      "strategy": "sift_rerank",
+      "period": "contemporary",
+      "queries": 28,
+      "top1_accuracy": 42.9,
+      "top5_accuracy": 71.4
+    },
+    {
+      "strategy": "sift_rerank",
+      "period": "medieval",
+      "queries": 70,
+      "top1_accuracy": 15.7,
+      "top5_accuracy": 38.6
+    },
+    {
+      "strategy": "sift_rerank",
+      "period": "partitions",
+      "queries": 73,
+      "top1_accuracy": 35.6,
+      "top5_accuracy": 60.3
+    },
+    {
+      "strategy": "sift_rerank",
+      "period": "royal",
+      "queries": 280,
+      "top1_accuracy": 30.0,
+      "top5_accuracy": 52.5
+    },
+    {
+      "strategy": "sift_rerank",
+      "period": "second-republic-and-war",
+      "queries": 39,
+      "top1_accuracy": 43.6,
+      "top5_accuracy": 79.5
+    },
+    {
+      "strategy": "visual_hard_filters",
+      "period": "contemporary",
+      "queries": 28,
+      "top1_accuracy": 75.0,
+      "top5_accuracy": 75.0,
+      "scenario": "clean"
+    },
+    {
+      "strategy": "visual_hard_filters",
+      "period": "medieval",
+      "queries": 70,
+      "top1_accuracy": 65.7,
+      "top5_accuracy": 70.0,
+      "scenario": "clean"
+    },
+    {
+      "strategy": "visual_hard_filters",
+      "period": "partitions",
+      "queries": 73,
+      "top1_accuracy": 87.7,
+      "top5_accuracy": 90.4,
+      "scenario": "clean"
+    },
+    {
+      "strategy": "visual_hard_filters",
+      "period": "royal",
+      "queries": 280,
+      "top1_accuracy": 68.6,
+      "top5_accuracy": 69.3,
+      "scenario": "clean"
+    },
+    {
+      "strategy": "visual_hard_filters",
+      "period": "second-republic-and-war",
+      "queries": 39,
+      "top1_accuracy": 84.6,
+      "top5_accuracy": 87.2,
+      "scenario": "clean"
+    },
+    {
+      "strategy": "visual_soft_metadata",
+      "period": "contemporary",
+      "queries": 28,
+      "top1_accuracy": 57.1,
+      "top5_accuracy": 75.0,
+      "scenario": "clean"
+    },
+    {
+      "strategy": "visual_soft_metadata",
+      "period": "medieval",
+      "queries": 70,
+      "top1_accuracy": 40.0,
+      "top5_accuracy": 70.0,
+      "scenario": "clean"
+    },
+    {
+      "strategy": "visual_soft_metadata",
+      "period": "partitions",
+      "queries": 73,
+      "top1_accuracy": 47.9,
+      "top5_accuracy": 86.3,
+      "scenario": "clean"
+    },
+    {
+      "strategy": "visual_soft_metadata",
+      "period": "royal",
+      "queries": 280,
+      "top1_accuracy": 45.7,
+      "top5_accuracy": 65.4,
+      "scenario": "clean"
+    },
+    {
+      "strategy": "visual_soft_metadata",
+      "period": "second-republic-and-war",
+      "queries": 39,
+      "top1_accuracy": 66.7,
+      "top5_accuracy": 84.6,
+      "scenario": "clean"
+    },
+    {
+      "strategy": "visual_period_metadata",
+      "period": "contemporary",
+      "queries": 28,
+      "top1_accuracy": 60.7,
+      "top5_accuracy": 75.0,
+      "scenario": "clean"
+    },
+    {
+      "strategy": "visual_period_metadata",
+      "period": "medieval",
+      "queries": 70,
+      "top1_accuracy": 31.4,
+      "top5_accuracy": 64.3,
+      "scenario": "clean"
+    },
+    {
+      "strategy": "visual_period_metadata",
+      "period": "partitions",
+      "queries": 73,
+      "top1_accuracy": 52.1,
+      "top5_accuracy": 86.3,
+      "scenario": "clean"
+    },
+    {
+      "strategy": "visual_period_metadata",
+      "period": "royal",
+      "queries": 280,
+      "top1_accuracy": 45.4,
+      "top5_accuracy": 65.4,
+      "scenario": "clean"
+    },
+    {
+      "strategy": "visual_period_metadata",
+      "period": "second-republic-and-war",
+      "queries": 39,
+      "top1_accuracy": 74.4,
+      "top5_accuracy": 87.2,
+      "scenario": "clean"
+    },
+    {
+      "strategy": "visual_hard_filters",
+      "period": "contemporary",
+      "queries": 28,
+      "top1_accuracy": 0.0,
+      "top5_accuracy": 0.0,
+      "scenario": "wrong-nominal"
+    },
+    {
+      "strategy": "visual_hard_filters",
+      "period": "medieval",
+      "queries": 70,
+      "top1_accuracy": 0.0,
+      "top5_accuracy": 0.0,
+      "scenario": "wrong-nominal"
+    },
+    {
+      "strategy": "visual_hard_filters",
+      "period": "partitions",
+      "queries": 73,
+      "top1_accuracy": 0.0,
+      "top5_accuracy": 0.0,
+      "scenario": "wrong-nominal"
+    },
+    {
+      "strategy": "visual_hard_filters",
+      "period": "royal",
+      "queries": 280,
+      "top1_accuracy": 0.0,
+      "top5_accuracy": 0.0,
+      "scenario": "wrong-nominal"
+    },
+    {
+      "strategy": "visual_hard_filters",
+      "period": "second-republic-and-war",
+      "queries": 39,
+      "top1_accuracy": 0.0,
+      "top5_accuracy": 0.0,
+      "scenario": "wrong-nominal"
+    },
+    {
+      "strategy": "visual_soft_metadata",
+      "period": "contemporary",
+      "queries": 28,
+      "top1_accuracy": 57.1,
+      "top5_accuracy": 75.0,
+      "scenario": "wrong-nominal"
+    },
+    {
+      "strategy": "visual_soft_metadata",
+      "period": "medieval",
+      "queries": 70,
+      "top1_accuracy": 41.4,
+      "top5_accuracy": 68.6,
+      "scenario": "wrong-nominal"
+    },
+    {
+      "strategy": "visual_soft_metadata",
+      "period": "partitions",
+      "queries": 73,
+      "top1_accuracy": 49.3,
+      "top5_accuracy": 82.2,
+      "scenario": "wrong-nominal"
+    },
+    {
+      "strategy": "visual_soft_metadata",
+      "period": "royal",
+      "queries": 280,
+      "top1_accuracy": 44.6,
+      "top5_accuracy": 63.6,
+      "scenario": "wrong-nominal"
+    },
+    {
+      "strategy": "visual_soft_metadata",
+      "period": "second-republic-and-war",
+      "queries": 39,
+      "top1_accuracy": 59.0,
+      "top5_accuracy": 84.6,
+      "scenario": "wrong-nominal"
+    },
+    {
+      "strategy": "visual_period_metadata",
+      "period": "contemporary",
+      "queries": 28,
+      "top1_accuracy": 60.7,
+      "top5_accuracy": 75.0,
+      "scenario": "wrong-nominal"
+    },
+    {
+      "strategy": "visual_period_metadata",
+      "period": "medieval",
+      "queries": 70,
+      "top1_accuracy": 31.4,
+      "top5_accuracy": 60.0,
+      "scenario": "wrong-nominal"
+    },
+    {
+      "strategy": "visual_period_metadata",
+      "period": "partitions",
+      "queries": 73,
+      "top1_accuracy": 50.7,
+      "top5_accuracy": 86.3,
+      "scenario": "wrong-nominal"
+    },
+    {
+      "strategy": "visual_period_metadata",
+      "period": "royal",
+      "queries": 280,
+      "top1_accuracy": 46.1,
+      "top5_accuracy": 65.4,
+      "scenario": "wrong-nominal"
+    },
+    {
+      "strategy": "visual_period_metadata",
+      "period": "second-republic-and-war",
+      "queries": 39,
+      "top1_accuracy": 69.2,
+      "top5_accuracy": 87.2,
+      "scenario": "wrong-nominal"
+    },
+    {
+      "strategy": "visual_hard_filters",
+      "period": "contemporary",
+      "queries": 28,
+      "top1_accuracy": 0.0,
+      "top5_accuracy": 0.0,
+      "scenario": "wrong-mint"
+    },
+    {
+      "strategy": "visual_hard_filters",
+      "period": "medieval",
+      "queries": 70,
+      "top1_accuracy": 22.9,
+      "top5_accuracy": 25.7,
+      "scenario": "wrong-mint"
+    },
+    {
+      "strategy": "visual_hard_filters",
+      "period": "partitions",
+      "queries": 73,
+      "top1_accuracy": 0.0,
+      "top5_accuracy": 0.0,
+      "scenario": "wrong-mint"
+    },
+    {
+      "strategy": "visual_hard_filters",
+      "period": "royal",
+      "queries": 280,
+      "top1_accuracy": 1.4,
+      "top5_accuracy": 1.4,
+      "scenario": "wrong-mint"
+    },
+    {
+      "strategy": "visual_hard_filters",
+      "period": "second-republic-and-war",
+      "queries": 39,
+      "top1_accuracy": 0.0,
+      "top5_accuracy": 0.0,
+      "scenario": "wrong-mint"
+    },
+    {
+      "strategy": "visual_soft_metadata",
+      "period": "contemporary",
+      "queries": 28,
+      "top1_accuracy": 60.7,
+      "top5_accuracy": 75.0,
+      "scenario": "wrong-mint"
+    },
+    {
+      "strategy": "visual_soft_metadata",
+      "period": "medieval",
+      "queries": 70,
+      "top1_accuracy": 38.6,
+      "top5_accuracy": 70.0,
+      "scenario": "wrong-mint"
+    },
+    {
+      "strategy": "visual_soft_metadata",
+      "period": "partitions",
+      "queries": 73,
+      "top1_accuracy": 53.4,
+      "top5_accuracy": 87.7,
+      "scenario": "wrong-mint"
+    },
+    {
+      "strategy": "visual_soft_metadata",
+      "period": "royal",
+      "queries": 280,
+      "top1_accuracy": 45.7,
+      "top5_accuracy": 64.3,
+      "scenario": "wrong-mint"
+    },
+    {
+      "strategy": "visual_soft_metadata",
+      "period": "second-republic-and-war",
+      "queries": 39,
+      "top1_accuracy": 64.1,
+      "top5_accuracy": 84.6,
+      "scenario": "wrong-mint"
+    },
+    {
+      "strategy": "visual_period_metadata",
+      "period": "contemporary",
+      "queries": 28,
+      "top1_accuracy": 67.9,
+      "top5_accuracy": 75.0,
+      "scenario": "wrong-mint"
+    },
+    {
+      "strategy": "visual_period_metadata",
+      "period": "medieval",
+      "queries": 70,
+      "top1_accuracy": 28.6,
+      "top5_accuracy": 62.9,
+      "scenario": "wrong-mint"
+    },
+    {
+      "strategy": "visual_period_metadata",
+      "period": "partitions",
+      "queries": 73,
+      "top1_accuracy": 54.8,
+      "top5_accuracy": 86.3,
+      "scenario": "wrong-mint"
+    },
+    {
+      "strategy": "visual_period_metadata",
+      "period": "royal",
+      "queries": 280,
+      "top1_accuracy": 45.0,
+      "top5_accuracy": 63.9,
+      "scenario": "wrong-mint"
+    },
+    {
+      "strategy": "visual_period_metadata",
+      "period": "second-republic-and-war",
+      "queries": 39,
+      "top1_accuracy": 69.2,
+      "top5_accuracy": 87.2,
+      "scenario": "wrong-mint"
+    },
+    {
+      "strategy": "visual_hard_filters",
+      "period": "contemporary",
+      "queries": 28,
+      "top1_accuracy": 0.0,
+      "top5_accuracy": 0.0,
+      "scenario": "wrong-year"
+    },
+    {
+      "strategy": "visual_hard_filters",
+      "period": "medieval",
+      "queries": 70,
+      "top1_accuracy": 0.0,
+      "top5_accuracy": 0.0,
+      "scenario": "wrong-year"
+    },
+    {
+      "strategy": "visual_hard_filters",
+      "period": "partitions",
+      "queries": 73,
+      "top1_accuracy": 0.0,
+      "top5_accuracy": 0.0,
+      "scenario": "wrong-year"
+    },
+    {
+      "strategy": "visual_hard_filters",
+      "period": "royal",
+      "queries": 280,
+      "top1_accuracy": 0.0,
+      "top5_accuracy": 0.0,
+      "scenario": "wrong-year"
+    },
+    {
+      "strategy": "visual_hard_filters",
+      "period": "second-republic-and-war",
+      "queries": 39,
+      "top1_accuracy": 0.0,
+      "top5_accuracy": 0.0,
+      "scenario": "wrong-year"
+    },
+    {
+      "strategy": "visual_soft_metadata",
+      "period": "contemporary",
+      "queries": 28,
+      "top1_accuracy": 50.0,
+      "top5_accuracy": 75.0,
+      "scenario": "wrong-year"
+    },
+    {
+      "strategy": "visual_soft_metadata",
+      "period": "medieval",
+      "queries": 70,
+      "top1_accuracy": 30.0,
+      "top5_accuracy": 57.1,
+      "scenario": "wrong-year"
+    },
+    {
+      "strategy": "visual_soft_metadata",
+      "period": "partitions",
+      "queries": 73,
+      "top1_accuracy": 39.7,
+      "top5_accuracy": 72.6,
+      "scenario": "wrong-year"
+    },
+    {
+      "strategy": "visual_soft_metadata",
+      "period": "royal",
+      "queries": 280,
+      "top1_accuracy": 37.9,
+      "top5_accuracy": 61.4,
+      "scenario": "wrong-year"
+    },
+    {
+      "strategy": "visual_soft_metadata",
+      "period": "second-republic-and-war",
+      "queries": 39,
+      "top1_accuracy": 56.4,
+      "top5_accuracy": 82.1,
+      "scenario": "wrong-year"
+    },
+    {
+      "strategy": "visual_period_metadata",
+      "period": "contemporary",
+      "queries": 28,
+      "top1_accuracy": 53.6,
+      "top5_accuracy": 75.0,
+      "scenario": "wrong-year"
+    },
+    {
+      "strategy": "visual_period_metadata",
+      "period": "medieval",
+      "queries": 70,
+      "top1_accuracy": 25.7,
+      "top5_accuracy": 55.7,
+      "scenario": "wrong-year"
+    },
+    {
+      "strategy": "visual_period_metadata",
+      "period": "partitions",
+      "queries": 73,
+      "top1_accuracy": 38.4,
+      "top5_accuracy": 75.3,
+      "scenario": "wrong-year"
+    },
+    {
+      "strategy": "visual_period_metadata",
+      "period": "royal",
+      "queries": 280,
+      "top1_accuracy": 40.0,
+      "top5_accuracy": 63.6,
+      "scenario": "wrong-year"
+    },
+    {
+      "strategy": "visual_period_metadata",
+      "period": "second-republic-and-war",
+      "queries": 39,
+      "top1_accuracy": 64.1,
+      "top5_accuracy": 82.1,
+      "scenario": "wrong-year"
+    }
+  ],
+  "confusion_examples": [
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:adbc6d8daf77b282",
+      "expected_title": "Bolesław Krzywousty (1102–1138), denar, Kraków, po 1113",
+      "predicted_type_id": "lab-type:3562ff95c01747fc",
+      "predicted_title": "Litwa, Aleksander Jagiellończyk (1501–1506) jako wielki książę litewski (1492-1506), pieniądz, Wilno, 1495–1506 (z renesansową literą A)",
+      "margin": 0.71475
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:2576e681dee83c22",
+      "expected_title": "Bolesław Krzywousty (1102–1138), denar, Kraków; 1107–1113",
+      "predicted_type_id": "lab-type:adbc6d8daf77b282",
+      "predicted_title": "Bolesław Krzywousty (1102–1138), denar, Kraków; 1113–1138",
+      "margin": 0.35559
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:424f28ffa4051e3e",
+      "expected_title": "Władysław Herman (1079–1102), denar, Kraków; 1080 (?)-1102",
+      "predicted_type_id": "lab-type:354256bc2551c855",
+      "predicted_title": "Bolesław Śmiały (1058–1079), denar, Kraków, 1058–1076",
+      "margin": 0.0706
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:96fb9853769b114b",
+      "expected_title": "Denar, Boleslav Chrobry, 992",
+      "predicted_type_id": "lab-type:2576e681dee83c22",
+      "predicted_title": "Bolesław Krzywousty (1102–1138), denar, Kraków; 1107–1113",
+      "margin": 0.14762
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:55a3e37ff6b3c343",
+      "expected_title": "Bolesław Chrobry (992–1025), denar; Wielkopolska, Kujawy lub płn. Mazowsze, po 1010 (?)",
+      "predicted_type_id": "lab-type:8a818ad56a37dfb2",
+      "predicted_title": "Denar Bolesław Chrobry",
+      "margin": 0.26211
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:af4d94c7667c2487",
+      "expected_title": "Mieszko III Stary [1173–1202], brakteat, Gniezno (?); po 1181",
+      "predicted_type_id": "lab-type:ada076a1dba06d6e",
+      "predicted_title": "Zygmunt I Stary (1506–1548), szeląg gdański, Gdańsk; 1539",
+      "margin": 0.26487
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:b7b38b20d208b954",
+      "expected_title": "Denar, Mieszko I, 969, Gniezno",
+      "predicted_type_id": "lab-type:96fb9853769b114b",
+      "predicted_title": "Denar, Boleslav Chrobry, 992",
+      "margin": 0.44523
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:b566b7ebda8751f5",
+      "expected_title": "Bolesław Chrobry (992–1025), denar, Wielkopolska, Kujawy lub północne Mazowsze, 1000–1010",
+      "predicted_type_id": "lab-type:55a3e37ff6b3c343",
+      "predicted_title": "Bolesław Chrobry (992–1025), denar, Wielkopolska, Kujawy lub północne Mazowsze; ok. 1010–1020",
+      "margin": 0.19762
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:e25ce03cbba2e9df",
+      "expected_title": "Bolesław Chrobry (992–1025), denar, Wielkopolska, ok. 995-1005",
+      "predicted_type_id": "lab-type:834ffdf2765a9054",
+      "predicted_title": "Władysław Wygnaniec (1138–1146), denar, Kraków; ok. 1144–1146",
+      "margin": 1.16039
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:c55b0fd7a6949ec0",
+      "expected_title": "Denar, Otto-Adelheid-Pfennig (slawische Imitation), 983",
+      "predicted_type_id": "lab-type:22f290d88a25d4d8",
+      "predicted_title": "Denar, Otto-Adelheid-Pfennig (slawische Imitation), 1000",
+      "margin": 1.08678
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:087e3199fa110a8c",
+      "expected_title": "Ludwik Węgierski (1370-1382), denar, m. Poznań",
+      "predicted_type_id": "lab-type:f3b37573b02d625e",
+      "predicted_title": "Jadwiga (1384-1399), denar, Poznań; 1384-1386",
+      "margin": 0.68551
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:3d627657587aaade",
+      "expected_title": "Mieszko III Stary [1173–1202], brakteat, Gniezno (?), po 1181",
+      "predicted_type_id": "lab-type:b9f9f412415a3210",
+      "predicted_title": "Prusy, Elbląg, Kazimierz Jagiellończyk (1446–1492), szeląg, po 1457, men. Elbląg",
+      "margin": 0.20898
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:2414b30f479ce169",
+      "expected_title": "Mieszko III Stary (1173–1202), brakteat, Gniezno, 1195-1202",
+      "predicted_type_id": "lab-type:89a8e7f3aeaa1f2e",
+      "predicted_title": "Kazimierz Jagiellończyk (1447-1492), półgrosz, Kraków; 1479-1492",
+      "margin": 0.14516
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:457e1a7bc771edda",
+      "expected_title": "Nieokreślony władca, brakteat; XII/XIII w.",
+      "predicted_type_id": "lab-type:828e47e5e4fa953e",
+      "predicted_title": "Władysław Jagiełło (1386–1434), ternar, Kraków; 1396–1398",
+      "margin": 0.2487
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:dd76df8c9d8599b1",
+      "expected_title": "Bolesław Śmiały (1058–1079), denar, Kraków; 1076–1079",
+      "predicted_type_id": "lab-type:adbc6d8daf77b282",
+      "predicted_title": "Bolesław Krzywousty (1102–1138), denar, Kraków; 1113–1138",
+      "margin": 0.33485
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:7944c47667e9a707",
+      "expected_title": "Kwartnik, Kasimir II, 1290, Bytom",
+      "predicted_type_id": "lab-type:4641fae9c721972a",
+      "predicted_title": "Grosz, Friedrich II, 1751, Wrocław",
+      "margin": 0.28339
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:7fb82bfec3ed9d9a",
+      "expected_title": "Prusy, Zakon Krzyżacki, fenig - brakteat, ok. 1257/1258-1267/1268, m. Elbląg(?)",
+      "predicted_type_id": "lab-type:39939e3499caef28",
+      "predicted_title": "Prusy, Zakon Krzyżacki, fenig - brakteat, ok. 1307/1008-1217/11318, m. Elbląg(?)",
+      "margin": 1.5354
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:172272b822de44a3",
+      "expected_title": "Mieszko III Stary (1173–1202), brakteat, Gniezno lub Kraków, 1173–1177",
+      "predicted_type_id": "lab-type:6a608e5530124c85",
+      "predicted_title": "Mieszko III Stary (1173–1202), brakteat, Kruszwica (?), po 1186",
+      "margin": 0.808
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:468761d82a88c8b0",
+      "expected_title": "Bolesław Kędzierzawy (1146–1173), denar, Kraków lub Gniezno, 1146–1152",
+      "predicted_type_id": "lab-type:335f9e1f00d1be03",
+      "predicted_title": "Stanisław August Poniatowski (1764–1795), grosz koronny, Warszawa; 1774",
+      "margin": 0.51977
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:65b6dac34b3da247",
+      "expected_title": "Księstwo krakowskie, Bolesław Wstydliwy (1243–1279), brakteat, Kraków; b.r.",
+      "predicted_type_id": "lab-type:834ffdf2765a9054",
+      "predicted_title": "Władysław Wygnaniec (1138–1146), denar, Kraków; ok. 1144–1146",
+      "margin": 0.03458
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:6a608e5530124c85",
+      "expected_title": "Mieszko III Stary (1173–1202) (?), brakteat, Kruszwica (?), po 1186",
+      "predicted_type_id": "lab-type:6f61c35bef494f8f",
+      "predicted_title": "Bolesław IV Kędzierzawy (1146–1173), denar, Kraków lub Gniezno; 1164 (1166?)–1173",
+      "margin": 0.1599
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:652857985c4b2a45",
+      "expected_title": "Denar Ludwik Węgierski",
+      "predicted_type_id": "lab-type:d85feb5e308ac93d",
+      "predicted_title": "Mieszko II Lambert (1025-1034) jako następca tronu, denar; Wielkopolska, Kujawy lub płn. Mazowsze; ok. 1010–1020",
+      "margin": 0.13786
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:ce9f881eb63803fd",
+      "expected_title": "Mieszko III Stary (1173–1202), brakteat, 1173-1177",
+      "predicted_type_id": "lab-type:89a8e7f3aeaa1f2e",
+      "predicted_title": "Kazimierz Jagiellończyk (1447-1492), półgrosz, Kraków; 1479-1492",
+      "margin": 0.38097
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:438200e26ed93132",
+      "expected_title": "Bolesław Chrobry (992–1025), denar, Kujawy lub północne Mazowsze, ok. 1005–1015",
+      "predicted_type_id": "lab-type:b349ddb1f96adf6e",
+      "predicted_title": "Stanisław August Poniatowski (1764–1795), szeląg koronny, Kraków; 1768",
+      "margin": 0.24
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:224f038e9b2c6916",
+      "expected_title": "Bolesław Kędzierzawy (1146-1173), denar, Kraków lub Gniezno, 1157-1164/6",
+      "predicted_type_id": "lab-type:51adcef05bcd29c5",
+      "predicted_title": "Władysław II Wygnaniec (1138–1146), denar, Kraków, ok. 1138–1140",
+      "margin": 0.03929
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:354256bc2551c855",
+      "expected_title": "Bolesław Śmiały (1058–1079), denar, Kraków; 1058–1076",
+      "predicted_type_id": "lab-type:65b6dac34b3da247",
+      "predicted_title": "Księstwo krakowskie, Bolesław Wstydliwy (1243–1279), brakteat, Kraków; b.r.",
+      "margin": 1.49294
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:08e84b3f6af118e0",
+      "expected_title": "Prusy, Zakon Krzyżacki, Konrad Zöllner von Rothenstein (1382-1390), szeląg, 1382-1390, m. Toruń",
+      "predicted_type_id": "lab-type:3e64b952b3387dc8",
+      "predicted_title": "Prusy, Zakon Krzyżacki, Michał Küchmeister von Sternberg (1414-1422), szeląg, 1414-1416, m. Toruń",
+      "margin": 0.12259
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:eb9f9c8df746eade",
+      "expected_title": "Księstwo krakowskie, Leszek Biały (1206–1210, 1211–1227) (?), brakteat, Kraków; b.r.",
+      "predicted_type_id": "lab-type:2414b30f479ce169",
+      "predicted_title": "Mieszko III Stary (1173–1202), brakteat, Gniezno, 1195-1202",
+      "margin": 0.55526
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:ca6d221b5ef9c966",
+      "expected_title": "Mieszko III Stary (1173-1202), brakteat, Kalisz; po 1181",
+      "predicted_type_id": "lab-type:9893e44bc7c47692",
+      "predicted_title": "Polska, Władysław Jagiełło (1386-1434), półgrosz, 1396-1398, m. Kraków",
+      "margin": 1.99379
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:0f6edfaefba16e58",
+      "expected_title": "Władysław II Wygnaniec (1138–1146), denar, Kraków, 1140–1142",
+      "predicted_type_id": "lab-type:834ffdf2765a9054",
+      "predicted_title": "Władysław Wygnaniec (1138–1146), denar, Kraków; ok. 1144–1146",
+      "margin": 0.20662
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:f166bf59caaddc9e",
+      "expected_title": "Wielkopolska, Władysław Laskonogi (1194–1231), denar, 1201– ok. 1230",
+      "predicted_type_id": "lab-type:ef88ef4e09041192",
+      "predicted_title": "Księstwo krakowskie, Bolesław Wstydliwy (1243–1279), denar, Kraków, ok. 1254",
+      "margin": 0.11049
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:d1404dfe4b6723ca",
+      "expected_title": "Prusy, Zakon Krzyżacki, Winrich von Kniprode (1351-1382), kwartnik, ok. 1370, m. Toruń",
+      "predicted_type_id": "lab-type:08e84b3f6af118e0",
+      "predicted_title": "Prusy, Zakon Krzyżacki, Konrad Zöllner von Rothenstein (1382-1390), szeląg, 1382-1390, m. Toruń",
+      "margin": 0.11511
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:8a818ad56a37dfb2",
+      "expected_title": "Denar Bolesław Chrobry",
+      "predicted_type_id": "lab-type:9893e44bc7c47692",
+      "predicted_title": "Polska, Władysław Jagiełło (1386-1434), półgrosz, 1396-1398, m. Kraków",
+      "margin": 0.02625
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:039dddd4a6fe35ea",
+      "expected_title": "Denar Bolesław IV",
+      "predicted_type_id": "lab-type:51e78d53216fef19",
+      "predicted_title": "Zygmunt II August [1544 (1548) –1572], grosz litewski na stopę polską, Wilno; 1567",
+      "margin": 0.98645
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:1bf6acb597166740",
+      "expected_title": "Bolesław Krzywousty (1102–1138), brakteat, Kraków, 1135–1138",
+      "predicted_type_id": "lab-type:dbcf1d5967adfb4d",
+      "predicted_title": "Polska, Władysław Jagiełło (1386-1434), półgrosz, 1399-1400, m. Kraków",
+      "margin": 0.19047
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:963d80db021516d2",
+      "expected_title": "Jadwiga (1384–1399), denar, Kraków, 1384-1386",
+      "predicted_type_id": "lab-type:2e9c6b6b0d74f97f",
+      "predicted_title": "Kazimierz Wielki (1333-1370), denar, Kraków; wczesny okres panowania",
+      "margin": 0.47692
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:71fba6a238a95387",
+      "expected_title": "Księstwo krakowskie, Leszek Biały (1206–1227) (?), brakteat, Kraków",
+      "predicted_type_id": "lab-type:abd5542ab8830ce5",
+      "predicted_title": "Polska, niezidentyfikowany emitent, brakteat, przełom XII i XIII w.",
+      "margin": 0.77285
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:dd22c28c228b399c",
+      "expected_title": "Mieszko III Stary (1173–1202), brakteat, Kalisz, po 1182–1183 lub 1186",
+      "predicted_type_id": "lab-type:fcf5689b2bae7c31",
+      "predicted_title": "Polska, Władysław Jagiełło (1386-1434), półgrosz, 1431-1434, m. Kraków",
+      "margin": 0.13827
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:9d53d91ba866cae9",
+      "expected_title": "Sieciech [1079–1098 (1100)], denar, Morawica(?), Kraków(?)",
+      "predicted_type_id": "lab-type:a62383e83428e171",
+      "predicted_title": "Śląsk, Henryk I Brodaty (1201-1238) lub Henryk II Pobożny (1238-1241), brakteat (typ ratajski)",
+      "margin": 0.02403
+    },
+    {
+      "period": "medieval",
+      "expected_type_id": "lab-type:7df08e05bde7f166",
+      "expected_title": "Władysław II Wygnaniec (1138–1146), denar, Kraków, ok. 1142–1144",
+      "predicted_type_id": "lab-type:06b12cdc064f3826",
+      "predicted_title": "Bolesław Krzywousty (1102–1138), denar, Kraków, 1113 – przed 1138",
+      "margin": 0.02314
+    }
+  ],
+  "confidence_calibration": "Every fifth query calibrated the margin threshold; remaining queries evaluated safety.",
+  "verdict": "Najlepszy czysty shortlist wizualny: sift_rerank (Top-1 30.6%, Top-5 54.9%). Miękka hybryda osiągnęła Top-1 47.6% i Top-5 71.2%. Twarde filtry należy odrzucić, jeżeli pod zakłóceniem roku, nominału lub mennicy tracą prawidłowego kandydata.",
+  "limits": [
+    "The candidate universe contains the usable subset of 500 selected identities, not every catalog identity.",
+    "Museum metadata defines identity groups and can itself contain cataloging errors.",
+    "PRL has too few cross-specimen open-image groups for a stable period estimate.",
+    "Pretrained ResNet18 is generic and not a coin-specific embedding model.",
+    "OCR is represented by controlled metadata evidence/noise, not by a production OCR engine."
+  ]
+}
