@@ -267,9 +267,12 @@ def normalize_coin(rgb: np.ndarray, size: int = 224) -> np.ndarray:
     return cv2.resize(canvas, (size, size), interpolation=cv2.INTER_AREA if side > size else cv2.INTER_CUBIC)
 
 
-HOG = cv2.HOGDescriptor((128, 128), (16, 16), (8, 8), (8, 8), 9)
-SIFT = cv2.SIFT_create(nfeatures=100, contrastThreshold=0.025, edgeThreshold=12)
-BF = cv2.BFMatcher(cv2.NORM_L2)
+try:
+    SIFT = cv2.SIFT_create(nfeatures=100, contrastThreshold=0.025, edgeThreshold=12)
+    BF = cv2.BFMatcher(cv2.NORM_L2)
+except AttributeError:
+    SIFT = None
+    BF = None
 
 
 def phash_feature(rgb: np.ndarray) -> np.ndarray:
@@ -281,13 +284,47 @@ def phash_feature(rgb: np.ndarray) -> np.ndarray:
 
 def hog_feature(rgb: np.ndarray) -> np.ndarray:
     gray = cv2.cvtColor(cv2.resize(rgb, (128, 128)), cv2.COLOR_RGB2GRAY)
-    gray = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8)).apply(gray)
-    vector = HOG.compute(gray).reshape(-1).astype(np.float32)
+    gray = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8)).apply(gray).astype(np.float32)
+    gx = cv2.Sobel(gray, cv2.CV_32F, 1, 0, ksize=1)
+    gy = cv2.Sobel(gray, cv2.CV_32F, 0, 1, ksize=1)
+    magnitude, angle = cv2.cartToPolar(gx, gy, angleInDegrees=True)
+    angle %= 180.0
+
+    cell_size = 8
+    bins = 9
+    cells = 128 // cell_size
+    hist = np.zeros((cells, cells, bins), dtype=np.float32)
+    bin_position = angle / (180.0 / bins)
+    lower = np.floor(bin_position).astype(np.int32) % bins
+    upper = (lower + 1) % bins
+    upper_weight = bin_position - np.floor(bin_position)
+    lower_weight = 1.0 - upper_weight
+    for cy in range(cells):
+        y0, y1 = cy * cell_size, (cy + 1) * cell_size
+        for cx in range(cells):
+            x0, x1 = cx * cell_size, (cx + 1) * cell_size
+            mag = magnitude[y0:y1, x0:x1].reshape(-1)
+            lo = lower[y0:y1, x0:x1].reshape(-1)
+            hi = upper[y0:y1, x0:x1].reshape(-1)
+            lw = lower_weight[y0:y1, x0:x1].reshape(-1)
+            uw = upper_weight[y0:y1, x0:x1].reshape(-1)
+            np.add.at(hist[cy, cx], lo, mag * lw)
+            np.add.at(hist[cy, cx], hi, mag * uw)
+
+    blocks = []
+    for cy in range(cells - 1):
+        for cx in range(cells - 1):
+            block = hist[cy:cy + 2, cx:cx + 2].reshape(-1)
+            block /= math.sqrt(float(np.dot(block, block)) + 1e-6)
+            blocks.append(block)
+    vector = np.concatenate(blocks).astype(np.float32)
     norm = float(np.linalg.norm(vector))
     return vector / norm if norm else vector
 
 
 def sift_feature(rgb: np.ndarray) -> np.ndarray | None:
+    if SIFT is None:
+        return None
     gray = cv2.cvtColor(rgb, cv2.COLOR_RGB2GRAY)
     gray = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8)).apply(gray)
     _, descriptors = SIFT.detectAndCompute(gray, None)
