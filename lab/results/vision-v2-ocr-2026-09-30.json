@@ -1,0 +1,274 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-30",
+  "purpose": "Real local OCR evidence benchmark; no API calls and no hard filtering.",
+  "branch": "codex/vision-lab-20260930",
+  "corpus": {
+    "manifest_types": 500,
+    "requested_images": 1988,
+    "removed_contaminated_urls": 0,
+    "usable_types": 493,
+    "usable_images": 1971,
+    "missing_or_invalid_images": 13,
+    "query_reference_record_separation": true,
+    "exact_url_leakage_removed": true
+  },
+  "engine": {
+    "name": "Tesseract",
+    "version": "5.3.4",
+    "language": "eng",
+    "page_segmentation_mode": 11,
+    "rotations": [
+      0,
+      90,
+      180,
+      270
+    ],
+    "query_images_per_type": 1,
+    "device": "CPU",
+    "local_only": true
+  },
+  "timing_ms_per_type": {
+    "p50": 805.84,
+    "p90": 1169.33
+  },
+  "year_reading": {
+    "available_percent": 2.23,
+    "exact_percent": 0.41,
+    "wrong_percent": 1.83
+  },
+  "visual_source": "siglip2_base:normalized",
+  "visual_weight": 1.0,
+  "visual_evaluation": {
+    "queries": 394,
+    "top1": 44.42,
+    "top3": 64.97,
+    "top5": 73.6,
+    "median_rank": 2.0,
+    "by_period": [
+      {
+        "period": "II RP i wojna",
+        "queries": 31,
+        "top1": 64.52,
+        "top3": 87.1,
+        "top5": 87.1
+      },
+      {
+        "period": "III RP",
+        "queries": 22,
+        "top1": 40.91,
+        "top3": 59.09,
+        "top5": 63.64
+      },
+      {
+        "period": "Jagiellonowie",
+        "queries": 56,
+        "top1": 46.43,
+        "top3": 64.29,
+        "top5": 75.0
+      },
+      {
+        "period": "Monarchia elekcyjna",
+        "queries": 170,
+        "top1": 35.88,
+        "top3": 59.41,
+        "top5": 69.41
+      },
+      {
+        "period": "Zabory i powstania",
+        "queries": 59,
+        "top1": 64.41,
+        "top3": 83.05,
+        "top5": 88.14
+      },
+      {
+        "period": "Średniowiecze",
+        "queries": 56,
+        "top1": 37.5,
+        "top3": 53.57,
+        "top5": 66.07
+      }
+    ]
+  },
+  "ocr_only_evaluation": {
+    "queries": 394,
+    "top1": 0.25,
+    "top3": 0.51,
+    "top5": 0.51,
+    "median_rank": 254.5,
+    "by_period": [
+      {
+        "period": "II RP i wojna",
+        "queries": 31,
+        "top1": 0.0,
+        "top3": 0.0,
+        "top5": 0.0
+      },
+      {
+        "period": "III RP",
+        "queries": 22,
+        "top1": 4.55,
+        "top3": 4.55,
+        "top5": 4.55
+      },
+      {
+        "period": "Jagiellonowie",
+        "queries": 56,
+        "top1": 0.0,
+        "top3": 0.0,
+        "top5": 0.0
+      },
+      {
+        "period": "Monarchia elekcyjna",
+        "queries": 170,
+        "top1": 0.0,
+        "top3": 0.0,
+        "top5": 0.0
+      },
+      {
+        "period": "Zabory i powstania",
+        "queries": 59,
+        "top1": 0.0,
+        "top3": 0.0,
+        "top5": 0.0
+      },
+      {
+        "period": "Średniowiecze",
+        "queries": 56,
+        "top1": 0.0,
+        "top3": 1.79,
+        "top5": 1.79
+      }
+    ]
+  },
+  "visual_ocr_soft_evaluation": {
+    "queries": 394,
+    "top1": 44.42,
+    "top3": 64.97,
+    "top5": 73.6,
+    "median_rank": 2.0,
+    "by_period": [
+      {
+        "period": "II RP i wojna",
+        "queries": 31,
+        "top1": 64.52,
+        "top3": 87.1,
+        "top5": 87.1
+      },
+      {
+        "period": "III RP",
+        "queries": 22,
+        "top1": 40.91,
+        "top3": 59.09,
+        "top5": 63.64
+      },
+      {
+        "period": "Jagiellonowie",
+        "queries": 56,
+        "top1": 46.43,
+        "top3": 64.29,
+        "top5": 75.0
+      },
+      {
+        "period": "Monarchia elekcyjna",
+        "queries": 170,
+        "top1": 35.88,
+        "top3": 59.41,
+        "top5": 69.41
+      },
+      {
+        "period": "Zabory i powstania",
+        "queries": 59,
+        "top1": 64.41,
+        "top3": 83.05,
+        "top5": 88.14
+      },
+      {
+        "period": "Średniowiecze",
+        "queries": 56,
+        "top1": 37.5,
+        "top3": 53.57,
+        "top5": 66.07
+      }
+    ]
+  },
+  "visual_ocr_confidence": {
+    "calibration_queries": 99,
+    "evaluation_queries": 394,
+    "score_threshold": 4.116276,
+    "margin_threshold": 0.32779,
+    "known_correct_accepted": 5.33,
+    "known_false_confident": 2.28,
+    "known_abstention": 92.39,
+    "out_of_catalog_correct_abstention": 94.92,
+    "out_of_catalog_false_accept": 5.08
+  },
+  "by_period": [
+    {
+      "period": "II RP i wojna",
+      "queries": 31,
+      "year_available_percent": 0,
+      "year_exact_percent": 0,
+      "year_wrong_percent": 0,
+      "ocr_only_top1": 0,
+      "visual_top1": 64.52,
+      "visual_ocr_top1": 64.52
+    },
+    {
+      "period": "III RP",
+      "queries": 22,
+      "year_available_percent": 13.64,
+      "year_exact_percent": 4.55,
+      "year_wrong_percent": 9.09,
+      "ocr_only_top1": 4.55,
+      "visual_top1": 40.91,
+      "visual_ocr_top1": 40.91
+    },
+    {
+      "period": "Jagiellonowie",
+      "queries": 56,
+      "year_available_percent": 0,
+      "year_exact_percent": 0,
+      "year_wrong_percent": 0,
+      "ocr_only_top1": 0,
+      "visual_top1": 46.43,
+      "visual_ocr_top1": 46.43
+    },
+    {
+      "period": "Monarchia elekcyjna",
+      "queries": 170,
+      "year_available_percent": 3.53,
+      "year_exact_percent": 0,
+      "year_wrong_percent": 3.53,
+      "ocr_only_top1": 0,
+      "visual_top1": 35.88,
+      "visual_ocr_top1": 35.88
+    },
+    {
+      "period": "Zabory i powstania",
+      "queries": 59,
+      "year_available_percent": 0,
+      "year_exact_percent": 0,
+      "year_wrong_percent": 0,
+      "ocr_only_top1": 0,
+      "visual_top1": 64.41,
+      "visual_ocr_top1": 64.41
+    },
+    {
+      "period": "Średniowiecze",
+      "queries": 56,
+      "year_available_percent": 0,
+      "year_exact_percent": 0,
+      "year_wrong_percent": 0,
+      "ocr_only_top1": 0,
+      "visual_top1": 37.5,
+      "visual_ocr_top1": 37.5
+    }
+  ],
+  "limitations": [
+    "Tesseract is a generic baseline, not a curved-legend coin OCR model.",
+    "Only the first query image is read; reference identities remain different specimens.",
+    "The corpus includes many medieval coins with no machine-readable Arabic year.",
+    "OCR evidence is soft-scored and is never a veto."
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-30",
+  "purpose": "Isolated APOMONET Vision v2 build-vs-buy laboratory benchmark",
+  "production_changes": false,
+  "branch": "codex/vision-lab-20260930",
+  "base_commit": "6d6a0e25f021123a7a8630cc471150db02d672c1",
+  "historical_baseline": {
+    "result": "lab/results/visual-cross-specimen-500-2026-09-10.json",
+    "rerun": false
+  },
+  "corpus": {
+    "manifest": "lab/corpus/visual-corpus-manifest-2026-09-10.json",
+    "manifest_sha256": "2469a2a725c5c1d88ee5c3422a9c15070bb8e9623499694c827091930ff81714",
+    "selected_types": 500,
+    "downloaded_images": 1975,
+    "failed_downloads": 13,
+    "persist_image_bytes": false,
+    "identity_protocol": "query and reference are different source records; exact duplicate URLs removed"
+  },
+  "retrieval": {
+    "device": "CPU",
+    "threads": 8,
+    "models": [
+      {
+        "id": "timm/vit_small_patch14_dinov2.lvd142m",
+        "revision": "4610ca143709d58a633b6397a74412c2c3842454",
+        "representations": ["ORIGINAL", "NORMALIZED", "DISPLAY_CUTOUT"]
+      },
+      {
+        "id": "timm/vit_small_patch16_dinov3.lvd1689m",
+        "revision": "3bf4720a82ec2066db88137180ff1f83a675cef0",
+        "representations": ["ORIGINAL", "NORMALIZED", "DISPLAY_CUTOUT"]
+      },
+      {
+        "id": "timm/vit_base_patch16_siglip_224.v2_webli",
+        "revision": "4c3661e5ac879a276ddc5ddc6d3f0ecc78fd5d82",
+        "representations": ["ORIGINAL", "NORMALIZED", "DISPLAY_CUTOUT", "ORIGINAL+NORMALIZED score fusion"]
+      },
+      {
+        "id": "timm/mobilenetv4_conv_small.e1200_r224_in1k",
+        "revision": "c9f31ac64483d7f0590db9edccb4418392a96eea",
+        "representations": ["NORMALIZED"]
+      }
+    ],
+    "metric_learning": "two-layer 128-dimensional projection; identity-disjoint 80/20 type split; 120 epochs; no test-type fitting",
+    "metadata": "soft scoring only; visual weight tuned on deterministic 20% calibration split"
+  },
+  "segmentation": {
+    "source_specimens": 28,
+    "frame_size": 512,
+    "scenarios": [
+      "plain-light",
+      "plain-dark",
+      "patterned",
+      "shadow",
+      "glare",
+      "overexposed",
+      "slight-angle",
+      "strong-angle",
+      "blurred",
+      "cropped-rim"
+    ],
+    "candidates": [
+      "APOMONET local CV",
+      "OpenCV GrabCut",
+      "MobileSAM",
+      "SAM 2.1 Hiera Tiny"
+    ],
+    "prompt_protocols": ["APOMONET local detection box", "oracle ceiling box"],
+    "persist_frames": false
+  },
+  "ocr": {
+    "engine": "Tesseract 5.3.4",
+    "language": "eng",
+    "page_segmentation_mode": 11,
+    "rotations": [0, 90, 180, 270],
+    "query_images_per_type": 1,
+    "local_only": true,
+    "hard_filtering": false
+  },
+  "dependencies": {
+    "python": "3.12.14",
+    "torch": "2.14.0+cpu",
+    "torchvision": "0.29.0+cpu",
+    "timm": "1.0.30",
+    "transformers": "5.17.0",
+    "opencv": "4.10.0",
+    "numpy": "1.26.4",
+    "onnxruntime": "1.30.0",
+    "requests": "2.34.2",
+    "mobile_sam_commit": "f706ad9c4eb7f219c00d9050e46328518ffb65d2",
+    "sam2_commit": "2b90b9f5ceec907a1c18123530e92e794ad901a4",
+    "sam2_checkpoint_sha256": "7402e0d864fa82708a20fbd15bc84245c2f26dff0eb43a4b5b93452deb34be69"
+  },
+  "external_paid_calls": 0
+}

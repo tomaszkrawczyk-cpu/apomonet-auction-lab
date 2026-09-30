@@ -1,2 +1,8 @@
 data/recognition/build/
 node_modules/
+.lab-image-cache/
+.lab-feature-cache/
+.venv-vision-lab/
+lab/corpus/
+__pycache__/
+*.pyc
